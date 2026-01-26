@@ -3,15 +3,19 @@
 import SentDm from 'sent-dm';
 
 const client = new SentDm({
-  adminAuthScheme: 'My Admin Auth Scheme',
-  customerAuthScheme: 'My Customer Auth Scheme',
+  apiKey: 'My API Key',
+  senderID: 'My Sender ID',
   baseURL: process.env['TEST_API_BASE_URL'] ?? 'http://127.0.0.1:4010',
 });
 
 describe('resource numberLookup', () => {
   // Prism tests are disabled
   test.skip('retrieve: only required params', async () => {
-    const responsePromise = client.numberLookup.retrieve({ phoneNumber: 'phoneNumber' });
+    const responsePromise = client.numberLookup.retrieve({
+      phoneNumber: 'phoneNumber',
+      'x-api-key': '',
+      'x-sender-id': '00000000-0000-0000-0000-000000000000',
+    });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -23,6 +27,10 @@ describe('resource numberLookup', () => {
 
   // Prism tests are disabled
   test.skip('retrieve: required and optional params', async () => {
-    const response = await client.numberLookup.retrieve({ phoneNumber: 'phoneNumber' });
+    const response = await client.numberLookup.retrieve({
+      phoneNumber: 'phoneNumber',
+      'x-api-key': '',
+      'x-sender-id': '00000000-0000-0000-0000-000000000000',
+    });
   });
 });

@@ -3,15 +3,19 @@
 import SentDm from 'sent-dm';
 
 const client = new SentDm({
-  adminAuthScheme: 'My Admin Auth Scheme',
-  customerAuthScheme: 'My Customer Auth Scheme',
+  apiKey: 'My API Key',
+  senderID: 'My Sender ID',
   baseURL: process.env['TEST_API_BASE_URL'] ?? 'http://127.0.0.1:4010',
 });
 
 describe('resource templates', () => {
   // Prism tests are disabled
   test.skip('create: only required params', async () => {
-    const responsePromise = client.templates.create({ definition: { body: {} } });
+    const responsePromise = client.templates.create({
+      definition: { body: {} },
+      'x-api-key': '',
+      'x-sender-id': '00000000-0000-0000-0000-000000000000',
+    });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -146,6 +150,8 @@ describe('resource templates', () => {
           ],
         },
       },
+      'x-api-key': '',
+      'x-sender-id': '00000000-0000-0000-0000-000000000000',
       category: 'MARKETING',
       language: 'en_US',
       submitForReview: false,
@@ -153,8 +159,11 @@ describe('resource templates', () => {
   });
 
   // Prism tests are disabled
-  test.skip('retrieve', async () => {
-    const responsePromise = client.templates.retrieve('7ba7b820-9dad-11d1-80b4-00c04fd430c8');
+  test.skip('retrieve: only required params', async () => {
+    const responsePromise = client.templates.retrieve('7ba7b820-9dad-11d1-80b4-00c04fd430c8', {
+      'x-api-key': '',
+      'x-sender-id': '00000000-0000-0000-0000-000000000000',
+    });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -165,8 +174,21 @@ describe('resource templates', () => {
   });
 
   // Prism tests are disabled
+  test.skip('retrieve: required and optional params', async () => {
+    const response = await client.templates.retrieve('7ba7b820-9dad-11d1-80b4-00c04fd430c8', {
+      'x-api-key': '',
+      'x-sender-id': '00000000-0000-0000-0000-000000000000',
+    });
+  });
+
+  // Prism tests are disabled
   test.skip('list: only required params', async () => {
-    const responsePromise = client.templates.list({ page: 0, pageSize: 0 });
+    const responsePromise = client.templates.list({
+      page: 0,
+      pageSize: 0,
+      'x-api-key': '',
+      'x-sender-id': '00000000-0000-0000-0000-000000000000',
+    });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -181,6 +203,8 @@ describe('resource templates', () => {
     const response = await client.templates.list({
       page: 0,
       pageSize: 0,
+      'x-api-key': '',
+      'x-sender-id': '00000000-0000-0000-0000-000000000000',
       category: 'category',
       search: 'search',
       status: 'status',
@@ -188,8 +212,11 @@ describe('resource templates', () => {
   });
 
   // Prism tests are disabled
-  test.skip('delete', async () => {
-    const responsePromise = client.templates.delete('7ba7b820-9dad-11d1-80b4-00c04fd430c8');
+  test.skip('delete: only required params', async () => {
+    const responsePromise = client.templates.delete('7ba7b820-9dad-11d1-80b4-00c04fd430c8', {
+      'x-api-key': '',
+      'x-sender-id': '00000000-0000-0000-0000-000000000000',
+    });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -197,5 +224,13 @@ describe('resource templates', () => {
     const dataAndResponse = await responsePromise.withResponse();
     expect(dataAndResponse.data).toBe(response);
     expect(dataAndResponse.response).toBe(rawResponse);
+  });
+
+  // Prism tests are disabled
+  test.skip('delete: required and optional params', async () => {
+    const response = await client.templates.delete('7ba7b820-9dad-11d1-80b4-00c04fd430c8', {
+      'x-api-key': '',
+      'x-sender-id': '00000000-0000-0000-0000-000000000000',
+    });
   });
 });

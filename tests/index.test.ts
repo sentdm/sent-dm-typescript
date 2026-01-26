@@ -23,8 +23,8 @@ describe('instantiate client', () => {
     const client = new SentDm({
       baseURL: 'http://localhost:5000/',
       defaultHeaders: { 'X-My-Default-Header': '2' },
-      adminAuthScheme: 'My Admin Auth Scheme',
-      customerAuthScheme: 'My Customer Auth Scheme',
+      apiKey: 'My API Key',
+      senderID: 'My Sender ID',
     });
 
     test('they are used in the request', async () => {
@@ -91,8 +91,8 @@ describe('instantiate client', () => {
       const client = new SentDm({
         logger: logger,
         logLevel: 'debug',
-        adminAuthScheme: 'My Admin Auth Scheme',
-        customerAuthScheme: 'My Customer Auth Scheme',
+        apiKey: 'My API Key',
+        senderID: 'My Sender ID',
       });
 
       await forceAPIResponseForClient(client);
@@ -100,10 +100,7 @@ describe('instantiate client', () => {
     });
 
     test('default logLevel is warn', async () => {
-      const client = new SentDm({
-        adminAuthScheme: 'My Admin Auth Scheme',
-        customerAuthScheme: 'My Customer Auth Scheme',
-      });
+      const client = new SentDm({ apiKey: 'My API Key', senderID: 'My Sender ID' });
       expect(client.logLevel).toBe('warn');
     });
 
@@ -119,8 +116,8 @@ describe('instantiate client', () => {
       const client = new SentDm({
         logger: logger,
         logLevel: 'info',
-        adminAuthScheme: 'My Admin Auth Scheme',
-        customerAuthScheme: 'My Customer Auth Scheme',
+        apiKey: 'My API Key',
+        senderID: 'My Sender ID',
       });
 
       await forceAPIResponseForClient(client);
@@ -139,8 +136,8 @@ describe('instantiate client', () => {
       process.env['SENT_DM_LOG'] = 'debug';
       const client = new SentDm({
         logger: logger,
-        adminAuthScheme: 'My Admin Auth Scheme',
-        customerAuthScheme: 'My Customer Auth Scheme',
+        apiKey: 'My API Key',
+        senderID: 'My Sender ID',
       });
       expect(client.logLevel).toBe('debug');
 
@@ -160,8 +157,8 @@ describe('instantiate client', () => {
       process.env['SENT_DM_LOG'] = 'not a log level';
       const client = new SentDm({
         logger: logger,
-        adminAuthScheme: 'My Admin Auth Scheme',
-        customerAuthScheme: 'My Customer Auth Scheme',
+        apiKey: 'My API Key',
+        senderID: 'My Sender ID',
       });
       expect(client.logLevel).toBe('warn');
       expect(warnMock).toHaveBeenCalledWith(
@@ -182,8 +179,8 @@ describe('instantiate client', () => {
       const client = new SentDm({
         logger: logger,
         logLevel: 'off',
-        adminAuthScheme: 'My Admin Auth Scheme',
-        customerAuthScheme: 'My Customer Auth Scheme',
+        apiKey: 'My API Key',
+        senderID: 'My Sender ID',
       });
 
       await forceAPIResponseForClient(client);
@@ -203,8 +200,8 @@ describe('instantiate client', () => {
       const client = new SentDm({
         logger: logger,
         logLevel: 'debug',
-        adminAuthScheme: 'My Admin Auth Scheme',
-        customerAuthScheme: 'My Customer Auth Scheme',
+        apiKey: 'My API Key',
+        senderID: 'My Sender ID',
       });
       expect(client.logLevel).toBe('debug');
       expect(warnMock).not.toHaveBeenCalled();
@@ -216,8 +213,8 @@ describe('instantiate client', () => {
       const client = new SentDm({
         baseURL: 'http://localhost:5000/',
         defaultQuery: { apiVersion: 'foo' },
-        adminAuthScheme: 'My Admin Auth Scheme',
-        customerAuthScheme: 'My Customer Auth Scheme',
+        apiKey: 'My API Key',
+        senderID: 'My Sender ID',
       });
       expect(client.buildURL('/foo', null)).toEqual('http://localhost:5000/foo?apiVersion=foo');
     });
@@ -226,8 +223,8 @@ describe('instantiate client', () => {
       const client = new SentDm({
         baseURL: 'http://localhost:5000/',
         defaultQuery: { apiVersion: 'foo', hello: 'world' },
-        adminAuthScheme: 'My Admin Auth Scheme',
-        customerAuthScheme: 'My Customer Auth Scheme',
+        apiKey: 'My API Key',
+        senderID: 'My Sender ID',
       });
       expect(client.buildURL('/foo', null)).toEqual('http://localhost:5000/foo?apiVersion=foo&hello=world');
     });
@@ -236,8 +233,8 @@ describe('instantiate client', () => {
       const client = new SentDm({
         baseURL: 'http://localhost:5000/',
         defaultQuery: { hello: 'world' },
-        adminAuthScheme: 'My Admin Auth Scheme',
-        customerAuthScheme: 'My Customer Auth Scheme',
+        apiKey: 'My API Key',
+        senderID: 'My Sender ID',
       });
       expect(client.buildURL('/foo', { hello: undefined })).toEqual('http://localhost:5000/foo');
     });
@@ -246,8 +243,8 @@ describe('instantiate client', () => {
   test('custom fetch', async () => {
     const client = new SentDm({
       baseURL: 'http://localhost:5000/',
-      adminAuthScheme: 'My Admin Auth Scheme',
-      customerAuthScheme: 'My Customer Auth Scheme',
+      apiKey: 'My API Key',
+      senderID: 'My Sender ID',
       fetch: (url) => {
         return Promise.resolve(
           new Response(JSON.stringify({ url, custom: true }), {
@@ -265,8 +262,8 @@ describe('instantiate client', () => {
     // make sure the global fetch type is assignable to our Fetch type
     const client = new SentDm({
       baseURL: 'http://localhost:5000/',
-      adminAuthScheme: 'My Admin Auth Scheme',
-      customerAuthScheme: 'My Customer Auth Scheme',
+      apiKey: 'My API Key',
+      senderID: 'My Sender ID',
       fetch: defaultFetch,
     });
   });
@@ -274,8 +271,8 @@ describe('instantiate client', () => {
   test('custom signal', async () => {
     const client = new SentDm({
       baseURL: process.env['TEST_API_BASE_URL'] ?? 'http://127.0.0.1:4010',
-      adminAuthScheme: 'My Admin Auth Scheme',
-      customerAuthScheme: 'My Customer Auth Scheme',
+      apiKey: 'My API Key',
+      senderID: 'My Sender ID',
       fetch: (...args) => {
         return new Promise((resolve, reject) =>
           setTimeout(
@@ -307,8 +304,8 @@ describe('instantiate client', () => {
 
     const client = new SentDm({
       baseURL: 'http://localhost:5000/',
-      adminAuthScheme: 'My Admin Auth Scheme',
-      customerAuthScheme: 'My Customer Auth Scheme',
+      apiKey: 'My API Key',
+      senderID: 'My Sender ID',
       fetch: testFetch,
     });
 
@@ -320,8 +317,8 @@ describe('instantiate client', () => {
     test('trailing slash', () => {
       const client = new SentDm({
         baseURL: 'http://localhost:5000/custom/path/',
-        adminAuthScheme: 'My Admin Auth Scheme',
-        customerAuthScheme: 'My Customer Auth Scheme',
+        apiKey: 'My API Key',
+        senderID: 'My Sender ID',
       });
       expect(client.buildURL('/foo', null)).toEqual('http://localhost:5000/custom/path/foo');
     });
@@ -329,8 +326,8 @@ describe('instantiate client', () => {
     test('no trailing slash', () => {
       const client = new SentDm({
         baseURL: 'http://localhost:5000/custom/path',
-        adminAuthScheme: 'My Admin Auth Scheme',
-        customerAuthScheme: 'My Customer Auth Scheme',
+        apiKey: 'My API Key',
+        senderID: 'My Sender ID',
       });
       expect(client.buildURL('/foo', null)).toEqual('http://localhost:5000/custom/path/foo');
     });
@@ -342,44 +339,32 @@ describe('instantiate client', () => {
     test('explicit option', () => {
       const client = new SentDm({
         baseURL: 'https://example.com',
-        adminAuthScheme: 'My Admin Auth Scheme',
-        customerAuthScheme: 'My Customer Auth Scheme',
+        apiKey: 'My API Key',
+        senderID: 'My Sender ID',
       });
       expect(client.baseURL).toEqual('https://example.com');
     });
 
     test('env variable', () => {
       process.env['SENT_DM_BASE_URL'] = 'https://example.com/from_env';
-      const client = new SentDm({
-        adminAuthScheme: 'My Admin Auth Scheme',
-        customerAuthScheme: 'My Customer Auth Scheme',
-      });
+      const client = new SentDm({ apiKey: 'My API Key', senderID: 'My Sender ID' });
       expect(client.baseURL).toEqual('https://example.com/from_env');
     });
 
     test('empty env variable', () => {
       process.env['SENT_DM_BASE_URL'] = ''; // empty
-      const client = new SentDm({
-        adminAuthScheme: 'My Admin Auth Scheme',
-        customerAuthScheme: 'My Customer Auth Scheme',
-      });
+      const client = new SentDm({ apiKey: 'My API Key', senderID: 'My Sender ID' });
       expect(client.baseURL).toEqual('https://api.sent.dm');
     });
 
     test('blank env variable', () => {
       process.env['SENT_DM_BASE_URL'] = '  '; // blank
-      const client = new SentDm({
-        adminAuthScheme: 'My Admin Auth Scheme',
-        customerAuthScheme: 'My Customer Auth Scheme',
-      });
+      const client = new SentDm({ apiKey: 'My API Key', senderID: 'My Sender ID' });
       expect(client.baseURL).toEqual('https://api.sent.dm');
     });
 
     test('in request options', () => {
-      const client = new SentDm({
-        adminAuthScheme: 'My Admin Auth Scheme',
-        customerAuthScheme: 'My Customer Auth Scheme',
-      });
+      const client = new SentDm({ apiKey: 'My API Key', senderID: 'My Sender ID' });
       expect(client.buildURL('/foo', null, 'http://localhost:5000/option')).toEqual(
         'http://localhost:5000/option/foo',
       );
@@ -387,8 +372,8 @@ describe('instantiate client', () => {
 
     test('in request options overridden by client options', () => {
       const client = new SentDm({
-        adminAuthScheme: 'My Admin Auth Scheme',
-        customerAuthScheme: 'My Customer Auth Scheme',
+        apiKey: 'My API Key',
+        senderID: 'My Sender ID',
         baseURL: 'http://localhost:5000/client',
       });
       expect(client.buildURL('/foo', null, 'http://localhost:5000/option')).toEqual(
@@ -398,10 +383,7 @@ describe('instantiate client', () => {
 
     test('in request options overridden by env variable', () => {
       process.env['SENT_DM_BASE_URL'] = 'http://localhost:5000/env';
-      const client = new SentDm({
-        adminAuthScheme: 'My Admin Auth Scheme',
-        customerAuthScheme: 'My Customer Auth Scheme',
-      });
+      const client = new SentDm({ apiKey: 'My API Key', senderID: 'My Sender ID' });
       expect(client.buildURL('/foo', null, 'http://localhost:5000/option')).toEqual(
         'http://localhost:5000/env/foo',
       );
@@ -411,16 +393,13 @@ describe('instantiate client', () => {
   test('maxRetries option is correctly set', () => {
     const client = new SentDm({
       maxRetries: 4,
-      adminAuthScheme: 'My Admin Auth Scheme',
-      customerAuthScheme: 'My Customer Auth Scheme',
+      apiKey: 'My API Key',
+      senderID: 'My Sender ID',
     });
     expect(client.maxRetries).toEqual(4);
 
     // default
-    const client2 = new SentDm({
-      adminAuthScheme: 'My Admin Auth Scheme',
-      customerAuthScheme: 'My Customer Auth Scheme',
-    });
+    const client2 = new SentDm({ apiKey: 'My API Key', senderID: 'My Sender ID' });
     expect(client2.maxRetries).toEqual(2);
   });
 
@@ -429,8 +408,8 @@ describe('instantiate client', () => {
       const client = new SentDm({
         baseURL: 'http://localhost:5000/',
         maxRetries: 3,
-        adminAuthScheme: 'My Admin Auth Scheme',
-        customerAuthScheme: 'My Customer Auth Scheme',
+        apiKey: 'My API Key',
+        senderID: 'My Sender ID',
       });
 
       const newClient = client.withOptions({
@@ -456,8 +435,8 @@ describe('instantiate client', () => {
         baseURL: 'http://localhost:5000/',
         defaultHeaders: { 'X-Test-Header': 'test-value' },
         defaultQuery: { 'test-param': 'test-value' },
-        adminAuthScheme: 'My Admin Auth Scheme',
-        customerAuthScheme: 'My Customer Auth Scheme',
+        apiKey: 'My API Key',
+        senderID: 'My Sender ID',
       });
 
       const newClient = client.withOptions({
@@ -475,8 +454,8 @@ describe('instantiate client', () => {
       const client = new SentDm({
         baseURL: 'http://localhost:5000/',
         timeout: 1000,
-        adminAuthScheme: 'My Admin Auth Scheme',
-        customerAuthScheme: 'My Customer Auth Scheme',
+        apiKey: 'My API Key',
+        senderID: 'My Sender ID',
       });
 
       // Modify the client properties directly after creation
@@ -505,31 +484,25 @@ describe('instantiate client', () => {
 
   test('with environment variable arguments', () => {
     // set options via env var
-    process.env['SENT_DM_ADMIN_AUTH_SCHEME'] = 'My Admin Auth Scheme';
-    process.env['SENT_DM_CUSTOMER_AUTH_SCHEME'] = 'My Customer Auth Scheme';
+    process.env['SENT_DM_API_KEY'] = 'My API Key';
+    process.env['SENT_DM_SENDER_ID'] = 'My Sender ID';
     const client = new SentDm();
-    expect(client.adminAuthScheme).toBe('My Admin Auth Scheme');
-    expect(client.customerAuthScheme).toBe('My Customer Auth Scheme');
+    expect(client.apiKey).toBe('My API Key');
+    expect(client.senderID).toBe('My Sender ID');
   });
 
   test('with overridden environment variable arguments', () => {
     // set options via env var
-    process.env['SENT_DM_ADMIN_AUTH_SCHEME'] = 'another My Admin Auth Scheme';
-    process.env['SENT_DM_CUSTOMER_AUTH_SCHEME'] = 'another My Customer Auth Scheme';
-    const client = new SentDm({
-      adminAuthScheme: 'My Admin Auth Scheme',
-      customerAuthScheme: 'My Customer Auth Scheme',
-    });
-    expect(client.adminAuthScheme).toBe('My Admin Auth Scheme');
-    expect(client.customerAuthScheme).toBe('My Customer Auth Scheme');
+    process.env['SENT_DM_API_KEY'] = 'another My API Key';
+    process.env['SENT_DM_SENDER_ID'] = 'another My Sender ID';
+    const client = new SentDm({ apiKey: 'My API Key', senderID: 'My Sender ID' });
+    expect(client.apiKey).toBe('My API Key');
+    expect(client.senderID).toBe('My Sender ID');
   });
 });
 
 describe('request building', () => {
-  const client = new SentDm({
-    adminAuthScheme: 'My Admin Auth Scheme',
-    customerAuthScheme: 'My Customer Auth Scheme',
-  });
+  const client = new SentDm({ apiKey: 'My API Key', senderID: 'My Sender ID' });
 
   describe('custom headers', () => {
     test('handles undefined', async () => {
@@ -548,10 +521,7 @@ describe('request building', () => {
 });
 
 describe('default encoder', () => {
-  const client = new SentDm({
-    adminAuthScheme: 'My Admin Auth Scheme',
-    customerAuthScheme: 'My Customer Auth Scheme',
-  });
+  const client = new SentDm({ apiKey: 'My API Key', senderID: 'My Sender ID' });
 
   class Serializable {
     toJSON() {
@@ -637,8 +607,8 @@ describe('retries', () => {
     };
 
     const client = new SentDm({
-      adminAuthScheme: 'My Admin Auth Scheme',
-      customerAuthScheme: 'My Customer Auth Scheme',
+      apiKey: 'My API Key',
+      senderID: 'My Sender ID',
       timeout: 10,
       fetch: testFetch,
     });
@@ -672,8 +642,8 @@ describe('retries', () => {
     };
 
     const client = new SentDm({
-      adminAuthScheme: 'My Admin Auth Scheme',
-      customerAuthScheme: 'My Customer Auth Scheme',
+      apiKey: 'My API Key',
+      senderID: 'My Sender ID',
       fetch: testFetch,
       maxRetries: 4,
     });
@@ -701,8 +671,8 @@ describe('retries', () => {
       return new Response(JSON.stringify({ a: 1 }), { headers: { 'Content-Type': 'application/json' } });
     };
     const client = new SentDm({
-      adminAuthScheme: 'My Admin Auth Scheme',
-      customerAuthScheme: 'My Customer Auth Scheme',
+      apiKey: 'My API Key',
+      senderID: 'My Sender ID',
       fetch: testFetch,
       maxRetries: 4,
     });
@@ -735,8 +705,8 @@ describe('retries', () => {
       return new Response(JSON.stringify({ a: 1 }), { headers: { 'Content-Type': 'application/json' } });
     };
     const client = new SentDm({
-      adminAuthScheme: 'My Admin Auth Scheme',
-      customerAuthScheme: 'My Customer Auth Scheme',
+      apiKey: 'My API Key',
+      senderID: 'My Sender ID',
       fetch: testFetch,
       maxRetries: 4,
       defaultHeaders: { 'X-Stainless-Retry-Count': null },
@@ -769,8 +739,8 @@ describe('retries', () => {
       return new Response(JSON.stringify({ a: 1 }), { headers: { 'Content-Type': 'application/json' } });
     };
     const client = new SentDm({
-      adminAuthScheme: 'My Admin Auth Scheme',
-      customerAuthScheme: 'My Customer Auth Scheme',
+      apiKey: 'My API Key',
+      senderID: 'My Sender ID',
       fetch: testFetch,
       maxRetries: 4,
     });
@@ -804,8 +774,8 @@ describe('retries', () => {
     };
 
     const client = new SentDm({
-      adminAuthScheme: 'My Admin Auth Scheme',
-      customerAuthScheme: 'My Customer Auth Scheme',
+      apiKey: 'My API Key',
+      senderID: 'My Sender ID',
       fetch: testFetch,
     });
 
@@ -838,8 +808,8 @@ describe('retries', () => {
     };
 
     const client = new SentDm({
-      adminAuthScheme: 'My Admin Auth Scheme',
-      customerAuthScheme: 'My Customer Auth Scheme',
+      apiKey: 'My API Key',
+      senderID: 'My Sender ID',
       fetch: testFetch,
     });
 

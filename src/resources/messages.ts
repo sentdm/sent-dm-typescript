@@ -18,11 +18,23 @@ export class Messages extends APIResource {
    * ```ts
    * const message = await client.messages.retrieve(
    *   '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
+   *   {
+   *     'x-api-key': '',
+   *     'x-sender-id': '00000000-0000-0000-0000-000000000000',
+   *   },
    * );
    * ```
    */
-  retrieve(id: string, options?: RequestOptions): APIPromise<MessageRetrieveResponse> {
-    return this._client.get(path`/v2/messages/${id}`, options);
+  retrieve(
+    id: string,
+    params: MessageRetrieveParams,
+    options?: RequestOptions,
+  ): APIPromise<MessageRetrieveResponse> {
+    const { 'x-api-key': xAPIKey, 'x-sender-id': xSenderID } = params;
+    return this._client.get(path`/v2/messages/${id}`, {
+      ...options,
+      headers: buildHeaders([{ 'x-api-key': xAPIKey, 'x-sender-id': xSenderID }, options?.headers]),
+    });
   }
 
   /**
@@ -35,14 +47,20 @@ export class Messages extends APIResource {
    * await client.messages.sendQuickMessage({
    *   customMessage: 'Hello, this is a test message!',
    *   phoneNumber: '+1234567890',
+   *   'x-api-key': '',
+   *   'x-sender-id': '00000000-0000-0000-0000-000000000000',
    * });
    * ```
    */
-  sendQuickMessage(body: MessageSendQuickMessageParams, options?: RequestOptions): APIPromise<void> {
+  sendQuickMessage(params: MessageSendQuickMessageParams, options?: RequestOptions): APIPromise<void> {
+    const { 'x-api-key': xAPIKey, 'x-sender-id': xSenderID, ...body } = params;
     return this._client.post('/v2/messages/quick-message', {
       body,
       ...options,
-      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
+      headers: buildHeaders([
+        { Accept: '*/*', 'x-api-key': xAPIKey, 'x-sender-id': xSenderID },
+        options?.headers,
+      ]),
     });
   }
 
@@ -57,14 +75,20 @@ export class Messages extends APIResource {
    * await client.messages.sendToContact({
    *   contactId: '6ba7b810-9dad-11d1-80b4-00c04fd430c8',
    *   templateId: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
+   *   'x-api-key': '',
+   *   'x-sender-id': '00000000-0000-0000-0000-000000000000',
    * });
    * ```
    */
-  sendToContact(body: MessageSendToContactParams, options?: RequestOptions): APIPromise<void> {
+  sendToContact(params: MessageSendToContactParams, options?: RequestOptions): APIPromise<void> {
+    const { 'x-api-key': xAPIKey, 'x-sender-id': xSenderID, ...body } = params;
     return this._client.post('/v2/messages/contact', {
       body,
       ...options,
-      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
+      headers: buildHeaders([
+        { Accept: '*/*', 'x-api-key': xAPIKey, 'x-sender-id': xSenderID },
+        options?.headers,
+      ]),
     });
   }
 
@@ -79,14 +103,20 @@ export class Messages extends APIResource {
    * await client.messages.sendToPhone({
    *   phoneNumber: '+1234567890',
    *   templateId: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
+   *   'x-api-key': '',
+   *   'x-sender-id': '00000000-0000-0000-0000-000000000000',
    * });
    * ```
    */
-  sendToPhone(body: MessageSendToPhoneParams, options?: RequestOptions): APIPromise<void> {
+  sendToPhone(params: MessageSendToPhoneParams, options?: RequestOptions): APIPromise<void> {
+    const { 'x-api-key': xAPIKey, 'x-sender-id': xSenderID, ...body } = params;
     return this._client.post('/v2/messages/phone', {
       body,
       ...options,
-      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
+      headers: buildHeaders([
+        { Accept: '*/*', 'x-api-key': xAPIKey, 'x-sender-id': xSenderID },
+        options?.headers,
+      ]),
     });
   }
 }
@@ -221,54 +251,90 @@ export namespace MessageRetrieveResponse {
   }
 }
 
+export interface MessageRetrieveParams {
+  'x-api-key': string;
+
+  'x-sender-id': string;
+}
+
 export interface MessageSendQuickMessageParams {
   /**
-   * The custom message content to include in the template
+   * Body param: The custom message content to include in the template
    */
   customMessage: string;
 
   /**
-   * The phone number to send the message to, in international format (e.g.,
-   * +1234567890)
+   * Body param: The phone number to send the message to, in international format
+   * (e.g., +1234567890)
    */
   phoneNumber: string;
+
+  /**
+   * Header param
+   */
+  'x-api-key': string;
+
+  /**
+   * Header param
+   */
+  'x-sender-id': string;
 }
 
 export interface MessageSendToContactParams {
   /**
-   * The unique identifier of the contact to send the message to
+   * Body param: The unique identifier of the contact to send the message to
    */
   contactId: string;
 
   /**
-   * The unique identifier of the template to use for the message
+   * Body param: The unique identifier of the template to use for the message
    */
   templateId: string;
 
   /**
-   * Optional key-value pairs of template variables to replace in the template body.
-   * For example, if your template contains "Hello {{name}}", you would provide {
-   * "name": "John Doe" }
+   * Header param
+   */
+  'x-api-key': string;
+
+  /**
+   * Header param
+   */
+  'x-sender-id': string;
+
+  /**
+   * Body param: Optional key-value pairs of template variables to replace in the
+   * template body. For example, if your template contains "Hello {{name}}", you
+   * would provide { "name": "John Doe" }
    */
   templateVariables?: { [key: string]: string } | null;
 }
 
 export interface MessageSendToPhoneParams {
   /**
-   * The phone number to send the message to, in international format (e.g.,
-   * +1234567890)
+   * Body param: The phone number to send the message to, in international format
+   * (e.g., +1234567890)
    */
   phoneNumber: string;
 
   /**
-   * The unique identifier of the template to use for the message
+   * Body param: The unique identifier of the template to use for the message
    */
   templateId: string;
 
   /**
-   * Optional key-value pairs of template variables to replace in the template body.
-   * For example, if your template contains "Hello {{name}}", you would provide {
-   * "name": "John Doe" }
+   * Header param
+   */
+  'x-api-key': string;
+
+  /**
+   * Header param
+   */
+  'x-sender-id': string;
+
+  /**
+   * Body param: Optional key-value pairs of template variables to replace in the
+   * template body. For example, if your template contains "Hello {{name}}", you
+   * would provide { "name": "John Doe" }
    */
   templateVariables?: { [key: string]: string } | null;
 }
@@ -276,6 +342,7 @@ export interface MessageSendToPhoneParams {
 export declare namespace Messages {
   export {
     type MessageRetrieveResponse as MessageRetrieveResponse,
+    type MessageRetrieveParams as MessageRetrieveParams,
     type MessageSendQuickMessageParams as MessageSendQuickMessageParams,
     type MessageSendToContactParams as MessageSendToContactParams,
     type MessageSendToPhoneParams as MessageSendToPhoneParams,

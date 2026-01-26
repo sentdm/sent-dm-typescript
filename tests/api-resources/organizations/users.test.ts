@@ -3,8 +3,8 @@
 import SentDm from 'sent-dm';
 
 const client = new SentDm({
-  adminAuthScheme: 'My Admin Auth Scheme',
-  customerAuthScheme: 'My Customer Auth Scheme',
+  apiKey: 'My API Key',
+  senderID: 'My Sender ID',
   baseURL: process.env['TEST_API_BASE_URL'] ?? 'http://127.0.0.1:4010',
 });
 

@@ -1,6 +1,6 @@
 import fs from 'fs';
-import type { ResponseLike } from 'sent-dm/internal/to-file';
-import { toFile } from 'sent-dm/core/uploads';
+import type { ResponseLike } from 'sentdm/internal/to-file';
+import { toFile } from 'sentdm/core/uploads';
 import { File } from 'node:buffer';
 
 class MyClass {
@@ -97,7 +97,7 @@ describe('missing File error message', () => {
   });
 
   test('is thrown', async () => {
-    const uploads = await import('sent-dm/core/uploads');
+    const uploads = await import('sentdm/core/uploads');
     await expect(
       uploads.toFile(mockResponse({ url: 'https://example.com/my/audio.mp3' })),
     ).rejects.toMatchInlineSnapshot(

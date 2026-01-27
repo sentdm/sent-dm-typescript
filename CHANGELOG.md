@@ -2,7 +2,7 @@
 
 ## 0.1.0 (2026-01-27)
 
-Full Changelog: [v0.0.2...v0.1.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.0.2...v0.1.0)
+Full Changelog: [v0.0.1...v0.1.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.0.1...v0.1.0)
 
 ### Features
 
@@ -19,14 +19,10 @@ Full Changelog: [v0.0.2...v0.1.0](https://github.com/sentdm/sent-dm-typescript/c
 
 ### Chores
 
+* sync repo ([4bb2575](https://github.com/sentdm/sent-dm-typescript/commit/4bb2575a638990cbe3c857bd2fee94a72e310f7e))
+* update SDK settings ([5054c78](https://github.com/sentdm/sent-dm-typescript/commit/5054c78cb36d45963afe72c8c1e5e714a71ddf29))
+* update SDK settings ([bc49029](https://github.com/sentdm/sent-dm-typescript/commit/bc49029b92788f378dfaf385fdf73342e941944d))
 * update SDK settings ([7e0f5e5](https://github.com/sentdm/sent-dm-typescript/commit/7e0f5e54dfef8fbb28e7621da1a1ae33722a0252))
 * update SDK settings ([a380082](https://github.com/sentdm/sent-dm-typescript/commit/a3800828e740feb6530b127940a9fd4180b19b20))
 * update SDK settings ([71675f9](https://github.com/sentdm/sent-dm-typescript/commit/71675f9ee4d99832f05aa3ed43866e5886d05505))
-
-## 0.0.2 (2026-01-26)
-
-Full Changelog: [v0.0.1...v0.0.2](https://github.com/sentdm/sent-dm-typescript/compare/v0.0.1...v0.0.2)
-
-### Chores
-
 * update SDK settings ([fa959a9](https://github.com/sentdm/sent-dm-typescript/commit/fa959a9e670e0857672241f40a68f23d37c2c405))

@@ -30,7 +30,6 @@ const client = new SentDm({
 await client.messages.sendToPhone({
   phoneNumber: '+1234567890',
   templateId: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
-  templateVariables: { name: 'John Doe', order_id: '12345' },
 });
 ```
 
@@ -50,7 +49,6 @@ const client = new SentDm({
 const params: SentDm.MessageSendToPhoneParams = {
   phoneNumber: '+1234567890',
   templateId: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
-  templateVariables: { name: 'John Doe', order_id: '12345' },
 };
 await client.messages.sendToPhone(params);
 ```
@@ -66,11 +64,7 @@ a subclass of `APIError` will be thrown:
 <!-- prettier-ignore -->
 ```ts
 const response = await client.messages
-  .sendToPhone({
-    phoneNumber: '+1234567890',
-    templateId: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
-    templateVariables: { name: 'John Doe', order_id: '12345' },
-  })
+  .sendToPhone({ phoneNumber: '+1234567890', templateId: '7ba7b820-9dad-11d1-80b4-00c04fd430c8' })
   .catch(async (err) => {
     if (err instanceof SentDm.APIError) {
       console.log(err.status); // 400
@@ -111,11 +105,7 @@ const client = new SentDm({
 });
 
 // Or, configure per-request:
-await client.messages.sendToPhone({
-  phoneNumber: '+1234567890',
-  templateId: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
-  templateVariables: { name: 'John Doe', order_id: '12345' },
-}, {
+await client.messages.sendToPhone({ phoneNumber: '+1234567890', templateId: '7ba7b820-9dad-11d1-80b4-00c04fd430c8' }, {
   maxRetries: 5,
 });
 ```
@@ -132,11 +122,7 @@ const client = new SentDm({
 });
 
 // Override per-request:
-await client.messages.sendToPhone({
-  phoneNumber: '+1234567890',
-  templateId: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
-  templateVariables: { name: 'John Doe', order_id: '12345' },
-}, {
+await client.messages.sendToPhone({ phoneNumber: '+1234567890', templateId: '7ba7b820-9dad-11d1-80b4-00c04fd430c8' }, {
   timeout: 5 * 1000,
 });
 ```
@@ -160,21 +146,13 @@ Unlike `.asResponse()` this method consumes the body, returning once it is parse
 const client = new SentDm();
 
 const response = await client.messages
-  .sendToPhone({
-    phoneNumber: '+1234567890',
-    templateId: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
-    templateVariables: { name: 'John Doe', order_id: '12345' },
-  })
+  .sendToPhone({ phoneNumber: '+1234567890', templateId: '7ba7b820-9dad-11d1-80b4-00c04fd430c8' })
   .asResponse();
 console.log(response.headers.get('X-My-Header'));
 console.log(response.statusText); // access the underlying Response object
 
 const { data: result, response: raw } = await client.messages
-  .sendToPhone({
-    phoneNumber: '+1234567890',
-    templateId: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
-    templateVariables: { name: 'John Doe', order_id: '12345' },
-  })
+  .sendToPhone({ phoneNumber: '+1234567890', templateId: '7ba7b820-9dad-11d1-80b4-00c04fd430c8' })
   .withResponse();
 console.log(raw.headers.get('X-My-Header'));
 console.log(result);

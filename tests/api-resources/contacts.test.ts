@@ -1,10 +1,10 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-import SentDm from 'sent-dm';
+import SentDm from 'sentdm';
 
 const client = new SentDm({
-  adminAuthScheme: 'My Admin Auth Scheme',
-  customerAuthScheme: 'My Customer Auth Scheme',
+  apiKey: 'My API Key',
+  senderID: 'My Sender ID',
   baseURL: process.env['TEST_API_BASE_URL'] ?? 'http://127.0.0.1:4010',
 });
 
@@ -45,7 +45,7 @@ describe('resource contacts', () => {
 
   // Prism tests are disabled
   test.skip('retrieveID: only required params', async () => {
-    const responsePromise = client.contacts.retrieveID({ id: 'id' });
+    const responsePromise = client.contacts.retrieveID({ id: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e' });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -57,6 +57,6 @@ describe('resource contacts', () => {
 
   // Prism tests are disabled
   test.skip('retrieveID: required and optional params', async () => {
-    const response = await client.contacts.retrieveID({ id: 'id' });
+    const response = await client.contacts.retrieveID({ id: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e' });
   });
 });

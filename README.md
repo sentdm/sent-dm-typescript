@@ -1,6 +1,6 @@
 # Sent Dm TypeScript API Library
 
-[![NPM version](<https://img.shields.io/npm/v/sent-dm.svg?label=npm%20(stable)>)](https://npmjs.org/package/sent-dm) ![npm bundle size](https://img.shields.io/bundlephobia/minzip/sent-dm)
+[![NPM version](<https://img.shields.io/npm/v/sentdm.svg?label=npm%20(stable)>)](https://npmjs.org/package/sentdm) ![npm bundle size](https://img.shields.io/bundlephobia/minzip/sentdm)
 
 This library provides convenient access to the Sent Dm REST API from server-side TypeScript or JavaScript.
 
@@ -11,11 +11,8 @@ It is generated with [Stainless](https://www.stainless.com/).
 ## Installation
 
 ```sh
-npm install git+ssh://git@github.com:sentdm/sent-dm-typescript.git
+npm install sentdm
 ```
-
-> [!NOTE]
-> Once this package is [published to npm](https://www.stainless.com/docs/guides/publish), this will become: `npm install sent-dm`
 
 ## Usage
 
@@ -23,13 +20,18 @@ The full API of this library can be found in [api.md](api.md).
 
 <!-- prettier-ignore -->
 ```js
-import SentDm from 'sent-dm';
+import SentDm from 'sentdm';
 
 const client = new SentDm({
-  customerAuthScheme: process.env['SENT_DM_CUSTOMER_AUTH_SCHEME'], // This is the default and can be omitted
+  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted
+  senderID: process.env['SENT_DM_SENDER_ID'], // This is the default and can be omitted
 });
 
-await client.templates.delete('REPLACE_ME');
+await client.messages.sendToPhone({
+  phoneNumber: '+1234567890',
+  templateId: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
+  templateVariables: { name: 'John Doe', order_id: '12345' },
+});
 ```
 
 ### Request & Response types
@@ -38,13 +40,19 @@ This library includes TypeScript definitions for all request params and response
 
 <!-- prettier-ignore -->
 ```ts
-import SentDm from 'sent-dm';
+import SentDm from 'sentdm';
 
 const client = new SentDm({
-  customerAuthScheme: process.env['SENT_DM_CUSTOMER_AUTH_SCHEME'], // This is the default and can be omitted
+  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted
+  senderID: process.env['SENT_DM_SENDER_ID'], // This is the default and can be omitted
 });
 
-await client.templates.delete('REPLACE_ME');
+const params: SentDm.MessageSendToPhoneParams = {
+  phoneNumber: '+1234567890',
+  templateId: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
+  templateVariables: { name: 'John Doe', order_id: '12345' },
+};
+await client.messages.sendToPhone(params);
 ```
 
 Documentation for each method, request param, and response field are available in docstrings and will appear on hover in most modern editors.
@@ -57,15 +65,21 @@ a subclass of `APIError` will be thrown:
 
 <!-- prettier-ignore -->
 ```ts
-const response = await client.templates.delete('REPLACE_ME').catch(async (err) => {
-  if (err instanceof SentDm.APIError) {
-    console.log(err.status); // 400
-    console.log(err.name); // BadRequestError
-    console.log(err.headers); // {server: 'nginx', ...}
-  } else {
-    throw err;
-  }
-});
+const response = await client.messages
+  .sendToPhone({
+    phoneNumber: '+1234567890',
+    templateId: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
+    templateVariables: { name: 'John Doe', order_id: '12345' },
+  })
+  .catch(async (err) => {
+    if (err instanceof SentDm.APIError) {
+      console.log(err.status); // 400
+      console.log(err.name); // BadRequestError
+      console.log(err.headers); // {server: 'nginx', ...}
+    } else {
+      throw err;
+    }
+  });
 ```
 
 Error codes are as follows:
@@ -97,7 +111,11 @@ const client = new SentDm({
 });
 
 // Or, configure per-request:
-await client.templates.delete('REPLACE_ME', {
+await client.messages.sendToPhone({
+  phoneNumber: '+1234567890',
+  templateId: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
+  templateVariables: { name: 'John Doe', order_id: '12345' },
+}, {
   maxRetries: 5,
 });
 ```
@@ -114,7 +132,11 @@ const client = new SentDm({
 });
 
 // Override per-request:
-await client.templates.delete('REPLACE_ME', {
+await client.messages.sendToPhone({
+  phoneNumber: '+1234567890',
+  templateId: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
+  templateVariables: { name: 'John Doe', order_id: '12345' },
+}, {
   timeout: 5 * 1000,
 });
 ```
@@ -137,11 +159,23 @@ Unlike `.asResponse()` this method consumes the body, returning once it is parse
 ```ts
 const client = new SentDm();
 
-const response = await client.templates.delete('REPLACE_ME').asResponse();
+const response = await client.messages
+  .sendToPhone({
+    phoneNumber: '+1234567890',
+    templateId: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
+    templateVariables: { name: 'John Doe', order_id: '12345' },
+  })
+  .asResponse();
 console.log(response.headers.get('X-My-Header'));
 console.log(response.statusText); // access the underlying Response object
 
-const { data: result, response: raw } = await client.templates.delete('REPLACE_ME').withResponse();
+const { data: result, response: raw } = await client.messages
+  .sendToPhone({
+    phoneNumber: '+1234567890',
+    templateId: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
+    templateVariables: { name: 'John Doe', order_id: '12345' },
+  })
+  .withResponse();
 console.log(raw.headers.get('X-My-Header'));
 console.log(result);
 ```
@@ -160,7 +194,7 @@ The log level can be configured in two ways:
 2. Using the `logLevel` client option (overrides the environment variable if set)
 
 ```ts
-import SentDm from 'sent-dm';
+import SentDm from 'sentdm';
 
 const client = new SentDm({
   logLevel: 'debug', // Show all log messages
@@ -188,7 +222,7 @@ When providing a custom logger, the `logLevel` option still controls which messa
 below the configured level will not be sent to your logger.
 
 ```ts
-import SentDm from 'sent-dm';
+import SentDm from 'sentdm';
 import pino from 'pino';
 
 const logger = pino();
@@ -223,7 +257,7 @@ parameter. This library doesn't validate at runtime that the request matches the
 send will be sent as-is.
 
 ```ts
-client.templates.delete({
+client.messages.sendToPhone({
   // ...
   // @ts-expect-error baz is not yet public
   baz: 'undocumented option',
@@ -257,7 +291,7 @@ globalThis.fetch = fetch;
 Or pass it to the client:
 
 ```ts
-import SentDm from 'sent-dm';
+import SentDm from 'sentdm';
 import fetch from 'my-fetch';
 
 const client = new SentDm({ fetch });
@@ -268,7 +302,7 @@ const client = new SentDm({ fetch });
 If you want to set custom `fetch` options without overriding the `fetch` function, you can provide a `fetchOptions` object when instantiating the client or making a request. (Request-specific options override client options.)
 
 ```ts
-import SentDm from 'sent-dm';
+import SentDm from 'sentdm';
 
 const client = new SentDm({
   fetchOptions: {
@@ -285,7 +319,7 @@ options to requests:
 <img src="https://raw.githubusercontent.com/stainless-api/sdk-assets/refs/heads/main/node.svg" align="top" width="18" height="21"> **Node** <sup>[[docs](https://github.com/nodejs/undici/blob/main/docs/docs/api/ProxyAgent.md#example---proxyagent-with-fetch)]</sup>
 
 ```ts
-import SentDm from 'sent-dm';
+import SentDm from 'sentdm';
 import * as undici from 'undici';
 
 const proxyAgent = new undici.ProxyAgent('http://localhost:8888');
@@ -299,7 +333,7 @@ const client = new SentDm({
 <img src="https://raw.githubusercontent.com/stainless-api/sdk-assets/refs/heads/main/bun.svg" align="top" width="18" height="21"> **Bun** <sup>[[docs](https://bun.sh/guides/http/proxy)]</sup>
 
 ```ts
-import SentDm from 'sent-dm';
+import SentDm from 'sentdm';
 
 const client = new SentDm({
   fetchOptions: {
@@ -311,7 +345,7 @@ const client = new SentDm({
 <img src="https://raw.githubusercontent.com/stainless-api/sdk-assets/refs/heads/main/deno.svg" align="top" width="18" height="21"> **Deno** <sup>[[docs](https://docs.deno.com/api/deno/~/Deno.createHttpClient)]</sup>
 
 ```ts
-import SentDm from 'npm:sent-dm';
+import SentDm from 'npm:sentdm';
 
 const httpClient = Deno.createHttpClient({ proxy: { url: 'http://localhost:8888' } });
 const client = new SentDm({

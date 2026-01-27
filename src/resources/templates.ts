@@ -17,12 +17,12 @@ export class Templates extends APIResource {
    *
    * @example
    * ```ts
-   * const templateResponse = await client.templates.create({
+   * const templateResponseV2 = await client.templates.create({
    *   definition: { body: {} },
    * });
    * ```
    */
-  create(body: TemplateCreateParams, options?: RequestOptions): APIPromise<TemplateResponse> {
+  create(body: TemplateCreateParams, options?: RequestOptions): APIPromise<TemplateResponseV2> {
     return this._client.post('/v2/templates', { body, ...options });
   }
 
@@ -34,12 +34,12 @@ export class Templates extends APIResource {
    *
    * @example
    * ```ts
-   * const templateResponse = await client.templates.retrieve(
+   * const templateResponseV2 = await client.templates.retrieve(
    *   '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
    * );
    * ```
    */
-  retrieve(id: string, options?: RequestOptions): APIPromise<TemplateResponse> {
+  retrieve(id: string, options?: RequestOptions): APIPromise<TemplateResponseV2> {
     return this._client.get(path`/v2/templates/${id}`, options);
   }
 
@@ -269,7 +269,7 @@ export namespace TemplateDefinition {
  * Represents a message template with comprehensive metadata including definition
  * structure
  */
-export interface TemplateResponse {
+export interface TemplateResponseV2 {
   /**
    * The unique identifier of the template
    */
@@ -353,7 +353,7 @@ export namespace TemplateVariable {
 }
 
 export interface TemplateListResponse {
-  items?: Array<TemplateResponse>;
+  items?: Array<TemplateResponseV2>;
 
   page?: number;
 
@@ -421,7 +421,7 @@ export declare namespace Templates {
   export {
     type TemplateBodyContent as TemplateBodyContent,
     type TemplateDefinition as TemplateDefinition,
-    type TemplateResponse as TemplateResponse,
+    type TemplateResponseV2 as TemplateResponseV2,
     type TemplateVariable as TemplateVariable,
     type TemplateListResponse as TemplateListResponse,
     type TemplateCreateParams as TemplateCreateParams,

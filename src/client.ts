@@ -17,13 +17,15 @@ import * as Uploads from './core/uploads';
 import * as API from './resources/index';
 import { APIPromise } from './core/api-promise';
 import {
-  ContactListItem,
+  ContactListItemV2,
   ContactListParams,
   ContactListResponse,
   ContactRetrieveByPhoneParams,
   ContactRetrieveIDParams,
   Contacts,
 } from './resources/contacts';
+import { Health } from './resources/health';
+import { Healthcheck } from './resources/healthcheck';
 import {
   MessageRetrieveResponse,
   MessageSendQuickMessageParams,
@@ -42,16 +44,20 @@ import {
   TemplateDefinition,
   TemplateListParams,
   TemplateListResponse,
-  TemplateResponse,
+  TemplateResponseV2,
   TemplateVariable,
   Templates,
 } from './resources/templates';
 import {
-  OrganizationListResponse,
-  OrganizationRetrieveProfilesResponse,
+  OrganizationListAuthenticatedUserOrganizationsResponse,
   Organizations,
-  ProfileSummary,
 } from './resources/organizations/organizations';
+import {
+  ProfileListTemplatesParams,
+  ProfileListTemplatesResponse,
+  ProfileSendMessageParams,
+  Profiles,
+} from './resources/profiles/profiles';
 import { type Fetch } from './internal/builtin-types';
 import { HeadersLike, NullableHeaders, buildHeaders } from './internal/headers';
 import { FinalRequestOptions, RequestOptions } from './internal/request-options';
@@ -67,14 +73,14 @@ import { isEmptyObj } from './internal/utils/values';
 
 export interface ClientOptions {
   /**
-   * Defaults to process.env['SENT_DM_API_KEY'].
+   * Customer API key for authentication
    */
   apiKey?: string | undefined;
 
   /**
-   * Defaults to process.env['SENT_DM_SENDER_ID'].
+   * Customer sender ID (GUID) identifying the customer account
    */
-  senderID?: string | undefined;
+  customerSenderID?: string | undefined;
 
   /**
    * Override the default base URL for the API, e.g., "https://api.example.com/v2/"
@@ -150,7 +156,7 @@ export interface ClientOptions {
  */
 export class SentDm {
   apiKey: string;
-  senderID: string;
+  customerSenderID: string;
 
   baseURL: string;
   maxRetries: number;
@@ -168,8 +174,8 @@ export class SentDm {
    * API Client for interfacing with the Sent Dm API.
    *
    * @param {string | undefined} [opts.apiKey=process.env['SENT_DM_API_KEY'] ?? undefined]
-   * @param {string | undefined} [opts.senderID=process.env['SENT_DM_SENDER_ID'] ?? undefined]
-   * @param {string} [opts.baseURL=process.env['SENT_DM_BASE_URL'] ?? https://api.sent.dm] - Override the default base URL for the API.
+   * @param {string | undefined} [opts.customerSenderID=process.env['SENT_DM_CUSTOMER_SENDER_ID'] ?? undefined]
+   * @param {string} [opts.baseURL=process.env['SENT_DM_BASE_URL'] ?? https://api-dev.sent.dm] - Override the default base URL for the API.
    * @param {number} [opts.timeout=1 minute] - The maximum amount of time (in milliseconds) the client will wait for a response before timing out.
    * @param {MergedRequestInit} [opts.fetchOptions] - Additional `RequestInit` options to be passed to `fetch` calls.
    * @param {Fetch} [opts.fetch] - Specify a custom `fetch` function implementation.
@@ -180,7 +186,7 @@ export class SentDm {
   constructor({
     baseURL = readEnv('SENT_DM_BASE_URL'),
     apiKey = readEnv('SENT_DM_API_KEY'),
-    senderID = readEnv('SENT_DM_SENDER_ID'),
+    customerSenderID = readEnv('SENT_DM_CUSTOMER_SENDER_ID'),
     ...opts
   }: ClientOptions = {}) {
     if (apiKey === undefined) {
@@ -188,17 +194,17 @@ export class SentDm {
         "The SENT_DM_API_KEY environment variable is missing or empty; either provide it, or instantiate the SentDm client with an apiKey option, like new SentDm({ apiKey: 'My API Key' }).",
       );
     }
-    if (senderID === undefined) {
+    if (customerSenderID === undefined) {
       throw new Errors.SentDmError(
-        "The SENT_DM_SENDER_ID environment variable is missing or empty; either provide it, or instantiate the SentDm client with an senderID option, like new SentDm({ senderID: 'My Sender ID' }).",
+        "The SENT_DM_CUSTOMER_SENDER_ID environment variable is missing or empty; either provide it, or instantiate the SentDm client with an customerSenderID option, like new SentDm({ customerSenderID: 'My Customer Sender ID' }).",
       );
     }
 
     const options: ClientOptions = {
       apiKey,
-      senderID,
+      customerSenderID,
       ...opts,
-      baseURL: baseURL || `https://api.sent.dm`,
+      baseURL: baseURL || `https://api-dev.sent.dm`,
     };
 
     this.baseURL = options.baseURL!;
@@ -219,7 +225,7 @@ export class SentDm {
     this._options = options;
 
     this.apiKey = apiKey;
-    this.senderID = senderID;
+    this.customerSenderID = customerSenderID;
   }
 
   /**
@@ -236,7 +242,7 @@ export class SentDm {
       fetch: this.fetch,
       fetchOptions: this.fetchOptions,
       apiKey: this.apiKey,
-      senderID: this.senderID,
+      customerSenderID: this.customerSenderID,
       ...options,
     });
     return client;
@@ -246,7 +252,7 @@ export class SentDm {
    * Check whether the base URL is set to its default.
    */
   #baseURLOverridden(): boolean {
-    return this.baseURL !== 'https://api.sent.dm';
+    return this.baseURL !== 'https://api-dev.sent.dm';
   }
 
   protected defaultQuery(): Record<string, string | undefined> | undefined {
@@ -255,6 +261,18 @@ export class SentDm {
 
   protected validateHeaders({ values, nulls }: NullableHeaders) {
     return;
+  }
+
+  protected async authHeaders(opts: FinalRequestOptions): Promise<NullableHeaders | undefined> {
+    return buildHeaders([await this.customerAPIKeyAuth(opts), await this.customerSenderIDAuth(opts)]);
+  }
+
+  protected async customerAPIKeyAuth(opts: FinalRequestOptions): Promise<NullableHeaders | undefined> {
+    return buildHeaders([{ 'x-api-key': this.apiKey }]);
+  }
+
+  protected async customerSenderIDAuth(opts: FinalRequestOptions): Promise<NullableHeaders | undefined> {
+    return buildHeaders([{ 'x-sender-id': this.customerSenderID }]);
   }
 
   /**
@@ -694,6 +712,7 @@ export class SentDm {
         ...(options.timeout ? { 'X-Stainless-Timeout': String(Math.trunc(options.timeout / 1000)) } : {}),
         ...getPlatformHeaders(),
       },
+      await this.authHeaders(options),
       this._options.defaultHeaders,
       bodyHeaders,
       options.headers,
@@ -760,27 +779,49 @@ export class SentDm {
 
   static toFile = Uploads.toFile;
 
+  profiles: API.Profiles = new API.Profiles(this);
+  organizations: API.Organizations = new API.Organizations(this);
+  healthcheck: API.Healthcheck = new API.Healthcheck(this);
+  health: API.Health = new API.Health(this);
   templates: API.Templates = new API.Templates(this);
   contacts: API.Contacts = new API.Contacts(this);
   messages: API.Messages = new API.Messages(this);
   numberLookup: API.NumberLookup = new API.NumberLookup(this);
-  organizations: API.Organizations = new API.Organizations(this);
 }
 
+SentDm.Profiles = Profiles;
+SentDm.Organizations = Organizations;
+SentDm.Healthcheck = Healthcheck;
+SentDm.Health = Health;
 SentDm.Templates = Templates;
 SentDm.Contacts = Contacts;
 SentDm.Messages = Messages;
 SentDm.NumberLookup = NumberLookup;
-SentDm.Organizations = Organizations;
 
 export declare namespace SentDm {
   export type RequestOptions = Opts.RequestOptions;
 
   export {
+    Profiles as Profiles,
+    type ProfileListTemplatesResponse as ProfileListTemplatesResponse,
+    type ProfileListTemplatesParams as ProfileListTemplatesParams,
+    type ProfileSendMessageParams as ProfileSendMessageParams,
+  };
+
+  export {
+    Organizations as Organizations,
+    type OrganizationListAuthenticatedUserOrganizationsResponse as OrganizationListAuthenticatedUserOrganizationsResponse,
+  };
+
+  export { Healthcheck as Healthcheck };
+
+  export { Health as Health };
+
+  export {
     Templates as Templates,
     type TemplateBodyContent as TemplateBodyContent,
     type TemplateDefinition as TemplateDefinition,
-    type TemplateResponse as TemplateResponse,
+    type TemplateResponseV2 as TemplateResponseV2,
     type TemplateVariable as TemplateVariable,
     type TemplateListResponse as TemplateListResponse,
     type TemplateCreateParams as TemplateCreateParams,
@@ -789,7 +830,7 @@ export declare namespace SentDm {
 
   export {
     Contacts as Contacts,
-    type ContactListItem as ContactListItem,
+    type ContactListItemV2 as ContactListItemV2,
     type ContactListResponse as ContactListResponse,
     type ContactListParams as ContactListParams,
     type ContactRetrieveByPhoneParams as ContactRetrieveByPhoneParams,
@@ -808,12 +849,5 @@ export declare namespace SentDm {
     NumberLookup as NumberLookup,
     type NumberLookupRetrieveResponse as NumberLookupRetrieveResponse,
     type NumberLookupRetrieveParams as NumberLookupRetrieveParams,
-  };
-
-  export {
-    Organizations as Organizations,
-    type ProfileSummary as ProfileSummary,
-    type OrganizationListResponse as OrganizationListResponse,
-    type OrganizationRetrieveProfilesResponse as OrganizationRetrieveProfilesResponse,
   };
 }

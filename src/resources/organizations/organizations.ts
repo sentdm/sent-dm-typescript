@@ -1,23 +1,29 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../../core/resource';
-import * as OrganizationsAPI from './organizations';
 import * as UsersAPI from './users';
 import {
-  CustomerUser,
+  UserCreateOrInviteParams,
+  UserDeleteByCustomerParams,
   UserDeleteParams,
   UserInviteParams,
+  UserListByCustomerParams,
+  UserListByCustomerResponse,
   UserListParams,
-  UserListResponse,
+  UserRetrieveByCustomerParams,
+  UserRetrieveInvitationDetailsParams,
   UserRetrieveParams,
+  UserUpdateRoleByCustomerParams,
   UserUpdateRoleParams,
   Users,
 } from './users';
+import * as ProfilesAPI from './profiles/profiles';
+import { ProfileListResponse, ProfileSummary, Profiles } from './profiles/profiles';
 import { APIPromise } from '../../core/api-promise';
 import { RequestOptions } from '../../internal/request-options';
-import { path } from '../../internal/utils/path';
 
 export class Organizations extends APIResource {
+  profiles: ProfilesAPI.Profiles = new ProfilesAPI.Profiles(this._client);
   users: UsersAPI.Users = new UsersAPI.Users(this._client);
 
   /**
@@ -27,52 +33,22 @@ export class Organizations extends APIResource {
    *
    * @example
    * ```ts
-   * const organizations = await client.organizations.list();
+   * const response =
+   *   await client.organizations.listAuthenticatedUserOrganizations();
    * ```
    */
-  list(options?: RequestOptions): APIPromise<OrganizationListResponse> {
+  listAuthenticatedUserOrganizations(
+    options?: RequestOptions,
+  ): APIPromise<OrganizationListAuthenticatedUserOrganizationsResponse> {
     return this._client.get('/v2/organizations', options);
   }
-
-  /**
-   * Retrieves all sender profiles within an organization that the authenticated user
-   * has access to. Returns filtered list based on user's permissions.
-   *
-   * @example
-   * ```ts
-   * const response =
-   *   await client.organizations.retrieveProfiles(
-   *     '6ba7b810-9dad-11d1-80b4-00c04fd430c8',
-   *   );
-   * ```
-   */
-  retrieveProfiles(
-    orgID: string,
-    options?: RequestOptions,
-  ): APIPromise<OrganizationRetrieveProfilesResponse> {
-    return this._client.get(path`/v2/organizations/${orgID}/profiles`, options);
-  }
 }
 
-export interface ProfileSummary {
-  id?: string;
-
-  createdAt?: string;
-
-  description?: string | null;
-
-  icon?: string | null;
-
-  name?: string;
-
-  shortName?: string | null;
+export interface OrganizationListAuthenticatedUserOrganizationsResponse {
+  organizations?: Array<OrganizationListAuthenticatedUserOrganizationsResponse.Organization>;
 }
 
-export interface OrganizationListResponse {
-  organizations?: Array<OrganizationListResponse.Organization>;
-}
-
-export namespace OrganizationListResponse {
+export namespace OrganizationListAuthenticatedUserOrganizationsResponse {
   export interface Organization {
     id?: string;
 
@@ -84,33 +60,35 @@ export namespace OrganizationListResponse {
 
     name?: string;
 
-    profiles?: Array<OrganizationsAPI.ProfileSummary>;
+    profiles?: Array<ProfilesAPI.ProfileSummary>;
   }
 }
 
-export interface OrganizationRetrieveProfilesResponse {
-  organizationId?: string;
-
-  profiles?: Array<ProfileSummary>;
-}
-
+Organizations.Profiles = Profiles;
 Organizations.Users = Users;
 
 export declare namespace Organizations {
+  export { type OrganizationListAuthenticatedUserOrganizationsResponse as OrganizationListAuthenticatedUserOrganizationsResponse };
+
   export {
+    Profiles as Profiles,
     type ProfileSummary as ProfileSummary,
-    type OrganizationListResponse as OrganizationListResponse,
-    type OrganizationRetrieveProfilesResponse as OrganizationRetrieveProfilesResponse,
+    type ProfileListResponse as ProfileListResponse,
   };
 
   export {
     Users as Users,
-    type CustomerUser as CustomerUser,
-    type UserListResponse as UserListResponse,
+    type UserListByCustomerResponse as UserListByCustomerResponse,
     type UserRetrieveParams as UserRetrieveParams,
     type UserListParams as UserListParams,
     type UserDeleteParams as UserDeleteParams,
+    type UserCreateOrInviteParams as UserCreateOrInviteParams,
+    type UserDeleteByCustomerParams as UserDeleteByCustomerParams,
     type UserInviteParams as UserInviteParams,
+    type UserListByCustomerParams as UserListByCustomerParams,
+    type UserRetrieveByCustomerParams as UserRetrieveByCustomerParams,
+    type UserRetrieveInvitationDetailsParams as UserRetrieveInvitationDetailsParams,
     type UserUpdateRoleParams as UserUpdateRoleParams,
+    type UserUpdateRoleByCustomerParams as UserUpdateRoleByCustomerParams,
   };
 }

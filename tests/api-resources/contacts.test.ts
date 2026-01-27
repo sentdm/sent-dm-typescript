@@ -1,10 +1,10 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-import SentDm from 'sentdm';
+import SentDm from 'sent-dm';
 
 const client = new SentDm({
   apiKey: 'My API Key',
-  senderID: 'My Sender ID',
+  customerSenderID: 'My Customer Sender ID',
   baseURL: process.env['TEST_API_BASE_URL'] ?? 'http://127.0.0.1:4010',
 });
 

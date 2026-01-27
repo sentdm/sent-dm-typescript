@@ -2,12 +2,14 @@
 
 export {
   Contacts,
-  type ContactListItem,
+  type ContactListItemV2,
   type ContactListResponse,
   type ContactListParams,
   type ContactRetrieveByPhoneParams,
   type ContactRetrieveIDParams,
 } from './contacts';
+export { Health } from './health';
+export { Healthcheck } from './healthcheck';
 export {
   Messages,
   type MessageRetrieveResponse,
@@ -22,15 +24,19 @@ export {
 } from './number-lookup';
 export {
   Organizations,
-  type ProfileSummary,
-  type OrganizationListResponse,
-  type OrganizationRetrieveProfilesResponse,
+  type OrganizationListAuthenticatedUserOrganizationsResponse,
 } from './organizations/organizations';
+export {
+  Profiles,
+  type ProfileListTemplatesResponse,
+  type ProfileListTemplatesParams,
+  type ProfileSendMessageParams,
+} from './profiles/profiles';
 export {
   Templates,
   type TemplateBodyContent,
   type TemplateDefinition,
-  type TemplateResponse,
+  type TemplateResponseV2,
   type TemplateVariable,
   type TemplateListResponse,
   type TemplateCreateParams,

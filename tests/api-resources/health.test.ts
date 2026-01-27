@@ -8,10 +8,10 @@ const client = new SentDm({
   baseURL: process.env['TEST_API_BASE_URL'] ?? 'http://127.0.0.1:4010',
 });
 
-describe('resource numberLookup', () => {
+describe('resource health', () => {
   // Prism tests are disabled
-  test.skip('retrieve: only required params', async () => {
-    const responsePromise = client.numberLookup.retrieve({ phoneNumber: 'phoneNumber' });
+  test.skip('checkLive', async () => {
+    const responsePromise = client.health.checkLive();
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -22,7 +22,14 @@ describe('resource numberLookup', () => {
   });
 
   // Prism tests are disabled
-  test.skip('retrieve: required and optional params', async () => {
-    const response = await client.numberLookup.retrieve({ phoneNumber: 'phoneNumber' });
+  test.skip('checkReady', async () => {
+    const responsePromise = client.health.checkReady();
+    const rawResponse = await responsePromise.asResponse();
+    expect(rawResponse).toBeInstanceOf(Response);
+    const response = await responsePromise;
+    expect(response).not.toBeInstanceOf(Response);
+    const dataAndResponse = await responsePromise.withResponse();
+    expect(dataAndResponse.data).toBe(response);
+    expect(dataAndResponse.response).toBe(rawResponse);
   });
 });

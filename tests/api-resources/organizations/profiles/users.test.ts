@@ -8,10 +8,16 @@ const client = new SentDm({
   baseURL: process.env['TEST_API_BASE_URL'] ?? 'http://127.0.0.1:4010',
 });
 
-describe('resource numberLookup', () => {
+describe('resource users', () => {
   // Prism tests are disabled
-  test.skip('retrieve: only required params', async () => {
-    const responsePromise = client.numberLookup.retrieve({ phoneNumber: 'phoneNumber' });
+  test.skip('retrieveInvitationDetails: only required params', async () => {
+    const responsePromise = client.organizations.profiles.users.retrieveInvitationDetails(
+      'invitation-token-example',
+      {
+        customerId: '550e8400-e29b-41d4-a716-446655440000',
+        profileId: '660e8400-e29b-41d4-a716-446655440000',
+      },
+    );
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -22,7 +28,13 @@ describe('resource numberLookup', () => {
   });
 
   // Prism tests are disabled
-  test.skip('retrieve: required and optional params', async () => {
-    const response = await client.numberLookup.retrieve({ phoneNumber: 'phoneNumber' });
+  test.skip('retrieveInvitationDetails: required and optional params', async () => {
+    const response = await client.organizations.profiles.users.retrieveInvitationDetails(
+      'invitation-token-example',
+      {
+        customerId: '550e8400-e29b-41d4-a716-446655440000',
+        profileId: '660e8400-e29b-41d4-a716-446655440000',
+      },
+    );
   });
 });

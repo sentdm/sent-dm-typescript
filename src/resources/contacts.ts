@@ -22,7 +22,7 @@ export class Contacts extends APIResource {
   retrieveByPhone(
     query: ContactRetrieveByPhoneParams,
     options?: RequestOptions,
-  ): APIPromise<ContactListItem> {
+  ): APIPromise<ContactListItemV2> {
     return this._client.get('/v2/contacts/phone', { query, ...options });
   }
 
@@ -31,7 +31,7 @@ export class Contacts extends APIResource {
    * customer. The customer ID is extracted from the authentication token. Returns
    * detailed contact information including phone number and creation timestamp.
    */
-  retrieveID(query: ContactRetrieveIDParams, options?: RequestOptions): APIPromise<ContactListItem> {
+  retrieveID(query: ContactRetrieveIDParams, options?: RequestOptions): APIPromise<ContactListItemV2> {
     return this._client.get('/v2/contacts/id', { query, ...options });
   }
 }
@@ -39,7 +39,7 @@ export class Contacts extends APIResource {
 /**
  * Represents a contact in the customer's contact list
  */
-export interface ContactListItem {
+export interface ContactListItemV2 {
   /**
    * The unique identifier of the contact
    */
@@ -94,7 +94,7 @@ export interface ContactListItem {
 }
 
 export interface ContactListResponse {
-  items?: Array<ContactListItem>;
+  items?: Array<ContactListItemV2>;
 
   page?: number;
 
@@ -133,7 +133,7 @@ export interface ContactRetrieveIDParams {
 
 export declare namespace Contacts {
   export {
-    type ContactListItem as ContactListItem,
+    type ContactListItemV2 as ContactListItemV2,
     type ContactListResponse as ContactListResponse,
     type ContactListParams as ContactListParams,
     type ContactRetrieveByPhoneParams as ContactRetrieveByPhoneParams,

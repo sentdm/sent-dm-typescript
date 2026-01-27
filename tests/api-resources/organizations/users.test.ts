@@ -10,57 +10,6 @@ const client = new SentDm({
 
 describe('resource users', () => {
   // Prism tests are disabled
-  test.skip('retrieve: only required params', async () => {
-    const responsePromise = client.organizations.users.retrieve('userId', { orgId: 'orgId' });
-    const rawResponse = await responsePromise.asResponse();
-    expect(rawResponse).toBeInstanceOf(Response);
-    const response = await responsePromise;
-    expect(response).not.toBeInstanceOf(Response);
-    const dataAndResponse = await responsePromise.withResponse();
-    expect(dataAndResponse.data).toBe(response);
-    expect(dataAndResponse.response).toBe(rawResponse);
-  });
-
-  // Prism tests are disabled
-  test.skip('retrieve: required and optional params', async () => {
-    const response = await client.organizations.users.retrieve('userId', { orgId: 'orgId' });
-  });
-
-  // Prism tests are disabled
-  test.skip('list: only required params', async () => {
-    const responsePromise = client.organizations.users.list('orgId', { page: 0, pageSize: 0 });
-    const rawResponse = await responsePromise.asResponse();
-    expect(rawResponse).toBeInstanceOf(Response);
-    const response = await responsePromise;
-    expect(response).not.toBeInstanceOf(Response);
-    const dataAndResponse = await responsePromise.withResponse();
-    expect(dataAndResponse.data).toBe(response);
-    expect(dataAndResponse.response).toBe(rawResponse);
-  });
-
-  // Prism tests are disabled
-  test.skip('list: required and optional params', async () => {
-    const response = await client.organizations.users.list('orgId', { page: 0, pageSize: 0 });
-  });
-
-  // Prism tests are disabled
-  test.skip('delete: only required params', async () => {
-    const responsePromise = client.organizations.users.delete('userId', { orgId: 'orgId' });
-    const rawResponse = await responsePromise.asResponse();
-    expect(rawResponse).toBeInstanceOf(Response);
-    const response = await responsePromise;
-    expect(response).not.toBeInstanceOf(Response);
-    const dataAndResponse = await responsePromise.withResponse();
-    expect(dataAndResponse.data).toBe(response);
-    expect(dataAndResponse.response).toBe(rawResponse);
-  });
-
-  // Prism tests are disabled
-  test.skip('delete: required and optional params', async () => {
-    const response = await client.organizations.users.delete('userId', { orgId: 'orgId' });
-  });
-
-  // Prism tests are disabled
   test.skip('createOrInvite', async () => {
     const responsePromise = client.organizations.users.createOrInvite(
       '550e8400-e29b-41d4-a716-446655440000',
@@ -96,18 +45,6 @@ describe('resource users', () => {
       '650e8400-e29b-41d4-a716-446655440000',
       { customerId: '550e8400-e29b-41d4-a716-446655440000' },
     );
-  });
-
-  // Prism tests are disabled
-  test.skip('invite', async () => {
-    const responsePromise = client.organizations.users.invite('orgId', {});
-    const rawResponse = await responsePromise.asResponse();
-    expect(rawResponse).toBeInstanceOf(Response);
-    const response = await responsePromise;
-    expect(response).not.toBeInstanceOf(Response);
-    const dataAndResponse = await responsePromise.withResponse();
-    expect(dataAndResponse.data).toBe(response);
-    expect(dataAndResponse.response).toBe(rawResponse);
   });
 
   // Prism tests are disabled
@@ -154,47 +91,6 @@ describe('resource users', () => {
       '650e8400-e29b-41d4-a716-446655440000',
       { customerId: '550e8400-e29b-41d4-a716-446655440000' },
     );
-  });
-
-  // Prism tests are disabled
-  test.skip('retrieveInvitationDetails: only required params', async () => {
-    const responsePromise = client.organizations.users.retrieveInvitationDetails('invitation-token-example', {
-      customerId: '550e8400-e29b-41d4-a716-446655440000',
-    });
-    const rawResponse = await responsePromise.asResponse();
-    expect(rawResponse).toBeInstanceOf(Response);
-    const response = await responsePromise;
-    expect(response).not.toBeInstanceOf(Response);
-    const dataAndResponse = await responsePromise.withResponse();
-    expect(dataAndResponse.data).toBe(response);
-    expect(dataAndResponse.response).toBe(rawResponse);
-  });
-
-  // Prism tests are disabled
-  test.skip('retrieveInvitationDetails: required and optional params', async () => {
-    const response = await client.organizations.users.retrieveInvitationDetails('invitation-token-example', {
-      customerId: '550e8400-e29b-41d4-a716-446655440000',
-    });
-  });
-
-  // Prism tests are disabled
-  test.skip('updateRole: only required params', async () => {
-    const responsePromise = client.organizations.users.updateRole('userId', { orgId: 'orgId' });
-    const rawResponse = await responsePromise.asResponse();
-    expect(rawResponse).toBeInstanceOf(Response);
-    const response = await responsePromise;
-    expect(response).not.toBeInstanceOf(Response);
-    const dataAndResponse = await responsePromise.withResponse();
-    expect(dataAndResponse.data).toBe(response);
-    expect(dataAndResponse.response).toBe(rawResponse);
-  });
-
-  // Prism tests are disabled
-  test.skip('updateRole: required and optional params', async () => {
-    const response = await client.organizations.users.updateRole('userId', {
-      orgId: 'orgId',
-      role: 'developer',
-    });
   });
 
   // Prism tests are disabled

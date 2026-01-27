@@ -52,12 +52,7 @@ import {
   OrganizationListAuthenticatedUserOrganizationsResponse,
   Organizations,
 } from './resources/organizations/organizations';
-import {
-  ProfileListTemplatesParams,
-  ProfileListTemplatesResponse,
-  ProfileSendMessageParams,
-  Profiles,
-} from './resources/profiles/profiles';
+import { Profiles } from './resources/profiles/profiles';
 import { type Fetch } from './internal/builtin-types';
 import { HeadersLike, NullableHeaders, buildHeaders } from './internal/headers';
 import { FinalRequestOptions, RequestOptions } from './internal/request-options';
@@ -801,12 +796,7 @@ SentDm.NumberLookup = NumberLookup;
 export declare namespace SentDm {
   export type RequestOptions = Opts.RequestOptions;
 
-  export {
-    Profiles as Profiles,
-    type ProfileListTemplatesResponse as ProfileListTemplatesResponse,
-    type ProfileListTemplatesParams as ProfileListTemplatesParams,
-    type ProfileSendMessageParams as ProfileSendMessageParams,
-  };
+  export { Profiles as Profiles };
 
   export {
     Organizations as Organizations,

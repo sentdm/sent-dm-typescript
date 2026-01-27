@@ -26,12 +26,7 @@ export {
   Organizations,
   type OrganizationListAuthenticatedUserOrganizationsResponse,
 } from './organizations/organizations';
-export {
-  Profiles,
-  type ProfileListTemplatesResponse,
-  type ProfileListTemplatesParams,
-  type ProfileSendMessageParams,
-} from './profiles/profiles';
+export { Profiles } from './profiles/profiles';
 export {
   Templates,
   type TemplateBodyContent,

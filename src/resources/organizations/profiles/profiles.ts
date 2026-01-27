@@ -2,7 +2,7 @@
 
 import { APIResource } from '../../../core/resource';
 import * as UsersAPI from './users';
-import { InvitationDetails, UserRetrieveInvitationDetailsParams, Users } from './users';
+import { Users } from './users';
 import { APIPromise } from '../../../core/api-promise';
 import { RequestOptions } from '../../../internal/request-options';
 import { path } from '../../../internal/utils/path';
@@ -51,9 +51,5 @@ Profiles.Users = Users;
 export declare namespace Profiles {
   export { type ProfileSummary as ProfileSummary, type ProfileListResponse as ProfileListResponse };
 
-  export {
-    Users as Users,
-    type InvitationDetails as InvitationDetails,
-    type UserRetrieveInvitationDetailsParams as UserRetrieveInvitationDetailsParams,
-  };
+  export { Users as Users };
 }

@@ -5,16 +5,10 @@ import * as UsersAPI from './users';
 import {
   UserCreateOrInviteParams,
   UserDeleteByCustomerParams,
-  UserDeleteParams,
-  UserInviteParams,
   UserListByCustomerParams,
   UserListByCustomerResponse,
-  UserListParams,
   UserRetrieveByCustomerParams,
-  UserRetrieveInvitationDetailsParams,
-  UserRetrieveParams,
   UserUpdateRoleByCustomerParams,
-  UserUpdateRoleParams,
   Users,
 } from './users';
 import * as ProfilesAPI from './profiles/profiles';
@@ -79,16 +73,10 @@ export declare namespace Organizations {
   export {
     Users as Users,
     type UserListByCustomerResponse as UserListByCustomerResponse,
-    type UserRetrieveParams as UserRetrieveParams,
-    type UserListParams as UserListParams,
-    type UserDeleteParams as UserDeleteParams,
     type UserCreateOrInviteParams as UserCreateOrInviteParams,
     type UserDeleteByCustomerParams as UserDeleteByCustomerParams,
-    type UserInviteParams as UserInviteParams,
     type UserListByCustomerParams as UserListByCustomerParams,
     type UserRetrieveByCustomerParams as UserRetrieveByCustomerParams,
-    type UserRetrieveInvitationDetailsParams as UserRetrieveInvitationDetailsParams,
-    type UserUpdateRoleParams as UserUpdateRoleParams,
     type UserUpdateRoleByCustomerParams as UserUpdateRoleByCustomerParams,
   };
 }

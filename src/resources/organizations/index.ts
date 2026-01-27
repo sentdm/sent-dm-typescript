@@ -5,15 +5,9 @@ export { Profiles, type ProfileSummary, type ProfileListResponse } from './profi
 export {
   Users,
   type UserListByCustomerResponse,
-  type UserRetrieveParams,
-  type UserListParams,
-  type UserDeleteParams,
   type UserCreateOrInviteParams,
   type UserDeleteByCustomerParams,
-  type UserInviteParams,
   type UserListByCustomerParams,
   type UserRetrieveByCustomerParams,
-  type UserRetrieveInvitationDetailsParams,
-  type UserUpdateRoleParams,
   type UserUpdateRoleByCustomerParams,
 } from './users';

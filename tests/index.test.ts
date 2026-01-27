@@ -354,13 +354,13 @@ describe('instantiate client', () => {
     test('empty env variable', () => {
       process.env['SENT_DM_BASE_URL'] = ''; // empty
       const client = new SentDm({ apiKey: 'My API Key', customerSenderID: 'My Customer Sender ID' });
-      expect(client.baseURL).toEqual('https://api-dev.sent.dm');
+      expect(client.baseURL).toEqual('https://api.sent.dm');
     });
 
     test('blank env variable', () => {
       process.env['SENT_DM_BASE_URL'] = '  '; // blank
       const client = new SentDm({ apiKey: 'My API Key', customerSenderID: 'My Customer Sender ID' });
-      expect(client.baseURL).toEqual('https://api-dev.sent.dm');
+      expect(client.baseURL).toEqual('https://api.sent.dm');
     });
 
     test('in request options', () => {

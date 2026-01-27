@@ -1,7 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../../core/resource';
-import * as ProfilesUsersAPI from '../profiles/users';
 import { APIPromise } from '../../core/api-promise';
 import { buildHeaders } from '../../internal/headers';
 import { RequestOptions } from '../../internal/request-options';
@@ -9,48 +8,21 @@ import { path } from '../../internal/utils/path';
 
 export class Users extends APIResource {
   /**
-   * Invites a user to an organization or sender profile with a specified role.
-   * Requires appropriate permissions. The customerId can be either an organization
-   * ID or a profile ID.
+   * Retrieves a specific user by their ID. Requires appropriate permissions. The
+   * customerId can be either an organization ID or a profile ID.
    *
    * @example
    * ```ts
-   * const customerUserDto =
-   *   await client.organizations.users.createOrInvite(
-   *     '550e8400-e29b-41d4-a716-446655440000',
+   * const customerUser =
+   *   await client.organizations.users.retrieve(
+   *     '650e8400-e29b-41d4-a716-446655440000',
+   *     { customerId: '550e8400-e29b-41d4-a716-446655440000' },
    *   );
    * ```
    */
-  createOrInvite(
-    customerID: string,
-    body: UserCreateOrInviteParams,
-    options?: RequestOptions,
-  ): APIPromise<ProfilesUsersAPI.CustomerUserDto> {
-    return this._client.post(path`/v2/organizations/${customerID}/users`, { body, ...options });
-  }
-
-  /**
-   * Removes a user from an organization or sender profile. Requires admin
-   * permissions. This action permanently deletes the user association.
-   *
-   * @example
-   * ```ts
-   * await client.organizations.users.deleteByCustomer(
-   *   '650e8400-e29b-41d4-a716-446655440000',
-   *   { customerId: '550e8400-e29b-41d4-a716-446655440000' },
-   * );
-   * ```
-   */
-  deleteByCustomer(
-    userID: string,
-    params: UserDeleteByCustomerParams,
-    options?: RequestOptions,
-  ): APIPromise<void> {
+  retrieve(userID: string, params: UserRetrieveParams, options?: RequestOptions): APIPromise<CustomerUser> {
     const { customerId } = params;
-    return this._client.delete(path`/v2/organizations/${customerId}/users/${userID}`, {
-      ...options,
-      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
-    });
+    return this._client.get(path`/v2/organizations/${customerId}/users/${userID}`, options);
   }
 
   /**
@@ -59,41 +31,51 @@ export class Users extends APIResource {
    *
    * @example
    * ```ts
-   * const response =
-   *   await client.organizations.users.listByCustomer(
-   *     '550e8400-e29b-41d4-a716-446655440000',
-   *     { page: 0, pageSize: 0 },
-   *   );
+   * const users = await client.organizations.users.list(
+   *   '550e8400-e29b-41d4-a716-446655440000',
+   *   { page: 0, pageSize: 0 },
+   * );
    * ```
    */
-  listByCustomer(
-    customerID: string,
-    query: UserListByCustomerParams,
-    options?: RequestOptions,
-  ): APIPromise<UserListByCustomerResponse> {
+  list(customerID: string, query: UserListParams, options?: RequestOptions): APIPromise<UserListResponse> {
     return this._client.get(path`/v2/organizations/${customerID}/users`, { query, ...options });
   }
 
   /**
-   * Retrieves a specific user by their ID. Requires appropriate permissions. The
-   * customerId can be either an organization ID or a profile ID.
+   * Removes a user from an organization or sender profile. Requires admin
+   * permissions. This action permanently deletes the user association.
    *
    * @example
    * ```ts
-   * const customerUserDto =
-   *   await client.organizations.users.retrieveByCustomer(
-   *     '650e8400-e29b-41d4-a716-446655440000',
-   *     { customerId: '550e8400-e29b-41d4-a716-446655440000' },
+   * await client.organizations.users.delete(
+   *   '650e8400-e29b-41d4-a716-446655440000',
+   *   { customerId: '550e8400-e29b-41d4-a716-446655440000' },
+   * );
+   * ```
+   */
+  delete(userID: string, params: UserDeleteParams, options?: RequestOptions): APIPromise<void> {
+    const { customerId } = params;
+    return this._client.delete(path`/v2/organizations/${customerId}/users/${userID}`, {
+      ...options,
+      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
+    });
+  }
+
+  /**
+   * Invites a user to an organization or sender profile with a specified role.
+   * Requires appropriate permissions. The customerId can be either an organization
+   * ID or a profile ID.
+   *
+   * @example
+   * ```ts
+   * const customerUser =
+   *   await client.organizations.users.invite(
+   *     '550e8400-e29b-41d4-a716-446655440000',
    *   );
    * ```
    */
-  retrieveByCustomer(
-    userID: string,
-    params: UserRetrieveByCustomerParams,
-    options?: RequestOptions,
-  ): APIPromise<ProfilesUsersAPI.CustomerUserDto> {
-    const { customerId } = params;
-    return this._client.get(path`/v2/organizations/${customerId}/users/${userID}`, options);
+  invite(customerID: string, body: UserInviteParams, options?: RequestOptions): APIPromise<CustomerUser> {
+    return this._client.post(path`/v2/organizations/${customerID}/users`, { body, ...options });
   }
 
   /**
@@ -102,34 +84,77 @@ export class Users extends APIResource {
    *
    * @example
    * ```ts
-   * const customerUserDto =
-   *   await client.organizations.users.updateRoleByCustomer(
+   * const customerUser =
+   *   await client.organizations.users.updateRole(
    *     '650e8400-e29b-41d4-a716-446655440000',
    *     { customerId: '550e8400-e29b-41d4-a716-446655440000' },
    *   );
    * ```
    */
-  updateRoleByCustomer(
+  updateRole(
     userID: string,
-    params: UserUpdateRoleByCustomerParams,
+    params: UserUpdateRoleParams,
     options?: RequestOptions,
-  ): APIPromise<ProfilesUsersAPI.CustomerUserDto> {
+  ): APIPromise<CustomerUser> {
     const { customerId, ...body } = params;
     return this._client.put(path`/v2/organizations/${customerId}/users/${userID}`, { body, ...options });
   }
 }
 
-export interface UserListByCustomerResponse {
+export interface CustomerUser {
+  /**
+   * Unique identifier
+   */
+  id?: string;
+
+  createdAt?: string;
+
+  customerId?: string;
+
+  email?: string;
+
+  invitationSentAt?: string | null;
+
+  invitationToken?: string | null;
+
+  invitationTokenExpiresAt?: string | null;
+
+  lastLoginAt?: string | null;
+
+  name?: string;
+
+  role?: string;
+
+  status?: string;
+
+  updatedAt?: string | null;
+}
+
+export interface UserListResponse {
   page?: number;
 
   pageSize?: number;
 
   totalCount?: number;
 
-  users?: Array<ProfilesUsersAPI.CustomerUserDto>;
+  users?: Array<CustomerUser>;
 }
 
-export interface UserCreateOrInviteParams {
+export interface UserRetrieveParams {
+  customerId: string;
+}
+
+export interface UserListParams {
+  page: number;
+
+  pageSize: number;
+}
+
+export interface UserDeleteParams {
+  customerId: string;
+}
+
+export interface UserInviteParams {
   email?: string;
 
   invitedBy?: string | null;
@@ -139,21 +164,7 @@ export interface UserCreateOrInviteParams {
   role?: string;
 }
 
-export interface UserDeleteByCustomerParams {
-  customerId: string;
-}
-
-export interface UserListByCustomerParams {
-  page: number;
-
-  pageSize: number;
-}
-
-export interface UserRetrieveByCustomerParams {
-  customerId: string;
-}
-
-export interface UserUpdateRoleByCustomerParams {
+export interface UserUpdateRoleParams {
   /**
    * Path param
    */
@@ -167,11 +178,12 @@ export interface UserUpdateRoleByCustomerParams {
 
 export declare namespace Users {
   export {
-    type UserListByCustomerResponse as UserListByCustomerResponse,
-    type UserCreateOrInviteParams as UserCreateOrInviteParams,
-    type UserDeleteByCustomerParams as UserDeleteByCustomerParams,
-    type UserListByCustomerParams as UserListByCustomerParams,
-    type UserRetrieveByCustomerParams as UserRetrieveByCustomerParams,
-    type UserUpdateRoleByCustomerParams as UserUpdateRoleByCustomerParams,
+    type CustomerUser as CustomerUser,
+    type UserListResponse as UserListResponse,
+    type UserRetrieveParams as UserRetrieveParams,
+    type UserListParams as UserListParams,
+    type UserDeleteParams as UserDeleteParams,
+    type UserInviteParams as UserInviteParams,
+    type UserUpdateRoleParams as UserUpdateRoleParams,
   };
 }

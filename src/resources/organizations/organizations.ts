@@ -1,23 +1,23 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../../core/resource';
+import * as OrganizationsAPI from './organizations';
 import * as UsersAPI from './users';
 import {
-  UserCreateOrInviteParams,
-  UserDeleteByCustomerParams,
-  UserListByCustomerParams,
-  UserListByCustomerResponse,
-  UserRetrieveByCustomerParams,
-  UserUpdateRoleByCustomerParams,
+  CustomerUser,
+  UserDeleteParams,
+  UserInviteParams,
+  UserListParams,
+  UserListResponse,
+  UserRetrieveParams,
+  UserUpdateRoleParams,
   Users,
 } from './users';
-import * as ProfilesAPI from './profiles/profiles';
-import { ProfileListResponse, ProfileSummary, Profiles } from './profiles/profiles';
 import { APIPromise } from '../../core/api-promise';
 import { RequestOptions } from '../../internal/request-options';
+import { path } from '../../internal/utils/path';
 
 export class Organizations extends APIResource {
-  profiles: ProfilesAPI.Profiles = new ProfilesAPI.Profiles(this._client);
   users: UsersAPI.Users = new UsersAPI.Users(this._client);
 
   /**
@@ -27,22 +27,52 @@ export class Organizations extends APIResource {
    *
    * @example
    * ```ts
-   * const response =
-   *   await client.organizations.listAuthenticatedUserOrganizations();
+   * const organizations = await client.organizations.list();
    * ```
    */
-  listAuthenticatedUserOrganizations(
-    options?: RequestOptions,
-  ): APIPromise<OrganizationListAuthenticatedUserOrganizationsResponse> {
+  list(options?: RequestOptions): APIPromise<OrganizationListResponse> {
     return this._client.get('/v2/organizations', options);
+  }
+
+  /**
+   * Retrieves all sender profiles within an organization that the authenticated user
+   * has access to. Returns filtered list based on user's permissions.
+   *
+   * @example
+   * ```ts
+   * const response =
+   *   await client.organizations.retrieveProfiles(
+   *     '6ba7b810-9dad-11d1-80b4-00c04fd430c8',
+   *   );
+   * ```
+   */
+  retrieveProfiles(
+    orgID: string,
+    options?: RequestOptions,
+  ): APIPromise<OrganizationRetrieveProfilesResponse> {
+    return this._client.get(path`/v2/organizations/${orgID}/profiles`, options);
   }
 }
 
-export interface OrganizationListAuthenticatedUserOrganizationsResponse {
-  organizations?: Array<OrganizationListAuthenticatedUserOrganizationsResponse.Organization>;
+export interface ProfileSummary {
+  id?: string;
+
+  createdAt?: string;
+
+  description?: string | null;
+
+  icon?: string | null;
+
+  name?: string;
+
+  shortName?: string | null;
 }
 
-export namespace OrganizationListAuthenticatedUserOrganizationsResponse {
+export interface OrganizationListResponse {
+  organizations?: Array<OrganizationListResponse.Organization>;
+}
+
+export namespace OrganizationListResponse {
   export interface Organization {
     id?: string;
 
@@ -54,29 +84,33 @@ export namespace OrganizationListAuthenticatedUserOrganizationsResponse {
 
     name?: string;
 
-    profiles?: Array<ProfilesAPI.ProfileSummary>;
+    profiles?: Array<OrganizationsAPI.ProfileSummary>;
   }
 }
 
-Organizations.Profiles = Profiles;
+export interface OrganizationRetrieveProfilesResponse {
+  organizationId?: string;
+
+  profiles?: Array<ProfileSummary>;
+}
+
 Organizations.Users = Users;
 
 export declare namespace Organizations {
-  export { type OrganizationListAuthenticatedUserOrganizationsResponse as OrganizationListAuthenticatedUserOrganizationsResponse };
-
   export {
-    Profiles as Profiles,
     type ProfileSummary as ProfileSummary,
-    type ProfileListResponse as ProfileListResponse,
+    type OrganizationListResponse as OrganizationListResponse,
+    type OrganizationRetrieveProfilesResponse as OrganizationRetrieveProfilesResponse,
   };
 
   export {
     Users as Users,
-    type UserListByCustomerResponse as UserListByCustomerResponse,
-    type UserCreateOrInviteParams as UserCreateOrInviteParams,
-    type UserDeleteByCustomerParams as UserDeleteByCustomerParams,
-    type UserListByCustomerParams as UserListByCustomerParams,
-    type UserRetrieveByCustomerParams as UserRetrieveByCustomerParams,
-    type UserUpdateRoleByCustomerParams as UserUpdateRoleByCustomerParams,
+    type CustomerUser as CustomerUser,
+    type UserListResponse as UserListResponse,
+    type UserRetrieveParams as UserRetrieveParams,
+    type UserListParams as UserListParams,
+    type UserDeleteParams as UserDeleteParams,
+    type UserInviteParams as UserInviteParams,
+    type UserUpdateRoleParams as UserUpdateRoleParams,
   };
 }

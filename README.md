@@ -24,7 +24,7 @@ import SentDm from 'sentdm';
 
 const client = new SentDm({
   apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted
-  customerSenderID: process.env['SENT_DM_CUSTOMER_SENDER_ID'], // This is the default and can be omitted
+  senderID: process.env['SENT_DM_SENDER_ID'], // This is the default and can be omitted
 });
 
 await client.messages.sendToPhone({
@@ -43,7 +43,7 @@ import SentDm from 'sentdm';
 
 const client = new SentDm({
   apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted
-  customerSenderID: process.env['SENT_DM_CUSTOMER_SENDER_ID'], // This is the default and can be omitted
+  senderID: process.env['SENT_DM_SENDER_ID'], // This is the default and can be omitted
 });
 
 const params: SentDm.MessageSendToPhoneParams = {

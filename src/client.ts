@@ -74,7 +74,7 @@ export interface ClientOptions {
   /**
    * Customer sender ID (GUID) identifying the customer account
    */
-  customerSenderID?: string | undefined;
+  senderID?: string | undefined;
 
   /**
    * Override the default base URL for the API, e.g., "https://api.example.com/v2/"
@@ -150,7 +150,7 @@ export interface ClientOptions {
  */
 export class SentDm {
   apiKey: string;
-  customerSenderID: string;
+  senderID: string;
 
   baseURL: string;
   maxRetries: number;
@@ -168,7 +168,7 @@ export class SentDm {
    * API Client for interfacing with the Sent Dm API.
    *
    * @param {string | undefined} [opts.apiKey=process.env['SENT_DM_API_KEY'] ?? undefined]
-   * @param {string | undefined} [opts.customerSenderID=process.env['SENT_DM_CUSTOMER_SENDER_ID'] ?? undefined]
+   * @param {string | undefined} [opts.senderID=process.env['SENT_DM_SENDER_ID'] ?? undefined]
    * @param {string} [opts.baseURL=process.env['SENT_DM_BASE_URL'] ?? https://api.sent.dm] - Override the default base URL for the API.
    * @param {number} [opts.timeout=1 minute] - The maximum amount of time (in milliseconds) the client will wait for a response before timing out.
    * @param {MergedRequestInit} [opts.fetchOptions] - Additional `RequestInit` options to be passed to `fetch` calls.
@@ -180,7 +180,7 @@ export class SentDm {
   constructor({
     baseURL = readEnv('SENT_DM_BASE_URL'),
     apiKey = readEnv('SENT_DM_API_KEY'),
-    customerSenderID = readEnv('SENT_DM_CUSTOMER_SENDER_ID'),
+    senderID = readEnv('SENT_DM_SENDER_ID'),
     ...opts
   }: ClientOptions = {}) {
     if (apiKey === undefined) {
@@ -188,15 +188,15 @@ export class SentDm {
         "The SENT_DM_API_KEY environment variable is missing or empty; either provide it, or instantiate the SentDm client with an apiKey option, like new SentDm({ apiKey: 'My API Key' }).",
       );
     }
-    if (customerSenderID === undefined) {
+    if (senderID === undefined) {
       throw new Errors.SentDmError(
-        "The SENT_DM_CUSTOMER_SENDER_ID environment variable is missing or empty; either provide it, or instantiate the SentDm client with an customerSenderID option, like new SentDm({ customerSenderID: 'My Customer Sender ID' }).",
+        "The SENT_DM_SENDER_ID environment variable is missing or empty; either provide it, or instantiate the SentDm client with an senderID option, like new SentDm({ senderID: 'My Sender ID' }).",
       );
     }
 
     const options: ClientOptions = {
       apiKey,
-      customerSenderID,
+      senderID,
       ...opts,
       baseURL: baseURL || `https://api.sent.dm`,
     };
@@ -219,7 +219,7 @@ export class SentDm {
     this._options = options;
 
     this.apiKey = apiKey;
-    this.customerSenderID = customerSenderID;
+    this.senderID = senderID;
   }
 
   /**
@@ -236,7 +236,7 @@ export class SentDm {
       fetch: this.fetch,
       fetchOptions: this.fetchOptions,
       apiKey: this.apiKey,
-      customerSenderID: this.customerSenderID,
+      senderID: this.senderID,
       ...options,
     });
     return client;
@@ -266,7 +266,7 @@ export class SentDm {
   }
 
   protected async customerSenderIDAuth(opts: FinalRequestOptions): Promise<NullableHeaders | undefined> {
-    return buildHeaders([{ 'x-sender-id': this.customerSenderID }]);
+    return buildHeaders([{ 'x-sender-id': this.senderID }]);
   }
 
   /**

@@ -11,7 +11,6 @@ export {
 export {
   Messages,
   type MessageRetrieveResponse,
-  type MessageRetrieveParams,
   type MessageSendQuickMessageParams,
   type MessageSendToContactParams,
   type MessageSendToPhoneParams,
@@ -26,7 +25,6 @@ export {
   type ProfileSummary,
   type OrganizationListResponse,
   type OrganizationRetrieveProfilesResponse,
-  type OrganizationRetrieveProfilesParams,
 } from './organizations/organizations';
 export {
   Templates,
@@ -36,7 +34,5 @@ export {
   type TemplateVariable,
   type TemplateListResponse,
   type TemplateCreateParams,
-  type TemplateRetrieveParams,
   type TemplateListParams,
-  type TemplateDeleteParams,
 } from './templates';

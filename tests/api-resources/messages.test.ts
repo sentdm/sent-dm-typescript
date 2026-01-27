@@ -10,11 +10,8 @@ const client = new SentDm({
 
 describe('resource messages', () => {
   // Prism tests are disabled
-  test.skip('retrieve: only required params', async () => {
-    const responsePromise = client.messages.retrieve('7ba7b820-9dad-11d1-80b4-00c04fd430c8', {
-      'x-api-key': '',
-      'x-sender-id': '00000000-0000-0000-0000-000000000000',
-    });
+  test.skip('retrieve', async () => {
+    const responsePromise = client.messages.retrieve('7ba7b820-9dad-11d1-80b4-00c04fd430c8');
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -25,20 +22,10 @@ describe('resource messages', () => {
   });
 
   // Prism tests are disabled
-  test.skip('retrieve: required and optional params', async () => {
-    const response = await client.messages.retrieve('7ba7b820-9dad-11d1-80b4-00c04fd430c8', {
-      'x-api-key': '',
-      'x-sender-id': '00000000-0000-0000-0000-000000000000',
-    });
-  });
-
-  // Prism tests are disabled
   test.skip('sendQuickMessage: only required params', async () => {
     const responsePromise = client.messages.sendQuickMessage({
       customMessage: 'Hello, this is a test message!',
       phoneNumber: '+1234567890',
-      'x-api-key': '',
-      'x-sender-id': '00000000-0000-0000-0000-000000000000',
     });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
@@ -54,8 +41,6 @@ describe('resource messages', () => {
     const response = await client.messages.sendQuickMessage({
       customMessage: 'Hello, this is a test message!',
       phoneNumber: '+1234567890',
-      'x-api-key': '',
-      'x-sender-id': '00000000-0000-0000-0000-000000000000',
     });
   });
 
@@ -64,8 +49,6 @@ describe('resource messages', () => {
     const responsePromise = client.messages.sendToContact({
       contactId: '6ba7b810-9dad-11d1-80b4-00c04fd430c8',
       templateId: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
-      'x-api-key': '',
-      'x-sender-id': '00000000-0000-0000-0000-000000000000',
     });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
@@ -81,8 +64,6 @@ describe('resource messages', () => {
     const response = await client.messages.sendToContact({
       contactId: '6ba7b810-9dad-11d1-80b4-00c04fd430c8',
       templateId: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
-      'x-api-key': '',
-      'x-sender-id': '00000000-0000-0000-0000-000000000000',
       templateVariables: { name: 'John Doe', order_id: '12345' },
     });
   });
@@ -92,8 +73,6 @@ describe('resource messages', () => {
     const responsePromise = client.messages.sendToPhone({
       phoneNumber: '+1234567890',
       templateId: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
-      'x-api-key': '',
-      'x-sender-id': '00000000-0000-0000-0000-000000000000',
     });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
@@ -109,8 +88,6 @@ describe('resource messages', () => {
     const response = await client.messages.sendToPhone({
       phoneNumber: '+1234567890',
       templateId: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
-      'x-api-key': '',
-      'x-sender-id': '00000000-0000-0000-0000-000000000000',
       templateVariables: { name: 'John Doe', order_id: '12345' },
     });
   });

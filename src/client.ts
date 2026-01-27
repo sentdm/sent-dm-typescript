@@ -25,7 +25,6 @@ import {
   Contacts,
 } from './resources/contacts';
 import {
-  MessageRetrieveParams,
   MessageRetrieveResponse,
   MessageSendQuickMessageParams,
   MessageSendToContactParams,
@@ -41,17 +40,14 @@ import {
   TemplateBodyContent,
   TemplateCreateParams,
   TemplateDefinition,
-  TemplateDeleteParams,
   TemplateListParams,
   TemplateListResponse,
   TemplateResponse,
-  TemplateRetrieveParams,
   TemplateVariable,
   Templates,
 } from './resources/templates';
 import {
   OrganizationListResponse,
-  OrganizationRetrieveProfilesParams,
   OrganizationRetrieveProfilesResponse,
   Organizations,
   ProfileSummary,
@@ -788,9 +784,7 @@ export declare namespace SentDm {
     type TemplateVariable as TemplateVariable,
     type TemplateListResponse as TemplateListResponse,
     type TemplateCreateParams as TemplateCreateParams,
-    type TemplateRetrieveParams as TemplateRetrieveParams,
     type TemplateListParams as TemplateListParams,
-    type TemplateDeleteParams as TemplateDeleteParams,
   };
 
   export {
@@ -805,7 +799,6 @@ export declare namespace SentDm {
   export {
     Messages as Messages,
     type MessageRetrieveResponse as MessageRetrieveResponse,
-    type MessageRetrieveParams as MessageRetrieveParams,
     type MessageSendQuickMessageParams as MessageSendQuickMessageParams,
     type MessageSendToContactParams as MessageSendToContactParams,
     type MessageSendToPhoneParams as MessageSendToPhoneParams,
@@ -822,6 +815,5 @@ export declare namespace SentDm {
     type ProfileSummary as ProfileSummary,
     type OrganizationListResponse as OrganizationListResponse,
     type OrganizationRetrieveProfilesResponse as OrganizationRetrieveProfilesResponse,
-    type OrganizationRetrieveProfilesParams as OrganizationRetrieveProfilesParams,
   };
 }

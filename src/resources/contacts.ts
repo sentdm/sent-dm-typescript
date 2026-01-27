@@ -2,7 +2,6 @@
 
 import { APIResource } from '../core/resource';
 import { APIPromise } from '../core/api-promise';
-import { buildHeaders } from '../internal/headers';
 import { RequestOptions } from '../internal/request-options';
 
 export class Contacts extends APIResource {
@@ -10,74 +9,30 @@ export class Contacts extends APIResource {
    * Retrieves a paginated list of contacts for the authenticated customer. Supports
    * server-side pagination with configurable page size. The customer ID is extracted
    * from the authentication token.
-   *
-   * @example
-   * ```ts
-   * const contacts = await client.contacts.list({
-   *   page: 0,
-   *   pageSize: 0,
-   *   'x-api-key': '',
-   *   'x-sender-id': '00000000-0000-0000-0000-000000000000',
-   * });
-   * ```
    */
-  list(params: ContactListParams, options?: RequestOptions): APIPromise<ContactListResponse> {
-    const { 'x-api-key': xAPIKey, 'x-sender-id': xSenderID, ...query } = params;
-    return this._client.get('/v2/contacts', {
-      query,
-      ...options,
-      headers: buildHeaders([{ 'x-api-key': xAPIKey, 'x-sender-id': xSenderID }, options?.headers]),
-    });
+  list(query: ContactListParams, options?: RequestOptions): APIPromise<ContactListResponse> {
+    return this._client.get('/v2/contacts', { query, ...options });
   }
 
   /**
    * Retrieves a contact by their phone number for the authenticated customer. Phone
    * number should be in international format (e.g., +1234567890). The customer ID is
    * extracted from the authentication token.
-   *
-   * @example
-   * ```ts
-   * const contactListItem =
-   *   await client.contacts.retrieveByPhone({
-   *     phoneNumber: 'phoneNumber',
-   *     'x-api-key': '',
-   *     'x-sender-id': '00000000-0000-0000-0000-000000000000',
-   *   });
-   * ```
    */
   retrieveByPhone(
-    params: ContactRetrieveByPhoneParams,
+    query: ContactRetrieveByPhoneParams,
     options?: RequestOptions,
   ): APIPromise<ContactListItem> {
-    const { 'x-api-key': xAPIKey, 'x-sender-id': xSenderID, ...query } = params;
-    return this._client.get('/v2/contacts/phone', {
-      query,
-      ...options,
-      headers: buildHeaders([{ 'x-api-key': xAPIKey, 'x-sender-id': xSenderID }, options?.headers]),
-    });
+    return this._client.get('/v2/contacts/phone', { query, ...options });
   }
 
   /**
    * Retrieves a specific contact by their unique identifier for the authenticated
    * customer. The customer ID is extracted from the authentication token. Returns
    * detailed contact information including phone number and creation timestamp.
-   *
-   * @example
-   * ```ts
-   * const contactListItem = await client.contacts.retrieveID({
-   *   id: 'id',
-   *   'x-api-key': '',
-   *   'x-sender-id': '00000000-0000-0000-0000-000000000000',
-   * });
-   * ```
    */
-  retrieveID(params: ContactRetrieveIDParams, options?: RequestOptions): APIPromise<ContactListItem> {
-    const { 'x-api-key': xAPIKey, 'x-sender-id': xSenderID, ...query } = params;
-    return this._client.get('/v2/contacts/id', {
-      query,
-      ...options,
-      headers: buildHeaders([{ 'x-api-key': xAPIKey, 'x-sender-id': xSenderID }, options?.headers]),
-    });
+  retrieveID(query: ContactRetrieveIDParams, options?: RequestOptions): APIPromise<ContactListItem> {
+    return this._client.get('/v2/contacts/id', { query, ...options });
   }
 }
 
@@ -152,58 +107,28 @@ export interface ContactListResponse {
 
 export interface ContactListParams {
   /**
-   * Query param: The page number (zero-indexed). Default is 0.
+   * The page number (zero-indexed). Default is 0.
    */
   page: number;
 
   /**
-   * Query param: The number of items per page. Default is 20.
+   * The number of items per page. Default is 20.
    */
   pageSize: number;
-
-  /**
-   * Header param
-   */
-  'x-api-key': string;
-
-  /**
-   * Header param
-   */
-  'x-sender-id': string;
 }
 
 export interface ContactRetrieveByPhoneParams {
   /**
-   * Query param: The phone number in international format (e.g., +1234567890)
+   * The phone number in international format (e.g., +1234567890)
    */
   phoneNumber: string;
-
-  /**
-   * Header param
-   */
-  'x-api-key': string;
-
-  /**
-   * Header param
-   */
-  'x-sender-id': string;
 }
 
 export interface ContactRetrieveIDParams {
   /**
-   * Query param: The unique identifier (GUID) of the resource to retrieve
+   * The unique identifier (GUID) of the resource to retrieve
    */
   id: string;
-
-  /**
-   * Header param
-   */
-  'x-api-key': string;
-
-  /**
-   * Header param
-   */
-  'x-sender-id': string;
 }
 
 export declare namespace Contacts {

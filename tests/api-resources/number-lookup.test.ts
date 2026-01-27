@@ -11,11 +11,7 @@ const client = new SentDm({
 describe('resource numberLookup', () => {
   // Prism tests are disabled
   test.skip('retrieve: only required params', async () => {
-    const responsePromise = client.numberLookup.retrieve({
-      phoneNumber: 'phoneNumber',
-      'x-api-key': '',
-      'x-sender-id': '00000000-0000-0000-0000-000000000000',
-    });
+    const responsePromise = client.numberLookup.retrieve({ phoneNumber: 'phoneNumber' });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -27,10 +23,6 @@ describe('resource numberLookup', () => {
 
   // Prism tests are disabled
   test.skip('retrieve: required and optional params', async () => {
-    const response = await client.numberLookup.retrieve({
-      phoneNumber: 'phoneNumber',
-      'x-api-key': '',
-      'x-sender-id': '00000000-0000-0000-0000-000000000000',
-    });
+    const response = await client.numberLookup.retrieve({ phoneNumber: 'phoneNumber' });
   });
 });

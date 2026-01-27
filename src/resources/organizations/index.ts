@@ -5,7 +5,6 @@ export {
   type ProfileSummary,
   type OrganizationListResponse,
   type OrganizationRetrieveProfilesResponse,
-  type OrganizationRetrieveProfilesParams,
 } from './organizations';
 export {
   Users,

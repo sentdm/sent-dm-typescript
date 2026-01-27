@@ -2,7 +2,6 @@
 
 import { APIResource } from '../core/resource';
 import { APIPromise } from '../core/api-promise';
-import { buildHeaders } from '../internal/headers';
 import { RequestOptions } from '../internal/request-options';
 
 export class NumberLookup extends APIResource {
@@ -10,26 +9,12 @@ export class NumberLookup extends APIResource {
    * Retrieves detailed information about a phone number including validation,
    * formatting, country information, and available messaging channels. The customer
    * ID is extracted from the authentication token.
-   *
-   * @example
-   * ```ts
-   * const numberLookup = await client.numberLookup.retrieve({
-   *   phoneNumber: 'phoneNumber',
-   *   'x-api-key': '',
-   *   'x-sender-id': '00000000-0000-0000-0000-000000000000',
-   * });
-   * ```
    */
   retrieve(
-    params: NumberLookupRetrieveParams,
+    query: NumberLookupRetrieveParams,
     options?: RequestOptions,
   ): APIPromise<NumberLookupRetrieveResponse> {
-    const { 'x-api-key': xAPIKey, 'x-sender-id': xSenderID, ...query } = params;
-    return this._client.get('/v2/number-lookup', {
-      query,
-      ...options,
-      headers: buildHeaders([{ 'x-api-key': xAPIKey, 'x-sender-id': xSenderID }, options?.headers]),
-    });
+    return this._client.get('/v2/number-lookup', { query, ...options });
   }
 }
 
@@ -84,20 +69,7 @@ export interface NumberLookupRetrieveResponse {
 }
 
 export interface NumberLookupRetrieveParams {
-  /**
-   * Query param
-   */
   phoneNumber: string;
-
-  /**
-   * Header param
-   */
-  'x-api-key': string;
-
-  /**
-   * Header param
-   */
-  'x-sender-id': string;
 }
 
 export declare namespace NumberLookup {

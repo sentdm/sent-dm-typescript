@@ -22,11 +22,8 @@ describe('resource organizations', () => {
   });
 
   // Prism tests are disabled
-  test.skip('retrieveProfiles: only required params', async () => {
-    const responsePromise = client.organizations.retrieveProfiles('6ba7b810-9dad-11d1-80b4-00c04fd430c8', {
-      'x-api-key': '',
-      'x-sender-id': '00000000-0000-0000-0000-000000000000',
-    });
+  test.skip('retrieveProfiles', async () => {
+    const responsePromise = client.organizations.retrieveProfiles('6ba7b810-9dad-11d1-80b4-00c04fd430c8');
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -34,13 +31,5 @@ describe('resource organizations', () => {
     const dataAndResponse = await responsePromise.withResponse();
     expect(dataAndResponse.data).toBe(response);
     expect(dataAndResponse.response).toBe(rawResponse);
-  });
-
-  // Prism tests are disabled
-  test.skip('retrieveProfiles: required and optional params', async () => {
-    const response = await client.organizations.retrieveProfiles('6ba7b810-9dad-11d1-80b4-00c04fd430c8', {
-      'x-api-key': '',
-      'x-sender-id': '00000000-0000-0000-0000-000000000000',
-    });
   });
 });

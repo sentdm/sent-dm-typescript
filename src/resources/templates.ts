@@ -19,18 +19,11 @@ export class Templates extends APIResource {
    * ```ts
    * const templateResponse = await client.templates.create({
    *   definition: { body: {} },
-   *   'x-api-key': '',
-   *   'x-sender-id': '00000000-0000-0000-0000-000000000000',
    * });
    * ```
    */
-  create(params: TemplateCreateParams, options?: RequestOptions): APIPromise<TemplateResponse> {
-    const { 'x-api-key': xAPIKey, 'x-sender-id': xSenderID, ...body } = params;
-    return this._client.post('/v2/templates', {
-      body,
-      ...options,
-      headers: buildHeaders([{ 'x-api-key': xAPIKey, 'x-sender-id': xSenderID }, options?.headers]),
-    });
+  create(body: TemplateCreateParams, options?: RequestOptions): APIPromise<TemplateResponse> {
+    return this._client.post('/v2/templates', { body, ...options });
   }
 
   /**
@@ -43,23 +36,11 @@ export class Templates extends APIResource {
    * ```ts
    * const templateResponse = await client.templates.retrieve(
    *   '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
-   *   {
-   *     'x-api-key': '',
-   *     'x-sender-id': '00000000-0000-0000-0000-000000000000',
-   *   },
    * );
    * ```
    */
-  retrieve(
-    id: string,
-    params: TemplateRetrieveParams,
-    options?: RequestOptions,
-  ): APIPromise<TemplateResponse> {
-    const { 'x-api-key': xAPIKey, 'x-sender-id': xSenderID } = params;
-    return this._client.get(path`/v2/templates/${id}`, {
-      ...options,
-      headers: buildHeaders([{ 'x-api-key': xAPIKey, 'x-sender-id': xSenderID }, options?.headers]),
-    });
+  retrieve(id: string, options?: RequestOptions): APIPromise<TemplateResponse> {
+    return this._client.get(path`/v2/templates/${id}`, options);
   }
 
   /**
@@ -74,18 +55,11 @@ export class Templates extends APIResource {
    * const templates = await client.templates.list({
    *   page: 0,
    *   pageSize: 0,
-   *   'x-api-key': '',
-   *   'x-sender-id': '00000000-0000-0000-0000-000000000000',
    * });
    * ```
    */
-  list(params: TemplateListParams, options?: RequestOptions): APIPromise<TemplateListResponse> {
-    const { 'x-api-key': xAPIKey, 'x-sender-id': xSenderID, ...query } = params;
-    return this._client.get('/v2/templates', {
-      query,
-      ...options,
-      headers: buildHeaders([{ 'x-api-key': xAPIKey, 'x-sender-id': xSenderID }, options?.headers]),
-    });
+  list(query: TemplateListParams, options?: RequestOptions): APIPromise<TemplateListResponse> {
+    return this._client.get('/v2/templates', { query, ...options });
   }
 
   /**
@@ -101,21 +75,13 @@ export class Templates extends APIResource {
    * ```ts
    * await client.templates.delete(
    *   '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
-   *   {
-   *     'x-api-key': '',
-   *     'x-sender-id': '00000000-0000-0000-0000-000000000000',
-   *   },
    * );
    * ```
    */
-  delete(id: string, params: TemplateDeleteParams, options?: RequestOptions): APIPromise<void> {
-    const { 'x-api-key': xAPIKey, 'x-sender-id': xSenderID } = params;
+  delete(id: string, options?: RequestOptions): APIPromise<void> {
     return this._client.delete(path`/v2/templates/${id}`, {
       ...options,
-      headers: buildHeaders([
-        { Accept: '*/*', 'x-api-key': xAPIKey, 'x-sender-id': xSenderID },
-        options?.headers,
-      ]),
+      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
     });
   }
 }
@@ -400,89 +366,55 @@ export interface TemplateListResponse {
 
 export interface TemplateCreateParams {
   /**
-   * Body param: Template definition containing header, body, footer, and buttons
+   * Template definition containing header, body, footer, and buttons
    */
   definition: TemplateDefinition;
 
   /**
-   * Header param
-   */
-  'x-api-key': string;
-
-  /**
-   * Header param
-   */
-  'x-sender-id': string;
-
-  /**
-   * Body param: The template category (e.g., MARKETING, UTILITY, AUTHENTICATION).
-   * Can only be set when creating a new template. If not provided, will be
-   * auto-generated using AI.
+   * The template category (e.g., MARKETING, UTILITY, AUTHENTICATION). Can only be
+   * set when creating a new template. If not provided, will be auto-generated using
+   * AI.
    */
   category?: string | null;
 
   /**
-   * Body param: The template language code (e.g., en_US, es_ES). Can only be set
-   * when creating a new template. If not provided, will be auto-detected using AI.
+   * The template language code (e.g., en_US, es_ES). Can only be set when creating a
+   * new template. If not provided, will be auto-detected using AI.
    */
   language?: string | null;
 
   /**
-   * Body param: When false, the template will be saved as draft. When true, the
-   * template will be submitted for review.
+   * When false, the template will be saved as draft. When true, the template will be
+   * submitted for review.
    */
   submitForReview?: boolean;
 }
 
-export interface TemplateRetrieveParams {
-  'x-api-key': string;
-
-  'x-sender-id': string;
-}
-
 export interface TemplateListParams {
   /**
-   * Query param: The page number (zero-indexed). Default is 0.
+   * The page number (zero-indexed). Default is 0.
    */
   page: number;
 
   /**
-   * Query param: The number of items per page (1-1000). Default is 100.
+   * The number of items per page (1-1000). Default is 100.
    */
   pageSize: number;
 
   /**
-   * Header param
-   */
-  'x-api-key': string;
-
-  /**
-   * Header param
-   */
-  'x-sender-id': string;
-
-  /**
-   * Query param: Optional filter by template category (e.g., MARKETING, UTILITY,
-   * AUTHENTICATION)
+   * Optional filter by template category (e.g., MARKETING, UTILITY, AUTHENTICATION)
    */
   category?: string | null;
 
   /**
-   * Query param: Optional search term to filter templates by name or content
+   * Optional search term to filter templates by name or content
    */
   search?: string | null;
 
   /**
-   * Query param: Optional filter by template status (e.g., APPROVED, PENDING,
-   * REJECTED, DRAFT)
+   * Optional filter by template status (e.g., APPROVED, PENDING, REJECTED, DRAFT)
    */
   status?: string | null;
-}
-
-export interface TemplateDeleteParams {
-  'x-api-key': string;
-
-  'x-sender-id': string;
 }
 
 export declare namespace Templates {
@@ -493,8 +425,6 @@ export declare namespace Templates {
     type TemplateVariable as TemplateVariable,
     type TemplateListResponse as TemplateListResponse,
     type TemplateCreateParams as TemplateCreateParams,
-    type TemplateRetrieveParams as TemplateRetrieveParams,
     type TemplateListParams as TemplateListParams,
-    type TemplateDeleteParams as TemplateDeleteParams,
   };
 }

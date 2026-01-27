@@ -11,9 +11,9 @@ Types:
 Methods:
 
 - <code title="post /v2/templates">client.templates.<a href="./src/resources/templates.ts">create</a>({ ...params }) -> TemplateResponse</code>
-- <code title="get /v2/templates/{id}">client.templates.<a href="./src/resources/templates.ts">retrieve</a>(id, { ...params }) -> TemplateResponse</code>
+- <code title="get /v2/templates/{id}">client.templates.<a href="./src/resources/templates.ts">retrieve</a>(id) -> TemplateResponse</code>
 - <code title="get /v2/templates">client.templates.<a href="./src/resources/templates.ts">list</a>({ ...params }) -> TemplateListResponse</code>
-- <code title="delete /v2/templates/{id}">client.templates.<a href="./src/resources/templates.ts">delete</a>(id, { ...params }) -> void</code>
+- <code title="delete /v2/templates/{id}">client.templates.<a href="./src/resources/templates.ts">delete</a>(id) -> void</code>
 
 # Contacts
 
@@ -36,7 +36,7 @@ Types:
 
 Methods:
 
-- <code title="get /v2/messages/{id}">client.messages.<a href="./src/resources/messages.ts">retrieve</a>(id, { ...params }) -> MessageRetrieveResponse</code>
+- <code title="get /v2/messages/{id}">client.messages.<a href="./src/resources/messages.ts">retrieve</a>(id) -> MessageRetrieveResponse</code>
 - <code title="post /v2/messages/quick-message">client.messages.<a href="./src/resources/messages.ts">sendQuickMessage</a>({ ...params }) -> void</code>
 - <code title="post /v2/messages/contact">client.messages.<a href="./src/resources/messages.ts">sendToContact</a>({ ...params }) -> void</code>
 - <code title="post /v2/messages/phone">client.messages.<a href="./src/resources/messages.ts">sendToPhone</a>({ ...params }) -> void</code>
@@ -62,7 +62,7 @@ Types:
 Methods:
 
 - <code title="get /v2/organizations">client.organizations.<a href="./src/resources/organizations/organizations.ts">list</a>() -> OrganizationListResponse</code>
-- <code title="get /v2/organizations/{orgId}/profiles">client.organizations.<a href="./src/resources/organizations/organizations.ts">retrieveProfiles</a>(orgID, { ...params }) -> OrganizationRetrieveProfilesResponse</code>
+- <code title="get /v2/organizations/{orgId}/profiles">client.organizations.<a href="./src/resources/organizations/organizations.ts">retrieveProfiles</a>(orgID) -> OrganizationRetrieveProfilesResponse</code>
 
 ## Users
 

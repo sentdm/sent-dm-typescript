@@ -14,7 +14,6 @@ import {
   Users,
 } from './users';
 import { APIPromise } from '../../core/api-promise';
-import { buildHeaders } from '../../internal/headers';
 import { RequestOptions } from '../../internal/request-options';
 import { path } from '../../internal/utils/path';
 
@@ -44,23 +43,14 @@ export class Organizations extends APIResource {
    * const response =
    *   await client.organizations.retrieveProfiles(
    *     '6ba7b810-9dad-11d1-80b4-00c04fd430c8',
-   *     {
-   *       'x-api-key': '',
-   *       'x-sender-id': '00000000-0000-0000-0000-000000000000',
-   *     },
    *   );
    * ```
    */
   retrieveProfiles(
     orgID: string,
-    params: OrganizationRetrieveProfilesParams,
     options?: RequestOptions,
   ): APIPromise<OrganizationRetrieveProfilesResponse> {
-    const { 'x-api-key': xAPIKey, 'x-sender-id': xSenderID } = params;
-    return this._client.get(path`/v2/organizations/${orgID}/profiles`, {
-      ...options,
-      headers: buildHeaders([{ 'x-api-key': xAPIKey, 'x-sender-id': xSenderID }, options?.headers]),
-    });
+    return this._client.get(path`/v2/organizations/${orgID}/profiles`, options);
   }
 }
 
@@ -104,12 +94,6 @@ export interface OrganizationRetrieveProfilesResponse {
   profiles?: Array<ProfileSummary>;
 }
 
-export interface OrganizationRetrieveProfilesParams {
-  'x-api-key': string;
-
-  'x-sender-id': string;
-}
-
 Organizations.Users = Users;
 
 export declare namespace Organizations {
@@ -117,7 +101,6 @@ export declare namespace Organizations {
     type ProfileSummary as ProfileSummary,
     type OrganizationListResponse as OrganizationListResponse,
     type OrganizationRetrieveProfilesResponse as OrganizationRetrieveProfilesResponse,
-    type OrganizationRetrieveProfilesParams as OrganizationRetrieveProfilesParams,
   };
 
   export {

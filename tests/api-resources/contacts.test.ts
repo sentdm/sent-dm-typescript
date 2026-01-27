@@ -11,12 +11,7 @@ const client = new SentDm({
 describe('resource contacts', () => {
   // Prism tests are disabled
   test.skip('list: only required params', async () => {
-    const responsePromise = client.contacts.list({
-      page: 0,
-      pageSize: 0,
-      'x-api-key': '',
-      'x-sender-id': '00000000-0000-0000-0000-000000000000',
-    });
+    const responsePromise = client.contacts.list({ page: 0, pageSize: 0 });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -28,21 +23,12 @@ describe('resource contacts', () => {
 
   // Prism tests are disabled
   test.skip('list: required and optional params', async () => {
-    const response = await client.contacts.list({
-      page: 0,
-      pageSize: 0,
-      'x-api-key': '',
-      'x-sender-id': '00000000-0000-0000-0000-000000000000',
-    });
+    const response = await client.contacts.list({ page: 0, pageSize: 0 });
   });
 
   // Prism tests are disabled
   test.skip('retrieveByPhone: only required params', async () => {
-    const responsePromise = client.contacts.retrieveByPhone({
-      phoneNumber: 'phoneNumber',
-      'x-api-key': '',
-      'x-sender-id': '00000000-0000-0000-0000-000000000000',
-    });
+    const responsePromise = client.contacts.retrieveByPhone({ phoneNumber: 'phoneNumber' });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -54,20 +40,12 @@ describe('resource contacts', () => {
 
   // Prism tests are disabled
   test.skip('retrieveByPhone: required and optional params', async () => {
-    const response = await client.contacts.retrieveByPhone({
-      phoneNumber: 'phoneNumber',
-      'x-api-key': '',
-      'x-sender-id': '00000000-0000-0000-0000-000000000000',
-    });
+    const response = await client.contacts.retrieveByPhone({ phoneNumber: 'phoneNumber' });
   });
 
   // Prism tests are disabled
   test.skip('retrieveID: only required params', async () => {
-    const responsePromise = client.contacts.retrieveID({
-      id: 'id',
-      'x-api-key': '',
-      'x-sender-id': '00000000-0000-0000-0000-000000000000',
-    });
+    const responsePromise = client.contacts.retrieveID({ id: 'id' });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -79,10 +57,6 @@ describe('resource contacts', () => {
 
   // Prism tests are disabled
   test.skip('retrieveID: required and optional params', async () => {
-    const response = await client.contacts.retrieveID({
-      id: 'id',
-      'x-api-key': '',
-      'x-sender-id': '00000000-0000-0000-0000-000000000000',
-    });
+    const response = await client.contacts.retrieveID({ id: 'id' });
   });
 });

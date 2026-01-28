@@ -5,8 +5,8 @@
   "compilerOptions": {
     "rootDir": "./dist/src",
     "paths": {
-      "sent-dm/*": ["./dist/src/*"],
-      "sent-dm": ["./dist/src/index.ts"]
+      "sentdm/*": ["./dist/src/*"],
+      "sentdm": ["./dist/src/index.ts"]
     },
     "noEmit": false,
     "declaration": true,

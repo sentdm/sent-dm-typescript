@@ -25,7 +25,7 @@ export default tseslint.config(
         {
           patterns: [
             {
-              regex: '^sentdm(/.*)?',
+              regex: '^sent_dm(/.*)?',
               message: 'Use a relative import, not a package import.',
             },
           ],

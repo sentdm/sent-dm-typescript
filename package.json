@@ -2,7 +2,7 @@
   "name": "@sentdm/sentdm",
   "version": "0.4.0",
   "description": "The official TypeScript library for the Sent Dm API",
-  "author": "Sent Dm <>",
+  "author": "Sent Dm <support@sent.dm>",
   "types": "dist/index.d.ts",
   "main": "dist/index.js",
   "type": "commonjs",

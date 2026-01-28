@@ -1,10 +1,10 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-import { APIPromise } from 'sent_dm/core/api-promise';
+import { APIPromise } from 'sentdm/core/api-promise';
 
 import util from 'node:util';
-import SentDm from 'sent_dm';
-import { APIUserAbortError } from 'sent_dm';
+import SentDm from 'sentdm';
+import { APIUserAbortError } from 'sentdm';
 const defaultFetch = fetch;
 
 describe('instantiate client', () => {

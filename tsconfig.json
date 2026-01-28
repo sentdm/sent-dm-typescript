@@ -8,8 +8,8 @@
     "moduleResolution": "node",
     "esModuleInterop": true,
     "paths": {
-      "sent_dm/*": ["./src/*"],
-      "sent_dm": ["./src/index.ts"]
+      "sentdm/*": ["./src/*"],
+      "sentdm": ["./src/index.ts"]
     },
     "noEmit": true,
 

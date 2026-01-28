@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-import SentDm from 'sent_dm';
+import SentDm from 'sentdm';
 
 const client = new SentDm({
   apiKey: 'My API Key',

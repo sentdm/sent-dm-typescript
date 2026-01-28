@@ -55,12 +55,12 @@ $ cd sent-dm-typescript
 # With yarn
 $ yarn link
 $ cd ../my-package
-$ yarn link @sentdm/sentdm
+$ yarn link sentdm
 
 # With pnpm
 $ pnpm link --global
 $ cd ../my-package
-$ pnpm link -—global @sentdm/sentdm
+$ pnpm link -—global sentdm
 ```
 
 ## Running tests

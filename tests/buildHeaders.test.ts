@@ -1,5 +1,5 @@
 import { inspect } from 'node:util';
-import { buildHeaders, type HeadersLike, type NullableHeaders } from '@sentdm/sentdm/internal/headers';
+import { buildHeaders, type HeadersLike, type NullableHeaders } from 'sentdm/internal/headers';
 
 function inspectNullableHeaders(headers: NullableHeaders) {
   return `NullableHeaders {${[

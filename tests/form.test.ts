@@ -1,5 +1,5 @@
-import { multipartFormRequestOptions, createForm } from 'sentdm/internal/uploads';
-import { toFile } from 'sentdm/core/uploads';
+import { multipartFormRequestOptions, createForm } from 'sent_dm/internal/uploads';
+import { toFile } from 'sent_dm/core/uploads';
 
 describe('form data validation', () => {
   test('valid values do not error', async () => {

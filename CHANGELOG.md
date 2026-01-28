@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.5 (2026-01-28)
+
+Full Changelog: [v0.3.4...v0.3.5](https://github.com/sentdm/sent-dm-typescript/compare/v0.3.4...v0.3.5)
+
+### Chores
+
+* update SDK settings ([fdb03bb](https://github.com/sentdm/sent-dm-typescript/commit/fdb03bb9fbc2fa9275027f48c006353f9e3fb532))
+
 ## 0.3.4 (2026-01-28)
 
 Full Changelog: [v0.3.3...v0.3.4](https://github.com/sentdm/sent-dm-typescript/compare/v0.3.3...v0.3.4)

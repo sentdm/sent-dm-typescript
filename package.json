@@ -1,5 +1,5 @@
 {
-  "name": "sentdm",
+  "name": "@sentdm/sentdm",
   "version": "0.3.6",
   "description": "The official TypeScript library for the Sent Dm API",
   "author": "Sent Dm <>",

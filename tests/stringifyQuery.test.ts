@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-import { SentDm } from 'sentdm';
+import { SentDm } from '@sentdm/sentdm';
 
 const { stringifyQuery } = SentDm.prototype as any;
 

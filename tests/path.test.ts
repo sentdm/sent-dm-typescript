@@ -1,4 +1,4 @@
-import { createPathTagFunction, encodeURIPath } from 'sent_dm/internal/utils/path';
+import { createPathTagFunction, encodeURIPath } from 'sentdm/internal/utils/path';
 import { inspect } from 'node:util';
 import { runInNewContext } from 'node:vm';
 

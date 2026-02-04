@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.5.1 (2026-02-04)
+
+Full Changelog: [v0.5.0...v0.5.1](https://github.com/sentdm/sent-dm-typescript/compare/v0.5.0...v0.5.1)
+
+### Bug Fixes
+
+* **client:** avoid memory leak with abort signals ([8c15797](https://github.com/sentdm/sent-dm-typescript/commit/8c15797a3ecd20acd88c145902e9ab369a33a10e))
+
+
+### Chores
+
+* **client:** do not parse responses with empty content-length ([3ee3441](https://github.com/sentdm/sent-dm-typescript/commit/3ee3441ca3e3ff41b298e4bf3b4faefc16073d6b))
+
 ## 0.5.0 (2026-01-28)
 
 Full Changelog: [v0.4.0...v0.5.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.4.0...v0.5.0)

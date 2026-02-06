@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.5.2 (2026-02-06)
+
+Full Changelog: [v0.5.1...v0.5.2](https://github.com/sentdm/sent-dm-typescript/compare/v0.5.1...v0.5.2)
+
+### Bug Fixes
+
+* **client:** avoid removing abort listener too early ([9520f5c](https://github.com/sentdm/sent-dm-typescript/commit/9520f5ce6637464ef4b121813befbeacaa324755))
+
+
+### Chores
+
+* **client:** restructure abort controller binding ([2ceef5b](https://github.com/sentdm/sent-dm-typescript/commit/2ceef5bc3ee9a254a1c5118c6ad40b199f641019))
+* **internal:** upgrade pnpm ([427085a](https://github.com/sentdm/sent-dm-typescript/commit/427085aae80d84bec9eef9f3286cc34a61f21580))
+
 ## 0.5.1 (2026-02-04)
 
 Full Changelog: [v0.5.0...v0.5.1](https://github.com/sentdm/sent-dm-typescript/compare/v0.5.0...v0.5.1)

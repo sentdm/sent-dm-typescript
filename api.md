@@ -53,28 +53,4 @@ Methods:
 
 # Organizations
 
-Types:
-
-- <code><a href="./src/resources/organizations/organizations.ts">ProfileSummary</a></code>
-- <code><a href="./src/resources/organizations/organizations.ts">OrganizationListResponse</a></code>
-- <code><a href="./src/resources/organizations/organizations.ts">OrganizationRetrieveProfilesResponse</a></code>
-
-Methods:
-
-- <code title="get /v2/organizations">client.organizations.<a href="./src/resources/organizations/organizations.ts">list</a>() -> OrganizationListResponse</code>
-- <code title="get /v2/organizations/{orgId}/profiles">client.organizations.<a href="./src/resources/organizations/organizations.ts">retrieveProfiles</a>(orgID) -> OrganizationRetrieveProfilesResponse</code>
-
 ## Users
-
-Types:
-
-- <code><a href="./src/resources/organizations/users.ts">CustomerUser</a></code>
-- <code><a href="./src/resources/organizations/users.ts">UserListResponse</a></code>
-
-Methods:
-
-- <code title="get /v2/organizations/{customerId}/users/{userId}">client.organizations.users.<a href="./src/resources/organizations/users.ts">retrieve</a>(userID, { ...params }) -> CustomerUser</code>
-- <code title="get /v2/organizations/{customerId}/users">client.organizations.users.<a href="./src/resources/organizations/users.ts">list</a>(customerID, { ...params }) -> UserListResponse</code>
-- <code title="delete /v2/organizations/{customerId}/users/{userId}">client.organizations.users.<a href="./src/resources/organizations/users.ts">delete</a>(userID, { ...params }) -> void</code>
-- <code title="post /v2/organizations/{customerId}/users">client.organizations.users.<a href="./src/resources/organizations/users.ts">invite</a>(customerID, { ...params }) -> CustomerUser</code>
-- <code title="put /v2/organizations/{customerId}/users/{userId}">client.organizations.users.<a href="./src/resources/organizations/users.ts">updateRole</a>(userID, { ...params }) -> CustomerUser</code>

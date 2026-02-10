@@ -46,12 +46,7 @@ import {
   TemplateVariable,
   Templates,
 } from './resources/templates';
-import {
-  OrganizationListResponse,
-  OrganizationRetrieveProfilesResponse,
-  Organizations,
-  ProfileSummary,
-} from './resources/organizations/organizations';
+import { Organizations } from './resources/organizations/organizations';
 import { type Fetch } from './internal/builtin-types';
 import { HeadersLike, NullableHeaders, buildHeaders } from './internal/headers';
 import { FinalRequestOptions, RequestOptions } from './internal/request-options';
@@ -830,10 +825,5 @@ export declare namespace SentDm {
     type NumberLookupRetrieveParams as NumberLookupRetrieveParams,
   };
 
-  export {
-    Organizations as Organizations,
-    type ProfileSummary as ProfileSummary,
-    type OrganizationListResponse as OrganizationListResponse,
-    type OrganizationRetrieveProfilesResponse as OrganizationRetrieveProfilesResponse,
-  };
+  export { Organizations as Organizations };
 }

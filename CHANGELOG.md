@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.6.1 (2026-02-12)
+
+Full Changelog: [v0.6.0...v0.6.1](https://github.com/sentdm/sent-dm-typescript/compare/v0.6.0...v0.6.1)
+
+### Chores
+
+* **internal:** avoid type checking errors with ts-reset ([e7b5c33](https://github.com/sentdm/sent-dm-typescript/commit/e7b5c3330105ec380d0f46b7b8d0e83f270ef697))
+
 ## 0.6.0 (2026-02-10)
 
 Full Changelog: [v0.5.2...v0.6.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.5.2...v0.6.0)

@@ -20,12 +20,11 @@ export {
   type NumberLookupRetrieveResponse,
   type NumberLookupRetrieveParams,
 } from './number-lookup';
-export { Organizations } from './organizations/organizations';
 export {
   Templates,
   type TemplateBodyContent,
   type TemplateDefinition,
-  type TemplateResponse,
+  type TemplateResponseV2,
   type TemplateVariable,
   type TemplateListResponse,
   type TemplateCreateParams,

@@ -22,7 +22,10 @@ The full API of this library can be found in [api.md](api.md).
 ```js
 import SentDm from '@sentdm/sentdm';
 
-const client = new SentDm();
+const client = new SentDm({
+  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted
+  senderID: process.env['SENT_DM_SENDER_ID'], // This is the default and can be omitted
+});
 
 await client.messages.sendToPhone({
   phoneNumber: '+1234567890',
@@ -39,7 +42,10 @@ This library includes TypeScript definitions for all request params and response
 ```ts
 import SentDm from '@sentdm/sentdm';
 
-const client = new SentDm();
+const client = new SentDm({
+  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted
+  senderID: process.env['SENT_DM_SENDER_ID'], // This is the default and can be omitted
+});
 
 const params: SentDm.MessageSendToPhoneParams = {
   phoneNumber: '+1234567890',

@@ -1,20 +1,3 @@
-# Templates
-
-Types:
-
-- <code><a href="./src/resources/templates.ts">TemplateBodyContent</a></code>
-- <code><a href="./src/resources/templates.ts">TemplateDefinition</a></code>
-- <code><a href="./src/resources/templates.ts">TemplateResponse</a></code>
-- <code><a href="./src/resources/templates.ts">TemplateVariable</a></code>
-- <code><a href="./src/resources/templates.ts">TemplateListResponse</a></code>
-
-Methods:
-
-- <code title="post /v2/templates">client.templates.<a href="./src/resources/templates.ts">create</a>({ ...params }) -> TemplateResponse</code>
-- <code title="get /v2/templates/{id}">client.templates.<a href="./src/resources/templates.ts">retrieve</a>(id) -> TemplateResponse</code>
-- <code title="get /v2/templates">client.templates.<a href="./src/resources/templates.ts">list</a>({ ...params }) -> TemplateListResponse</code>
-- <code title="delete /v2/templates/{id}">client.templates.<a href="./src/resources/templates.ts">delete</a>(id) -> void</code>
-
 # Contacts
 
 Types:
@@ -41,6 +24,23 @@ Methods:
 - <code title="post /v2/messages/contact">client.messages.<a href="./src/resources/messages.ts">sendToContact</a>({ ...params }) -> void</code>
 - <code title="post /v2/messages/phone">client.messages.<a href="./src/resources/messages.ts">sendToPhone</a>({ ...params }) -> void</code>
 
+# Templates
+
+Types:
+
+- <code><a href="./src/resources/templates.ts">TemplateBodyContent</a></code>
+- <code><a href="./src/resources/templates.ts">TemplateDefinition</a></code>
+- <code><a href="./src/resources/templates.ts">TemplateResponseV2</a></code>
+- <code><a href="./src/resources/templates.ts">TemplateVariable</a></code>
+- <code><a href="./src/resources/templates.ts">TemplateListResponse</a></code>
+
+Methods:
+
+- <code title="post /v2/templates">client.templates.<a href="./src/resources/templates.ts">create</a>({ ...params }) -> TemplateResponseV2</code>
+- <code title="get /v2/templates/{id}">client.templates.<a href="./src/resources/templates.ts">retrieve</a>(id) -> TemplateResponseV2</code>
+- <code title="get /v2/templates">client.templates.<a href="./src/resources/templates.ts">list</a>({ ...params }) -> TemplateListResponse</code>
+- <code title="delete /v2/templates/{id}">client.templates.<a href="./src/resources/templates.ts">delete</a>(id) -> void</code>
+
 # NumberLookup
 
 Types:
@@ -50,7 +50,3 @@ Types:
 Methods:
 
 - <code title="get /v2/number-lookup">client.numberLookup.<a href="./src/resources/number-lookup.ts">retrieve</a>({ ...params }) -> NumberLookupRetrieveResponse</code>
-
-# Organizations
-
-## Users

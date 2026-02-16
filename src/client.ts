@@ -42,11 +42,10 @@ import {
   TemplateDefinition,
   TemplateListParams,
   TemplateListResponse,
-  TemplateResponse,
+  TemplateResponseV2,
   TemplateVariable,
   Templates,
 } from './resources/templates';
-import { Organizations } from './resources/organizations/organizations';
 import { type Fetch } from './internal/builtin-types';
 import { HeadersLike, NullableHeaders, buildHeaders } from './internal/headers';
 import { FinalRequestOptions, RequestOptions } from './internal/request-options';
@@ -62,12 +61,12 @@ import { isEmptyObj } from './internal/utils/values';
 
 export interface ClientOptions {
   /**
-   * Customer API key for authentication
+   * Customer API key for authentication. Use `sk_live_*` keys for production and `sk_test_*` keys for sandbox/testing. Pass via the `x-api-key` header.
    */
   apiKey?: string | undefined;
 
   /**
-   * Customer sender ID (GUID) identifying the customer account
+   * Customer sender ID (UUID) identifying the customer account. Obtain this from your account settings. Pass via the `x-sender-id` header.
    */
   senderID?: string | undefined;
 
@@ -775,32 +774,19 @@ export class SentDm {
 
   static toFile = Uploads.toFile;
 
-  templates: API.Templates = new API.Templates(this);
   contacts: API.Contacts = new API.Contacts(this);
   messages: API.Messages = new API.Messages(this);
+  templates: API.Templates = new API.Templates(this);
   numberLookup: API.NumberLookup = new API.NumberLookup(this);
-  organizations: API.Organizations = new API.Organizations(this);
 }
 
-SentDm.Templates = Templates;
 SentDm.Contacts = Contacts;
 SentDm.Messages = Messages;
+SentDm.Templates = Templates;
 SentDm.NumberLookup = NumberLookup;
-SentDm.Organizations = Organizations;
 
 export declare namespace SentDm {
   export type RequestOptions = Opts.RequestOptions;
-
-  export {
-    Templates as Templates,
-    type TemplateBodyContent as TemplateBodyContent,
-    type TemplateDefinition as TemplateDefinition,
-    type TemplateResponse as TemplateResponse,
-    type TemplateVariable as TemplateVariable,
-    type TemplateListResponse as TemplateListResponse,
-    type TemplateCreateParams as TemplateCreateParams,
-    type TemplateListParams as TemplateListParams,
-  };
 
   export {
     Contacts as Contacts,
@@ -820,10 +806,19 @@ export declare namespace SentDm {
   };
 
   export {
+    Templates as Templates,
+    type TemplateBodyContent as TemplateBodyContent,
+    type TemplateDefinition as TemplateDefinition,
+    type TemplateResponseV2 as TemplateResponseV2,
+    type TemplateVariable as TemplateVariable,
+    type TemplateListResponse as TemplateListResponse,
+    type TemplateCreateParams as TemplateCreateParams,
+    type TemplateListParams as TemplateListParams,
+  };
+
+  export {
     NumberLookup as NumberLookup,
     type NumberLookupRetrieveResponse as NumberLookupRetrieveResponse,
     type NumberLookupRetrieveParams as NumberLookupRetrieveParams,
   };
-
-  export { Organizations as Organizations };
 }

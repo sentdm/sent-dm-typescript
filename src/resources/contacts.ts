@@ -1,142 +1,345 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../core/resource';
+import * as ContactsAPI from './contacts';
+import * as WebhooksAPI from './webhooks';
 import { APIPromise } from '../core/api-promise';
+import { buildHeaders } from '../internal/headers';
 import { RequestOptions } from '../internal/request-options';
+import { path } from '../internal/utils/path';
 
 export class Contacts extends APIResource {
   /**
+   * Creates a new contact by phone number and associates it with the authenticated
+   * customer.
+   *
+   * @example
+   * ```ts
+   * const apiResponseContact = await client.contacts.create();
+   * ```
+   */
+  create(params: ContactCreateParams, options?: RequestOptions): APIPromise<APIResponseContact> {
+    const { 'Idempotency-Key': idempotencyKey, ...body } = params;
+    return this._client.post('/v3/contacts', {
+      body,
+      ...options,
+      headers: buildHeaders([
+        { ...(idempotencyKey != null ? { 'Idempotency-Key': idempotencyKey } : undefined) },
+        options?.headers,
+      ]),
+    });
+  }
+
+  /**
+   * Retrieves a specific contact by their unique identifier. Returns detailed
+   * contact information including phone formats, available channels, and opt-out
+   * status.
+   *
+   * @example
+   * ```ts
+   * const apiResponseContact = await client.contacts.retrieve(
+   *   '6ba7b810-9dad-11d1-80b4-00c04fd430c8',
+   * );
+   * ```
+   */
+  retrieve(id: string, options?: RequestOptions): APIPromise<APIResponseContact> {
+    return this._client.get(path`/v3/contacts/${id}`, options);
+  }
+
+  /**
+   * Updates a contact's default channel and/or opt-out status. Inherited contacts
+   * cannot be updated.
+   *
+   * @example
+   * ```ts
+   * const apiResponseContact = await client.contacts.update(
+   *   '6ba7b810-9dad-11d1-80b4-00c04fd430c8',
+   * );
+   * ```
+   */
+  update(id: string, params: ContactUpdateParams, options?: RequestOptions): APIPromise<APIResponseContact> {
+    const { 'Idempotency-Key': idempotencyKey, ...body } = params;
+    return this._client.patch(path`/v3/contacts/${id}`, {
+      body,
+      ...options,
+      headers: buildHeaders([
+        { ...(idempotencyKey != null ? { 'Idempotency-Key': idempotencyKey } : undefined) },
+        options?.headers,
+      ]),
+    });
+  }
+
+  /**
    * Retrieves a paginated list of contacts for the authenticated customer. Supports
-   * server-side pagination with configurable page size. The customer ID is extracted
-   * from the authentication token.
+   * filtering by search term, channel, or phone number.
+   *
+   * @example
+   * ```ts
+   * const contacts = await client.contacts.list({
+   *   page: 0,
+   *   pageSize: 0,
+   * });
+   * ```
    */
   list(query: ContactListParams, options?: RequestOptions): APIPromise<ContactListResponse> {
-    return this._client.get('/v2/contacts', { query, ...options });
+    return this._client.get('/v3/contacts', { query, ...options });
   }
 
   /**
-   * Retrieves a contact by their phone number for the authenticated customer. Phone
-   * number should be in international format (e.g., +1234567890). The customer ID is
-   * extracted from the authentication token.
+   * Dissociates a contact from the authenticated customer. Inherited contacts cannot
+   * be deleted.
+   *
+   * @example
+   * ```ts
+   * await client.contacts.delete(
+   *   '6ba7b810-9dad-11d1-80b4-00c04fd430c8',
+   *   { body: {} },
+   * );
+   * ```
    */
-  retrieveByPhone(
-    query: ContactRetrieveByPhoneParams,
-    options?: RequestOptions,
-  ): APIPromise<ContactListItem> {
-    return this._client.get('/v2/contacts/phone', { query, ...options });
-  }
-
-  /**
-   * Retrieves a specific contact by their unique identifier for the authenticated
-   * customer. The customer ID is extracted from the authentication token. Returns
-   * detailed contact information including phone number and creation timestamp.
-   */
-  retrieveID(query: ContactRetrieveIDParams, options?: RequestOptions): APIPromise<ContactListItem> {
-    return this._client.get('/v2/contacts/id', { query, ...options });
+  delete(id: string, params: ContactDeleteParams, options?: RequestOptions): APIPromise<void> {
+    const { body } = params;
+    return this._client.delete(path`/v3/contacts/${id}`, {
+      body: body,
+      ...options,
+      headers: buildHeaders([{ 'Content-Type': '*/*', Accept: '*/*' }, options?.headers]),
+    });
   }
 }
 
 /**
- * Represents a contact in the customer's contact list
+ * Standard API response envelope for all v3 endpoints
  */
-export interface ContactListItem {
+export interface APIResponseContact {
   /**
-   * The unique identifier of the contact
+   * The response data (null if error)
+   */
+  data?: Contact | null;
+
+  /**
+   * Error details (null if successful)
+   */
+  error?: WebhooksAPI.APIError | null;
+
+  /**
+   * Metadata about the request and response
+   */
+  meta?: WebhooksAPI.APIMeta;
+
+  /**
+   * Indicates whether the request was successful
+   */
+  success?: boolean;
+}
+
+/**
+ * Contact response for v3 API Uses snake_case for JSON property names
+ */
+export interface Contact {
+  /**
+   * Unique identifier for the contact
    */
   id?: string;
 
   /**
-   * Comma-separated list of available messaging channels for this contact (e.g.,
-   * "sms,whatsapp")
+   * Comma-separated list of available messaging channels (e.g., "sms,whatsapp")
    */
-  availableChannels?: string;
+  available_channels?: string;
 
   /**
-   * The country calling code (e.g., 1 for US/Canada)
+   * Country calling code (e.g., 1 for US/Canada)
    */
-  countryCode?: string;
+  country_code?: string;
 
   /**
-   * The default messaging channel to use for this contact (e.g., "sms" or
-   * "whatsapp")
+   * When the contact was created
    */
-  defaultChannel?: string;
+  created_at?: string;
 
   /**
-   * The phone number formatted in E.164 standard (e.g., +1234567890)
+   * Default messaging channel to use (e.g., "sms" or "whatsapp")
    */
-  formatE164?: string;
+  default_channel?: string;
 
   /**
-   * The phone number formatted for international dialing (e.g., +1 234-567-890)
+   * Phone number in E.164 format (e.g., +1234567890)
    */
-  formatInternational?: string;
+  format_e164?: string;
 
   /**
-   * The phone number formatted for national dialing (e.g., (234) 567-890)
+   * Phone number in international format (e.g., +1 234-567-890)
    */
-  formatNational?: string;
+  format_international?: string;
 
   /**
-   * The phone number formatted according to RFC 3966 (e.g., tel:+1-234-567-890)
+   * Phone number in national format (e.g., (234) 567-890)
    */
-  formatRfc?: string;
+  format_national?: string;
 
   /**
-   * The phone number in its original format
+   * Phone number in RFC 3966 format (e.g., tel:+1-234-567-890)
    */
-  phoneNumber?: string;
+  format_rfc?: string;
 
   /**
-   * The ISO 3166-1 alpha-2 country code (e.g., US, CA, GB)
+   * Whether this is an inherited contact (read-only)
    */
-  regionCode?: string;
+  is_inherited?: boolean;
+
+  /**
+   * Whether the contact has opted out of messaging
+   */
+  opt_out?: boolean;
+
+  /**
+   * Phone number in original format
+   */
+  phone_number?: string;
+
+  /**
+   * ISO 3166-1 alpha-2 country code (e.g., US, CA, GB)
+   */
+  region_code?: string;
+
+  /**
+   * When the contact was last updated
+   */
+  updated_at?: string | null;
 }
 
+/**
+ * Standard API response envelope for all v3 endpoints
+ */
 export interface ContactListResponse {
-  items?: Array<ContactListItem>;
+  /**
+   * The response data (null if error)
+   */
+  data?: ContactListResponse.Data | null;
 
-  page?: number;
+  /**
+   * Error details (null if successful)
+   */
+  error?: WebhooksAPI.APIError | null;
 
-  pageSize?: number;
+  /**
+   * Metadata about the request and response
+   */
+  meta?: WebhooksAPI.APIMeta;
 
-  totalCount?: number;
+  /**
+   * Indicates whether the request was successful
+   */
+  success?: boolean;
+}
 
-  totalPages?: number;
+export namespace ContactListResponse {
+  /**
+   * The response data (null if error)
+   */
+  export interface Data {
+    /**
+     * List of contacts
+     */
+    contacts?: Array<ContactsAPI.Contact>;
+
+    /**
+     * Pagination metadata
+     */
+    pagination?: WebhooksAPI.PaginationMeta;
+  }
+}
+
+export interface ContactCreateParams {
+  /**
+   * Body param: Phone number of the contact to create
+   */
+  phone_number?: string;
+
+  /**
+   * Body param: Test mode flag - when true, the operation is simulated without side
+   * effects Useful for testing integrations without actual execution
+   */
+  test_mode?: boolean;
+
+  /**
+   * Header param: Unique key to ensure idempotent request processing. Must be 1-255
+   * alphanumeric characters, hyphens, or underscores. Responses are cached for 24
+   * hours per key per customer.
+   */
+  'Idempotency-Key'?: string;
+}
+
+export interface ContactUpdateParams {
+  /**
+   * Body param: Default messaging channel: "sms" or "whatsapp"
+   */
+  default_channel?: string | null;
+
+  /**
+   * Body param: Whether the contact has opted out of messaging
+   */
+  opt_out?: boolean | null;
+
+  /**
+   * Body param: Test mode flag - when true, the operation is simulated without side
+   * effects Useful for testing integrations without actual execution
+   */
+  test_mode?: boolean;
+
+  /**
+   * Header param: Unique key to ensure idempotent request processing. Must be 1-255
+   * alphanumeric characters, hyphens, or underscores. Responses are cached for 24
+   * hours per key per customer.
+   */
+  'Idempotency-Key'?: string;
 }
 
 export interface ContactListParams {
   /**
-   * The page number (zero-indexed). Default is 0.
+   * Page number (1-indexed)
    */
   page: number;
 
-  /**
-   * The number of items per page. Default is 20.
-   */
   pageSize: number;
+
+  /**
+   * Optional channel filter (sms, whatsapp)
+   */
+  channel?: string | null;
+
+  /**
+   * Optional phone number filter (alternative to list view)
+   */
+  phone?: string | null;
+
+  /**
+   * Optional search term for filtering contacts
+   */
+  search?: string | null;
 }
 
-export interface ContactRetrieveByPhoneParams {
+export interface ContactDeleteParams {
   /**
-   * The phone number in international format (e.g., +1234567890)
+   * Request to delete/dissociate a contact
    */
-  phoneNumber: string;
+  body: ContactDeleteParams.Body;
 }
 
-export interface ContactRetrieveIDParams {
+export namespace ContactDeleteParams {
   /**
-   * The unique identifier (GUID) of the resource to retrieve
+   * Request to delete/dissociate a contact
    */
-  id: string;
+  export interface Body extends WebhooksAPI.MutationRequest {}
 }
 
 export declare namespace Contacts {
   export {
-    type ContactListItem as ContactListItem,
+    type APIResponseContact as APIResponseContact,
+    type Contact as Contact,
     type ContactListResponse as ContactListResponse,
+    type ContactCreateParams as ContactCreateParams,
+    type ContactUpdateParams as ContactUpdateParams,
     type ContactListParams as ContactListParams,
-    type ContactRetrieveByPhoneParams as ContactRetrieveByPhoneParams,
-    type ContactRetrieveIDParams as ContactRetrieveIDParams,
+    type ContactDeleteParams as ContactDeleteParams,
   };
 }

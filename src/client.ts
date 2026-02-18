@@ -49,6 +49,12 @@ import {
 } from './resources/profiles';
 import {
   APIResponseTemplate,
+  SentDmServicesCommonContractsPocOsAuthenticationConfig,
+  SentDmServicesCommonContractsPocOsTemplateBody,
+  SentDmServicesCommonContractsPocOsTemplateButton,
+  SentDmServicesCommonContractsPocOsTemplateButtonProps,
+  SentDmServicesCommonContractsPocOsTemplateFooter,
+  SentDmServicesCommonContractsPocOsTemplateHeader,
   Template,
   TemplateBodyContent,
   TemplateCreateParams,
@@ -874,6 +880,12 @@ export declare namespace SentDm {
   export {
     Templates as Templates,
     type APIResponseTemplate as APIResponseTemplate,
+    type SentDmServicesCommonContractsPocOsAuthenticationConfig as SentDmServicesCommonContractsPocOsAuthenticationConfig,
+    type SentDmServicesCommonContractsPocOsTemplateBody as SentDmServicesCommonContractsPocOsTemplateBody,
+    type SentDmServicesCommonContractsPocOsTemplateButton as SentDmServicesCommonContractsPocOsTemplateButton,
+    type SentDmServicesCommonContractsPocOsTemplateButtonProps as SentDmServicesCommonContractsPocOsTemplateButtonProps,
+    type SentDmServicesCommonContractsPocOsTemplateFooter as SentDmServicesCommonContractsPocOsTemplateFooter,
+    type SentDmServicesCommonContractsPocOsTemplateHeader as SentDmServicesCommonContractsPocOsTemplateHeader,
     type Template as Template,
     type TemplateBodyContent as TemplateBodyContent,
     type TemplateDefinition as TemplateDefinition,

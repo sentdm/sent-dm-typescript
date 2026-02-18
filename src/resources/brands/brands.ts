@@ -13,6 +13,7 @@ import {
   CampaignUpdateParams,
   Campaigns,
   MessagingUseCaseUs,
+  SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData,
   TcrCampaignWithUseCases,
 } from './campaigns';
 import { APIPromise } from '../../core/api-promise';
@@ -602,6 +603,7 @@ export declare namespace Brands {
     type BaseDto as BaseDto,
     type CampaignData as CampaignData,
     type MessagingUseCaseUs as MessagingUseCaseUs,
+    type SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData as SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData,
     type TcrCampaignWithUseCases as TcrCampaignWithUseCases,
     type CampaignListResponse as CampaignListResponse,
     type CampaignCreateParams as CampaignCreateParams,

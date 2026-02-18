@@ -19,6 +19,7 @@ export {
   type BaseDto,
   type CampaignData,
   type MessagingUseCaseUs,
+  type SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData,
   type TcrCampaignWithUseCases,
   type CampaignListResponse,
   type CampaignCreateParams,

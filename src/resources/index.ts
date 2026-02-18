@@ -46,6 +46,12 @@ export {
 export {
   Templates,
   type APIResponseTemplate,
+  type SentDmServicesCommonContractsPocOsAuthenticationConfig,
+  type SentDmServicesCommonContractsPocOsTemplateBody,
+  type SentDmServicesCommonContractsPocOsTemplateButton,
+  type SentDmServicesCommonContractsPocOsTemplateButtonProps,
+  type SentDmServicesCommonContractsPocOsTemplateFooter,
+  type SentDmServicesCommonContractsPocOsTemplateHeader,
   type Template,
   type TemplateBodyContent,
   type TemplateDefinition,

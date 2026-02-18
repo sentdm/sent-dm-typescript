@@ -7,10 +7,10 @@ const client = new SentDm({
   baseURL: process.env['TEST_API_BASE_URL'] ?? 'http://127.0.0.1:4010',
 });
 
-describe('resource messages', () => {
+describe('resource users', () => {
   // Prism tests are disabled
-  test.skip('retrieveActivities', async () => {
-    const responsePromise = client.messages.retrieveActivities('8ba7b830-9dad-11d1-80b4-00c04fd430c8');
+  test.skip('retrieve', async () => {
+    const responsePromise = client.users.retrieve('182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e');
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -21,8 +21,8 @@ describe('resource messages', () => {
   });
 
   // Prism tests are disabled
-  test.skip('retrieveStatus', async () => {
-    const responsePromise = client.messages.retrieveStatus('8ba7b830-9dad-11d1-80b4-00c04fd430c8');
+  test.skip('list', async () => {
+    const responsePromise = client.users.list();
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -33,8 +33,32 @@ describe('resource messages', () => {
   });
 
   // Prism tests are disabled
-  test.skip('send', async () => {
-    const responsePromise = client.messages.send({});
+  test.skip('invite', async () => {
+    const responsePromise = client.users.invite({});
+    const rawResponse = await responsePromise.asResponse();
+    expect(rawResponse).toBeInstanceOf(Response);
+    const response = await responsePromise;
+    expect(response).not.toBeInstanceOf(Response);
+    const dataAndResponse = await responsePromise.withResponse();
+    expect(dataAndResponse.data).toBe(response);
+    expect(dataAndResponse.response).toBe(rawResponse);
+  });
+
+  // Prism tests are disabled
+  test.skip('remove', async () => {
+    const responsePromise = client.users.remove('182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e', {});
+    const rawResponse = await responsePromise.asResponse();
+    expect(rawResponse).toBeInstanceOf(Response);
+    const response = await responsePromise;
+    expect(response).not.toBeInstanceOf(Response);
+    const dataAndResponse = await responsePromise.withResponse();
+    expect(dataAndResponse.data).toBe(response);
+    expect(dataAndResponse.response).toBe(rawResponse);
+  });
+
+  // Prism tests are disabled
+  test.skip('updateRole', async () => {
+    const responsePromise = client.users.updateRole('182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e', {});
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;

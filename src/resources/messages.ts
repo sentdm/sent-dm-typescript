@@ -1,6 +1,7 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../core/resource';
+import * as WebhooksAPI from './webhooks';
 import { APIPromise } from '../core/api-promise';
 import { buildHeaders } from '../internal/headers';
 import { RequestOptions } from '../internal/request-options';
@@ -8,276 +9,370 @@ import { path } from '../internal/utils/path';
 
 export class Messages extends APIResource {
   /**
-   * Retrieves comprehensive details about a specific message using the message ID.
-   * Returns complete message data including delivery status, channel information,
-   * template details, contact information, and pricing. The customer ID is extracted
-   * from the authentication token to ensure the message belongs to the authenticated
-   * customer.
+   * Retrieves the activity log for a specific message. Activities track the message
+   * lifecycle including acceptance, processing, sending, delivery, and any errors.
    *
    * @example
    * ```ts
-   * const message = await client.messages.retrieve(
-   *   '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
+   * const response = await client.messages.retrieveActivities(
+   *   '8ba7b830-9dad-11d1-80b4-00c04fd430c8',
    * );
    * ```
    */
-  retrieve(id: string, options?: RequestOptions): APIPromise<MessageRetrieveResponse> {
-    return this._client.get(path`/v2/messages/${id}`, options);
+  retrieveActivities(id: string, options?: RequestOptions): APIPromise<MessageRetrieveActivitiesResponse> {
+    return this._client.get(path`/v3/messages/${id}/activities`, options);
   }
 
   /**
-   * Sends a message to a phone number using the default template. This endpoint is
-   * rate limited to 5 messages per customer per day. The customer ID is extracted
-   * from the authentication token.
+   * Retrieves the current status and details of a message by ID. Includes delivery
+   * status, timestamps, and error information if applicable.
    *
    * @example
    * ```ts
-   * await client.messages.sendQuickMessage({
-   *   customMessage: 'Hello, this is a test message!',
-   *   phoneNumber: '+1234567890',
-   * });
+   * const response = await client.messages.retrieveStatus(
+   *   '8ba7b830-9dad-11d1-80b4-00c04fd430c8',
+   * );
    * ```
    */
-  sendQuickMessage(body: MessageSendQuickMessageParams, options?: RequestOptions): APIPromise<void> {
-    return this._client.post('/v2/messages/quick-message', {
-      body,
-      ...options,
-      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
-    });
+  retrieveStatus(id: string, options?: RequestOptions): APIPromise<MessageRetrieveStatusResponse> {
+    return this._client.get(path`/v3/messages/${id}`, options);
   }
 
   /**
-   * Sends a message to a specific contact using a template. The message can be sent
-   * via SMS or WhatsApp depending on the contact's capabilities. Optionally specify
-   * a webhook URL to receive delivery status updates. The customer ID is extracted
-   * from the authentication token.
+   * Sends a message to one or more recipients using a template. Supports
+   * multi-channel broadcast — when multiple channels are specified (e.g. ["sms",
+   * "whatsapp"]), a separate message is created for each (recipient, channel) pair.
+   * Returns immediately with per-recipient message IDs for async tracking via
+   * webhooks or the GET /messages/{id} endpoint.
    *
    * @example
    * ```ts
-   * await client.messages.sendToContact({
-   *   contactId: '6ba7b810-9dad-11d1-80b4-00c04fd430c8',
-   *   templateId: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
-   * });
+   * const response = await client.messages.send();
    * ```
    */
-  sendToContact(body: MessageSendToContactParams, options?: RequestOptions): APIPromise<void> {
-    return this._client.post('/v2/messages/contact', {
+  send(params: MessageSendParams, options?: RequestOptions): APIPromise<MessageSendResponse> {
+    const { 'Idempotency-Key': idempotencyKey, ...body } = params;
+    return this._client.post('/v3/messages', {
       body,
       ...options,
-      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
-    });
-  }
-
-  /**
-   * Sends a message to a phone number using a template. The phone number doesn't
-   * need to be a pre-existing contact. The message can be sent via SMS or WhatsApp.
-   * Optionally specify a webhook URL to receive delivery status updates. The
-   * customer ID is extracted from the authentication token.
-   *
-   * @example
-   * ```ts
-   * await client.messages.sendToPhone({
-   *   phoneNumber: '+1234567890',
-   *   templateId: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
-   * });
-   * ```
-   */
-  sendToPhone(body: MessageSendToPhoneParams, options?: RequestOptions): APIPromise<void> {
-    return this._client.post('/v2/messages/phone', {
-      body,
-      ...options,
-      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
+      headers: buildHeaders([
+        { ...(idempotencyKey != null ? { 'Idempotency-Key': idempotencyKey } : undefined) },
+        options?.headers,
+      ]),
     });
   }
 }
 
 /**
- * Represents a sent message with comprehensive delivery and template information
- * (v2)
+ * Standard API response envelope for all v3 endpoints
  */
-export interface MessageRetrieveResponse {
+export interface MessageRetrieveActivitiesResponse {
   /**
-   * The unique identifier of the message
+   * The response data (null if error)
    */
-  id?: string;
+  data?: MessageRetrieveActivitiesResponse.Data | null;
 
   /**
-   * The messaging channel used (e.g., SMS, WhatsApp)
+   * Error details (null if successful)
    */
-  channel?: string;
+  error?: WebhooksAPI.APIError | null;
 
   /**
-   * The unique identifier of the contact who received the message
+   * Metadata about the request and response
    */
-  contactId?: string;
+  meta?: WebhooksAPI.APIMeta;
 
   /**
-   * The final price charged for sending this message
+   * Indicates whether the request was successful
    */
-  correctedPrice?: number | null;
-
-  /**
-   * The date and time when the message was created
-   */
-  createdAt?: string;
-
-  /**
-   * The unique identifier of the customer who sent the message
-   */
-  customerId?: string;
-
-  /**
-   * A chronological list of status change events for this message. Each event
-   * includes a status and timestamp, following industry standards (Twilio, SendGrid,
-   * Mailgun). Events are ordered chronologically from oldest to newest.
-   */
-  events?: Array<MessageRetrieveResponse.Event> | null;
-
-  /**
-   * The message body content with variables substituted
-   */
-  messageBody?: MessageRetrieveResponse.MessageBody | null;
-
-  /**
-   * The phone number of the recipient (E.164 format)
-   */
-  phoneNumber?: string;
-
-  /**
-   * The phone number in international format
-   */
-  phoneNumberInternational?: string;
-
-  /**
-   * The region code of the phone number (e.g., US, GB, DE)
-   */
-  regionCode?: string;
-
-  /**
-   * The delivery status of the message (e.g., sent, delivered, failed, read)
-   */
-  status?: string;
-
-  /**
-   * The category of the template (e.g., MARKETING, UTILITY, AUTHENTICATION)
-   */
-  templateCategory?: string;
-
-  /**
-   * The unique identifier of the template used for this message (null if no template
-   * was used)
-   */
-  templateId?: string | null;
-
-  /**
-   * The display name of the template
-   */
-  templateName?: string;
+  success?: boolean;
 }
 
-export namespace MessageRetrieveResponse {
+export namespace MessageRetrieveActivitiesResponse {
   /**
-   * Represents a status change event in a message's lifecycle Follows industry
-   * standards (Twilio, SendGrid, Mailgun pattern)
+   * The response data (null if error)
    */
-  export interface Event {
+  export interface Data {
     /**
-     * Optional human-readable description of the event Useful for error messages or
-     * additional context
+     * List of activity events ordered by most recent first
      */
-    description?: string | null;
+    activities?: Array<Data.Activity>;
 
     /**
-     * The status of the message at this point in time Examples: "queued", "sent",
-     * "delivered", "read", "failed"
+     * The message ID these activities belong to
      */
-    status?: string;
-
-    /**
-     * When this status change occurred (ISO 8601 format)
-     */
-    timestamp?: string;
+    message_id?: string;
   }
 
-  /**
-   * The message body content with variables substituted
-   */
-  export interface MessageBody {
-    buttons?: Array<MessageBody.Button> | null;
+  export namespace Data {
+    /**
+     * A single message activity event for v3 API
+     */
+    export interface Activity {
+      /**
+       * Additional content or payload for the activity (e.g., channel response)
+       */
+      content?: string | null;
 
-    content?: string;
+      /**
+       * Human-readable description of the activity
+       */
+      description?: string;
 
-    footer?: string | null;
+      /**
+       * Activity status (e.g., ACCEPTED, PROCESSED, SENT, DELIVERED, FAILED)
+       */
+      status?: string;
 
-    header?: string | null;
-  }
-
-  export namespace MessageBody {
-    export interface Button {
-      type?: string;
-
-      value?: string;
+      /**
+       * When this activity occurred
+       */
+      timestamp?: string;
     }
   }
 }
 
-export interface MessageSendQuickMessageParams {
+/**
+ * Standard API response envelope for all v3 endpoints
+ */
+export interface MessageRetrieveStatusResponse {
   /**
-   * The custom message content to include in the template
+   * The response data (null if error)
    */
-  customMessage: string;
+  data?: MessageRetrieveStatusResponse.Data | null;
 
   /**
-   * The phone number to send the message to, in international format (e.g.,
-   * +1234567890)
+   * Error details (null if successful)
    */
-  phoneNumber: string;
+  error?: WebhooksAPI.APIError | null;
+
+  /**
+   * Metadata about the request and response
+   */
+  meta?: WebhooksAPI.APIMeta;
+
+  /**
+   * Indicates whether the request was successful
+   */
+  success?: boolean;
 }
 
-export interface MessageSendToContactParams {
+export namespace MessageRetrieveStatusResponse {
   /**
-   * The unique identifier of the contact to send the message to
+   * The response data (null if error)
    */
-  contactId: string;
+  export interface Data {
+    id?: string;
 
-  /**
-   * The unique identifier of the template to use for the message
-   */
-  templateId: string;
+    channel?: string;
 
-  /**
-   * Optional key-value pairs of template variables to replace in the template body.
-   * For example, if your template contains "Hello {{name}}", you would provide {
-   * "name": "John Doe" }
-   */
-  templateVariables?: { [key: string]: string } | null;
+    contact_id?: string;
+
+    created_at?: string;
+
+    customer_id?: string;
+
+    events?: Array<Data.Event> | null;
+
+    /**
+     * Structured message body format for database storage. Preserves channel-specific
+     * components (header, body, footer, buttons).
+     */
+    message_body?: Data.MessageBody | null;
+
+    phone?: string;
+
+    phone_international?: string;
+
+    price?: number | null;
+
+    region_code?: string;
+
+    status?: string;
+
+    template_category?: string;
+
+    template_id?: string | null;
+
+    template_name?: string;
+  }
+
+  export namespace Data {
+    /**
+     * Represents a status change event in a message's lifecycle (v3)
+     */
+    export interface Event {
+      description?: string | null;
+
+      status?: string;
+
+      timestamp?: string;
+    }
+
+    /**
+     * Structured message body format for database storage. Preserves channel-specific
+     * components (header, body, footer, buttons).
+     */
+    export interface MessageBody {
+      buttons?: Array<MessageBody.Button> | null;
+
+      content?: string;
+
+      footer?: string | null;
+
+      header?: string | null;
+    }
+
+    export namespace MessageBody {
+      export interface Button {
+        type?: string;
+
+        value?: string;
+      }
+    }
+  }
 }
 
-export interface MessageSendToPhoneParams {
+/**
+ * Standard API response envelope for all v3 endpoints
+ */
+export interface MessageSendResponse {
   /**
-   * The phone number to send the message to, in international format (e.g.,
-   * +1234567890)
+   * The response data (null if error)
    */
-  phoneNumber: string;
+  data?: MessageSendResponse.Data | null;
 
   /**
-   * The unique identifier of the template to use for the message
+   * Error details (null if successful)
    */
-  templateId: string;
+  error?: WebhooksAPI.APIError | null;
 
   /**
-   * Optional key-value pairs of template variables to replace in the template body.
-   * For example, if your template contains "Hello {{name}}", you would provide {
-   * "name": "John Doe" }
+   * Metadata about the request and response
    */
-  templateVariables?: { [key: string]: string } | null;
+  meta?: WebhooksAPI.APIMeta;
+
+  /**
+   * Indicates whether the request was successful
+   */
+  success?: boolean;
+}
+
+export namespace MessageSendResponse {
+  /**
+   * The response data (null if error)
+   */
+  export interface Data {
+    /**
+     * Resolved template body text
+     */
+    body?: string | null;
+
+    /**
+     * Per-recipient message results
+     */
+    recipients?: Array<Data.Recipient>;
+
+    /**
+     * Overall request status (e.g. "accepted")
+     */
+    status?: string;
+
+    /**
+     * Template ID that was used
+     */
+    template_id?: string;
+
+    /**
+     * Template display name
+     */
+    template_name?: string;
+  }
+
+  export namespace Data {
+    /**
+     * Per-recipient result in the send message response
+     */
+    export interface Recipient {
+      /**
+       * Channel this message will be sent on (e.g. "sms", "whatsapp"), or null for
+       * auto-detect
+       */
+      channel?: string | null;
+
+      /**
+       * Unique message identifier for tracking this recipient's message
+       */
+      message_id?: string;
+
+      /**
+       * Phone number in E.164 format
+       */
+      to?: string;
+    }
+  }
+}
+
+export interface MessageSendParams {
+  /**
+   * Body param: Channels to broadcast on, e.g. ["whatsapp", "sms"]. Each channel
+   * produces a separate message per recipient. "sent" = auto-detect, "rcs" =
+   * reserved (skipped). Defaults to ["sent"] (auto-detect) if omitted.
+   */
+  channel?: Array<string> | null;
+
+  /**
+   * Body param: Template reference (by id or name, with optional parameters)
+   */
+  template?: MessageSendParams.Template;
+
+  /**
+   * Body param: Test mode flag - when true, the operation is simulated without side
+   * effects Useful for testing integrations without actual execution
+   */
+  test_mode?: boolean;
+
+  /**
+   * Body param: List of recipient phone numbers in E.164 format (multi-recipient
+   * fan-out)
+   */
+  to?: Array<string>;
+
+  /**
+   * Header param: Unique key to ensure idempotent request processing. Must be 1-255
+   * alphanumeric characters, hyphens, or underscores. Responses are cached for 24
+   * hours per key per customer.
+   */
+  'Idempotency-Key'?: string;
+}
+
+export namespace MessageSendParams {
+  /**
+   * Template reference (by id or name, with optional parameters)
+   */
+  export interface Template {
+    /**
+     * Template ID (mutually exclusive with name)
+     */
+    id?: string | null;
+
+    /**
+     * Template name (mutually exclusive with id)
+     */
+    name?: string | null;
+
+    /**
+     * Template variable parameters for personalization
+     */
+    parameters?: { [key: string]: string } | null;
+  }
 }
 
 export declare namespace Messages {
   export {
-    type MessageRetrieveResponse as MessageRetrieveResponse,
-    type MessageSendQuickMessageParams as MessageSendQuickMessageParams,
-    type MessageSendToContactParams as MessageSendToContactParams,
-    type MessageSendToPhoneParams as MessageSendToPhoneParams,
+    type MessageRetrieveActivitiesResponse as MessageRetrieveActivitiesResponse,
+    type MessageRetrieveStatusResponse as MessageRetrieveStatusResponse,
+    type MessageSendResponse as MessageSendResponse,
+    type MessageSendParams as MessageSendParams,
   };
 }

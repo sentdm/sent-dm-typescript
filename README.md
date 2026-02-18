@@ -24,14 +24,19 @@ import SentDm from '@sentdm/sentdm';
 
 const client = new SentDm({
   apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted
-  senderID: process.env['SENT_DM_SENDER_ID'], // This is the default and can be omitted
 });
 
-await client.messages.sendToPhone({
-  phoneNumber: '+1234567890',
-  templateId: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
-  templateVariables: { name: 'John Doe', order_id: '12345' },
+const response = await client.messages.send({
+  channel: ['sms', 'whatsapp'],
+  template: {
+    id: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
+    name: 'order_confirmation',
+    parameters: { name: 'John Doe', order_id: '12345' },
+  },
+  to: ['+14155551234', '+14155555678'],
 });
+
+console.log(response.data);
 ```
 
 ### Request & Response types
@@ -44,15 +49,18 @@ import SentDm from '@sentdm/sentdm';
 
 const client = new SentDm({
   apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted
-  senderID: process.env['SENT_DM_SENDER_ID'], // This is the default and can be omitted
 });
 
-const params: SentDm.MessageSendToPhoneParams = {
-  phoneNumber: '+1234567890',
-  templateId: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
-  templateVariables: { name: 'John Doe', order_id: '12345' },
+const params: SentDm.MessageSendParams = {
+  channel: ['sms'],
+  template: {
+    id: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
+    name: 'order_confirmation',
+    parameters: { name: 'John Doe', order_id: '12345' },
+  },
+  to: ['+14155551234'],
 };
-await client.messages.sendToPhone(params);
+const response: SentDm.MessageSendResponse = await client.messages.send(params);
 ```
 
 Documentation for each method, request param, and response field are available in docstrings and will appear on hover in most modern editors.
@@ -66,10 +74,14 @@ a subclass of `APIError` will be thrown:
 <!-- prettier-ignore -->
 ```ts
 const response = await client.messages
-  .sendToPhone({
-    phoneNumber: '+1234567890',
-    templateId: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
-    templateVariables: { name: 'John Doe', order_id: '12345' },
+  .send({
+    channel: ['sms'],
+    template: {
+      id: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
+      name: 'order_confirmation',
+      parameters: { name: 'John Doe', order_id: '12345' },
+    },
+    to: ['+14155551234'],
   })
   .catch(async (err) => {
     if (err instanceof SentDm.APIError) {
@@ -111,10 +123,14 @@ const client = new SentDm({
 });
 
 // Or, configure per-request:
-await client.messages.sendToPhone({
-  phoneNumber: '+1234567890',
-  templateId: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
-  templateVariables: { name: 'John Doe', order_id: '12345' },
+await client.messages.send({
+  channel: ['sms'],
+  template: {
+  id: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
+  name: 'order_confirmation',
+  parameters: { name: 'John Doe', order_id: '12345' },
+},
+  to: ['+14155551234'],
 }, {
   maxRetries: 5,
 });
@@ -132,10 +148,14 @@ const client = new SentDm({
 });
 
 // Override per-request:
-await client.messages.sendToPhone({
-  phoneNumber: '+1234567890',
-  templateId: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
-  templateVariables: { name: 'John Doe', order_id: '12345' },
+await client.messages.send({
+  channel: ['sms'],
+  template: {
+  id: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
+  name: 'order_confirmation',
+  parameters: { name: 'John Doe', order_id: '12345' },
+},
+  to: ['+14155551234'],
 }, {
   timeout: 5 * 1000,
 });
@@ -160,24 +180,32 @@ Unlike `.asResponse()` this method consumes the body, returning once it is parse
 const client = new SentDm();
 
 const response = await client.messages
-  .sendToPhone({
-    phoneNumber: '+1234567890',
-    templateId: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
-    templateVariables: { name: 'John Doe', order_id: '12345' },
+  .send({
+    channel: ['sms'],
+    template: {
+      id: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
+      name: 'order_confirmation',
+      parameters: { name: 'John Doe', order_id: '12345' },
+    },
+    to: ['+14155551234'],
   })
   .asResponse();
 console.log(response.headers.get('X-My-Header'));
 console.log(response.statusText); // access the underlying Response object
 
-const { data: result, response: raw } = await client.messages
-  .sendToPhone({
-    phoneNumber: '+1234567890',
-    templateId: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
-    templateVariables: { name: 'John Doe', order_id: '12345' },
+const { data: response, response: raw } = await client.messages
+  .send({
+    channel: ['sms'],
+    template: {
+      id: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
+      name: 'order_confirmation',
+      parameters: { name: 'John Doe', order_id: '12345' },
+    },
+    to: ['+14155551234'],
   })
   .withResponse();
 console.log(raw.headers.get('X-My-Header'));
-console.log(result);
+console.log(response.data);
 ```
 
 ### Logging
@@ -257,7 +285,7 @@ parameter. This library doesn't validate at runtime that the request matches the
 send will be sent as-is.
 
 ```ts
-client.messages.sendToPhone({
+client.messages.send({
   // ...
   // @ts-expect-error baz is not yet public
   baz: 'undocumented option',

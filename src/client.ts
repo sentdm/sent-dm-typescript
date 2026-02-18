@@ -1,5 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
+import { APIError } from './core/error';
 import type { RequestInit, RequestInfo, BodyInit } from './internal/builtin-types';
 import type { HTTPMethod, PromiseOrValue, MergedRequestInit, FinalizedRequestInit } from './internal/types';
 import { uuid4 } from './internal/utils/uuid';
@@ -17,35 +18,97 @@ import * as Uploads from './core/uploads';
 import * as API from './resources/index';
 import { APIPromise } from './core/api-promise';
 import {
-  ContactListItem,
+  APIResponseContact,
+  Contact,
+  ContactCreateParams,
+  ContactDeleteParams,
   ContactListParams,
   ContactListResponse,
-  ContactRetrieveByPhoneParams,
-  ContactRetrieveIDParams,
+  ContactUpdateParams,
   Contacts,
 } from './resources/contacts';
+import { Lookup, LookupRetrievePhoneInfoResponse } from './resources/lookup';
+import { Me, MeRetrieveResponse, ProfileSettings } from './resources/me';
 import {
-  MessageRetrieveResponse,
-  MessageSendQuickMessageParams,
-  MessageSendToContactParams,
-  MessageSendToPhoneParams,
+  MessageRetrieveActivitiesResponse,
+  MessageRetrieveStatusResponse,
+  MessageSendParams,
+  MessageSendResponse,
   Messages,
 } from './resources/messages';
 import {
-  NumberLookup,
-  NumberLookupRetrieveParams,
-  NumberLookupRetrieveResponse,
-} from './resources/number-lookup';
+  APIResponseOfProfileDetail,
+  ProfileCompleteParams,
+  ProfileCompleteResponse,
+  ProfileCreateParams,
+  ProfileDeleteParams,
+  ProfileDetail,
+  ProfileListResponse,
+  ProfileUpdateParams,
+  Profiles,
+} from './resources/profiles';
 import {
+  APIResponseTemplate,
+  SentDmServicesCommonContractsPocOsAuthenticationConfig,
+  SentDmServicesCommonContractsPocOsTemplateBody,
+  SentDmServicesCommonContractsPocOsTemplateButton,
+  SentDmServicesCommonContractsPocOsTemplateButtonProps,
+  SentDmServicesCommonContractsPocOsTemplateFooter,
+  SentDmServicesCommonContractsPocOsTemplateHeader,
+  Template,
   TemplateBodyContent,
   TemplateCreateParams,
   TemplateDefinition,
+  TemplateDeleteParams,
   TemplateListParams,
   TemplateListResponse,
-  TemplateResponseV2,
+  TemplateUpdateParams,
   TemplateVariable,
   Templates,
 } from './resources/templates';
+import {
+  APIResponseOfUser,
+  UserInviteParams,
+  UserListResponse,
+  UserRemoveParams,
+  UserResponse,
+  UserUpdateRoleParams,
+  Users,
+} from './resources/users';
+import {
+  APIError,
+  APIMeta,
+  APIResponseWebhook,
+  MutationRequest,
+  PaginationMeta,
+  WebhookCreateParams,
+  WebhookListEventTypesResponse,
+  WebhookListEventsParams,
+  WebhookListEventsResponse,
+  WebhookListParams,
+  WebhookListResponse,
+  WebhookResponse,
+  WebhookRotateSecretParams,
+  WebhookRotateSecretResponse,
+  WebhookTestParams,
+  WebhookTestResponse,
+  WebhookToggleStatusParams,
+  WebhookUpdateParams,
+  Webhooks,
+} from './resources/webhooks';
+import {
+  APIResponseBrandWithKYC,
+  BrandCreateParams,
+  BrandData,
+  BrandDeleteParams,
+  BrandListResponse,
+  BrandUpdateParams,
+  BrandWithKYC,
+  Brands,
+  DestinationCountry,
+  TcrBrandRelationship,
+  TcrVertical,
+} from './resources/brands/brands';
 import { type Fetch } from './internal/builtin-types';
 import { HeadersLike, NullableHeaders, buildHeaders } from './internal/headers';
 import { FinalRequestOptions, RequestOptions } from './internal/request-options';
@@ -64,11 +127,6 @@ export interface ClientOptions {
    * Customer API key for authentication. Use `sk_live_*` keys for production and `sk_test_*` keys for sandbox/testing. Pass via the `x-api-key` header.
    */
   apiKey?: string | undefined;
-
-  /**
-   * Customer sender ID (UUID) identifying the customer account. Obtain this from your account settings. Pass via the `x-sender-id` header.
-   */
-  senderID?: string | undefined;
 
   /**
    * Override the default base URL for the API, e.g., "https://api.example.com/v2/"
@@ -144,7 +202,6 @@ export interface ClientOptions {
  */
 export class SentDm {
   apiKey: string;
-  senderID: string;
 
   baseURL: string;
   maxRetries: number;
@@ -162,7 +219,6 @@ export class SentDm {
    * API Client for interfacing with the Sent Dm API.
    *
    * @param {string | undefined} [opts.apiKey=process.env['SENT_DM_API_KEY'] ?? undefined]
-   * @param {string | undefined} [opts.senderID=process.env['SENT_DM_SENDER_ID'] ?? undefined]
    * @param {string} [opts.baseURL=process.env['SENT_DM_BASE_URL'] ?? https://api.sent.dm] - Override the default base URL for the API.
    * @param {number} [opts.timeout=1 minute] - The maximum amount of time (in milliseconds) the client will wait for a response before timing out.
    * @param {MergedRequestInit} [opts.fetchOptions] - Additional `RequestInit` options to be passed to `fetch` calls.
@@ -174,7 +230,6 @@ export class SentDm {
   constructor({
     baseURL = readEnv('SENT_DM_BASE_URL'),
     apiKey = readEnv('SENT_DM_API_KEY'),
-    senderID = readEnv('SENT_DM_SENDER_ID'),
     ...opts
   }: ClientOptions = {}) {
     if (apiKey === undefined) {
@@ -182,15 +237,9 @@ export class SentDm {
         "The SENT_DM_API_KEY environment variable is missing or empty; either provide it, or instantiate the SentDm client with an apiKey option, like new SentDm({ apiKey: 'My API Key' }).",
       );
     }
-    if (senderID === undefined) {
-      throw new Errors.SentDmError(
-        "The SENT_DM_SENDER_ID environment variable is missing or empty; either provide it, or instantiate the SentDm client with an senderID option, like new SentDm({ senderID: 'My Sender ID' }).",
-      );
-    }
 
     const options: ClientOptions = {
       apiKey,
-      senderID,
       ...opts,
       baseURL: baseURL || `https://api.sent.dm`,
     };
@@ -213,7 +262,6 @@ export class SentDm {
     this._options = options;
 
     this.apiKey = apiKey;
-    this.senderID = senderID;
   }
 
   /**
@@ -230,7 +278,6 @@ export class SentDm {
       fetch: this.fetch,
       fetchOptions: this.fetchOptions,
       apiKey: this.apiKey,
-      senderID: this.senderID,
       ...options,
     });
     return client;
@@ -252,15 +299,7 @@ export class SentDm {
   }
 
   protected async authHeaders(opts: FinalRequestOptions): Promise<NullableHeaders | undefined> {
-    return buildHeaders([await this.customerAPIKeyAuth(opts), await this.customerSenderIDAuth(opts)]);
-  }
-
-  protected async customerAPIKeyAuth(opts: FinalRequestOptions): Promise<NullableHeaders | undefined> {
     return buildHeaders([{ 'x-api-key': this.apiKey }]);
-  }
-
-  protected async customerSenderIDAuth(opts: FinalRequestOptions): Promise<NullableHeaders | undefined> {
-    return buildHeaders([{ 'x-sender-id': this.senderID }]);
   }
 
   /**
@@ -782,51 +821,128 @@ export class SentDm {
 
   static toFile = Uploads.toFile;
 
-  contacts: API.Contacts = new API.Contacts(this);
-  messages: API.Messages = new API.Messages(this);
+  webhooks: API.Webhooks = new API.Webhooks(this);
+  users: API.Users = new API.Users(this);
   templates: API.Templates = new API.Templates(this);
-  numberLookup: API.NumberLookup = new API.NumberLookup(this);
+  profiles: API.Profiles = new API.Profiles(this);
+  messages: API.Messages = new API.Messages(this);
+  lookup: API.Lookup = new API.Lookup(this);
+  contacts: API.Contacts = new API.Contacts(this);
+  brands: API.Brands = new API.Brands(this);
+  me: API.Me = new API.Me(this);
 }
 
-SentDm.Contacts = Contacts;
-SentDm.Messages = Messages;
+SentDm.Webhooks = Webhooks;
+SentDm.Users = Users;
 SentDm.Templates = Templates;
-SentDm.NumberLookup = NumberLookup;
+SentDm.Profiles = Profiles;
+SentDm.Messages = Messages;
+SentDm.Lookup = Lookup;
+SentDm.Contacts = Contacts;
+SentDm.Brands = Brands;
+SentDm.Me = Me;
 
 export declare namespace SentDm {
   export type RequestOptions = Opts.RequestOptions;
 
   export {
-    Contacts as Contacts,
-    type ContactListItem as ContactListItem,
-    type ContactListResponse as ContactListResponse,
-    type ContactListParams as ContactListParams,
-    type ContactRetrieveByPhoneParams as ContactRetrieveByPhoneParams,
-    type ContactRetrieveIDParams as ContactRetrieveIDParams,
+    Webhooks as Webhooks,
+    type APIError as APIError,
+    type APIMeta as APIMeta,
+    type APIResponseWebhook as APIResponseWebhook,
+    type MutationRequest as MutationRequest,
+    type PaginationMeta as PaginationMeta,
+    type WebhookResponse as WebhookResponse,
+    type WebhookListResponse as WebhookListResponse,
+    type WebhookListEventTypesResponse as WebhookListEventTypesResponse,
+    type WebhookListEventsResponse as WebhookListEventsResponse,
+    type WebhookRotateSecretResponse as WebhookRotateSecretResponse,
+    type WebhookTestResponse as WebhookTestResponse,
+    type WebhookCreateParams as WebhookCreateParams,
+    type WebhookUpdateParams as WebhookUpdateParams,
+    type WebhookListParams as WebhookListParams,
+    type WebhookListEventsParams as WebhookListEventsParams,
+    type WebhookRotateSecretParams as WebhookRotateSecretParams,
+    type WebhookTestParams as WebhookTestParams,
+    type WebhookToggleStatusParams as WebhookToggleStatusParams,
   };
 
   export {
-    Messages as Messages,
-    type MessageRetrieveResponse as MessageRetrieveResponse,
-    type MessageSendQuickMessageParams as MessageSendQuickMessageParams,
-    type MessageSendToContactParams as MessageSendToContactParams,
-    type MessageSendToPhoneParams as MessageSendToPhoneParams,
+    Users as Users,
+    type APIResponseOfUser as APIResponseOfUser,
+    type UserResponse as UserResponse,
+    type UserListResponse as UserListResponse,
+    type UserInviteParams as UserInviteParams,
+    type UserRemoveParams as UserRemoveParams,
+    type UserUpdateRoleParams as UserUpdateRoleParams,
   };
 
   export {
     Templates as Templates,
+    type APIResponseTemplate as APIResponseTemplate,
+    type SentDmServicesCommonContractsPocOsAuthenticationConfig as SentDmServicesCommonContractsPocOsAuthenticationConfig,
+    type SentDmServicesCommonContractsPocOsTemplateBody as SentDmServicesCommonContractsPocOsTemplateBody,
+    type SentDmServicesCommonContractsPocOsTemplateButton as SentDmServicesCommonContractsPocOsTemplateButton,
+    type SentDmServicesCommonContractsPocOsTemplateButtonProps as SentDmServicesCommonContractsPocOsTemplateButtonProps,
+    type SentDmServicesCommonContractsPocOsTemplateFooter as SentDmServicesCommonContractsPocOsTemplateFooter,
+    type SentDmServicesCommonContractsPocOsTemplateHeader as SentDmServicesCommonContractsPocOsTemplateHeader,
+    type Template as Template,
     type TemplateBodyContent as TemplateBodyContent,
     type TemplateDefinition as TemplateDefinition,
-    type TemplateResponseV2 as TemplateResponseV2,
     type TemplateVariable as TemplateVariable,
     type TemplateListResponse as TemplateListResponse,
     type TemplateCreateParams as TemplateCreateParams,
+    type TemplateUpdateParams as TemplateUpdateParams,
     type TemplateListParams as TemplateListParams,
+    type TemplateDeleteParams as TemplateDeleteParams,
   };
 
   export {
-    NumberLookup as NumberLookup,
-    type NumberLookupRetrieveResponse as NumberLookupRetrieveResponse,
-    type NumberLookupRetrieveParams as NumberLookupRetrieveParams,
+    Profiles as Profiles,
+    type APIResponseOfProfileDetail as APIResponseOfProfileDetail,
+    type ProfileDetail as ProfileDetail,
+    type ProfileListResponse as ProfileListResponse,
+    type ProfileCompleteResponse as ProfileCompleteResponse,
+    type ProfileCreateParams as ProfileCreateParams,
+    type ProfileUpdateParams as ProfileUpdateParams,
+    type ProfileDeleteParams as ProfileDeleteParams,
+    type ProfileCompleteParams as ProfileCompleteParams,
   };
+
+  export {
+    Messages as Messages,
+    type MessageRetrieveActivitiesResponse as MessageRetrieveActivitiesResponse,
+    type MessageRetrieveStatusResponse as MessageRetrieveStatusResponse,
+    type MessageSendResponse as MessageSendResponse,
+    type MessageSendParams as MessageSendParams,
+  };
+
+  export { Lookup as Lookup, type LookupRetrievePhoneInfoResponse as LookupRetrievePhoneInfoResponse };
+
+  export {
+    Contacts as Contacts,
+    type APIResponseContact as APIResponseContact,
+    type Contact as Contact,
+    type ContactListResponse as ContactListResponse,
+    type ContactCreateParams as ContactCreateParams,
+    type ContactUpdateParams as ContactUpdateParams,
+    type ContactListParams as ContactListParams,
+    type ContactDeleteParams as ContactDeleteParams,
+  };
+
+  export {
+    Brands as Brands,
+    type APIResponseBrandWithKYC as APIResponseBrandWithKYC,
+    type BrandData as BrandData,
+    type BrandWithKYC as BrandWithKYC,
+    type DestinationCountry as DestinationCountry,
+    type TcrBrandRelationship as TcrBrandRelationship,
+    type TcrVertical as TcrVertical,
+    type BrandListResponse as BrandListResponse,
+    type BrandCreateParams as BrandCreateParams,
+    type BrandUpdateParams as BrandUpdateParams,
+    type BrandDeleteParams as BrandDeleteParams,
+  };
+
+  export { Me as Me, type ProfileSettings as ProfileSettings, type MeRetrieveResponse as MeRetrieveResponse };
 }

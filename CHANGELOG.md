@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.7.2 (2026-02-18)
+
+Full Changelog: [v0.7.1...v0.7.2](https://github.com/sentdm/sent-dm-typescript/compare/v0.7.1...v0.7.2)
+
+### Chores
+
+* **internal/client:** fix form-urlencoded requests ([ca89b18](https://github.com/sentdm/sent-dm-typescript/commit/ca89b1875330d5ebec7ae8892e54243fffc2264b))
+
 ## 0.7.1 (2026-02-16)
 
 Full Changelog: [v0.7.0...v0.7.1](https://github.com/sentdm/sent-dm-typescript/compare/v0.7.0...v0.7.1)

@@ -199,7 +199,7 @@ export interface CampaignData {
   /**
    * List of use cases with sample messages
    */
-  useCases: Array<CampaignData.UseCase>;
+  useCases: Array<SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData>;
 
   /**
    * Comma-separated keywords that trigger help message (e.g., "HELP, INFO, SUPPORT")
@@ -247,23 +247,6 @@ export interface CampaignData {
   termsAndConditionsLink?: string | null;
 }
 
-export namespace CampaignData {
-  /**
-   * Campaign use case with sample messages
-   */
-  export interface UseCase {
-    /**
-     * US messaging use case category
-     */
-    messagingUseCaseUs: CampaignsAPI.MessagingUseCaseUs;
-
-    /**
-     * Sample messages for this use case (1-5 messages, max 1024 characters each)
-     */
-    sampleMessages: Array<string>;
-  }
-}
-
 export type MessagingUseCaseUs =
   | 'MARKETING'
   | 'ACCOUNT_NOTIFICATION'
@@ -278,6 +261,21 @@ export type MessagingUseCaseUs =
   | 'POLLING_VOTING'
   | 'PUBLIC_SERVICE_ANNOUNCEMENT'
   | 'LOW_VOLUME';
+
+/**
+ * Campaign use case with sample messages
+ */
+export interface SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData {
+  /**
+   * US messaging use case category
+   */
+  messagingUseCaseUs: MessagingUseCaseUs;
+
+  /**
+   * Sample messages for this use case (1-5 messages, max 1024 characters each)
+   */
+  sampleMessages: Array<string>;
+}
 
 export interface TcrCampaignWithUseCases extends BaseDto {
   billedDate?: string | null;
@@ -444,6 +442,7 @@ export declare namespace Campaigns {
     type BaseDto as BaseDto,
     type CampaignData as CampaignData,
     type MessagingUseCaseUs as MessagingUseCaseUs,
+    type SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData as SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData,
     type TcrCampaignWithUseCases as TcrCampaignWithUseCases,
     type CampaignListResponse as CampaignListResponse,
     type CampaignCreateParams as CampaignCreateParams,

@@ -48,6 +48,12 @@ Methods:
 Types:
 
 - <code><a href="./src/resources/templates.ts">APIResponseTemplate</a></code>
+- <code><a href="./src/resources/templates.ts">SentDmServicesCommonContractsPocOsAuthenticationConfig</a></code>
+- <code><a href="./src/resources/templates.ts">SentDmServicesCommonContractsPocOsTemplateBody</a></code>
+- <code><a href="./src/resources/templates.ts">SentDmServicesCommonContractsPocOsTemplateButton</a></code>
+- <code><a href="./src/resources/templates.ts">SentDmServicesCommonContractsPocOsTemplateButtonProps</a></code>
+- <code><a href="./src/resources/templates.ts">SentDmServicesCommonContractsPocOsTemplateFooter</a></code>
+- <code><a href="./src/resources/templates.ts">SentDmServicesCommonContractsPocOsTemplateHeader</a></code>
 - <code><a href="./src/resources/templates.ts">Template</a></code>
 - <code><a href="./src/resources/templates.ts">TemplateBodyContent</a></code>
 - <code><a href="./src/resources/templates.ts">TemplateDefinition</a></code>
@@ -147,6 +153,7 @@ Types:
 - <code><a href="./src/resources/brands/campaigns.ts">BaseDto</a></code>
 - <code><a href="./src/resources/brands/campaigns.ts">CampaignData</a></code>
 - <code><a href="./src/resources/brands/campaigns.ts">MessagingUseCaseUs</a></code>
+- <code><a href="./src/resources/brands/campaigns.ts">SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData</a></code>
 - <code><a href="./src/resources/brands/campaigns.ts">TcrCampaignWithUseCases</a></code>
 - <code><a href="./src/resources/brands/campaigns.ts">CampaignListResponse</a></code>
 

@@ -1,12 +1,12 @@
 {
-  "name": "sent-dm",
+  "name": "@sentdm/sentdm",
   "version": "0.7.2",
   "description": "The official TypeScript library for the Sent Dm API",
   "author": "Sent Dm <support@sent.dm>",
   "types": "dist/index.d.ts",
   "main": "dist/index.js",
   "type": "commonjs",
-  "repository": "github:stainless-sdks/sent-dm-typescript",
+  "repository": "github:sentdm/sent-dm-typescript",
   "license": "Apache-2.0",
   "packageManager": "pnpm@10.27.0",
   "files": [

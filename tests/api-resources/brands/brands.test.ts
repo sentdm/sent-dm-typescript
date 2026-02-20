@@ -8,7 +8,7 @@ const client = new SentDm({
 });
 
 describe('resource brands', () => {
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('create: only required params', async () => {
     const responsePromise = client.brands.create({
       brand: {
@@ -26,7 +26,7 @@ describe('resource brands', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('create: required and optional params', async () => {
     const response = await client.brands.create({
       brand: {
@@ -62,7 +62,7 @@ describe('resource brands', () => {
     });
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('update: only required params', async () => {
     const responsePromise = client.brands.update('a1b2c3d4-e5f6-7890-abcd-ef1234567890', {
       brand: {
@@ -80,7 +80,7 @@ describe('resource brands', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('update: required and optional params', async () => {
     const response = await client.brands.update('a1b2c3d4-e5f6-7890-abcd-ef1234567890', {
       brand: {
@@ -116,7 +116,7 @@ describe('resource brands', () => {
     });
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('list', async () => {
     const responsePromise = client.brands.list();
     const rawResponse = await responsePromise.asResponse();
@@ -128,7 +128,7 @@ describe('resource brands', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('delete: only required params', async () => {
     const responsePromise = client.brands.delete('a1b2c3d4-e5f6-7890-abcd-ef1234567890', { body: {} });
     const rawResponse = await responsePromise.asResponse();
@@ -140,7 +140,7 @@ describe('resource brands', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('delete: required and optional params', async () => {
     const response = await client.brands.delete('a1b2c3d4-e5f6-7890-abcd-ef1234567890', {
       body: { test_mode: false },

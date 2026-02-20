@@ -8,7 +8,7 @@ const client = new SentDm({
 });
 
 describe('resource messages', () => {
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('retrieveActivities', async () => {
     const responsePromise = client.messages.retrieveActivities('8ba7b830-9dad-11d1-80b4-00c04fd430c8');
     const rawResponse = await responsePromise.asResponse();
@@ -20,7 +20,7 @@ describe('resource messages', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('retrieveStatus', async () => {
     const responsePromise = client.messages.retrieveStatus('8ba7b830-9dad-11d1-80b4-00c04fd430c8');
     const rawResponse = await responsePromise.asResponse();
@@ -32,7 +32,7 @@ describe('resource messages', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('send', async () => {
     const responsePromise = client.messages.send({});
     const rawResponse = await responsePromise.asResponse();

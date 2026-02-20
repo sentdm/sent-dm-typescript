@@ -8,7 +8,7 @@ const client = new SentDm({
 });
 
 describe('resource lookup', () => {
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('retrievePhoneInfo', async () => {
     const responsePromise = client.lookup.retrievePhoneInfo('phoneNumber');
     const rawResponse = await responsePromise.asResponse();

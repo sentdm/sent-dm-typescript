@@ -8,7 +8,7 @@ const client = new SentDm({
 });
 
 describe('resource templates', () => {
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('create', async () => {
     const responsePromise = client.templates.create({});
     const rawResponse = await responsePromise.asResponse();
@@ -20,7 +20,7 @@ describe('resource templates', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('retrieve', async () => {
     const responsePromise = client.templates.retrieve('7ba7b820-9dad-11d1-80b4-00c04fd430c8');
     const rawResponse = await responsePromise.asResponse();
@@ -32,7 +32,7 @@ describe('resource templates', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('update', async () => {
     const responsePromise = client.templates.update('7ba7b820-9dad-11d1-80b4-00c04fd430c8', {});
     const rawResponse = await responsePromise.asResponse();
@@ -44,7 +44,7 @@ describe('resource templates', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('list: only required params', async () => {
     const responsePromise = client.templates.list({ page: 0, pageSize: 0 });
     const rawResponse = await responsePromise.asResponse();
@@ -56,7 +56,7 @@ describe('resource templates', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('list: required and optional params', async () => {
     const response = await client.templates.list({
       page: 0,
@@ -67,7 +67,7 @@ describe('resource templates', () => {
     });
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('delete', async () => {
     const responsePromise = client.templates.delete('7ba7b820-9dad-11d1-80b4-00c04fd430c8', {});
     const rawResponse = await responsePromise.asResponse();

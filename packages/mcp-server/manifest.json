@@ -1,0 +1,43 @@
+{
+  "dxt_version": "0.2",
+  "name": "@sentdm/sentdm-mcp",
+  "version": "0.8.0",
+  "description": "The official MCP Server for the Sent Dm API",
+  "author": {
+    "name": "Sent Dm",
+    "email": "support@sent.dm"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sentdm/sent-dm-typescript.git"
+  },
+  "homepage": "https://github.com/sentdm/sent-dm-typescript/tree/main/packages/mcp-server#readme",
+  "documentation": "https://docs.sent.dm",
+  "server": {
+    "type": "node",
+    "entry_point": "index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": ["${__dirname}/index.js"],
+      "env": {
+        "SENT_DM_API_KEY": "${user_config.SENT_DM_API_KEY}"
+      }
+    }
+  },
+  "user_config": {
+    "SENT_DM_API_KEY": {
+      "title": "api_key",
+      "description": "Customer API key for authentication. Use `sk_live_*` keys for production and `sk_test_*` keys for sandbox/testing. Pass via the `x-api-key` header.",
+      "required": true,
+      "type": "string"
+    }
+  },
+  "tools": [],
+  "tools_generated": true,
+  "compatibility": {
+    "runtimes": {
+      "node": ">=18.0.0"
+    }
+  },
+  "keywords": ["api"]
+}

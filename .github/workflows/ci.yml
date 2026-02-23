@@ -24,7 +24,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: Set up pnpm
         uses: pnpm/action-setup@v4
@@ -51,7 +51,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: Set up pnpm
         uses: pnpm/action-setup@v4
@@ -78,6 +78,15 @@ jobs:
           AUTH: ${{ steps.github-oidc.outputs.github_token }}
           SHA: ${{ github.sha }}
         run: ./scripts/utils/upload-artifact.sh
+
+      - name: Upload MCP Server tarball
+        if: github.repository == 'stainless-sdks/sent-dm-typescript'
+        env:
+          URL: https://pkg.stainless.com/s?subpackage=mcp-server
+          AUTH: ${{ steps.github-oidc.outputs.github_token }}
+          SHA: ${{ github.sha }}
+          BASE_PATH: packages/mcp-server
+        run: ./scripts/utils/upload-artifact.sh
   test:
     timeout-minutes: 10
     name: test
@@ -89,7 +98,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: Set up pnpm
         uses: pnpm/action-setup@v4
@@ -98,6 +107,9 @@ jobs:
 
       - name: Bootstrap
         run: ./scripts/bootstrap
+
+      - name: Build
+        run: ./scripts/build
 
       - name: Run tests
         run: ./scripts/test

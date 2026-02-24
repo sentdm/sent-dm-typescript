@@ -60,7 +60,7 @@ $ yarn link @sentdm/sentdm
 # With pnpm
 $ pnpm link --global
 $ cd ../my-package
-$ pnpm link -—global @sentdm/sentdm
+$ pnpm link --global @sentdm/sentdm
 ```
 
 ## Running tests

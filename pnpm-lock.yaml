@@ -1946,7 +1946,7 @@ packages:
     resolution: {integrity: sha512-0TpaTfihd4QMNwrz/ob2Bp7X04yuxJkjRGi4aKmOqwhov54i6u79oCv7T+C7lo70MKH6BesI3vscD1yb/yzKXQ==}
 
   jq-web@https://github.com/stainless-api/jq-web/releases/download/v0.8.8/jq-web.tar.gz:
-    resolution: {integrity: sha512-6nmDSHGJm8Cclf2oSuO9xQ7vt5x5bDiuTKX2rkyW1K7Uo2SHeI4ZvpgMITKy+8p3bbEnKovTPGoHhApa6v/PbA==, tarball: https://github.com/stainless-api/jq-web/releases/download/v0.8.8/jq-web.tar.gz}
+    resolution: {tarball: https://github.com/stainless-api/jq-web/releases/download/v0.8.8/jq-web.tar.gz}
     version: 0.8.8
 
   js-tokens@4.0.0:

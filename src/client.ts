@@ -809,14 +809,38 @@ export class SentDm {
 
   static toFile = Uploads.toFile;
 
+  /**
+   * Configure webhook endpoints for real-time event delivery
+   */
   webhooks: API.Webhooks = new API.Webhooks(this);
+  /**
+   * Invite, update, and manage organization users and roles
+   */
   users: API.Users = new API.Users(this);
+  /**
+   * Manage message templates with variable substitution
+   */
   templates: API.Templates = new API.Templates(this);
+  /**
+   * Manage organization profiles
+   */
   profiles: API.Profiles = new API.Profiles(this);
+  /**
+   * Send and track SMS and WhatsApp messages
+   */
   messages: API.Messages = new API.Messages(this);
   lookup: API.Lookup = new API.Lookup(this);
+  /**
+   * Create, update, and manage customer contact lists
+   */
   contacts: API.Contacts = new API.Contacts(this);
+  /**
+   * Register and manage 10DLC brands for SMS compliance
+   */
   brands: API.Brands = new API.Brands(this);
+  /**
+   * Retrieve account details
+   */
   me: API.Me = new API.Me(this);
 }
 

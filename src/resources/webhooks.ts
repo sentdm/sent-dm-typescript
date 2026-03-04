@@ -7,6 +7,9 @@ import { buildHeaders } from '../internal/headers';
 import { RequestOptions } from '../internal/request-options';
 import { path } from '../internal/utils/path';
 
+/**
+ * Configure webhook endpoints for real-time event delivery
+ */
 export class Webhooks extends APIResource {
   /**
    * Creates a new webhook endpoint for the authenticated customer.

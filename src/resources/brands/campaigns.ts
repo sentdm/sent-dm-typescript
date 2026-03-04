@@ -8,6 +8,9 @@ import { buildHeaders } from '../../internal/headers';
 import { RequestOptions } from '../../internal/request-options';
 import { path } from '../../internal/utils/path';
 
+/**
+ * Register and manage 10DLC brands for SMS compliance
+ */
 export class Campaigns extends APIResource {
   /**
    * Creates a new campaign scoped under a specific brand. The campaign is linked to

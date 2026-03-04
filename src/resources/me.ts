@@ -6,6 +6,9 @@ import * as WebhooksAPI from './webhooks';
 import { APIPromise } from '../core/api-promise';
 import { RequestOptions } from '../internal/request-options';
 
+/**
+ * Retrieve account details
+ */
 export class Me extends APIResource {
   /**
    * Returns the account associated with the API key. For organization API keys,

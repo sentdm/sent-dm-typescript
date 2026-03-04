@@ -7,6 +7,9 @@ import { buildHeaders } from '../internal/headers';
 import { RequestOptions } from '../internal/request-options';
 import { path } from '../internal/utils/path';
 
+/**
+ * Send and track SMS and WhatsApp messages
+ */
 export class Messages extends APIResource {
   /**
    * Retrieves the activity log for a specific message. Activities track the message

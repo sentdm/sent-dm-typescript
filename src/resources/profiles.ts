@@ -8,6 +8,9 @@ import { buildHeaders } from '../internal/headers';
 import { RequestOptions } from '../internal/request-options';
 import { path } from '../internal/utils/path';
 
+/**
+ * Manage organization profiles
+ */
 export class Profiles extends APIResource {
   /**
    * Creates a new sender profile within an organization. Profiles represent

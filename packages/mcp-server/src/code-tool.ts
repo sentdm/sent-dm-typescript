@@ -163,7 +163,7 @@ const remoteStainlessHandler = async ({
     headers: {
       ...(reqContext.stainlessApiKey && { Authorization: reqContext.stainlessApiKey }),
       'Content-Type': 'application/json',
-      client_envs: JSON.stringify({
+      'x-stainless-mcp-client-envs': JSON.stringify({
         SENT_DM_API_KEY: requireValue(
           readEnv('SENT_DM_API_KEY') ?? client.apiKey,
           'set SENT_DM_API_KEY environment variable or provide apiKey client option',

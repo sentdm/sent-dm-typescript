@@ -1,3 +1,9 @@
+# Shared
+
+Types:
+
+- <code><a href="./src/resources/shared.ts">BaseDto</a></code>
+
 # Webhooks
 
 Types:
@@ -5,7 +11,7 @@ Types:
 - <code><a href="./src/resources/webhooks.ts">APIError</a></code>
 - <code><a href="./src/resources/webhooks.ts">APIMeta</a></code>
 - <code><a href="./src/resources/webhooks.ts">APIResponseWebhook</a></code>
-- <code><a href="./src/resources/webhooks.ts">MutationRequest</a></code>
+- <code><a href="./src/resources/webhooks.ts">MutationRequestBase</a></code>
 - <code><a href="./src/resources/webhooks.ts">PaginationMeta</a></code>
 - <code><a href="./src/resources/webhooks.ts">WebhookResponse</a></code>
 - <code><a href="./src/resources/webhooks.ts">WebhookListResponse</a></code>
@@ -48,12 +54,6 @@ Methods:
 Types:
 
 - <code><a href="./src/resources/templates.ts">APIResponseTemplate</a></code>
-- <code><a href="./src/resources/templates.ts">SentDmServicesCommonContractsPocOsAuthenticationConfig</a></code>
-- <code><a href="./src/resources/templates.ts">SentDmServicesCommonContractsPocOsTemplateBody</a></code>
-- <code><a href="./src/resources/templates.ts">SentDmServicesCommonContractsPocOsTemplateButton</a></code>
-- <code><a href="./src/resources/templates.ts">SentDmServicesCommonContractsPocOsTemplateButtonProps</a></code>
-- <code><a href="./src/resources/templates.ts">SentDmServicesCommonContractsPocOsTemplateFooter</a></code>
-- <code><a href="./src/resources/templates.ts">SentDmServicesCommonContractsPocOsTemplateHeader</a></code>
 - <code><a href="./src/resources/templates.ts">Template</a></code>
 - <code><a href="./src/resources/templates.ts">TemplateBodyContent</a></code>
 - <code><a href="./src/resources/templates.ts">TemplateDefinition</a></code>
@@ -72,19 +72,52 @@ Methods:
 
 Types:
 
-- <code><a href="./src/resources/profiles.ts">APIResponseOfProfileDetail</a></code>
-- <code><a href="./src/resources/profiles.ts">ProfileDetail</a></code>
-- <code><a href="./src/resources/profiles.ts">ProfileListResponse</a></code>
-- <code><a href="./src/resources/profiles.ts">ProfileCompleteResponse</a></code>
+- <code><a href="./src/resources/profiles/profiles.ts">APIResponseOfProfileDetail</a></code>
+- <code><a href="./src/resources/profiles/profiles.ts">BillingContactInfo</a></code>
+- <code><a href="./src/resources/profiles/profiles.ts">BrandsBrandData</a></code>
+- <code><a href="./src/resources/profiles/profiles.ts">DestinationCountry</a></code>
+- <code><a href="./src/resources/profiles/profiles.ts">PaymentDetails</a></code>
+- <code><a href="./src/resources/profiles/profiles.ts">ProfileDetail</a></code>
+- <code><a href="./src/resources/profiles/profiles.ts">TcrBrandRelationship</a></code>
+- <code><a href="./src/resources/profiles/profiles.ts">TcrVertical</a></code>
+- <code><a href="./src/resources/profiles/profiles.ts">ProfileListResponse</a></code>
+- <code><a href="./src/resources/profiles/profiles.ts">ProfileCompleteSetupResponse</a></code>
 
 Methods:
 
-- <code title="post /v3/profiles">client.profiles.<a href="./src/resources/profiles.ts">create</a>({ ...params }) -> APIResponseOfProfileDetail</code>
-- <code title="get /v3/profiles/{profileId}">client.profiles.<a href="./src/resources/profiles.ts">retrieve</a>(profileID, { ...params }) -> APIResponseOfProfileDetail</code>
-- <code title="patch /v3/profiles/{profileId}">client.profiles.<a href="./src/resources/profiles.ts">update</a>(profileID, { ...params }) -> APIResponseOfProfileDetail</code>
-- <code title="get /v3/profiles">client.profiles.<a href="./src/resources/profiles.ts">list</a>({ ...params }) -> ProfileListResponse</code>
-- <code title="delete /v3/profiles/{profileId}">client.profiles.<a href="./src/resources/profiles.ts">delete</a>(profileID, { ...params }) -> void</code>
-- <code title="post /v3/profiles/{profileId}/complete">client.profiles.<a href="./src/resources/profiles.ts">complete</a>(profileID, { ...params }) -> unknown</code>
+- <code title="post /v3/profiles">client.profiles.<a href="./src/resources/profiles/profiles.ts">create</a>({ ...params }) -> APIResponseOfProfileDetail</code>
+- <code title="get /v3/profiles/{profileId}">client.profiles.<a href="./src/resources/profiles/profiles.ts">retrieve</a>(profileID, { ...params }) -> APIResponseOfProfileDetail</code>
+- <code title="patch /v3/profiles/{profileId}">client.profiles.<a href="./src/resources/profiles/profiles.ts">update</a>(profileID, { ...params }) -> APIResponseOfProfileDetail</code>
+- <code title="get /v3/profiles">client.profiles.<a href="./src/resources/profiles/profiles.ts">list</a>({ ...params }) -> ProfileListResponse</code>
+- <code title="delete /v3/profiles/{profileId}">client.profiles.<a href="./src/resources/profiles/profiles.ts">delete</a>(profileID, { ...params }) -> void</code>
+- <code title="post /v3/profiles/{profileId}/complete">client.profiles.<a href="./src/resources/profiles/profiles.ts">completeSetup</a>(profileID, { ...params }) -> unknown</code>
+
+## Campaigns
+
+Types:
+
+- <code><a href="./src/resources/profiles/campaigns.ts">APIResponseOfTcrCampaignWithUseCases</a></code>
+- <code><a href="./src/resources/profiles/campaigns.ts">CampaignData</a></code>
+- <code><a href="./src/resources/profiles/campaigns.ts">MessagingUseCaseUs</a></code>
+- <code><a href="./src/resources/profiles/campaigns.ts">TcrCampaignWithUseCases</a></code>
+- <code><a href="./src/resources/profiles/campaigns.ts">CampaignListResponse</a></code>
+
+Methods:
+
+- <code title="post /v3/profiles/{profileId}/campaigns">client.profiles.campaigns.<a href="./src/resources/profiles/campaigns.ts">create</a>(profileID, { ...params }) -> APIResponseOfTcrCampaignWithUseCases</code>
+- <code title="put /v3/profiles/{profileId}/campaigns/{campaignId}">client.profiles.campaigns.<a href="./src/resources/profiles/campaigns.ts">update</a>(campaignID, { ...params }) -> APIResponseOfTcrCampaignWithUseCases</code>
+- <code title="get /v3/profiles/{profileId}/campaigns">client.profiles.campaigns.<a href="./src/resources/profiles/campaigns.ts">list</a>(profileID, { ...params }) -> CampaignListResponse</code>
+- <code title="delete /v3/profiles/{profileId}/campaigns/{campaignId}">client.profiles.campaigns.<a href="./src/resources/profiles/campaigns.ts">delete</a>(campaignID, { ...params }) -> void</code>
+
+# Numbers
+
+Types:
+
+- <code><a href="./src/resources/numbers.ts">NumberLookupResponse</a></code>
+
+Methods:
+
+- <code title="get /v3/numbers/lookup/{phoneNumber}">client.numbers.<a href="./src/resources/numbers.ts">lookup</a>(phoneNumber, { ...params }) -> NumberLookupResponse</code>
 
 # Messages
 
@@ -100,44 +133,21 @@ Methods:
 - <code title="get /v3/messages/{id}">client.messages.<a href="./src/resources/messages.ts">retrieveStatus</a>(id, { ...params }) -> MessageRetrieveStatusResponse</code>
 - <code title="post /v3/messages">client.messages.<a href="./src/resources/messages.ts">send</a>({ ...params }) -> MessageSendResponse</code>
 
-# Lookup
-
 # Contacts
 
 Types:
 
-- <code><a href="./src/resources/contacts.ts">APIResponseContact</a></code>
-- <code><a href="./src/resources/contacts.ts">Contact</a></code>
+- <code><a href="./src/resources/contacts.ts">APIResponseOfContact</a></code>
+- <code><a href="./src/resources/contacts.ts">ContactResponse</a></code>
 - <code><a href="./src/resources/contacts.ts">ContactListResponse</a></code>
 
 Methods:
 
-- <code title="post /v3/contacts">client.contacts.<a href="./src/resources/contacts.ts">create</a>({ ...params }) -> APIResponseContact</code>
-- <code title="get /v3/contacts/{id}">client.contacts.<a href="./src/resources/contacts.ts">retrieve</a>(id, { ...params }) -> APIResponseContact</code>
-- <code title="patch /v3/contacts/{id}">client.contacts.<a href="./src/resources/contacts.ts">update</a>(id, { ...params }) -> APIResponseContact</code>
+- <code title="post /v3/contacts">client.contacts.<a href="./src/resources/contacts.ts">create</a>({ ...params }) -> APIResponseOfContact</code>
+- <code title="get /v3/contacts/{id}">client.contacts.<a href="./src/resources/contacts.ts">retrieve</a>(id, { ...params }) -> APIResponseOfContact</code>
+- <code title="patch /v3/contacts/{id}">client.contacts.<a href="./src/resources/contacts.ts">update</a>(id, { ...params }) -> APIResponseOfContact</code>
 - <code title="get /v3/contacts">client.contacts.<a href="./src/resources/contacts.ts">list</a>({ ...params }) -> ContactListResponse</code>
 - <code title="delete /v3/contacts/{id}">client.contacts.<a href="./src/resources/contacts.ts">delete</a>(id, { ...params }) -> void</code>
-
-# Brands
-
-Types:
-
-- <code><a href="./src/resources/brands/brands.ts">BrandData</a></code>
-- <code><a href="./src/resources/brands/brands.ts">BrandWithKYC</a></code>
-- <code><a href="./src/resources/brands/brands.ts">DestinationCountry</a></code>
-- <code><a href="./src/resources/brands/brands.ts">TcrBrandRelationship</a></code>
-- <code><a href="./src/resources/brands/brands.ts">TcrVertical</a></code>
-
-## Campaigns
-
-Types:
-
-- <code><a href="./src/resources/brands/campaigns.ts">APIResponseTcrCampaignWithUseCases</a></code>
-- <code><a href="./src/resources/brands/campaigns.ts">BaseDto</a></code>
-- <code><a href="./src/resources/brands/campaigns.ts">CampaignData</a></code>
-- <code><a href="./src/resources/brands/campaigns.ts">MessagingUseCaseUs</a></code>
-- <code><a href="./src/resources/brands/campaigns.ts">SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData</a></code>
-- <code><a href="./src/resources/brands/campaigns.ts">TcrCampaignWithUseCases</a></code>
 
 # Me
 

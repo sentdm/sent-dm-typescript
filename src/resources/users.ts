@@ -322,7 +322,7 @@ export namespace UserRemoveParams {
   /**
    * Request to remove a user from an organization
    */
-  export interface Body extends WebhooksAPI.MutationRequest {}
+  export interface Body extends WebhooksAPI.MutationRequestBase {}
 }
 
 export interface UserUpdateRoleParams {

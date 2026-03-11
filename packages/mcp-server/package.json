@@ -1,6 +1,6 @@
 {
   "name": "@sentdm/sentdm-mcp",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "The official MCP Server for the Sent Dm API",
   "author": "Sent Dm <support@sent.dm>",
   "types": "dist/index.d.ts",

@@ -1,5 +1,67 @@
 # Changelog
 
+## 0.9.0 (2026-03-11)
+
+Full Changelog: [v0.8.0...v0.9.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.8.0...v0.9.0)
+
+### Features
+
+* **api:** api update ([14ad67f](https://github.com/sentdm/sent-dm-typescript/commit/14ad67f946a9ebb44229c588772cc41c821d5075))
+* **api:** api update ([a124e59](https://github.com/sentdm/sent-dm-typescript/commit/a124e591573537a534771e85415b7bc729269fb1))
+* **api:** api update ([4ea5ea5](https://github.com/sentdm/sent-dm-typescript/commit/4ea5ea51923d418980c4ead2f47e8403b30d44df))
+* **api:** api update ([d593916](https://github.com/sentdm/sent-dm-typescript/commit/d593916905bea20251d7d0f516cadfba72d58676))
+* **api:** api update ([e26adb5](https://github.com/sentdm/sent-dm-typescript/commit/e26adb5fc0afbcf4f3ecc61996d1a7ed2168617d))
+* **api:** api update ([df3f0cd](https://github.com/sentdm/sent-dm-typescript/commit/df3f0cdb77e18ad481f3aa772490d56cf144a64a))
+* **api:** api update ([0fe5e05](https://github.com/sentdm/sent-dm-typescript/commit/0fe5e05522bf32a41e83ec22bcc9c74f604d076e))
+* **api:** api update ([9b7140b](https://github.com/sentdm/sent-dm-typescript/commit/9b7140b3afa11e433f3bd8ccbb63259a852f413f))
+* **api:** api update ([6750b65](https://github.com/sentdm/sent-dm-typescript/commit/6750b65ad79bcb0723cfde1333aeeb275bdbbde8))
+* **api:** api update ([904c6db](https://github.com/sentdm/sent-dm-typescript/commit/904c6db65bfd54d0be716e61644c345898962cb3))
+* **api:** api update ([bcf6976](https://github.com/sentdm/sent-dm-typescript/commit/bcf6976de86cc1c93958cc64bdc070cfedccf4f1))
+* **api:** api update ([e34f2c0](https://github.com/sentdm/sent-dm-typescript/commit/e34f2c06bae1105a994ef30ddecc259c63484986))
+* **api:** api update ([920e6a5](https://github.com/sentdm/sent-dm-typescript/commit/920e6a54a211e972437b2b8a2980b6e27f62e313))
+* **api:** api update ([17df948](https://github.com/sentdm/sent-dm-typescript/commit/17df948c5df8120d086eb69d04b29626494aa7b8))
+* **mcp:** add an option to disable code tool ([120013f](https://github.com/sentdm/sent-dm-typescript/commit/120013f466279e750a6b0af92bb772088cc548be))
+
+
+### Bug Fixes
+
+* **client:** preserve URL params already embedded in path ([d06a3dd](https://github.com/sentdm/sent-dm-typescript/commit/d06a3dd0e9d56286acfbcac35fee543e144611ea))
+* **mcp:** update prompt ([3143fa6](https://github.com/sentdm/sent-dm-typescript/commit/3143fa610c5a0e26ae4c9e245eb28d060a288874))
+
+
+### Chores
+
+* **ci:** skip uploading artifacts on stainless-internal branches ([f7871a4](https://github.com/sentdm/sent-dm-typescript/commit/f7871a4c60fd943bca4a7a73d194a0dab98e9fe7))
+* **internal:** codegen related update ([d77d3a3](https://github.com/sentdm/sent-dm-typescript/commit/d77d3a3e4430d1ee9bf7d8d2a618a01bbda19cd0))
+* **internal:** codegen related update ([68a0b71](https://github.com/sentdm/sent-dm-typescript/commit/68a0b71ddb82f316837c7add8c648a7dc0180ed6))
+* **internal:** codegen related update ([0e8793c](https://github.com/sentdm/sent-dm-typescript/commit/0e8793cee686d5c022388283956523950d1e4e40))
+* **internal:** codegen related update ([7bbf075](https://github.com/sentdm/sent-dm-typescript/commit/7bbf07563948ff1945982942a84e034bf4492d5d))
+* **internal:** codegen related update ([3c5415b](https://github.com/sentdm/sent-dm-typescript/commit/3c5415baa6fedf31ee08917060bdac2e0da065e3))
+* **internal:** codegen related update ([10d4830](https://github.com/sentdm/sent-dm-typescript/commit/10d48301f2fc662118566554fa435fa286949909))
+* **internal:** codegen related update ([cdbde6f](https://github.com/sentdm/sent-dm-typescript/commit/cdbde6f9ae275bb614267effef7e6b1b750bfd7a))
+* **internal:** codegen related update ([d12b158](https://github.com/sentdm/sent-dm-typescript/commit/d12b1588c66c97db67ebe4453c090f2854c3b1e0))
+* **internal:** codegen related update ([4e1ba57](https://github.com/sentdm/sent-dm-typescript/commit/4e1ba57cbec3cf32ce04c485d545b616f8834d0b))
+* **internal:** codegen related update ([a8a21df](https://github.com/sentdm/sent-dm-typescript/commit/a8a21df35a84125c0ffa8ce2e58f12eb69c5fb28))
+* **internal:** codegen related update ([9891015](https://github.com/sentdm/sent-dm-typescript/commit/98910153af8fb73576500d6baeda52ffa3c7c130))
+* **internal:** codegen related update ([f7f87e9](https://github.com/sentdm/sent-dm-typescript/commit/f7f87e9be5432fe695893b7b5743b7c9ef2fd847))
+* **internal:** codegen related update ([6019d24](https://github.com/sentdm/sent-dm-typescript/commit/6019d242d4606ebd2af97e573373859018605af8))
+* **internal:** codegen related update ([2fb0f6e](https://github.com/sentdm/sent-dm-typescript/commit/2fb0f6e955fb38684be7dfd6a0a35fecd250a58b))
+* **internal:** codegen related update ([eec9d8c](https://github.com/sentdm/sent-dm-typescript/commit/eec9d8ce556750de69b1219b51b0c2abf2ddcab9))
+* **internal:** codegen related update ([b78f90b](https://github.com/sentdm/sent-dm-typescript/commit/b78f90b29f6ee53a60c8f0f04ff56d2b6cad8b62))
+* **internal:** codegen related update ([62bb43a](https://github.com/sentdm/sent-dm-typescript/commit/62bb43a8cdc56d3ffde3b0f0956d9d15e0cb9f6e))
+* **internal:** codegen related update ([57db8bd](https://github.com/sentdm/sent-dm-typescript/commit/57db8bd09ea4fe553c7205f54033d7906ceb9b06))
+* **internal:** codegen related update ([4809458](https://github.com/sentdm/sent-dm-typescript/commit/480945876f28d91ae64d29d873f22b6842427214))
+* **internal:** codegen related update ([6bc3047](https://github.com/sentdm/sent-dm-typescript/commit/6bc304740f9d1aa64379e50a50565944698e3f2d))
+* **internal:** codegen related update ([6a5d8fe](https://github.com/sentdm/sent-dm-typescript/commit/6a5d8feac2c4de91c4a10fc42dff41a7903bae9e))
+* **internal:** codegen related update ([f085de1](https://github.com/sentdm/sent-dm-typescript/commit/f085de140d71af9798ebb0c4f419fdfaea467421))
+* **internal:** fix MCP Dockerfiles so they can be built without buildkit ([1f9a560](https://github.com/sentdm/sent-dm-typescript/commit/1f9a560ea6cb47a91f6d120c289f6405c7a39e2a))
+* **internal:** fix MCP Dockerfiles so they can be built without buildkit ([00c1562](https://github.com/sentdm/sent-dm-typescript/commit/00c156226476460526105ecc60da00c4026a6f68))
+* **internal:** move stringifyQuery implementation to internal function ([8222503](https://github.com/sentdm/sent-dm-typescript/commit/82225030eb43318f4e364c5dfddf0dce656980cb))
+* **internal:** update dependencies to address dependabot vulnerabilities ([9d2a513](https://github.com/sentdm/sent-dm-typescript/commit/9d2a5139c26f42e5a71396b0a225fc9fcdc3e73a))
+* **internal:** use x-stainless-mcp-client-envs header for MCP remote code tool calls ([2bf2d10](https://github.com/sentdm/sent-dm-typescript/commit/2bf2d100c358c4288c108fc21f2d1f30b8e847aa))
+* **mcp-server:** improve instructions ([b56b908](https://github.com/sentdm/sent-dm-typescript/commit/b56b90826d7f0a8ddfe39dcf2909619840473318))
+* **mcp-server:** return access instructions for 404 without API key ([56b399f](https://github.com/sentdm/sent-dm-typescript/commit/56b399f8b8a1fa1c253ee56991a283179c574036))
+
 ## 0.8.0 (2026-02-18)
 
 Full Changelog: [v0.7.2...v0.8.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.7.2...v0.8.0)

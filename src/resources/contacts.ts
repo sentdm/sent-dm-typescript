@@ -22,12 +22,15 @@ export class Contacts extends APIResource {
    * ```
    */
   create(params: ContactCreateParams, options?: RequestOptions): APIPromise<APIResponseContact> {
-    const { 'Idempotency-Key': idempotencyKey, ...body } = params;
+    const { 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
     return this._client.post('/v3/contacts', {
       body,
       ...options,
       headers: buildHeaders([
-        { ...(idempotencyKey != null ? { 'Idempotency-Key': idempotencyKey } : undefined) },
+        {
+          ...(idempotencyKey != null ? { 'Idempotency-Key': idempotencyKey } : undefined),
+          ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined),
+        },
         options?.headers,
       ]),
     });
@@ -45,8 +48,19 @@ export class Contacts extends APIResource {
    * );
    * ```
    */
-  retrieve(id: string, options?: RequestOptions): APIPromise<APIResponseContact> {
-    return this._client.get(path`/v3/contacts/${id}`, options);
+  retrieve(
+    id: string,
+    params: ContactRetrieveParams | null | undefined = {},
+    options?: RequestOptions,
+  ): APIPromise<APIResponseContact> {
+    const { 'x-profile-id': xProfileID } = params ?? {};
+    return this._client.get(path`/v3/contacts/${id}`, {
+      ...options,
+      headers: buildHeaders([
+        { ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined) },
+        options?.headers,
+      ]),
+    });
   }
 
   /**
@@ -61,12 +75,15 @@ export class Contacts extends APIResource {
    * ```
    */
   update(id: string, params: ContactUpdateParams, options?: RequestOptions): APIPromise<APIResponseContact> {
-    const { 'Idempotency-Key': idempotencyKey, ...body } = params;
+    const { 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
     return this._client.patch(path`/v3/contacts/${id}`, {
       body,
       ...options,
       headers: buildHeaders([
-        { ...(idempotencyKey != null ? { 'Idempotency-Key': idempotencyKey } : undefined) },
+        {
+          ...(idempotencyKey != null ? { 'Idempotency-Key': idempotencyKey } : undefined),
+          ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined),
+        },
         options?.headers,
       ]),
     });
@@ -80,12 +97,20 @@ export class Contacts extends APIResource {
    * ```ts
    * const contacts = await client.contacts.list({
    *   page: 0,
-   *   pageSize: 0,
+   *   page_size: 0,
    * });
    * ```
    */
-  list(query: ContactListParams, options?: RequestOptions): APIPromise<ContactListResponse> {
-    return this._client.get('/v3/contacts', { query, ...options });
+  list(params: ContactListParams, options?: RequestOptions): APIPromise<ContactListResponse> {
+    const { 'x-profile-id': xProfileID, ...query } = params;
+    return this._client.get('/v3/contacts', {
+      query,
+      ...options,
+      headers: buildHeaders([
+        { ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined) },
+        options?.headers,
+      ]),
+    });
   }
 
   /**
@@ -101,11 +126,14 @@ export class Contacts extends APIResource {
    * ```
    */
   delete(id: string, params: ContactDeleteParams, options?: RequestOptions): APIPromise<void> {
-    const { body } = params;
+    const { body, 'x-profile-id': xProfileID } = params;
     return this._client.delete(path`/v3/contacts/${id}`, {
       body: body,
       ...options,
-      headers: buildHeaders([{ 'Content-Type': '*/*', Accept: '*/*' }, options?.headers]),
+      headers: buildHeaders([
+        { Accept: '*/*', ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined) },
+        options?.headers,
+      ]),
     });
   }
 }
@@ -259,10 +287,10 @@ export interface ContactCreateParams {
   phone_number?: string;
 
   /**
-   * Body param: Test mode flag - when true, the operation is simulated without side
+   * Body param: Sandbox flag - when true, the operation is simulated without side
    * effects Useful for testing integrations without actual execution
    */
-  test_mode?: boolean;
+  sandbox?: boolean;
 
   /**
    * Header param: Unique key to ensure idempotent request processing. Must be 1-255
@@ -270,6 +298,21 @@ export interface ContactCreateParams {
    * hours per key per customer.
    */
   'Idempotency-Key'?: string;
+
+  /**
+   * Header param: Profile UUID to scope the request to a child profile. Only
+   * organization API keys can use this header. The profile must belong to the
+   * calling organization.
+   */
+  'x-profile-id'?: string;
+}
+
+export interface ContactRetrieveParams {
+  /**
+   * Profile UUID to scope the request to a child profile. Only organization API keys
+   * can use this header. The profile must belong to the calling organization.
+   */
+  'x-profile-id'?: string;
 }
 
 export interface ContactUpdateParams {
@@ -284,10 +327,10 @@ export interface ContactUpdateParams {
   opt_out?: boolean | null;
 
   /**
-   * Body param: Test mode flag - when true, the operation is simulated without side
+   * Body param: Sandbox flag - when true, the operation is simulated without side
    * effects Useful for testing integrations without actual execution
    */
-  test_mode?: boolean;
+  sandbox?: boolean;
 
   /**
    * Header param: Unique key to ensure idempotent request processing. Must be 1-255
@@ -295,37 +338,61 @@ export interface ContactUpdateParams {
    * hours per key per customer.
    */
   'Idempotency-Key'?: string;
+
+  /**
+   * Header param: Profile UUID to scope the request to a child profile. Only
+   * organization API keys can use this header. The profile must belong to the
+   * calling organization.
+   */
+  'x-profile-id'?: string;
 }
 
 export interface ContactListParams {
   /**
-   * Page number (1-indexed)
+   * Query param: Page number (1-indexed)
    */
   page: number;
 
-  pageSize: number;
+  /**
+   * Query param: Number of items per page
+   */
+  page_size: number;
 
   /**
-   * Optional channel filter (sms, whatsapp)
+   * Query param: Optional channel filter (sms, whatsapp)
    */
   channel?: string | null;
 
   /**
-   * Optional phone number filter (alternative to list view)
+   * Query param: Optional phone number filter (alternative to list view)
    */
   phone?: string | null;
 
   /**
-   * Optional search term for filtering contacts
+   * Query param: Optional search term for filtering contacts
    */
   search?: string | null;
+
+  /**
+   * Header param: Profile UUID to scope the request to a child profile. Only
+   * organization API keys can use this header. The profile must belong to the
+   * calling organization.
+   */
+  'x-profile-id'?: string;
 }
 
 export interface ContactDeleteParams {
   /**
-   * Request to delete/dissociate a contact
+   * Body param: Request to delete/dissociate a contact
    */
   body: ContactDeleteParams.Body;
+
+  /**
+   * Header param: Profile UUID to scope the request to a child profile. Only
+   * organization API keys can use this header. The profile must belong to the
+   * calling organization.
+   */
+  'x-profile-id'?: string;
 }
 
 export namespace ContactDeleteParams {
@@ -341,6 +408,7 @@ export declare namespace Contacts {
     type Contact as Contact,
     type ContactListResponse as ContactListResponse,
     type ContactCreateParams as ContactCreateParams,
+    type ContactRetrieveParams as ContactRetrieveParams,
     type ContactUpdateParams as ContactUpdateParams,
     type ContactListParams as ContactListParams,
     type ContactDeleteParams as ContactDeleteParams,

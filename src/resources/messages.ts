@@ -22,8 +22,19 @@ export class Messages extends APIResource {
    * );
    * ```
    */
-  retrieveActivities(id: string, options?: RequestOptions): APIPromise<MessageRetrieveActivitiesResponse> {
-    return this._client.get(path`/v3/messages/${id}/activities`, options);
+  retrieveActivities(
+    id: string,
+    params: MessageRetrieveActivitiesParams | null | undefined = {},
+    options?: RequestOptions,
+  ): APIPromise<MessageRetrieveActivitiesResponse> {
+    const { 'x-profile-id': xProfileID } = params ?? {};
+    return this._client.get(path`/v3/messages/${id}/activities`, {
+      ...options,
+      headers: buildHeaders([
+        { ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined) },
+        options?.headers,
+      ]),
+    });
   }
 
   /**
@@ -37,8 +48,19 @@ export class Messages extends APIResource {
    * );
    * ```
    */
-  retrieveStatus(id: string, options?: RequestOptions): APIPromise<MessageRetrieveStatusResponse> {
-    return this._client.get(path`/v3/messages/${id}`, options);
+  retrieveStatus(
+    id: string,
+    params: MessageRetrieveStatusParams | null | undefined = {},
+    options?: RequestOptions,
+  ): APIPromise<MessageRetrieveStatusResponse> {
+    const { 'x-profile-id': xProfileID } = params ?? {};
+    return this._client.get(path`/v3/messages/${id}`, {
+      ...options,
+      headers: buildHeaders([
+        { ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined) },
+        options?.headers,
+      ]),
+    });
   }
 
   /**
@@ -54,12 +76,15 @@ export class Messages extends APIResource {
    * ```
    */
   send(params: MessageSendParams, options?: RequestOptions): APIPromise<MessageSendResponse> {
-    const { 'Idempotency-Key': idempotencyKey, ...body } = params;
+    const { 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
     return this._client.post('/v3/messages', {
       body,
       ...options,
       headers: buildHeaders([
-        { ...(idempotencyKey != null ? { 'Idempotency-Key': idempotencyKey } : undefined) },
+        {
+          ...(idempotencyKey != null ? { 'Idempotency-Key': idempotencyKey } : undefined),
+          ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined),
+        },
         options?.headers,
       ]),
     });
@@ -113,14 +138,21 @@ export namespace MessageRetrieveActivitiesResponse {
      */
     export interface Activity {
       /**
-       * Additional content or payload for the activity (e.g., channel response)
+       * Active contact markup applied on top of the channel cost, formatted to 4 decimal
+       * places.
        */
-      content?: string | null;
+      active_contact_price?: string | null;
 
       /**
        * Human-readable description of the activity
        */
       description?: string;
+
+      /**
+       * Channel cost for this activity (e.g., SMS/WhatsApp provider cost), formatted to
+       * 4 decimal places.
+       */
+      price?: string | null;
 
       /**
        * Activity status (e.g., ACCEPTED, PROCESSED, SENT, DELIVERED, FAILED)
@@ -166,6 +198,8 @@ export namespace MessageRetrieveStatusResponse {
    */
   export interface Data {
     id?: string;
+
+    active_contact_price?: number | null;
 
     channel?: string;
 
@@ -316,6 +350,22 @@ export namespace MessageSendResponse {
   }
 }
 
+export interface MessageRetrieveActivitiesParams {
+  /**
+   * Profile UUID to scope the request to a child profile. Only organization API keys
+   * can use this header. The profile must belong to the calling organization.
+   */
+  'x-profile-id'?: string;
+}
+
+export interface MessageRetrieveStatusParams {
+  /**
+   * Profile UUID to scope the request to a child profile. Only organization API keys
+   * can use this header. The profile must belong to the calling organization.
+   */
+  'x-profile-id'?: string;
+}
+
 export interface MessageSendParams {
   /**
    * Body param: Channels to broadcast on, e.g. ["whatsapp", "sms"]. Each channel
@@ -325,15 +375,15 @@ export interface MessageSendParams {
   channel?: Array<string> | null;
 
   /**
+   * Body param: Sandbox flag - when true, the operation is simulated without side
+   * effects Useful for testing integrations without actual execution
+   */
+  sandbox?: boolean;
+
+  /**
    * Body param: Template reference (by id or name, with optional parameters)
    */
   template?: MessageSendParams.Template;
-
-  /**
-   * Body param: Test mode flag - when true, the operation is simulated without side
-   * effects Useful for testing integrations without actual execution
-   */
-  test_mode?: boolean;
 
   /**
    * Body param: List of recipient phone numbers in E.164 format (multi-recipient
@@ -347,6 +397,13 @@ export interface MessageSendParams {
    * hours per key per customer.
    */
   'Idempotency-Key'?: string;
+
+  /**
+   * Header param: Profile UUID to scope the request to a child profile. Only
+   * organization API keys can use this header. The profile must belong to the
+   * calling organization.
+   */
+  'x-profile-id'?: string;
 }
 
 export namespace MessageSendParams {
@@ -376,6 +433,8 @@ export declare namespace Messages {
     type MessageRetrieveActivitiesResponse as MessageRetrieveActivitiesResponse,
     type MessageRetrieveStatusResponse as MessageRetrieveStatusResponse,
     type MessageSendResponse as MessageSendResponse,
+    type MessageRetrieveActivitiesParams as MessageRetrieveActivitiesParams,
+    type MessageRetrieveStatusParams as MessageRetrieveStatusParams,
     type MessageSendParams as MessageSendParams,
   };
 }

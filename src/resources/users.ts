@@ -19,12 +19,23 @@ export class Users extends APIResource {
    * @example
    * ```ts
    * const apiResponseOfUser = await client.users.retrieve(
-   *   '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
+   *   'userId',
    * );
    * ```
    */
-  retrieve(userID: string, options?: RequestOptions): APIPromise<APIResponseOfUser> {
-    return this._client.get(path`/v3/users/${userID}`, options);
+  retrieve(
+    userID: string,
+    params: UserRetrieveParams | null | undefined = {},
+    options?: RequestOptions,
+  ): APIPromise<APIResponseOfUser> {
+    const { 'x-profile-id': xProfileID } = params ?? {};
+    return this._client.get(path`/v3/users/${userID}`, {
+      ...options,
+      headers: buildHeaders([
+        { ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined) },
+        options?.headers,
+      ]),
+    });
   }
 
   /**
@@ -37,8 +48,18 @@ export class Users extends APIResource {
    * const users = await client.users.list();
    * ```
    */
-  list(options?: RequestOptions): APIPromise<UserListResponse> {
-    return this._client.get('/v3/users', options);
+  list(
+    params: UserListParams | null | undefined = {},
+    options?: RequestOptions,
+  ): APIPromise<UserListResponse> {
+    const { 'x-profile-id': xProfileID } = params ?? {};
+    return this._client.get('/v3/users', {
+      ...options,
+      headers: buildHeaders([
+        { ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined) },
+        options?.headers,
+      ]),
+    });
   }
 
   /**
@@ -52,12 +73,15 @@ export class Users extends APIResource {
    * ```
    */
   invite(params: UserInviteParams, options?: RequestOptions): APIPromise<APIResponseOfUser> {
-    const { 'Idempotency-Key': idempotencyKey, ...body } = params;
+    const { 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
     return this._client.post('/v3/users', {
       body,
       ...options,
       headers: buildHeaders([
-        { ...(idempotencyKey != null ? { 'Idempotency-Key': idempotencyKey } : undefined) },
+        {
+          ...(idempotencyKey != null ? { 'Idempotency-Key': idempotencyKey } : undefined),
+          ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined),
+        },
         options?.headers,
       ]),
     });
@@ -69,16 +93,18 @@ export class Users extends APIResource {
    *
    * @example
    * ```ts
-   * await client.users.remove(
-   *   '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
-   * );
+   * await client.users.remove('userId', { body: {} });
    * ```
    */
-  remove(userID: string, body: UserRemoveParams, options?: RequestOptions): APIPromise<void> {
+  remove(userID: string, params: UserRemoveParams, options?: RequestOptions): APIPromise<void> {
+    const { body, 'x-profile-id': xProfileID } = params;
     return this._client.delete(path`/v3/users/${userID}`, {
-      body,
+      body: body,
       ...options,
-      headers: buildHeaders([{ 'Content-Type': '*/*', Accept: '*/*' }, options?.headers]),
+      headers: buildHeaders([
+        { Accept: '*/*', ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined) },
+        options?.headers,
+      ]),
     });
   }
 
@@ -89,7 +115,7 @@ export class Users extends APIResource {
    * @example
    * ```ts
    * const apiResponseOfUser = await client.users.updateRole(
-   *   '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
+   *   'userId',
    * );
    * ```
    */
@@ -98,12 +124,15 @@ export class Users extends APIResource {
     params: UserUpdateRoleParams,
     options?: RequestOptions,
   ): APIPromise<APIResponseOfUser> {
-    const { 'Idempotency-Key': idempotencyKey, ...body } = params;
+    const { 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
     return this._client.patch(path`/v3/users/${userID}`, {
       body,
       ...options,
       headers: buildHeaders([
-        { ...(idempotencyKey != null ? { 'Idempotency-Key': idempotencyKey } : undefined) },
+        {
+          ...(idempotencyKey != null ? { 'Idempotency-Key': idempotencyKey } : undefined),
+          ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined),
+        },
         options?.headers,
       ]),
     });
@@ -222,6 +251,22 @@ export namespace UserListResponse {
   }
 }
 
+export interface UserRetrieveParams {
+  /**
+   * Profile UUID to scope the request to a child profile. Only organization API keys
+   * can use this header. The profile must belong to the calling organization.
+   */
+  'x-profile-id'?: string;
+}
+
+export interface UserListParams {
+  /**
+   * Profile UUID to scope the request to a child profile. Only organization API keys
+   * can use this header. The profile must belong to the calling organization.
+   */
+  'x-profile-id'?: string;
+}
+
 export interface UserInviteParams {
   /**
    * Body param: User email address (required)
@@ -239,10 +284,10 @@ export interface UserInviteParams {
   role?: string;
 
   /**
-   * Body param: Test mode flag - when true, the operation is simulated without side
+   * Body param: Sandbox flag - when true, the operation is simulated without side
    * effects Useful for testing integrations without actual execution
    */
-  test_mode?: boolean;
+  sandbox?: boolean;
 
   /**
    * Header param: Unique key to ensure idempotent request processing. Must be 1-255
@@ -250,19 +295,34 @@ export interface UserInviteParams {
    * hours per key per customer.
    */
   'Idempotency-Key'?: string;
+
+  /**
+   * Header param: Profile UUID to scope the request to a child profile. Only
+   * organization API keys can use this header. The profile must belong to the
+   * calling organization.
+   */
+  'x-profile-id'?: string;
 }
 
 export interface UserRemoveParams {
   /**
-   * Test mode flag - when true, the operation is simulated without side effects
-   * Useful for testing integrations without actual execution
+   * Body param: Request to remove a user from an organization
    */
-  test_mode?: boolean;
+  body: UserRemoveParams.Body;
 
   /**
-   * User ID from route parameter
+   * Header param: Profile UUID to scope the request to a child profile. Only
+   * organization API keys can use this header. The profile must belong to the
+   * calling organization.
    */
-  user_id?: string;
+  'x-profile-id'?: string;
+}
+
+export namespace UserRemoveParams {
+  /**
+   * Request to remove a user from an organization
+   */
+  export interface Body extends WebhooksAPI.MutationRequest {}
 }
 
 export interface UserUpdateRoleParams {
@@ -272,15 +332,10 @@ export interface UserUpdateRoleParams {
   role?: string;
 
   /**
-   * Body param: Test mode flag - when true, the operation is simulated without side
+   * Body param: Sandbox flag - when true, the operation is simulated without side
    * effects Useful for testing integrations without actual execution
    */
-  test_mode?: boolean;
-
-  /**
-   * Body param: User ID from route parameter
-   */
-  user_id?: string;
+  sandbox?: boolean;
 
   /**
    * Header param: Unique key to ensure idempotent request processing. Must be 1-255
@@ -288,6 +343,13 @@ export interface UserUpdateRoleParams {
    * hours per key per customer.
    */
   'Idempotency-Key'?: string;
+
+  /**
+   * Header param: Profile UUID to scope the request to a child profile. Only
+   * organization API keys can use this header. The profile must belong to the
+   * calling organization.
+   */
+  'x-profile-id'?: string;
 }
 
 export declare namespace Users {
@@ -295,6 +357,8 @@ export declare namespace Users {
     type APIResponseOfUser as APIResponseOfUser,
     type UserResponse as UserResponse,
     type UserListResponse as UserListResponse,
+    type UserRetrieveParams as UserRetrieveParams,
+    type UserListParams as UserListParams,
     type UserInviteParams as UserInviteParams,
     type UserRemoveParams as UserRemoveParams,
     type UserUpdateRoleParams as UserUpdateRoleParams,

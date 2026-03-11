@@ -185,12 +185,6 @@ export const sdkMethods: SdkMethod[] = [
     httpPath: '/v3/messages',
   },
   {
-    clientCallName: 'client.lookup.retrievePhoneInfo',
-    fullyQualifiedName: 'lookup.retrievePhoneInfo',
-    httpMethod: 'get',
-    httpPath: '/v3/lookup/number/{phoneNumber}',
-  },
-  {
     clientCallName: 'client.contacts.create',
     fullyQualifiedName: 'contacts.create',
     httpMethod: 'post',
@@ -219,54 +213,6 @@ export const sdkMethods: SdkMethod[] = [
     fullyQualifiedName: 'contacts.delete',
     httpMethod: 'delete',
     httpPath: '/v3/contacts/{id}',
-  },
-  {
-    clientCallName: 'client.brands.create',
-    fullyQualifiedName: 'brands.create',
-    httpMethod: 'post',
-    httpPath: '/v3/brands',
-  },
-  {
-    clientCallName: 'client.brands.update',
-    fullyQualifiedName: 'brands.update',
-    httpMethod: 'put',
-    httpPath: '/v3/brands/{brandId}',
-  },
-  {
-    clientCallName: 'client.brands.list',
-    fullyQualifiedName: 'brands.list',
-    httpMethod: 'get',
-    httpPath: '/v3/brands',
-  },
-  {
-    clientCallName: 'client.brands.delete',
-    fullyQualifiedName: 'brands.delete',
-    httpMethod: 'delete',
-    httpPath: '/v3/brands/{brandId}',
-  },
-  {
-    clientCallName: 'client.brands.campaigns.create',
-    fullyQualifiedName: 'brands.campaigns.create',
-    httpMethod: 'post',
-    httpPath: '/v3/brands/{brandId}/campaigns',
-  },
-  {
-    clientCallName: 'client.brands.campaigns.update',
-    fullyQualifiedName: 'brands.campaigns.update',
-    httpMethod: 'put',
-    httpPath: '/v3/brands/{brandId}/campaigns/{campaignId}',
-  },
-  {
-    clientCallName: 'client.brands.campaigns.list',
-    fullyQualifiedName: 'brands.campaigns.list',
-    httpMethod: 'get',
-    httpPath: '/v3/brands/{brandId}/campaigns',
-  },
-  {
-    clientCallName: 'client.brands.campaigns.delete',
-    fullyQualifiedName: 'brands.campaigns.delete',
-    httpMethod: 'delete',
-    httpPath: '/v3/brands/{brandId}/campaigns/{campaignId}',
   },
   {
     clientCallName: 'client.me.retrieve',

@@ -20,12 +20,15 @@ export class Webhooks extends APIResource {
    * ```
    */
   create(params: WebhookCreateParams, options?: RequestOptions): APIPromise<APIResponseWebhook> {
-    const { 'Idempotency-Key': idempotencyKey, ...body } = params;
+    const { 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
     return this._client.post('/v3/webhooks', {
       body,
       ...options,
       headers: buildHeaders([
-        { ...(idempotencyKey != null ? { 'Idempotency-Key': idempotencyKey } : undefined) },
+        {
+          ...(idempotencyKey != null ? { 'Idempotency-Key': idempotencyKey } : undefined),
+          ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined),
+        },
         options?.headers,
       ]),
     });
@@ -41,8 +44,19 @@ export class Webhooks extends APIResource {
    * );
    * ```
    */
-  retrieve(id: string, options?: RequestOptions): APIPromise<APIResponseWebhook> {
-    return this._client.get(path`/v3/webhooks/${id}`, options);
+  retrieve(
+    id: string,
+    params: WebhookRetrieveParams | null | undefined = {},
+    options?: RequestOptions,
+  ): APIPromise<APIResponseWebhook> {
+    const { 'x-profile-id': xProfileID } = params ?? {};
+    return this._client.get(path`/v3/webhooks/${id}`, {
+      ...options,
+      headers: buildHeaders([
+        { ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined) },
+        options?.headers,
+      ]),
+    });
   }
 
   /**
@@ -56,12 +70,15 @@ export class Webhooks extends APIResource {
    * ```
    */
   update(id: string, params: WebhookUpdateParams, options?: RequestOptions): APIPromise<APIResponseWebhook> {
-    const { 'Idempotency-Key': idempotencyKey, ...body } = params;
+    const { 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
     return this._client.put(path`/v3/webhooks/${id}`, {
       body,
       ...options,
       headers: buildHeaders([
-        { ...(idempotencyKey != null ? { 'Idempotency-Key': idempotencyKey } : undefined) },
+        {
+          ...(idempotencyKey != null ? { 'Idempotency-Key': idempotencyKey } : undefined),
+          ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined),
+        },
         options?.headers,
       ]),
     });
@@ -74,12 +91,20 @@ export class Webhooks extends APIResource {
    * ```ts
    * const webhooks = await client.webhooks.list({
    *   page: 0,
-   *   pageSize: 0,
+   *   page_size: 0,
    * });
    * ```
    */
-  list(query: WebhookListParams, options?: RequestOptions): APIPromise<WebhookListResponse> {
-    return this._client.get('/v3/webhooks', { query, ...options });
+  list(params: WebhookListParams, options?: RequestOptions): APIPromise<WebhookListResponse> {
+    const { 'x-profile-id': xProfileID, ...query } = params;
+    return this._client.get('/v3/webhooks', {
+      query,
+      ...options,
+      headers: buildHeaders([
+        { ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined) },
+        options?.headers,
+      ]),
+    });
   }
 
   /**
@@ -92,10 +117,18 @@ export class Webhooks extends APIResource {
    * );
    * ```
    */
-  delete(id: string, options?: RequestOptions): APIPromise<void> {
+  delete(
+    id: string,
+    params: WebhookDeleteParams | null | undefined = {},
+    options?: RequestOptions,
+  ): APIPromise<void> {
+    const { 'x-profile-id': xProfileID } = params ?? {};
     return this._client.delete(path`/v3/webhooks/${id}`, {
       ...options,
-      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
+      headers: buildHeaders([
+        { Accept: '*/*', ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined) },
+        options?.headers,
+      ]),
     });
   }
 
@@ -107,8 +140,18 @@ export class Webhooks extends APIResource {
    * const response = await client.webhooks.listEventTypes();
    * ```
    */
-  listEventTypes(options?: RequestOptions): APIPromise<WebhookListEventTypesResponse> {
-    return this._client.get('/v3/webhooks/event-types', options);
+  listEventTypes(
+    params: WebhookListEventTypesParams | null | undefined = {},
+    options?: RequestOptions,
+  ): APIPromise<WebhookListEventTypesResponse> {
+    const { 'x-profile-id': xProfileID } = params ?? {};
+    return this._client.get('/v3/webhooks/event-types', {
+      ...options,
+      headers: buildHeaders([
+        { ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined) },
+        options?.headers,
+      ]),
+    });
   }
 
   /**
@@ -118,16 +161,24 @@ export class Webhooks extends APIResource {
    * ```ts
    * const response = await client.webhooks.listEvents(
    *   'd4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8',
-   *   { page: 0, pageSize: 0 },
+   *   { page: 0, page_size: 0 },
    * );
    * ```
    */
   listEvents(
     id: string,
-    query: WebhookListEventsParams,
+    params: WebhookListEventsParams,
     options?: RequestOptions,
   ): APIPromise<WebhookListEventsResponse> {
-    return this._client.get(path`/v3/webhooks/${id}/events`, { query, ...options });
+    const { 'x-profile-id': xProfileID, ...query } = params;
+    return this._client.get(path`/v3/webhooks/${id}/events`, {
+      query,
+      ...options,
+      headers: buildHeaders([
+        { ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined) },
+        options?.headers,
+      ]),
+    });
   }
 
   /**
@@ -147,12 +198,15 @@ export class Webhooks extends APIResource {
     params: WebhookRotateSecretParams,
     options?: RequestOptions,
   ): APIPromise<WebhookRotateSecretResponse> {
-    const { body, 'Idempotency-Key': idempotencyKey } = params;
+    const { body, 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID } = params;
     return this._client.post(path`/v3/webhooks/${id}/rotate-secret`, {
       body: body,
       ...options,
       headers: buildHeaders([
-        { ...(idempotencyKey != null ? { 'Idempotency-Key': idempotencyKey } : undefined) },
+        {
+          ...(idempotencyKey != null ? { 'Idempotency-Key': idempotencyKey } : undefined),
+          ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined),
+        },
         options?.headers,
       ]),
     });
@@ -169,12 +223,15 @@ export class Webhooks extends APIResource {
    * ```
    */
   test(id: string, params: WebhookTestParams, options?: RequestOptions): APIPromise<WebhookTestResponse> {
-    const { 'Idempotency-Key': idempotencyKey, ...body } = params;
+    const { 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
     return this._client.post(path`/v3/webhooks/${id}/test`, {
       body,
       ...options,
       headers: buildHeaders([
-        { ...(idempotencyKey != null ? { 'Idempotency-Key': idempotencyKey } : undefined) },
+        {
+          ...(idempotencyKey != null ? { 'Idempotency-Key': idempotencyKey } : undefined),
+          ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined),
+        },
         options?.headers,
       ]),
     });
@@ -196,12 +253,15 @@ export class Webhooks extends APIResource {
     params: WebhookToggleStatusParams,
     options?: RequestOptions,
   ): APIPromise<APIResponseWebhook> {
-    const { 'Idempotency-Key': idempotencyKey, ...body } = params;
+    const { 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
     return this._client.patch(path`/v3/webhooks/${id}/toggle-status`, {
       body,
       ...options,
       headers: buildHeaders([
-        { ...(idempotencyKey != null ? { 'Idempotency-Key': idempotencyKey } : undefined) },
+        {
+          ...(idempotencyKey != null ? { 'Idempotency-Key': idempotencyKey } : undefined),
+          ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined),
+        },
         options?.headers,
       ]),
     });
@@ -243,11 +303,6 @@ export interface APIMeta {
   request_id?: string;
 
   /**
-   * Response time in milliseconds (optional)
-   */
-  response_time_ms?: number | null;
-
-  /**
    * Server timestamp when the response was generated
    */
   timestamp?: string;
@@ -285,10 +340,10 @@ export interface APIResponseWebhook {
 
 export interface MutationRequest {
   /**
-   * Test mode flag - when true, the operation is simulated without side effects
-   * Useful for testing integrations without actual execution
+   * Sandbox flag - when true, the operation is simulated without side effects Useful
+   * for testing integrations without actual execution
    */
-  test_mode?: boolean;
+  sandbox?: boolean;
 }
 
 /**
@@ -613,10 +668,10 @@ export interface WebhookCreateParams {
   retry_count?: number;
 
   /**
-   * Body param: Test mode flag - when true, the operation is simulated without side
+   * Body param: Sandbox flag - when true, the operation is simulated without side
    * effects Useful for testing integrations without actual execution
    */
-  test_mode?: boolean;
+  sandbox?: boolean;
 
   /**
    * Body param
@@ -629,6 +684,21 @@ export interface WebhookCreateParams {
    * hours per key per customer.
    */
   'Idempotency-Key'?: string;
+
+  /**
+   * Header param: Profile UUID to scope the request to a child profile. Only
+   * organization API keys can use this header. The profile must belong to the
+   * calling organization.
+   */
+  'x-profile-id'?: string;
+}
+
+export interface WebhookRetrieveParams {
+  /**
+   * Profile UUID to scope the request to a child profile. Only organization API keys
+   * can use this header. The profile must belong to the calling organization.
+   */
+  'x-profile-id'?: string;
 }
 
 export interface WebhookUpdateParams {
@@ -653,10 +723,10 @@ export interface WebhookUpdateParams {
   retry_count?: number;
 
   /**
-   * Body param: Test mode flag - when true, the operation is simulated without side
+   * Body param: Sandbox flag - when true, the operation is simulated without side
    * effects Useful for testing integrations without actual execution
    */
-  test_mode?: boolean;
+  sandbox?: boolean;
 
   /**
    * Body param
@@ -669,24 +739,82 @@ export interface WebhookUpdateParams {
    * hours per key per customer.
    */
   'Idempotency-Key'?: string;
+
+  /**
+   * Header param: Profile UUID to scope the request to a child profile. Only
+   * organization API keys can use this header. The profile must belong to the
+   * calling organization.
+   */
+  'x-profile-id'?: string;
 }
 
 export interface WebhookListParams {
+  /**
+   * Query param
+   */
   page: number;
 
-  pageSize: number;
+  /**
+   * Query param
+   */
+  page_size: number;
 
-  isActive?: boolean | null;
+  /**
+   * Query param
+   */
+  is_active?: boolean | null;
 
+  /**
+   * Query param
+   */
   search?: string | null;
+
+  /**
+   * Header param: Profile UUID to scope the request to a child profile. Only
+   * organization API keys can use this header. The profile must belong to the
+   * calling organization.
+   */
+  'x-profile-id'?: string;
+}
+
+export interface WebhookDeleteParams {
+  /**
+   * Profile UUID to scope the request to a child profile. Only organization API keys
+   * can use this header. The profile must belong to the calling organization.
+   */
+  'x-profile-id'?: string;
+}
+
+export interface WebhookListEventTypesParams {
+  /**
+   * Profile UUID to scope the request to a child profile. Only organization API keys
+   * can use this header. The profile must belong to the calling organization.
+   */
+  'x-profile-id'?: string;
 }
 
 export interface WebhookListEventsParams {
+  /**
+   * Query param
+   */
   page: number;
 
-  pageSize: number;
+  /**
+   * Query param
+   */
+  page_size: number;
 
+  /**
+   * Query param
+   */
   search?: string | null;
+
+  /**
+   * Header param: Profile UUID to scope the request to a child profile. Only
+   * organization API keys can use this header. The profile must belong to the
+   * calling organization.
+   */
+  'x-profile-id'?: string;
 }
 
 export interface WebhookRotateSecretParams {
@@ -701,6 +829,13 @@ export interface WebhookRotateSecretParams {
    * hours per key per customer.
    */
   'Idempotency-Key'?: string;
+
+  /**
+   * Header param: Profile UUID to scope the request to a child profile. Only
+   * organization API keys can use this header. The profile must belong to the
+   * calling organization.
+   */
+  'x-profile-id'?: string;
 }
 
 export namespace WebhookRotateSecretParams {
@@ -714,10 +849,10 @@ export interface WebhookTestParams {
   event_type?: string;
 
   /**
-   * Body param: Test mode flag - when true, the operation is simulated without side
+   * Body param: Sandbox flag - when true, the operation is simulated without side
    * effects Useful for testing integrations without actual execution
    */
-  test_mode?: boolean;
+  sandbox?: boolean;
 
   /**
    * Header param: Unique key to ensure idempotent request processing. Must be 1-255
@@ -725,6 +860,13 @@ export interface WebhookTestParams {
    * hours per key per customer.
    */
   'Idempotency-Key'?: string;
+
+  /**
+   * Header param: Profile UUID to scope the request to a child profile. Only
+   * organization API keys can use this header. The profile must belong to the
+   * calling organization.
+   */
+  'x-profile-id'?: string;
 }
 
 export interface WebhookToggleStatusParams {
@@ -734,10 +876,10 @@ export interface WebhookToggleStatusParams {
   is_active?: boolean;
 
   /**
-   * Body param: Test mode flag - when true, the operation is simulated without side
+   * Body param: Sandbox flag - when true, the operation is simulated without side
    * effects Useful for testing integrations without actual execution
    */
-  test_mode?: boolean;
+  sandbox?: boolean;
 
   /**
    * Header param: Unique key to ensure idempotent request processing. Must be 1-255
@@ -745,6 +887,13 @@ export interface WebhookToggleStatusParams {
    * hours per key per customer.
    */
   'Idempotency-Key'?: string;
+
+  /**
+   * Header param: Profile UUID to scope the request to a child profile. Only
+   * organization API keys can use this header. The profile must belong to the
+   * calling organization.
+   */
+  'x-profile-id'?: string;
 }
 
 export declare namespace Webhooks {
@@ -761,8 +910,11 @@ export declare namespace Webhooks {
     type WebhookRotateSecretResponse as WebhookRotateSecretResponse,
     type WebhookTestResponse as WebhookTestResponse,
     type WebhookCreateParams as WebhookCreateParams,
+    type WebhookRetrieveParams as WebhookRetrieveParams,
     type WebhookUpdateParams as WebhookUpdateParams,
     type WebhookListParams as WebhookListParams,
+    type WebhookDeleteParams as WebhookDeleteParams,
+    type WebhookListEventTypesParams as WebhookListEventTypesParams,
     type WebhookListEventsParams as WebhookListEventsParams,
     type WebhookRotateSecretParams as WebhookRotateSecretParams,
     type WebhookTestParams as WebhookTestParams,

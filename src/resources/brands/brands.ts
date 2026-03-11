@@ -1,289 +1,187 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../../core/resource';
-import * as WebhooksAPI from '../webhooks';
+import * as BrandsAPI from './brands';
 import * as CampaignsAPI from './campaigns';
 import {
   APIResponseTcrCampaignWithUseCases,
   BaseDto,
-  CampaignCreateParams,
   CampaignData,
-  CampaignDeleteParams,
-  CampaignListResponse,
-  CampaignUpdateParams,
   Campaigns,
   MessagingUseCaseUs,
   SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData,
   TcrCampaignWithUseCases,
 } from './campaigns';
-import { APIPromise } from '../../core/api-promise';
-import { buildHeaders } from '../../internal/headers';
-import { RequestOptions } from '../../internal/request-options';
-import { path } from '../../internal/utils/path';
 
-/**
- * Register and manage 10DLC brands for SMS compliance
- */
 export class Brands extends APIResource {
   campaigns: CampaignsAPI.Campaigns = new CampaignsAPI.Campaigns(this._client);
-
-  /**
-   * Creates a new brand and associated information. This endpoint automatically sets
-   * inheritTcrBrand=false when a brand is created.
-   *
-   * @example
-   * ```ts
-   * const apiResponseBrandWithKYC = await client.brands.create({
-   *   brand: {
-   *     brandRelationship: 'SMALL_ACCOUNT',
-   *     contactName: 'John Smith',
-   *     vertical: 'PROFESSIONAL',
-   *   },
-   * });
-   * ```
-   */
-  create(params: BrandCreateParams, options?: RequestOptions): APIPromise<APIResponseBrandWithKYC> {
-    const { 'Idempotency-Key': idempotencyKey, ...body } = params;
-    return this._client.post('/v3/brands', {
-      body,
-      ...options,
-      headers: buildHeaders([
-        { ...(idempotencyKey != null ? { 'Idempotency-Key': idempotencyKey } : undefined) },
-        options?.headers,
-      ]),
-    });
-  }
-
-  /**
-   * Updates an existing brand and its associated information. Cannot update brands
-   * that have already been submitted to TCR or inherited brands.
-   *
-   * @example
-   * ```ts
-   * const apiResponseBrandWithKYC = await client.brands.update(
-   *   'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
-   *   {
-   *     brand: {
-   *       brandRelationship: 'SMALL_ACCOUNT',
-   *       contactName: 'John Smith',
-   *       vertical: 'PROFESSIONAL',
-   *     },
-   *   },
-   * );
-   * ```
-   */
-  update(
-    brandID: string,
-    params: BrandUpdateParams,
-    options?: RequestOptions,
-  ): APIPromise<APIResponseBrandWithKYC> {
-    const { 'Idempotency-Key': idempotencyKey, ...body } = params;
-    return this._client.put(path`/v3/brands/${brandID}`, {
-      body,
-      ...options,
-      headers: buildHeaders([
-        { ...(idempotencyKey != null ? { 'Idempotency-Key': idempotencyKey } : undefined) },
-        options?.headers,
-      ]),
-    });
-  }
-
-  /**
-   * Retrieves all brands for the authenticated customer with information in a
-   * flattened structure. Includes inherited brands if inheritTcrBrand=true.
-   *
-   * @example
-   * ```ts
-   * const brands = await client.brands.list();
-   * ```
-   */
-  list(options?: RequestOptions): APIPromise<BrandListResponse> {
-    return this._client.get('/v3/brands', options);
-  }
-
-  /**
-   * Delete a brand by ID. The brand must belong to the authenticated customer.
-   *
-   * @example
-   * ```ts
-   * await client.brands.delete(
-   *   'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
-   *   { body: {} },
-   * );
-   * ```
-   */
-  delete(brandID: string, params: BrandDeleteParams, options?: RequestOptions): APIPromise<void> {
-    const { body } = params;
-    return this._client.delete(path`/v3/brands/${brandID}`, {
-      body: body,
-      ...options,
-      headers: buildHeaders([{ 'Content-Type': '*/*', Accept: '*/*' }, options?.headers]),
-    });
-  }
 }
 
 /**
- * Standard API response envelope for all v3 endpoints
- */
-export interface APIResponseBrandWithKYC {
-  /**
-   * The response data (null if error)
-   */
-  data?: BrandWithKYC | null;
-
-  /**
-   * Error details (null if successful)
-   */
-  error?: WebhooksAPI.APIError | null;
-
-  /**
-   * Metadata about the request and response
-   */
-  meta?: WebhooksAPI.APIMeta;
-
-  /**
-   * Indicates whether the request was successful
-   */
-  success?: boolean;
-}
-
-/**
- * Brand and KYC data
+ * Brand and KYC data grouped into contact, business, and compliance sections
  */
 export interface BrandData {
   /**
-   * Brand relationship level with TCR (required for TCR)
+   * Compliance and TCR-related information
    */
-  brandRelationship: TcrBrandRelationship;
+  compliance: BrandData.Compliance;
 
   /**
-   * Primary contact name (required)
+   * Contact information for the brand
    */
-  contactName: string;
+  contact: BrandData.Contact;
 
   /**
-   * Business vertical/industry category (required for TCR)
+   * Business details and address information
    */
-  vertical: TcrVertical;
+  business?: BrandData.Business | null;
+}
+
+export namespace BrandData {
+  /**
+   * Compliance and TCR-related information
+   */
+  export interface Compliance {
+    /**
+     * Brand relationship level with TCR (required for TCR)
+     */
+    brandRelationship: BrandsAPI.TcrBrandRelationship;
+
+    /**
+     * Business vertical/industry category (required for TCR)
+     */
+    vertical: BrandsAPI.TcrVertical;
+
+    /**
+     * List of destination countries for messaging
+     */
+    destinationCountries?: Array<BrandsAPI.DestinationCountry> | null;
+
+    /**
+     * Expected daily messaging volume
+     */
+    expectedMessagingVolume?: string | null;
+
+    /**
+     * Whether this is a TCR (Campaign Registry) application
+     */
+    isTcrApplication?: boolean | null;
+
+    /**
+     * Additional notes about the business or use case
+     */
+    notes?: string | null;
+
+    /**
+     * Phone number prefix for messaging (e.g., "+1")
+     */
+    phoneNumberPrefix?: string | null;
+
+    /**
+     * Primary messaging use case description
+     */
+    primaryUseCase?: string | null;
+  }
 
   /**
-   * Brand name for KYC submission
+   * Contact information for the brand
    */
-  brandName?: string | null;
+  export interface Contact {
+    /**
+     * Primary contact name (required)
+     */
+    name: string;
+
+    /**
+     * Business/brand name
+     */
+    businessName?: string | null;
+
+    /**
+     * Contact email address
+     */
+    email?: string | null;
+
+    /**
+     * Contact phone number in E.164 format
+     */
+    phone?: string | null;
+
+    /**
+     * Contact phone country code (e.g., "1" for US)
+     */
+    phoneCountryCode?: string | null;
+
+    /**
+     * Contact's role in the business
+     */
+    role?: string | null;
+  }
 
   /**
-   * Legal business name
+   * Business details and address information
    */
-  businessLegalName?: string | null;
+  export interface Business {
+    /**
+     * City
+     */
+    city?: string | null;
 
-  /**
-   * Business/brand name
-   */
-  businessName?: string | null;
+    /**
+     * Country code (e.g., US, CA)
+     */
+    country?: string | null;
 
-  /**
-   * Contact's role in the business
-   */
-  businessRole?: string | null;
+    /**
+     * Country where the business is registered
+     */
+    countryOfRegistration?: string | null;
 
-  /**
-   * Business website URL
-   */
-  businessUrl?: string | null;
+    /**
+     * Business entity type
+     */
+    entityType?: 'PRIVATE_PROFIT' | 'PUBLIC_PROFIT' | 'NON_PROFIT' | 'SOLE_PROPRIETOR' | 'GOVERNMENT' | null;
 
-  /**
-   * City
-   */
-  city?: string | null;
+    /**
+     * Legal business name
+     */
+    legalName?: string | null;
 
-  /**
-   * Contact email address
-   */
-  contactEmail?: string | null;
+    /**
+     * Postal/ZIP code
+     */
+    postalCode?: string | null;
 
-  /**
-   * Contact phone number in E.164 format
-   */
-  contactPhone?: string | null;
+    /**
+     * State/province code
+     */
+    state?: string | null;
 
-  /**
-   * Contact phone country code (e.g., "1" for US)
-   */
-  contactPhoneCountryCode?: string | null;
+    /**
+     * Street address
+     */
+    street?: string | null;
 
-  /**
-   * Country code (e.g., US, CA)
-   */
-  country?: string | null;
+    /**
+     * Tax ID/EIN number
+     */
+    taxId?: string | null;
 
-  /**
-   * Country where the business is registered
-   */
-  countryOfRegistration?: string | null;
+    /**
+     * Type of tax ID (e.g., us_ein, ca_bn)
+     */
+    taxIdType?: string | null;
 
-  /**
-   * List of destination countries for messaging
-   */
-  destinationCountries?: Array<DestinationCountry> | null;
-
-  /**
-   * Business entity type
-   */
-  entityType?: 'PRIVATE_PROFIT' | 'PUBLIC_PROFIT' | 'NON_PROFIT' | 'SOLE_PROPRIETOR' | 'GOVERNMENT' | null;
-
-  /**
-   * Expected daily messaging volume
-   */
-  expectedMessagingVolume?: string | null;
-
-  /**
-   * Whether this is a TCR (Campaign Registry) application
-   */
-  isTcrApplication?: boolean | null;
-
-  /**
-   * Additional notes about the business or use case
-   */
-  notes?: string | null;
-
-  /**
-   * Phone number prefix for messaging (e.g., "+1")
-   */
-  phoneNumberPrefix?: string | null;
-
-  /**
-   * Postal/ZIP code
-   */
-  postalCode?: string | null;
-
-  /**
-   * Primary messaging use case description
-   */
-  primaryUseCase?: string | null;
-
-  /**
-   * State/province code
-   */
-  state?: string | null;
-
-  /**
-   * Street address
-   */
-  street?: string | null;
-
-  /**
-   * Tax ID/EIN number
-   */
-  taxId?: string | null;
-
-  /**
-   * Type of tax ID (e.g., us_ein, ca_bn)
-   */
-  taxIdType?: string | null;
+    /**
+     * Business website URL
+     */
+    url?: string | null;
+  }
 }
 
 /**
- * Flattened brand response with embedded KYC information
+ * Brand response with nested contact, business, and compliance sections — mirrors
+ * the request structure.
  */
 export interface BrandWithKYC {
   /**
@@ -292,129 +190,39 @@ export interface BrandWithKYC {
   id?: string;
 
   /**
-   * Brand relationship level with TCR
+   * Business details and address information
    */
-  brandRelationship?: TcrBrandRelationship | null;
+  business?: BrandWithKYC.Business | null;
 
   /**
-   * Legal business name
+   * Compliance and TCR-related information
    */
-  businessLegalName?: string | null;
+  compliance?: BrandWithKYC.Compliance | null;
 
   /**
-   * Business/brand name
+   * Contact information for the brand
    */
-  businessName?: string | null;
-
-  /**
-   * Contact's role in the business
-   */
-  businessRole?: string | null;
-
-  /**
-   * Business website URL
-   */
-  businessUrl?: string | null;
-
-  /**
-   * City
-   */
-  city?: string | null;
-
-  /**
-   * Contact email address
-   */
-  contactEmail?: string | null;
-
-  /**
-   * Primary contact name
-   */
-  contactName?: string;
-
-  /**
-   * Contact phone number
-   */
-  contactPhone?: string | null;
-
-  /**
-   * Contact phone country code
-   */
-  contactPhoneCountryCode?: string | null;
-
-  /**
-   * Country code
-   */
-  country?: string | null;
-
-  /**
-   * Country where the business is registered
-   */
-  countryOfRegistration?: string | null;
+  contact?: BrandWithKYC.Contact | null;
 
   /**
    * When the brand was created
    */
-  createdAt?: string;
+  created_at?: string;
 
   /**
    * CSP (Campaign Service Provider) ID
    */
-  cspId?: string | null;
-
-  /**
-   * List of destination countries for messaging
-   */
-  destinationCountries?: Array<DestinationCountry>;
-
-  /**
-   * Business entity type
-   */
-  entityType?: string | null;
-
-  /**
-   * Expected daily messaging volume
-   */
-  expectedMessagingVolume?: string | null;
+  csp_id?: string | null;
 
   /**
    * TCR brand identity verification status
    */
-  identityStatus?: 'SELF_DECLARED' | 'UNVERIFIED' | 'VERIFIED' | 'VETTED_VERIFIED' | null;
+  identity_status?: 'SELF_DECLARED' | 'UNVERIFIED' | 'VERIFIED' | 'VETTED_VERIFIED' | null;
 
   /**
-   * Whether this brand is inherited from parent organization
+   * Whether this brand is inherited from the parent organization
    */
-  isInherited?: boolean;
-
-  /**
-   * Whether this is a TCR application
-   */
-  isTcrApplication?: boolean;
-
-  /**
-   * Additional notes
-   */
-  notes?: string | null;
-
-  /**
-   * Phone number prefix for messaging
-   */
-  phoneNumberPrefix?: string | null;
-
-  /**
-   * Postal/ZIP code
-   */
-  postalCode?: string | null;
-
-  /**
-   * Primary messaging use case description
-   */
-  primaryUseCase?: string | null;
-
-  /**
-   * State/province code
-   */
-  state?: string | null;
+  is_inherited?: boolean;
 
   /**
    * TCR brand status
@@ -422,49 +230,171 @@ export interface BrandWithKYC {
   status?: 'ACTIVE' | 'INACTIVE' | 'SUSPENDED' | null;
 
   /**
-   * Street address
-   */
-  street?: string | null;
-
-  /**
    * When the brand was submitted to TCR
    */
-  submittedAt?: string | null;
+  submitted_at?: string | null;
 
   /**
-   * Whether this brand was submitted to TCR
+   * Whether this brand has been submitted to TCR
    */
-  submittedToTCR?: boolean;
-
-  /**
-   * Tax ID/EIN number
-   */
-  taxId?: string | null;
-
-  /**
-   * Type of tax ID
-   */
-  taxIdType?: string | null;
+  submitted_to_tcr?: boolean;
 
   /**
    * TCR brand ID (populated after TCR submission)
    */
-  tcrBrandId?: string | null;
+  tcr_brand_id?: string | null;
 
   /**
    * Universal EIN from TCR
    */
-  universalEin?: string | null;
+  universal_ein?: string | null;
 
   /**
    * When the brand was last updated
    */
-  updatedAt?: string | null;
+  updated_at?: string | null;
+}
+
+export namespace BrandWithKYC {
+  /**
+   * Business details and address information
+   */
+  export interface Business {
+    /**
+     * City
+     */
+    city?: string | null;
+
+    /**
+     * Country code (e.g., US, CA)
+     */
+    country?: string | null;
+
+    /**
+     * Country where the business is registered
+     */
+    country_of_registration?: string | null;
+
+    /**
+     * Business entity type
+     */
+    entity_type?: string | null;
+
+    /**
+     * Legal business name
+     */
+    legal_name?: string | null;
+
+    /**
+     * Postal/ZIP code
+     */
+    postal_code?: string | null;
+
+    /**
+     * State/province code
+     */
+    state?: string | null;
+
+    /**
+     * Street address
+     */
+    street?: string | null;
+
+    /**
+     * Tax ID/EIN number
+     */
+    tax_id?: string | null;
+
+    /**
+     * Type of tax ID (e.g., us_ein, ca_bn)
+     */
+    tax_id_type?: string | null;
+
+    /**
+     * Business website URL
+     */
+    url?: string | null;
+  }
 
   /**
-   * Business vertical/industry category
+   * Compliance and TCR-related information
    */
-  vertical?: TcrVertical | null;
+  export interface Compliance {
+    /**
+     * Brand relationship level with TCR
+     */
+    brand_relationship?: BrandsAPI.TcrBrandRelationship | null;
+
+    /**
+     * List of destination countries for messaging
+     */
+    destination_countries?: Array<BrandsAPI.DestinationCountry>;
+
+    /**
+     * Expected daily messaging volume
+     */
+    expected_messaging_volume?: string | null;
+
+    /**
+     * Whether this is a TCR (Campaign Registry) application
+     */
+    is_tcr_application?: boolean;
+
+    /**
+     * Additional notes about the business or use case
+     */
+    notes?: string | null;
+
+    /**
+     * Phone number prefix for messaging (e.g., "+1")
+     */
+    phone_number_prefix?: string | null;
+
+    /**
+     * Primary messaging use case description
+     */
+    primary_use_case?: string | null;
+
+    /**
+     * Business vertical/industry category
+     */
+    vertical?: BrandsAPI.TcrVertical | null;
+  }
+
+  /**
+   * Contact information for the brand
+   */
+  export interface Contact {
+    /**
+     * Business/brand name
+     */
+    business_name?: string | null;
+
+    /**
+     * Contact email address
+     */
+    email?: string | null;
+
+    /**
+     * Primary contact name
+     */
+    name?: string;
+
+    /**
+     * Contact phone number in E.164 format
+     */
+    phone?: string | null;
+
+    /**
+     * Contact phone country code (e.g., "1" for US)
+     */
+    phone_country_code?: string | null;
+
+    /**
+     * Contact's role in the business
+     */
+    role?: string | null;
+  }
 }
 
 export interface DestinationCountry {
@@ -505,99 +435,15 @@ export type TcrVertical =
   | 'TECHNOLOGY'
   | 'COMMUNICATION';
 
-/**
- * Standard API response envelope for all v3 endpoints
- */
-export interface BrandListResponse {
-  /**
-   * The response data (null if error)
-   */
-  data?: Array<BrandWithKYC> | null;
-
-  /**
-   * Error details (null if successful)
-   */
-  error?: WebhooksAPI.APIError | null;
-
-  /**
-   * Metadata about the request and response
-   */
-  meta?: WebhooksAPI.APIMeta;
-
-  /**
-   * Indicates whether the request was successful
-   */
-  success?: boolean;
-}
-
-export interface BrandCreateParams {
-  /**
-   * Body param: Brand and KYC information
-   */
-  brand: BrandData;
-
-  /**
-   * Body param: Test mode flag - when true, the operation is simulated without side
-   * effects Useful for testing integrations without actual execution
-   */
-  test_mode?: boolean;
-
-  /**
-   * Header param: Unique key to ensure idempotent request processing. Must be 1-255
-   * alphanumeric characters, hyphens, or underscores. Responses are cached for 24
-   * hours per key per customer.
-   */
-  'Idempotency-Key'?: string;
-}
-
-export interface BrandUpdateParams {
-  /**
-   * Body param: Brand and KYC information
-   */
-  brand: BrandData;
-
-  /**
-   * Body param: Test mode flag - when true, the operation is simulated without side
-   * effects Useful for testing integrations without actual execution
-   */
-  test_mode?: boolean;
-
-  /**
-   * Header param: Unique key to ensure idempotent request processing. Must be 1-255
-   * alphanumeric characters, hyphens, or underscores. Responses are cached for 24
-   * hours per key per customer.
-   */
-  'Idempotency-Key'?: string;
-}
-
-export interface BrandDeleteParams {
-  /**
-   * Request to delete a brand
-   */
-  body: BrandDeleteParams.Body;
-}
-
-export namespace BrandDeleteParams {
-  /**
-   * Request to delete a brand
-   */
-  export interface Body extends WebhooksAPI.MutationRequest {}
-}
-
 Brands.Campaigns = Campaigns;
 
 export declare namespace Brands {
   export {
-    type APIResponseBrandWithKYC as APIResponseBrandWithKYC,
     type BrandData as BrandData,
     type BrandWithKYC as BrandWithKYC,
     type DestinationCountry as DestinationCountry,
     type TcrBrandRelationship as TcrBrandRelationship,
     type TcrVertical as TcrVertical,
-    type BrandListResponse as BrandListResponse,
-    type BrandCreateParams as BrandCreateParams,
-    type BrandUpdateParams as BrandUpdateParams,
-    type BrandDeleteParams as BrandDeleteParams,
   };
 
   export {
@@ -608,9 +454,5 @@ export declare namespace Brands {
     type MessagingUseCaseUs as MessagingUseCaseUs,
     type SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData as SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData,
     type TcrCampaignWithUseCases as TcrCampaignWithUseCases,
-    type CampaignListResponse as CampaignListResponse,
-    type CampaignCreateParams as CampaignCreateParams,
-    type CampaignUpdateParams as CampaignUpdateParams,
-    type CampaignDeleteParams as CampaignDeleteParams,
   };
 }

@@ -2,16 +2,11 @@
 
 export {
   Brands,
-  type APIResponseBrandWithKYC,
   type BrandData,
   type BrandWithKYC,
   type DestinationCountry,
   type TcrBrandRelationship,
   type TcrVertical,
-  type BrandListResponse,
-  type BrandCreateParams,
-  type BrandUpdateParams,
-  type BrandDeleteParams,
 } from './brands';
 export {
   Campaigns,
@@ -21,8 +16,4 @@ export {
   type MessagingUseCaseUs,
   type SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData,
   type TcrCampaignWithUseCases,
-  type CampaignListResponse,
-  type CampaignCreateParams,
-  type CampaignUpdateParams,
-  type CampaignDeleteParams,
 } from './campaigns';

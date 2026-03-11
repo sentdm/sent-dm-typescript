@@ -4,6 +4,7 @@ import { APIResource } from '../core/resource';
 import * as MeAPI from './me';
 import * as WebhooksAPI from './webhooks';
 import { APIPromise } from '../core/api-promise';
+import { buildHeaders } from '../internal/headers';
 import { RequestOptions } from '../internal/request-options';
 
 /**
@@ -11,12 +12,34 @@ import { RequestOptions } from '../internal/request-options';
  */
 export class Me extends APIResource {
   /**
-   * Returns the account associated with the API key. For organization API keys,
-   * returns the organization with its profiles. For profile API keys, returns the
-   * profile with its settings.
+   * Returns the account associated with the provided API key. The response includes
+   * account identity, contact information, messaging channel configuration, and —
+   * depending on the account type — either a list of child profiles or the profile's
+   * own settings.
+   *
+   * **Account types:**
+   *
+   * - `organization` — Has child profiles. The `profiles` array is populated.
+   * - `user` — Standalone account with no profiles.
+   * - `profile` — Child of an organization. Includes `organization_id`,
+   *   `short_name`, `status`, and `settings`.
+   *
+   * **Channels:** The `channels` object always includes `sms`, `whatsapp`, and
+   * `rcs`. Each channel has a `configured` boolean. Configured channels expose
+   * additional details such as `phone_number`.
    */
-  retrieve(options?: RequestOptions): APIPromise<MeRetrieveResponse> {
-    return this._client.get('/v3/me', options);
+  retrieve(
+    params: MeRetrieveParams | null | undefined = {},
+    options?: RequestOptions,
+  ): APIPromise<MeRetrieveResponse> {
+    const { 'x-profile-id': xProfileID } = params ?? {};
+    return this._client.get('/v3/me', {
+      ...options,
+      headers: buildHeaders([
+        { ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined) },
+        options?.headers,
+      ]),
+    });
   }
 }
 
@@ -91,9 +114,14 @@ export namespace MeRetrieveResponse {
    */
   export interface Data {
     /**
-     * Customer ID (organization or profile)
+     * Customer ID (organization, account, or profile)
      */
     id?: string;
+
+    /**
+     * Messaging channel configuration
+     */
+    channels?: Data.Channels;
 
     /**
      * When the account was created
@@ -106,6 +134,11 @@ export namespace MeRetrieveResponse {
     description?: string | null;
 
     /**
+     * Contact email address
+     */
+    email?: string | null;
+
+    /**
      * Account icon URL
      */
     icon?: string | null;
@@ -116,9 +149,15 @@ export namespace MeRetrieveResponse {
     name?: string;
 
     /**
-     * List of profiles (only for organization type)
+     * Organization ID (only for profile type — the parent organization)
      */
-    profiles?: Array<Data.Profile> | null;
+    organization_id?: string | null;
+
+    /**
+     * List of profiles (populated for organization type, empty for user and profile
+     * types)
+     */
+    profiles?: Array<Data.Profile>;
 
     /**
      * Profile settings (only for profile type)
@@ -126,13 +165,96 @@ export namespace MeRetrieveResponse {
     settings?: MeAPI.ProfileSettings | null;
 
     /**
+     * Short name / abbreviation (only for profile type)
+     */
+    short_name?: string | null;
+
+    /**
      * Profile status (only for profile type): incomplete, pending_review, approved,
      * etc.
      */
     status?: string | null;
+
+    /**
+     * Account type: "organization" (has profiles), "user" (no profiles), or "profile"
+     * (child of an organization)
+     */
+    type?: string;
   }
 
   export namespace Data {
+    /**
+     * Messaging channel configuration
+     */
+    export interface Channels {
+      /**
+       * RCS channel (provider: vibes)
+       */
+      rcs?: Channels.Rcs;
+
+      /**
+       * SMS channel (providers: telnyx, sinch)
+       */
+      sms?: Channels.SMS;
+
+      /**
+       * WhatsApp Business channel (provider: meta)
+       */
+      whatsapp?: Channels.Whatsapp;
+    }
+
+    export namespace Channels {
+      /**
+       * RCS channel (provider: vibes)
+       */
+      export interface Rcs {
+        /**
+         * Whether RCS is configured for this account
+         */
+        configured?: boolean;
+
+        /**
+         * RCS-enabled phone number in E.164 format
+         */
+        phone_number?: string | null;
+      }
+
+      /**
+       * SMS channel (providers: telnyx, sinch)
+       */
+      export interface SMS {
+        /**
+         * Whether SMS is configured for this account
+         */
+        configured?: boolean;
+
+        /**
+         * Sending phone number in E.164 format
+         */
+        phone_number?: string | null;
+      }
+
+      /**
+       * WhatsApp Business channel (provider: meta)
+       */
+      export interface Whatsapp {
+        /**
+         * WhatsApp Business display name
+         */
+        business_name?: string | null;
+
+        /**
+         * Whether WhatsApp is configured for this account
+         */
+        configured?: boolean;
+
+        /**
+         * WhatsApp phone number in E.164 format
+         */
+        phone_number?: string | null;
+      }
+    }
+
     /**
      * Profile (sender profile) response for v3 API
      */
@@ -186,6 +308,18 @@ export namespace MeRetrieveResponse {
   }
 }
 
+export interface MeRetrieveParams {
+  /**
+   * Profile UUID to scope the request to a child profile. Only organization API keys
+   * can use this header. The profile must belong to the calling organization.
+   */
+  'x-profile-id'?: string;
+}
+
 export declare namespace Me {
-  export { type ProfileSettings as ProfileSettings, type MeRetrieveResponse as MeRetrieveResponse };
+  export {
+    type ProfileSettings as ProfileSettings,
+    type MeRetrieveResponse as MeRetrieveResponse,
+    type MeRetrieveParams as MeRetrieveParams,
+  };
 }

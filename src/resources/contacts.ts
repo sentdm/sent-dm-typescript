@@ -8,6 +8,9 @@ import { buildHeaders } from '../internal/headers';
 import { RequestOptions } from '../internal/request-options';
 import { path } from '../internal/utils/path';
 
+/**
+ * Create, update, and manage customer contact lists
+ */
 export class Contacts extends APIResource {
   /**
    * Creates a new contact by phone number and associates it with the authenticated

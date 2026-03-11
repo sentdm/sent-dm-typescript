@@ -21,6 +21,9 @@ import { buildHeaders } from '../../internal/headers';
 import { RequestOptions } from '../../internal/request-options';
 import { path } from '../../internal/utils/path';
 
+/**
+ * Register and manage 10DLC brands for SMS compliance
+ */
 export class Brands extends APIResource {
   campaigns: CampaignsAPI.Campaigns = new CampaignsAPI.Campaigns(this._client);
 

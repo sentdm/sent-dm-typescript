@@ -8,6 +8,9 @@ import { buildHeaders } from '../internal/headers';
 import { RequestOptions } from '../internal/request-options';
 import { path } from '../internal/utils/path';
 
+/**
+ * Manage message templates with variable substitution
+ */
 export class Templates extends APIResource {
   /**
    * Creates a new message template with header, body, footer, and buttons. The

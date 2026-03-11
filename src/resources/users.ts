@@ -8,6 +8,9 @@ import { buildHeaders } from '../internal/headers';
 import { RequestOptions } from '../internal/request-options';
 import { path } from '../internal/utils/path';
 
+/**
+ * Invite, update, and manage organization users and roles
+ */
 export class Users extends APIResource {
   /**
    * Retrieves detailed information about a specific user in an organization or

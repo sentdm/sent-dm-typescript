@@ -8,7 +8,7 @@ const client = new SentDm({
 });
 
 describe('resource users', () => {
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('retrieve', async () => {
     const responsePromise = client.users.retrieve('182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e');
     const rawResponse = await responsePromise.asResponse();
@@ -20,7 +20,7 @@ describe('resource users', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('list', async () => {
     const responsePromise = client.users.list();
     const rawResponse = await responsePromise.asResponse();
@@ -32,7 +32,7 @@ describe('resource users', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('invite', async () => {
     const responsePromise = client.users.invite({});
     const rawResponse = await responsePromise.asResponse();
@@ -44,7 +44,7 @@ describe('resource users', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('remove', async () => {
     const responsePromise = client.users.remove('182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e', {});
     const rawResponse = await responsePromise.asResponse();
@@ -56,7 +56,7 @@ describe('resource users', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
+  // Mock server tests are disabled
   test.skip('updateRole', async () => {
     const responsePromise = client.users.updateRole('182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e', {});
     const rawResponse = await responsePromise.asResponse();

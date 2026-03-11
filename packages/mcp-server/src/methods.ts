@@ -161,10 +161,40 @@ export const sdkMethods: SdkMethod[] = [
     httpPath: '/v3/profiles/{profileId}',
   },
   {
-    clientCallName: 'client.profiles.complete',
-    fullyQualifiedName: 'profiles.complete',
+    clientCallName: 'client.profiles.completeSetup',
+    fullyQualifiedName: 'profiles.completeSetup',
     httpMethod: 'post',
     httpPath: '/v3/profiles/{profileId}/complete',
+  },
+  {
+    clientCallName: 'client.profiles.campaigns.create',
+    fullyQualifiedName: 'profiles.campaigns.create',
+    httpMethod: 'post',
+    httpPath: '/v3/profiles/{profileId}/campaigns',
+  },
+  {
+    clientCallName: 'client.profiles.campaigns.update',
+    fullyQualifiedName: 'profiles.campaigns.update',
+    httpMethod: 'put',
+    httpPath: '/v3/profiles/{profileId}/campaigns/{campaignId}',
+  },
+  {
+    clientCallName: 'client.profiles.campaigns.list',
+    fullyQualifiedName: 'profiles.campaigns.list',
+    httpMethod: 'get',
+    httpPath: '/v3/profiles/{profileId}/campaigns',
+  },
+  {
+    clientCallName: 'client.profiles.campaigns.delete',
+    fullyQualifiedName: 'profiles.campaigns.delete',
+    httpMethod: 'delete',
+    httpPath: '/v3/profiles/{profileId}/campaigns/{campaignId}',
+  },
+  {
+    clientCallName: 'client.numbers.lookup',
+    fullyQualifiedName: 'numbers.lookup',
+    httpMethod: 'get',
+    httpPath: '/v3/numbers/lookup/{phoneNumber}',
   },
   {
     clientCallName: 'client.messages.retrieveActivities',

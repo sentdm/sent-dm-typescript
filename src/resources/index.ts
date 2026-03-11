@@ -1,17 +1,10 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-export {
-  Brands,
-  type BrandData,
-  type BrandWithKYC,
-  type DestinationCountry,
-  type TcrBrandRelationship,
-  type TcrVertical,
-} from './brands/brands';
+export * from './shared';
 export {
   Contacts,
-  type APIResponseContact,
-  type Contact,
+  type APIResponseOfContact,
+  type ContactResponse,
   type ContactListResponse,
   type ContactCreateParams,
   type ContactRetrieveParams,
@@ -19,7 +12,6 @@ export {
   type ContactListParams,
   type ContactDeleteParams,
 } from './contacts';
-export { Lookup } from './lookup';
 export { Me, type ProfileSettings, type MeRetrieveResponse, type MeRetrieveParams } from './me';
 export {
   Messages,
@@ -30,28 +22,29 @@ export {
   type MessageRetrieveStatusParams,
   type MessageSendParams,
 } from './messages';
+export { Numbers, type NumberLookupResponse, type NumberLookupParams } from './numbers';
 export {
   Profiles,
   type APIResponseOfProfileDetail,
+  type BillingContactInfo,
+  type BrandsBrandData,
+  type DestinationCountry,
+  type PaymentDetails,
   type ProfileDetail,
+  type TcrBrandRelationship,
+  type TcrVertical,
   type ProfileListResponse,
-  type ProfileCompleteResponse,
+  type ProfileCompleteSetupResponse,
   type ProfileCreateParams,
   type ProfileRetrieveParams,
   type ProfileUpdateParams,
   type ProfileListParams,
   type ProfileDeleteParams,
-  type ProfileCompleteParams,
-} from './profiles';
+  type ProfileCompleteSetupParams,
+} from './profiles/profiles';
 export {
   Templates,
   type APIResponseTemplate,
-  type SentDmServicesCommonContractsPocOsAuthenticationConfig,
-  type SentDmServicesCommonContractsPocOsTemplateBody,
-  type SentDmServicesCommonContractsPocOsTemplateButton,
-  type SentDmServicesCommonContractsPocOsTemplateButtonProps,
-  type SentDmServicesCommonContractsPocOsTemplateFooter,
-  type SentDmServicesCommonContractsPocOsTemplateHeader,
   type Template,
   type TemplateBodyContent,
   type TemplateDefinition,
@@ -79,7 +72,7 @@ export {
   type APIError,
   type APIMeta,
   type APIResponseWebhook,
-  type MutationRequest,
+  type MutationRequestBase,
   type PaginationMeta,
   type WebhookResponse,
   type WebhookListResponse,

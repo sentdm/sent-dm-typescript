@@ -2,16 +2,11 @@
 
 export {
   Brands,
-  type APIResponseBrandWithKYC,
   type BrandData,
   type BrandWithKYC,
   type DestinationCountry,
   type TcrBrandRelationship,
   type TcrVertical,
-  type BrandListResponse,
-  type BrandCreateParams,
-  type BrandUpdateParams,
-  type BrandDeleteParams,
 } from './brands/brands';
 export {
   Contacts,
@@ -19,17 +14,20 @@ export {
   type Contact,
   type ContactListResponse,
   type ContactCreateParams,
+  type ContactRetrieveParams,
   type ContactUpdateParams,
   type ContactListParams,
   type ContactDeleteParams,
 } from './contacts';
-export { Lookup, type LookupRetrievePhoneInfoResponse } from './lookup';
-export { Me, type ProfileSettings, type MeRetrieveResponse } from './me';
+export { Lookup } from './lookup';
+export { Me, type ProfileSettings, type MeRetrieveResponse, type MeRetrieveParams } from './me';
 export {
   Messages,
   type MessageRetrieveActivitiesResponse,
   type MessageRetrieveStatusResponse,
   type MessageSendResponse,
+  type MessageRetrieveActivitiesParams,
+  type MessageRetrieveStatusParams,
   type MessageSendParams,
 } from './messages';
 export {
@@ -39,7 +37,9 @@ export {
   type ProfileListResponse,
   type ProfileCompleteResponse,
   type ProfileCreateParams,
+  type ProfileRetrieveParams,
   type ProfileUpdateParams,
+  type ProfileListParams,
   type ProfileDeleteParams,
   type ProfileCompleteParams,
 } from './profiles';
@@ -58,6 +58,7 @@ export {
   type TemplateVariable,
   type TemplateListResponse,
   type TemplateCreateParams,
+  type TemplateRetrieveParams,
   type TemplateUpdateParams,
   type TemplateListParams,
   type TemplateDeleteParams,
@@ -67,6 +68,8 @@ export {
   type APIResponseOfUser,
   type UserResponse,
   type UserListResponse,
+  type UserRetrieveParams,
+  type UserListParams,
   type UserInviteParams,
   type UserRemoveParams,
   type UserUpdateRoleParams,
@@ -85,8 +88,11 @@ export {
   type WebhookRotateSecretResponse,
   type WebhookTestResponse,
   type WebhookCreateParams,
+  type WebhookRetrieveParams,
   type WebhookUpdateParams,
   type WebhookListParams,
+  type WebhookDeleteParams,
+  type WebhookListEventTypesParams,
   type WebhookListEventsParams,
   type WebhookRotateSecretParams,
   type WebhookTestParams,

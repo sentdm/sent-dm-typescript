@@ -25,13 +25,16 @@ import {
   ContactDeleteParams,
   ContactListParams,
   ContactListResponse,
+  ContactRetrieveParams,
   ContactUpdateParams,
   Contacts,
 } from './resources/contacts';
-import { Lookup, LookupRetrievePhoneInfoResponse } from './resources/lookup';
-import { Me, MeRetrieveResponse, ProfileSettings } from './resources/me';
+import { Lookup } from './resources/lookup';
+import { Me, MeRetrieveParams, MeRetrieveResponse, ProfileSettings } from './resources/me';
 import {
+  MessageRetrieveActivitiesParams,
   MessageRetrieveActivitiesResponse,
+  MessageRetrieveStatusParams,
   MessageRetrieveStatusResponse,
   MessageSendParams,
   MessageSendResponse,
@@ -44,7 +47,9 @@ import {
   ProfileCreateParams,
   ProfileDeleteParams,
   ProfileDetail,
+  ProfileListParams,
   ProfileListResponse,
+  ProfileRetrieveParams,
   ProfileUpdateParams,
   Profiles,
 } from './resources/profiles';
@@ -63,6 +68,7 @@ import {
   TemplateDeleteParams,
   TemplateListParams,
   TemplateListResponse,
+  TemplateRetrieveParams,
   TemplateUpdateParams,
   TemplateVariable,
   Templates,
@@ -70,9 +76,11 @@ import {
 import {
   APIResponseOfUser,
   UserInviteParams,
+  UserListParams,
   UserListResponse,
   UserRemoveParams,
   UserResponse,
+  UserRetrieveParams,
   UserUpdateRoleParams,
   Users,
 } from './resources/users';
@@ -83,12 +91,15 @@ import {
   MutationRequest,
   PaginationMeta,
   WebhookCreateParams,
+  WebhookDeleteParams,
+  WebhookListEventTypesParams,
   WebhookListEventTypesResponse,
   WebhookListEventsParams,
   WebhookListEventsResponse,
   WebhookListParams,
   WebhookListResponse,
   WebhookResponse,
+  WebhookRetrieveParams,
   WebhookRotateSecretParams,
   WebhookRotateSecretResponse,
   WebhookTestParams,
@@ -98,12 +109,7 @@ import {
   Webhooks,
 } from './resources/webhooks';
 import {
-  APIResponseBrandWithKYC,
-  BrandCreateParams,
   BrandData,
-  BrandDeleteParams,
-  BrandListResponse,
-  BrandUpdateParams,
   BrandWithKYC,
   Brands,
   DestinationCountry,
@@ -835,9 +841,6 @@ export class SentDm {
    * Create, update, and manage customer contact lists
    */
   contacts: API.Contacts = new API.Contacts(this);
-  /**
-   * Register and manage 10DLC brands for SMS compliance
-   */
   brands: API.Brands = new API.Brands(this);
   /**
    * Retrieve account details
@@ -872,8 +875,11 @@ export declare namespace SentDm {
     type WebhookRotateSecretResponse as WebhookRotateSecretResponse,
     type WebhookTestResponse as WebhookTestResponse,
     type WebhookCreateParams as WebhookCreateParams,
+    type WebhookRetrieveParams as WebhookRetrieveParams,
     type WebhookUpdateParams as WebhookUpdateParams,
     type WebhookListParams as WebhookListParams,
+    type WebhookDeleteParams as WebhookDeleteParams,
+    type WebhookListEventTypesParams as WebhookListEventTypesParams,
     type WebhookListEventsParams as WebhookListEventsParams,
     type WebhookRotateSecretParams as WebhookRotateSecretParams,
     type WebhookTestParams as WebhookTestParams,
@@ -885,6 +891,8 @@ export declare namespace SentDm {
     type APIResponseOfUser as APIResponseOfUser,
     type UserResponse as UserResponse,
     type UserListResponse as UserListResponse,
+    type UserRetrieveParams as UserRetrieveParams,
+    type UserListParams as UserListParams,
     type UserInviteParams as UserInviteParams,
     type UserRemoveParams as UserRemoveParams,
     type UserUpdateRoleParams as UserUpdateRoleParams,
@@ -905,6 +913,7 @@ export declare namespace SentDm {
     type TemplateVariable as TemplateVariable,
     type TemplateListResponse as TemplateListResponse,
     type TemplateCreateParams as TemplateCreateParams,
+    type TemplateRetrieveParams as TemplateRetrieveParams,
     type TemplateUpdateParams as TemplateUpdateParams,
     type TemplateListParams as TemplateListParams,
     type TemplateDeleteParams as TemplateDeleteParams,
@@ -917,7 +926,9 @@ export declare namespace SentDm {
     type ProfileListResponse as ProfileListResponse,
     type ProfileCompleteResponse as ProfileCompleteResponse,
     type ProfileCreateParams as ProfileCreateParams,
+    type ProfileRetrieveParams as ProfileRetrieveParams,
     type ProfileUpdateParams as ProfileUpdateParams,
+    type ProfileListParams as ProfileListParams,
     type ProfileDeleteParams as ProfileDeleteParams,
     type ProfileCompleteParams as ProfileCompleteParams,
   };
@@ -927,10 +938,12 @@ export declare namespace SentDm {
     type MessageRetrieveActivitiesResponse as MessageRetrieveActivitiesResponse,
     type MessageRetrieveStatusResponse as MessageRetrieveStatusResponse,
     type MessageSendResponse as MessageSendResponse,
+    type MessageRetrieveActivitiesParams as MessageRetrieveActivitiesParams,
+    type MessageRetrieveStatusParams as MessageRetrieveStatusParams,
     type MessageSendParams as MessageSendParams,
   };
 
-  export { Lookup as Lookup, type LookupRetrievePhoneInfoResponse as LookupRetrievePhoneInfoResponse };
+  export { Lookup as Lookup };
 
   export {
     Contacts as Contacts,
@@ -938,6 +951,7 @@ export declare namespace SentDm {
     type Contact as Contact,
     type ContactListResponse as ContactListResponse,
     type ContactCreateParams as ContactCreateParams,
+    type ContactRetrieveParams as ContactRetrieveParams,
     type ContactUpdateParams as ContactUpdateParams,
     type ContactListParams as ContactListParams,
     type ContactDeleteParams as ContactDeleteParams,
@@ -945,17 +959,17 @@ export declare namespace SentDm {
 
   export {
     Brands as Brands,
-    type APIResponseBrandWithKYC as APIResponseBrandWithKYC,
     type BrandData as BrandData,
     type BrandWithKYC as BrandWithKYC,
     type DestinationCountry as DestinationCountry,
     type TcrBrandRelationship as TcrBrandRelationship,
     type TcrVertical as TcrVertical,
-    type BrandListResponse as BrandListResponse,
-    type BrandCreateParams as BrandCreateParams,
-    type BrandUpdateParams as BrandUpdateParams,
-    type BrandDeleteParams as BrandDeleteParams,
   };
 
-  export { Me as Me, type ProfileSettings as ProfileSettings, type MeRetrieveResponse as MeRetrieveResponse };
+  export {
+    Me as Me,
+    type ProfileSettings as ProfileSettings,
+    type MeRetrieveResponse as MeRetrieveResponse,
+    type MeRetrieveParams as MeRetrieveParams,
+  };
 }

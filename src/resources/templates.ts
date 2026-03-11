@@ -23,12 +23,15 @@ export class Templates extends APIResource {
    * ```
    */
   create(params: TemplateCreateParams, options?: RequestOptions): APIPromise<APIResponseTemplate> {
-    const { 'Idempotency-Key': idempotencyKey, ...body } = params;
+    const { 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
     return this._client.post('/v3/templates', {
       body,
       ...options,
       headers: buildHeaders([
-        { ...(idempotencyKey != null ? { 'Idempotency-Key': idempotencyKey } : undefined) },
+        {
+          ...(idempotencyKey != null ? { 'Idempotency-Key': idempotencyKey } : undefined),
+          ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined),
+        },
         options?.headers,
       ]),
     });
@@ -45,8 +48,19 @@ export class Templates extends APIResource {
    * );
    * ```
    */
-  retrieve(id: string, options?: RequestOptions): APIPromise<APIResponseTemplate> {
-    return this._client.get(path`/v3/templates/${id}`, options);
+  retrieve(
+    id: string,
+    params: TemplateRetrieveParams | null | undefined = {},
+    options?: RequestOptions,
+  ): APIPromise<APIResponseTemplate> {
+    const { 'x-profile-id': xProfileID } = params ?? {};
+    return this._client.get(path`/v3/templates/${id}`, {
+      ...options,
+      headers: buildHeaders([
+        { ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined) },
+        options?.headers,
+      ]),
+    });
   }
 
   /**
@@ -65,12 +79,15 @@ export class Templates extends APIResource {
     params: TemplateUpdateParams,
     options?: RequestOptions,
   ): APIPromise<APIResponseTemplate> {
-    const { 'Idempotency-Key': idempotencyKey, ...body } = params;
+    const { 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
     return this._client.put(path`/v3/templates/${id}`, {
       body,
       ...options,
       headers: buildHeaders([
-        { ...(idempotencyKey != null ? { 'Idempotency-Key': idempotencyKey } : undefined) },
+        {
+          ...(idempotencyKey != null ? { 'Idempotency-Key': idempotencyKey } : undefined),
+          ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined),
+        },
         options?.headers,
       ]),
     });
@@ -84,12 +101,20 @@ export class Templates extends APIResource {
    * ```ts
    * const templates = await client.templates.list({
    *   page: 0,
-   *   pageSize: 0,
+   *   page_size: 0,
    * });
    * ```
    */
-  list(query: TemplateListParams, options?: RequestOptions): APIPromise<TemplateListResponse> {
-    return this._client.get('/v3/templates', { query, ...options });
+  list(params: TemplateListParams, options?: RequestOptions): APIPromise<TemplateListResponse> {
+    const { 'x-profile-id': xProfileID, ...query } = params;
+    return this._client.get('/v3/templates', {
+      query,
+      ...options,
+      headers: buildHeaders([
+        { ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined) },
+        options?.headers,
+      ]),
+    });
   }
 
   /**
@@ -103,11 +128,15 @@ export class Templates extends APIResource {
    * );
    * ```
    */
-  delete(id: string, body: TemplateDeleteParams, options?: RequestOptions): APIPromise<void> {
+  delete(id: string, params: TemplateDeleteParams, options?: RequestOptions): APIPromise<void> {
+    const { 'x-profile-id': xProfileID, ...body } = params;
     return this._client.delete(path`/v3/templates/${id}`, {
       body,
       ...options,
-      headers: buildHeaders([{ 'Content-Type': '*/*', Accept: '*/*' }, options?.headers]),
+      headers: buildHeaders([
+        { Accept: '*/*', ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined) },
+        options?.headers,
+      ]),
     });
   }
 }
@@ -379,6 +408,8 @@ export namespace TemplateVariable {
 
     mediaType?: string | null;
 
+    regex?: string | null;
+
     sample?: string | null;
 
     shortUrl?: string | null;
@@ -455,16 +486,16 @@ export interface TemplateCreateParams {
   language?: string | null;
 
   /**
+   * Body param: Sandbox flag - when true, the operation is simulated without side
+   * effects Useful for testing integrations without actual execution
+   */
+  sandbox?: boolean;
+
+  /**
    * Body param: Whether to submit the template for review after creation (default:
    * false)
    */
   submit_for_review?: boolean;
-
-  /**
-   * Body param: Test mode flag - when true, the operation is simulated without side
-   * effects Useful for testing integrations without actual execution
-   */
-  test_mode?: boolean;
 
   /**
    * Header param: Unique key to ensure idempotent request processing. Must be 1-255
@@ -472,6 +503,21 @@ export interface TemplateCreateParams {
    * hours per key per customer.
    */
   'Idempotency-Key'?: string;
+
+  /**
+   * Header param: Profile UUID to scope the request to a child profile. Only
+   * organization API keys can use this header. The profile must belong to the
+   * calling organization.
+   */
+  'x-profile-id'?: string;
+}
+
+export interface TemplateRetrieveParams {
+  /**
+   * Profile UUID to scope the request to a child profile. Only organization API keys
+   * can use this header. The profile must belong to the calling organization.
+   */
+  'x-profile-id'?: string;
 }
 
 export interface TemplateUpdateParams {
@@ -496,16 +542,16 @@ export interface TemplateUpdateParams {
   name?: string | null;
 
   /**
+   * Body param: Sandbox flag - when true, the operation is simulated without side
+   * effects Useful for testing integrations without actual execution
+   */
+  sandbox?: boolean;
+
+  /**
    * Body param: Whether to submit the template for review after updating (default:
    * false)
    */
   submit_for_review?: boolean;
-
-  /**
-   * Body param: Test mode flag - when true, the operation is simulated without side
-   * effects Useful for testing integrations without actual execution
-   */
-  test_mode?: boolean;
 
   /**
    * Header param: Unique key to ensure idempotent request processing. Must be 1-255
@@ -513,44 +559,73 @@ export interface TemplateUpdateParams {
    * hours per key per customer.
    */
   'Idempotency-Key'?: string;
+
+  /**
+   * Header param: Profile UUID to scope the request to a child profile. Only
+   * organization API keys can use this header. The profile must belong to the
+   * calling organization.
+   */
+  'x-profile-id'?: string;
 }
 
 export interface TemplateListParams {
   /**
-   * Page number (1-indexed)
+   * Query param: Page number (1-indexed)
    */
   page: number;
 
-  pageSize: number;
+  /**
+   * Query param: Number of items per page
+   */
+  page_size: number;
 
   /**
-   * Optional category filter: MARKETING, UTILITY, AUTHENTICATION
+   * Query param: Optional category filter: MARKETING, UTILITY, AUTHENTICATION
    */
   category?: string | null;
 
   /**
-   * Optional search term for filtering templates
+   * Query param: Optional filter by welcome playground flag
+   */
+  is_welcome_playground?: boolean | null;
+
+  /**
+   * Query param: Optional search term for filtering templates
    */
   search?: string | null;
 
   /**
-   * Optional status filter: APPROVED, PENDING, REJECTED
+   * Query param: Optional status filter: APPROVED, PENDING, REJECTED
    */
   status?: string | null;
+
+  /**
+   * Header param: Profile UUID to scope the request to a child profile. Only
+   * organization API keys can use this header. The profile must belong to the
+   * calling organization.
+   */
+  'x-profile-id'?: string;
 }
 
 export interface TemplateDeleteParams {
   /**
-   * Whether to also delete the template from WhatsApp/Meta (optional, defaults to
-   * false)
+   * Body param: Whether to also delete the template from WhatsApp/Meta (optional,
+   * defaults to false)
    */
   delete_from_meta?: boolean | null;
 
   /**
-   * Test mode flag - when true, the operation is simulated without side effects
-   * Useful for testing integrations without actual execution
+   * Body param: Sandbox flag - when true, the operation is simulated without side
+   * effects Useful for testing integrations without actual execution
    */
-  test_mode?: boolean;
+  sandbox?: boolean;
+
+  /**
+   * Header param: Profile UUID to scope the request to a child profile. Only
+   * organization API keys can use this header. The profile must belong to the
+   * calling organization.
+   */
+  'x-profile-id'?: string;
 }
 
 export declare namespace Templates {
@@ -568,6 +643,7 @@ export declare namespace Templates {
     type TemplateVariable as TemplateVariable,
     type TemplateListResponse as TemplateListResponse,
     type TemplateCreateParams as TemplateCreateParams,
+    type TemplateRetrieveParams as TemplateRetrieveParams,
     type TemplateUpdateParams as TemplateUpdateParams,
     type TemplateListParams as TemplateListParams,
     type TemplateDeleteParams as TemplateDeleteParams,

@@ -19,17 +19,16 @@ import * as Uploads from './core/uploads';
 import * as API from './resources/index';
 import { APIPromise } from './core/api-promise';
 import {
-  APIResponseContact,
-  Contact,
+  APIResponseOfContact,
   ContactCreateParams,
   ContactDeleteParams,
   ContactListParams,
   ContactListResponse,
+  ContactResponse,
   ContactRetrieveParams,
   ContactUpdateParams,
   Contacts,
 } from './resources/contacts';
-import { Lookup } from './resources/lookup';
 import { Me, MeRetrieveParams, MeRetrieveResponse, ProfileSettings } from './resources/me';
 import {
   MessageRetrieveActivitiesParams,
@@ -40,27 +39,9 @@ import {
   MessageSendResponse,
   Messages,
 } from './resources/messages';
-import {
-  APIResponseOfProfileDetail,
-  ProfileCompleteParams,
-  ProfileCompleteResponse,
-  ProfileCreateParams,
-  ProfileDeleteParams,
-  ProfileDetail,
-  ProfileListParams,
-  ProfileListResponse,
-  ProfileRetrieveParams,
-  ProfileUpdateParams,
-  Profiles,
-} from './resources/profiles';
+import { NumberLookupParams, NumberLookupResponse, Numbers } from './resources/numbers';
 import {
   APIResponseTemplate,
-  SentDmServicesCommonContractsPocOsAuthenticationConfig,
-  SentDmServicesCommonContractsPocOsTemplateBody,
-  SentDmServicesCommonContractsPocOsTemplateButton,
-  SentDmServicesCommonContractsPocOsTemplateButtonProps,
-  SentDmServicesCommonContractsPocOsTemplateFooter,
-  SentDmServicesCommonContractsPocOsTemplateHeader,
   Template,
   TemplateBodyContent,
   TemplateCreateParams,
@@ -88,7 +69,7 @@ import {
   APIError,
   APIMeta,
   APIResponseWebhook,
-  MutationRequest,
+  MutationRequestBase,
   PaginationMeta,
   WebhookCreateParams,
   WebhookDeleteParams,
@@ -109,13 +90,24 @@ import {
   Webhooks,
 } from './resources/webhooks';
 import {
-  BrandData,
-  BrandWithKYC,
-  Brands,
+  APIResponseOfProfileDetail,
+  BillingContactInfo,
+  BrandsBrandData,
   DestinationCountry,
+  PaymentDetails,
+  ProfileCompleteSetupParams,
+  ProfileCompleteSetupResponse,
+  ProfileCreateParams,
+  ProfileDeleteParams,
+  ProfileDetail,
+  ProfileListParams,
+  ProfileListResponse,
+  ProfileRetrieveParams,
+  ProfileUpdateParams,
+  Profiles,
   TcrBrandRelationship,
   TcrVertical,
-} from './resources/brands/brands';
+} from './resources/profiles/profiles';
 import { type Fetch } from './internal/builtin-types';
 import { HeadersLike, NullableHeaders, buildHeaders } from './internal/headers';
 import { FinalRequestOptions, RequestOptions } from './internal/request-options';
@@ -833,15 +825,17 @@ export class SentDm {
    */
   profiles: API.Profiles = new API.Profiles(this);
   /**
+   * Manage and lookup phone numbers
+   */
+  numbers: API.Numbers = new API.Numbers(this);
+  /**
    * Send and track SMS and WhatsApp messages
    */
   messages: API.Messages = new API.Messages(this);
-  lookup: API.Lookup = new API.Lookup(this);
   /**
    * Create, update, and manage customer contact lists
    */
   contacts: API.Contacts = new API.Contacts(this);
-  brands: API.Brands = new API.Brands(this);
   /**
    * Retrieve account details
    */
@@ -852,10 +846,9 @@ SentDm.Webhooks = Webhooks;
 SentDm.Users = Users;
 SentDm.Templates = Templates;
 SentDm.Profiles = Profiles;
+SentDm.Numbers = Numbers;
 SentDm.Messages = Messages;
-SentDm.Lookup = Lookup;
 SentDm.Contacts = Contacts;
-SentDm.Brands = Brands;
 SentDm.Me = Me;
 
 export declare namespace SentDm {
@@ -866,7 +859,7 @@ export declare namespace SentDm {
     type APIError as APIError,
     type APIMeta as APIMeta,
     type APIResponseWebhook as APIResponseWebhook,
-    type MutationRequest as MutationRequest,
+    type MutationRequestBase as MutationRequestBase,
     type PaginationMeta as PaginationMeta,
     type WebhookResponse as WebhookResponse,
     type WebhookListResponse as WebhookListResponse,
@@ -901,12 +894,6 @@ export declare namespace SentDm {
   export {
     Templates as Templates,
     type APIResponseTemplate as APIResponseTemplate,
-    type SentDmServicesCommonContractsPocOsAuthenticationConfig as SentDmServicesCommonContractsPocOsAuthenticationConfig,
-    type SentDmServicesCommonContractsPocOsTemplateBody as SentDmServicesCommonContractsPocOsTemplateBody,
-    type SentDmServicesCommonContractsPocOsTemplateButton as SentDmServicesCommonContractsPocOsTemplateButton,
-    type SentDmServicesCommonContractsPocOsTemplateButtonProps as SentDmServicesCommonContractsPocOsTemplateButtonProps,
-    type SentDmServicesCommonContractsPocOsTemplateFooter as SentDmServicesCommonContractsPocOsTemplateFooter,
-    type SentDmServicesCommonContractsPocOsTemplateHeader as SentDmServicesCommonContractsPocOsTemplateHeader,
     type Template as Template,
     type TemplateBodyContent as TemplateBodyContent,
     type TemplateDefinition as TemplateDefinition,
@@ -922,15 +909,27 @@ export declare namespace SentDm {
   export {
     Profiles as Profiles,
     type APIResponseOfProfileDetail as APIResponseOfProfileDetail,
+    type BillingContactInfo as BillingContactInfo,
+    type BrandsBrandData as BrandsBrandData,
+    type DestinationCountry as DestinationCountry,
+    type PaymentDetails as PaymentDetails,
     type ProfileDetail as ProfileDetail,
+    type TcrBrandRelationship as TcrBrandRelationship,
+    type TcrVertical as TcrVertical,
     type ProfileListResponse as ProfileListResponse,
-    type ProfileCompleteResponse as ProfileCompleteResponse,
+    type ProfileCompleteSetupResponse as ProfileCompleteSetupResponse,
     type ProfileCreateParams as ProfileCreateParams,
     type ProfileRetrieveParams as ProfileRetrieveParams,
     type ProfileUpdateParams as ProfileUpdateParams,
     type ProfileListParams as ProfileListParams,
     type ProfileDeleteParams as ProfileDeleteParams,
-    type ProfileCompleteParams as ProfileCompleteParams,
+    type ProfileCompleteSetupParams as ProfileCompleteSetupParams,
+  };
+
+  export {
+    Numbers as Numbers,
+    type NumberLookupResponse as NumberLookupResponse,
+    type NumberLookupParams as NumberLookupParams,
   };
 
   export {
@@ -943,12 +942,10 @@ export declare namespace SentDm {
     type MessageSendParams as MessageSendParams,
   };
 
-  export { Lookup as Lookup };
-
   export {
     Contacts as Contacts,
-    type APIResponseContact as APIResponseContact,
-    type Contact as Contact,
+    type APIResponseOfContact as APIResponseOfContact,
+    type ContactResponse as ContactResponse,
     type ContactListResponse as ContactListResponse,
     type ContactCreateParams as ContactCreateParams,
     type ContactRetrieveParams as ContactRetrieveParams,
@@ -958,18 +955,11 @@ export declare namespace SentDm {
   };
 
   export {
-    Brands as Brands,
-    type BrandData as BrandData,
-    type BrandWithKYC as BrandWithKYC,
-    type DestinationCountry as DestinationCountry,
-    type TcrBrandRelationship as TcrBrandRelationship,
-    type TcrVertical as TcrVertical,
-  };
-
-  export {
     Me as Me,
     type ProfileSettings as ProfileSettings,
     type MeRetrieveResponse as MeRetrieveResponse,
     type MeRetrieveParams as MeRetrieveParams,
   };
+
+  export type BaseDto = API.BaseDto;
 }

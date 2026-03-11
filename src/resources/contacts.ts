@@ -18,10 +18,10 @@ export class Contacts extends APIResource {
    *
    * @example
    * ```ts
-   * const apiResponseContact = await client.contacts.create();
+   * const apiResponseOfContact = await client.contacts.create();
    * ```
    */
-  create(params: ContactCreateParams, options?: RequestOptions): APIPromise<APIResponseContact> {
+  create(params: ContactCreateParams, options?: RequestOptions): APIPromise<APIResponseOfContact> {
     const { 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
     return this._client.post('/v3/contacts', {
       body,
@@ -43,7 +43,7 @@ export class Contacts extends APIResource {
    *
    * @example
    * ```ts
-   * const apiResponseContact = await client.contacts.retrieve(
+   * const apiResponseOfContact = await client.contacts.retrieve(
    *   '6ba7b810-9dad-11d1-80b4-00c04fd430c8',
    * );
    * ```
@@ -52,7 +52,7 @@ export class Contacts extends APIResource {
     id: string,
     params: ContactRetrieveParams | null | undefined = {},
     options?: RequestOptions,
-  ): APIPromise<APIResponseContact> {
+  ): APIPromise<APIResponseOfContact> {
     const { 'x-profile-id': xProfileID } = params ?? {};
     return this._client.get(path`/v3/contacts/${id}`, {
       ...options,
@@ -69,12 +69,16 @@ export class Contacts extends APIResource {
    *
    * @example
    * ```ts
-   * const apiResponseContact = await client.contacts.update(
+   * const apiResponseOfContact = await client.contacts.update(
    *   '6ba7b810-9dad-11d1-80b4-00c04fd430c8',
    * );
    * ```
    */
-  update(id: string, params: ContactUpdateParams, options?: RequestOptions): APIPromise<APIResponseContact> {
+  update(
+    id: string,
+    params: ContactUpdateParams,
+    options?: RequestOptions,
+  ): APIPromise<APIResponseOfContact> {
     const { 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
     return this._client.patch(path`/v3/contacts/${id}`, {
       body,
@@ -141,11 +145,11 @@ export class Contacts extends APIResource {
 /**
  * Standard API response envelope for all v3 endpoints
  */
-export interface APIResponseContact {
+export interface APIResponseOfContact {
   /**
    * The response data (null if error)
    */
-  data?: Contact | null;
+  data?: ContactResponse | null;
 
   /**
    * Error details (null if successful)
@@ -166,7 +170,7 @@ export interface APIResponseContact {
 /**
  * Contact response for v3 API Uses snake_case for JSON property names
  */
-export interface Contact {
+export interface ContactResponse {
   /**
    * Unique identifier for the contact
    */
@@ -271,7 +275,7 @@ export namespace ContactListResponse {
     /**
      * List of contacts
      */
-    contacts?: Array<ContactsAPI.Contact>;
+    contacts?: Array<ContactsAPI.ContactResponse>;
 
     /**
      * Pagination metadata
@@ -399,13 +403,13 @@ export namespace ContactDeleteParams {
   /**
    * Request to delete/dissociate a contact
    */
-  export interface Body extends WebhooksAPI.MutationRequest {}
+  export interface Body extends WebhooksAPI.MutationRequestBase {}
 }
 
 export declare namespace Contacts {
   export {
-    type APIResponseContact as APIResponseContact,
-    type Contact as Contact,
+    type APIResponseOfContact as APIResponseOfContact,
+    type ContactResponse as ContactResponse,
     type ContactListResponse as ContactListResponse,
     type ContactCreateParams as ContactCreateParams,
     type ContactRetrieveParams as ContactRetrieveParams,

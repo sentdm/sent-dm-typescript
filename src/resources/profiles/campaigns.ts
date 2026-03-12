@@ -175,7 +175,7 @@ export interface APIResponseOfTcrCampaignWithUseCases {
   /**
    * Error information
    */
-  error?: WebhooksAPI.APIError | null;
+  error?: WebhooksAPI.ErrorDetail | null;
 
   /**
    * Request and response metadata
@@ -378,7 +378,7 @@ export interface CampaignListResponse {
   /**
    * Error information
    */
-  error?: WebhooksAPI.APIError | null;
+  error?: WebhooksAPI.ErrorDetail | null;
 
   /**
    * Request and response metadata

@@ -264,7 +264,7 @@ export interface APIResponseOfProfileDetail {
   /**
    * Error information
    */
-  error?: WebhooksAPI.APIError | null;
+  error?: WebhooksAPI.ErrorDetail | null;
 
   /**
    * Request and response metadata
@@ -886,7 +886,7 @@ export interface ProfileListResponse {
   /**
    * Error information
    */
-  error?: WebhooksAPI.APIError | null;
+  error?: WebhooksAPI.ErrorDetail | null;
 
   /**
    * Request and response metadata

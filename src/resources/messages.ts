@@ -103,7 +103,7 @@ export interface MessageRetrieveActivitiesResponse {
   /**
    * Error information
    */
-  error?: WebhooksAPI.APIError | null;
+  error?: WebhooksAPI.ErrorDetail | null;
 
   /**
    * Request and response metadata
@@ -179,7 +179,7 @@ export interface MessageRetrieveStatusResponse {
   /**
    * Error information
    */
-  error?: WebhooksAPI.APIError | null;
+  error?: WebhooksAPI.ErrorDetail | null;
 
   /**
    * Request and response metadata
@@ -282,7 +282,7 @@ export interface MessageSendResponse {
   /**
    * Error information
    */
-  error?: WebhooksAPI.APIError | null;
+  error?: WebhooksAPI.ErrorDetail | null;
 
   /**
    * Request and response metadata

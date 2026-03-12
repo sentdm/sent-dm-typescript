@@ -100,8 +100,8 @@ describe('resource profiles', () => {
   });
 
   // Mock server tests are disabled
-  test.skip('completeSetup: only required params', async () => {
-    const responsePromise = client.profiles.completeSetup('660e8400-e29b-41d4-a716-446655440000', {
+  test.skip('complete: only required params', async () => {
+    const responsePromise = client.profiles.complete('660e8400-e29b-41d4-a716-446655440000', {
       webHookUrl: 'https://your-app.com/webhook/profile-complete',
     });
     const rawResponse = await responsePromise.asResponse();
@@ -114,8 +114,8 @@ describe('resource profiles', () => {
   });
 
   // Mock server tests are disabled
-  test.skip('completeSetup: required and optional params', async () => {
-    const response = await client.profiles.completeSetup('660e8400-e29b-41d4-a716-446655440000', {
+  test.skip('complete: required and optional params', async () => {
+    const response = await client.profiles.complete('660e8400-e29b-41d4-a716-446655440000', {
       webHookUrl: 'https://your-app.com/webhook/profile-complete',
       sandbox: false,
       'Idempotency-Key': 'req_abc123_retry1',

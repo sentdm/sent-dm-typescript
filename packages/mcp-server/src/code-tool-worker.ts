@@ -124,7 +124,7 @@ const fuse = new Fuse(
     'client.templates.list',
     'client.templates.retrieve',
     'client.templates.update',
-    'client.profiles.completeSetup',
+    'client.profiles.complete',
     'client.profiles.create',
     'client.profiles.delete',
     'client.profiles.list',

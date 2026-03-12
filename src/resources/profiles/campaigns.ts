@@ -2,7 +2,6 @@
 
 import { APIResource } from '../../core/resource';
 import * as CampaignsAPI from './campaigns';
-import * as Shared from '../shared';
 import * as WebhooksAPI from '../webhooks';
 import { APIPromise } from '../../core/api-promise';
 import { buildHeaders } from '../../internal/headers';
@@ -174,12 +173,12 @@ export interface APIResponseOfTcrCampaignWithUseCases {
   data?: TcrCampaignWithUseCases | null;
 
   /**
-   * Error details (null if successful)
+   * Error information
    */
   error?: WebhooksAPI.APIError | null;
 
   /**
-   * Metadata about the request and response
+   * Request and response metadata
    */
   meta?: WebhooksAPI.APIMeta;
 
@@ -187,6 +186,17 @@ export interface APIResponseOfTcrCampaignWithUseCases {
    * Indicates whether the request was successful
    */
   success?: boolean;
+}
+
+export interface BaseDto {
+  /**
+   * Unique identifier
+   */
+  id?: string;
+
+  createdAt?: string;
+
+  updatedAt?: string | null;
 }
 
 /**
@@ -278,9 +288,6 @@ export type MessagingUseCaseUs =
  * Campaign use case with sample messages
  */
 export interface SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData {
-  /**
-   * US messaging use case category
-   */
   messagingUseCaseUs: MessagingUseCaseUs;
 
   /**
@@ -289,7 +296,7 @@ export interface SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsC
   sampleMessages: Array<string>;
 }
 
-export interface TcrCampaignWithUseCases extends Shared.BaseDto {
+export interface TcrCampaignWithUseCases extends BaseDto {
   billedDate?: string | null;
 
   brandId?: string | null;
@@ -348,7 +355,7 @@ export interface TcrCampaignWithUseCases extends Shared.BaseDto {
 }
 
 export namespace TcrCampaignWithUseCases {
-  export interface UseCase extends Shared.BaseDto {
+  export interface UseCase extends CampaignsAPI.BaseDto {
     campaignId?: string;
 
     customerId?: string;
@@ -369,12 +376,12 @@ export interface CampaignListResponse {
   data?: Array<TcrCampaignWithUseCases> | null;
 
   /**
-   * Error details (null if successful)
+   * Error information
    */
   error?: WebhooksAPI.APIError | null;
 
   /**
-   * Metadata about the request and response
+   * Request and response metadata
    */
   meta?: WebhooksAPI.APIMeta;
 
@@ -386,7 +393,7 @@ export interface CampaignListResponse {
 
 export interface CampaignCreateParams {
   /**
-   * Body param: Campaign data
+   * Body param: Campaign data for create or update operation
    */
   campaign: CampaignData;
 
@@ -418,7 +425,7 @@ export interface CampaignUpdateParams {
   profileId: string;
 
   /**
-   * Body param: Campaign data
+   * Body param: Campaign data for create or update operation
    */
   campaign: CampaignData;
 
@@ -474,12 +481,13 @@ export namespace CampaignDeleteParams {
   /**
    * Request to delete a campaign from a brand
    */
-  export interface Body extends WebhooksAPI.MutationRequestBase {}
+  export interface Body extends WebhooksAPI.MutationRequest {}
 }
 
 export declare namespace Campaigns {
   export {
     type APIResponseOfTcrCampaignWithUseCases as APIResponseOfTcrCampaignWithUseCases,
+    type BaseDto as BaseDto,
     type CampaignData as CampaignData,
     type MessagingUseCaseUs as MessagingUseCaseUs,
     type SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData as SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData,

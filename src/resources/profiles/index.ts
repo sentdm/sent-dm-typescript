@@ -3,6 +3,7 @@
 export {
   Campaigns,
   type APIResponseOfTcrCampaignWithUseCases,
+  type BaseDto,
   type CampaignData,
   type MessagingUseCaseUs,
   type SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData,
@@ -27,11 +28,11 @@ export {
   type TcrBrandRelationship,
   type TcrVertical,
   type ProfileListResponse,
-  type ProfileCompleteSetupResponse,
+  type ProfileCompleteResponse,
   type ProfileCreateParams,
   type ProfileRetrieveParams,
   type ProfileUpdateParams,
   type ProfileListParams,
   type ProfileDeleteParams,
-  type ProfileCompleteSetupParams,
+  type ProfileCompleteParams,
 } from './profiles';

@@ -1,6 +1,5 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-export * from './shared';
 export {
   Contacts,
   type APIResponseOfContact,
@@ -37,13 +36,13 @@ export {
   type TcrBrandRelationship,
   type TcrVertical,
   type ProfileListResponse,
-  type ProfileCompleteSetupResponse,
+  type ProfileCompleteResponse,
   type ProfileCreateParams,
   type ProfileRetrieveParams,
   type ProfileUpdateParams,
   type ProfileListParams,
   type ProfileDeleteParams,
-  type ProfileCompleteSetupParams,
+  type ProfileCompleteParams,
 } from './profiles/profiles';
 export {
   Templates,
@@ -81,7 +80,7 @@ export {
   type APIError,
   type APIMeta,
   type APIResponseWebhook,
-  type MutationRequestBase,
+  type MutationRequest,
   type PaginationMeta,
   type WebhookResponse,
   type WebhookListResponse,

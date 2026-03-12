@@ -144,17 +144,17 @@ export class Users extends APIResource {
  */
 export interface APIResponseOfUser {
   /**
-   * The response data (null if error)
+   * User response for v3 API
    */
   data?: UserResponse | null;
 
   /**
-   * Error details (null if successful)
+   * Error information
    */
   error?: WebhooksAPI.APIError | null;
 
   /**
-   * Metadata about the request and response
+   * Request and response metadata
    */
   meta?: WebhooksAPI.APIMeta;
 
@@ -219,17 +219,17 @@ export interface UserResponse {
  */
 export interface UserListResponse {
   /**
-   * The response data (null if error)
+   * List of users response
    */
   data?: UserListResponse.Data | null;
 
   /**
-   * Error details (null if successful)
+   * Error information
    */
   error?: WebhooksAPI.APIError | null;
 
   /**
-   * Metadata about the request and response
+   * Request and response metadata
    */
   meta?: WebhooksAPI.APIMeta;
 
@@ -241,7 +241,7 @@ export interface UserListResponse {
 
 export namespace UserListResponse {
   /**
-   * The response data (null if error)
+   * List of users response
    */
   export interface Data {
     /**
@@ -322,7 +322,7 @@ export namespace UserRemoveParams {
   /**
    * Request to remove a user from an organization
    */
-  export interface Body extends WebhooksAPI.MutationRequestBase {}
+  export interface Body extends WebhooksAPI.MutationRequest {}
 }
 
 export interface UserUpdateRoleParams {

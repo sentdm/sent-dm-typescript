@@ -75,7 +75,7 @@ import {
   APIError,
   APIMeta,
   APIResponseWebhook,
-  MutationRequestBase,
+  MutationRequest,
   PaginationMeta,
   WebhookCreateParams,
   WebhookDeleteParams,
@@ -101,8 +101,8 @@ import {
   BrandsBrandData,
   DestinationCountry,
   PaymentDetails,
-  ProfileCompleteSetupParams,
-  ProfileCompleteSetupResponse,
+  ProfileCompleteParams,
+  ProfileCompleteResponse,
   ProfileCreateParams,
   ProfileDeleteParams,
   ProfileDetail,
@@ -868,7 +868,7 @@ export declare namespace SentDm {
     type APIError as APIError,
     type APIMeta as APIMeta,
     type APIResponseWebhook as APIResponseWebhook,
-    type MutationRequestBase as MutationRequestBase,
+    type MutationRequest as MutationRequest,
     type PaginationMeta as PaginationMeta,
     type WebhookResponse as WebhookResponse,
     type WebhookListResponse as WebhookListResponse,
@@ -935,13 +935,13 @@ export declare namespace SentDm {
     type TcrBrandRelationship as TcrBrandRelationship,
     type TcrVertical as TcrVertical,
     type ProfileListResponse as ProfileListResponse,
-    type ProfileCompleteSetupResponse as ProfileCompleteSetupResponse,
+    type ProfileCompleteResponse as ProfileCompleteResponse,
     type ProfileCreateParams as ProfileCreateParams,
     type ProfileRetrieveParams as ProfileRetrieveParams,
     type ProfileUpdateParams as ProfileUpdateParams,
     type ProfileListParams as ProfileListParams,
     type ProfileDeleteParams as ProfileDeleteParams,
-    type ProfileCompleteSetupParams as ProfileCompleteSetupParams,
+    type ProfileCompleteParams as ProfileCompleteParams,
   };
 
   export {
@@ -978,6 +978,4 @@ export declare namespace SentDm {
     type MeRetrieveResponse as MeRetrieveResponse,
     type MeRetrieveParams as MeRetrieveParams,
   };
-
-  export type BaseDto = API.BaseDto;
 }

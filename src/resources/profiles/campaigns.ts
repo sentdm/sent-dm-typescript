@@ -2,7 +2,6 @@
 
 import { APIResource } from '../../core/resource';
 import * as CampaignsAPI from './campaigns';
-import * as Shared from '../shared';
 import * as WebhooksAPI from '../webhooks';
 import { APIPromise } from '../../core/api-promise';
 import { buildHeaders } from '../../internal/headers';
@@ -189,6 +188,17 @@ export interface APIResponseOfTcrCampaignWithUseCases {
   success?: boolean;
 }
 
+export interface BaseDto {
+  /**
+   * Unique identifier
+   */
+  id?: string;
+
+  createdAt?: string;
+
+  updatedAt?: string | null;
+}
+
 /**
  * Campaign data for create or update operation
  */
@@ -211,7 +221,7 @@ export interface CampaignData {
   /**
    * List of use cases with sample messages
    */
-  useCases: Array<SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData>;
+  useCases: Array<CampaignData.UseCase>;
 
   /**
    * Comma-separated keywords that trigger help message (e.g., "HELP, INFO, SUPPORT")
@@ -259,6 +269,20 @@ export interface CampaignData {
   termsAndConditionsLink?: string | null;
 }
 
+export namespace CampaignData {
+  /**
+   * Campaign use case with sample messages
+   */
+  export interface UseCase {
+    messagingUseCaseUs: CampaignsAPI.MessagingUseCaseUs;
+
+    /**
+     * Sample messages for this use case (1-5 messages, max 1024 characters each)
+     */
+    sampleMessages: Array<string>;
+  }
+}
+
 export type MessagingUseCaseUs =
   | 'MARKETING'
   | 'ACCOUNT_NOTIFICATION'
@@ -274,19 +298,7 @@ export type MessagingUseCaseUs =
   | 'PUBLIC_SERVICE_ANNOUNCEMENT'
   | 'LOW_VOLUME';
 
-/**
- * Campaign use case with sample messages
- */
-export interface SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData {
-  messagingUseCaseUs: MessagingUseCaseUs;
-
-  /**
-   * Sample messages for this use case (1-5 messages, max 1024 characters each)
-   */
-  sampleMessages: Array<string>;
-}
-
-export interface TcrCampaignWithUseCases extends Shared.BaseDto {
+export interface TcrCampaignWithUseCases extends BaseDto {
   billedDate?: string | null;
 
   brandId?: string | null;
@@ -345,7 +357,7 @@ export interface TcrCampaignWithUseCases extends Shared.BaseDto {
 }
 
 export namespace TcrCampaignWithUseCases {
-  export interface UseCase extends Shared.BaseDto {
+  export interface UseCase extends CampaignsAPI.BaseDto {
     campaignId?: string;
 
     customerId?: string;
@@ -471,15 +483,15 @@ export namespace CampaignDeleteParams {
   /**
    * Request to delete a campaign from a brand
    */
-  export interface Body extends WebhooksAPI.MutationRequestBase {}
+  export interface Body extends WebhooksAPI.MutationRequest {}
 }
 
 export declare namespace Campaigns {
   export {
     type APIResponseOfTcrCampaignWithUseCases as APIResponseOfTcrCampaignWithUseCases,
+    type BaseDto as BaseDto,
     type CampaignData as CampaignData,
     type MessagingUseCaseUs as MessagingUseCaseUs,
-    type SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData as SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData,
     type TcrCampaignWithUseCases as TcrCampaignWithUseCases,
     type CampaignListResponse as CampaignListResponse,
     type CampaignCreateParams as CampaignCreateParams,

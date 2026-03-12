@@ -1,6 +1,5 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-export * from './shared';
 export {
   Contacts,
   type APIResponseOfContact,
@@ -31,29 +30,20 @@ export {
   type DestinationCountry,
   type PaymentDetails,
   type ProfileDetail,
-  type SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandBusinessInfo,
-  type SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfo,
-  type SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandContactInfo,
   type TcrBrandRelationship,
   type TcrVertical,
   type ProfileListResponse,
-  type ProfileCompleteSetupResponse,
+  type ProfileCompleteResponse,
   type ProfileCreateParams,
   type ProfileRetrieveParams,
   type ProfileUpdateParams,
   type ProfileListParams,
   type ProfileDeleteParams,
-  type ProfileCompleteSetupParams,
+  type ProfileCompleteParams,
 } from './profiles/profiles';
 export {
   Templates,
   type APIResponseTemplate,
-  type SentDmServicesCommonContractsPocOsAuthenticationConfig,
-  type SentDmServicesCommonContractsPocOsTemplateBody,
-  type SentDmServicesCommonContractsPocOsTemplateButton,
-  type SentDmServicesCommonContractsPocOsTemplateButtonProps,
-  type SentDmServicesCommonContractsPocOsTemplateFooter,
-  type SentDmServicesCommonContractsPocOsTemplateHeader,
   type Template,
   type TemplateBodyContent,
   type TemplateDefinition,
@@ -81,7 +71,7 @@ export {
   type APIError,
   type APIMeta,
   type APIResponseWebhook,
-  type MutationRequestBase,
+  type MutationRequest,
   type PaginationMeta,
   type WebhookResponse,
   type WebhookListResponse,

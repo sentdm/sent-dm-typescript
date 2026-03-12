@@ -6,6 +6,7 @@ import * as WebhooksAPI from '../webhooks';
 import * as CampaignsAPI from './campaigns';
 import {
   APIResponseOfTcrCampaignWithUseCases,
+  BaseDto,
   CampaignCreateParams,
   CampaignData,
   CampaignDeleteParams,
@@ -14,7 +15,6 @@ import {
   CampaignUpdateParams,
   Campaigns,
   MessagingUseCaseUs,
-  SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData,
   TcrCampaignWithUseCases,
 } from './campaigns';
 import { APIPromise } from '../../core/api-promise';
@@ -226,7 +226,7 @@ export class Profiles extends APIResource {
    *
    * @example
    * ```ts
-   * const response = await client.profiles.completeSetup(
+   * const response = await client.profiles.complete(
    *   '660e8400-e29b-41d4-a716-446655440000',
    *   {
    *     webHookUrl:
@@ -235,11 +235,7 @@ export class Profiles extends APIResource {
    * );
    * ```
    */
-  completeSetup(
-    profileID: string,
-    params: ProfileCompleteSetupParams,
-    options?: RequestOptions,
-  ): APIPromise<unknown> {
+  complete(profileID: string, params: ProfileCompleteParams, options?: RequestOptions): APIPromise<unknown> {
     const { 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
     return this._client.post(path`/v3/profiles/${profileID}/complete`, {
       body,
@@ -314,17 +310,150 @@ export interface BrandsBrandData {
   /**
    * Compliance and TCR information for brand registration
    */
-  compliance: SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfo;
+  compliance: BrandsBrandData.Compliance;
 
   /**
    * Contact information for brand KYC
    */
-  contact: SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandContactInfo;
+  contact: BrandsBrandData.Contact;
 
   /**
    * Business details and address for brand KYC
    */
-  business?: SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandBusinessInfo | null;
+  business?: BrandsBrandData.Business | null;
+}
+
+export namespace BrandsBrandData {
+  /**
+   * Compliance and TCR information for brand registration
+   */
+  export interface Compliance {
+    brandRelationship: ProfilesAPI.TcrBrandRelationship;
+
+    vertical: ProfilesAPI.TcrVertical;
+
+    /**
+     * List of destination countries for messaging
+     */
+    destinationCountries?: Array<ProfilesAPI.DestinationCountry> | null;
+
+    /**
+     * Expected daily messaging volume
+     */
+    expectedMessagingVolume?: string | null;
+
+    /**
+     * Whether this is a TCR (Campaign Registry) application
+     */
+    isTcrApplication?: boolean | null;
+
+    /**
+     * Additional notes about the business or use case
+     */
+    notes?: string | null;
+
+    /**
+     * Phone number prefix for messaging (e.g., "+1")
+     */
+    phoneNumberPrefix?: string | null;
+
+    /**
+     * Primary messaging use case description
+     */
+    primaryUseCase?: string | null;
+  }
+
+  /**
+   * Contact information for brand KYC
+   */
+  export interface Contact {
+    /**
+     * Primary contact name (required)
+     */
+    name: string;
+
+    /**
+     * Business/brand name
+     */
+    businessName?: string | null;
+
+    /**
+     * Contact email address
+     */
+    email?: string | null;
+
+    /**
+     * Contact phone number in E.164 format
+     */
+    phone?: string | null;
+
+    /**
+     * Contact phone country code (e.g., "1" for US)
+     */
+    phoneCountryCode?: string | null;
+
+    /**
+     * Contact's role in the business
+     */
+    role?: string | null;
+  }
+
+  /**
+   * Business details and address for brand KYC
+   */
+  export interface Business {
+    /**
+     * City
+     */
+    city?: string | null;
+
+    /**
+     * Country code (e.g., US, CA)
+     */
+    country?: string | null;
+
+    /**
+     * Country where the business is registered
+     */
+    countryOfRegistration?: string | null;
+
+    entityType?: 'PRIVATE_PROFIT' | 'PUBLIC_PROFIT' | 'NON_PROFIT' | 'SOLE_PROPRIETOR' | 'GOVERNMENT' | null;
+
+    /**
+     * Legal business name
+     */
+    legalName?: string | null;
+
+    /**
+     * Postal/ZIP code
+     */
+    postalCode?: string | null;
+
+    /**
+     * State/province code
+     */
+    state?: string | null;
+
+    /**
+     * Street address
+     */
+    street?: string | null;
+
+    /**
+     * Tax ID/EIN number
+     */
+    taxId?: string | null;
+
+    /**
+     * Type of tax ID (e.g., us_ein, ca_bn)
+     */
+    taxIdType?: string | null;
+
+    /**
+     * Business website URL
+     */
+    url?: string | null;
+  }
 }
 
 export interface DestinationCountry {
@@ -714,137 +843,6 @@ export namespace ProfileDetail {
   }
 }
 
-/**
- * Business details and address for brand KYC
- */
-export interface SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandBusinessInfo {
-  /**
-   * City
-   */
-  city?: string | null;
-
-  /**
-   * Country code (e.g., US, CA)
-   */
-  country?: string | null;
-
-  /**
-   * Country where the business is registered
-   */
-  countryOfRegistration?: string | null;
-
-  entityType?: 'PRIVATE_PROFIT' | 'PUBLIC_PROFIT' | 'NON_PROFIT' | 'SOLE_PROPRIETOR' | 'GOVERNMENT' | null;
-
-  /**
-   * Legal business name
-   */
-  legalName?: string | null;
-
-  /**
-   * Postal/ZIP code
-   */
-  postalCode?: string | null;
-
-  /**
-   * State/province code
-   */
-  state?: string | null;
-
-  /**
-   * Street address
-   */
-  street?: string | null;
-
-  /**
-   * Tax ID/EIN number
-   */
-  taxId?: string | null;
-
-  /**
-   * Type of tax ID (e.g., us_ein, ca_bn)
-   */
-  taxIdType?: string | null;
-
-  /**
-   * Business website URL
-   */
-  url?: string | null;
-}
-
-/**
- * Compliance and TCR information for brand registration
- */
-export interface SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfo {
-  brandRelationship: TcrBrandRelationship;
-
-  vertical: TcrVertical;
-
-  /**
-   * List of destination countries for messaging
-   */
-  destinationCountries?: Array<DestinationCountry> | null;
-
-  /**
-   * Expected daily messaging volume
-   */
-  expectedMessagingVolume?: string | null;
-
-  /**
-   * Whether this is a TCR (Campaign Registry) application
-   */
-  isTcrApplication?: boolean | null;
-
-  /**
-   * Additional notes about the business or use case
-   */
-  notes?: string | null;
-
-  /**
-   * Phone number prefix for messaging (e.g., "+1")
-   */
-  phoneNumberPrefix?: string | null;
-
-  /**
-   * Primary messaging use case description
-   */
-  primaryUseCase?: string | null;
-}
-
-/**
- * Contact information for brand KYC
- */
-export interface SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandContactInfo {
-  /**
-   * Primary contact name (required)
-   */
-  name: string;
-
-  /**
-   * Business/brand name
-   */
-  businessName?: string | null;
-
-  /**
-   * Contact email address
-   */
-  email?: string | null;
-
-  /**
-   * Contact phone number in E.164 format
-   */
-  phone?: string | null;
-
-  /**
-   * Contact phone country code (e.g., "1" for US)
-   */
-  phoneCountryCode?: string | null;
-
-  /**
-   * Contact's role in the business
-   */
-  role?: string | null;
-}
-
 export type TcrBrandRelationship =
   | 'BASIC_ACCOUNT'
   | 'MEDIUM_ACCOUNT'
@@ -914,7 +912,7 @@ export namespace ProfileListResponse {
   }
 }
 
-export type ProfileCompleteSetupResponse = unknown;
+export type ProfileCompleteResponse = unknown;
 
 export interface ProfileCreateParams {
   /**
@@ -1232,10 +1230,10 @@ export namespace ProfileDeleteParams {
   /**
    * Request to delete a profile
    */
-  export interface Body extends WebhooksAPI.MutationRequestBase {}
+  export interface Body extends WebhooksAPI.MutationRequest {}
 }
 
-export interface ProfileCompleteSetupParams {
+export interface ProfileCompleteParams {
   /**
    * Body param: Webhook URL to call when profile completion finishes (success or
    * failure)
@@ -1273,27 +1271,24 @@ export declare namespace Profiles {
     type DestinationCountry as DestinationCountry,
     type PaymentDetails as PaymentDetails,
     type ProfileDetail as ProfileDetail,
-    type SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandBusinessInfo as SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandBusinessInfo,
-    type SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfo as SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfo,
-    type SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandContactInfo as SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandContactInfo,
     type TcrBrandRelationship as TcrBrandRelationship,
     type TcrVertical as TcrVertical,
     type ProfileListResponse as ProfileListResponse,
-    type ProfileCompleteSetupResponse as ProfileCompleteSetupResponse,
+    type ProfileCompleteResponse as ProfileCompleteResponse,
     type ProfileCreateParams as ProfileCreateParams,
     type ProfileRetrieveParams as ProfileRetrieveParams,
     type ProfileUpdateParams as ProfileUpdateParams,
     type ProfileListParams as ProfileListParams,
     type ProfileDeleteParams as ProfileDeleteParams,
-    type ProfileCompleteSetupParams as ProfileCompleteSetupParams,
+    type ProfileCompleteParams as ProfileCompleteParams,
   };
 
   export {
     Campaigns as Campaigns,
     type APIResponseOfTcrCampaignWithUseCases as APIResponseOfTcrCampaignWithUseCases,
+    type BaseDto as BaseDto,
     type CampaignData as CampaignData,
     type MessagingUseCaseUs as MessagingUseCaseUs,
-    type SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData as SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData,
     type TcrCampaignWithUseCases as TcrCampaignWithUseCases,
     type CampaignListResponse as CampaignListResponse,
     type CampaignCreateParams as CampaignCreateParams,

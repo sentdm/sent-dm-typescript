@@ -161,8 +161,8 @@ export const sdkMethods: SdkMethod[] = [
     httpPath: '/v3/profiles/{profileId}',
   },
   {
-    clientCallName: 'client.profiles.completeSetup',
-    fullyQualifiedName: 'profiles.completeSetup',
+    clientCallName: 'client.profiles.complete',
+    fullyQualifiedName: 'profiles.complete',
     httpMethod: 'post',
     httpPath: '/v3/profiles/{profileId}/complete',
   },

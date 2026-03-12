@@ -1,9 +1,3 @@
-# Shared
-
-Types:
-
-- <code><a href="./src/resources/shared.ts">BaseDto</a></code>
-
 # Webhooks
 
 Types:
@@ -11,7 +5,7 @@ Types:
 - <code><a href="./src/resources/webhooks.ts">APIError</a></code>
 - <code><a href="./src/resources/webhooks.ts">APIMeta</a></code>
 - <code><a href="./src/resources/webhooks.ts">APIResponseWebhook</a></code>
-- <code><a href="./src/resources/webhooks.ts">MutationRequestBase</a></code>
+- <code><a href="./src/resources/webhooks.ts">MutationRequest</a></code>
 - <code><a href="./src/resources/webhooks.ts">PaginationMeta</a></code>
 - <code><a href="./src/resources/webhooks.ts">WebhookResponse</a></code>
 - <code><a href="./src/resources/webhooks.ts">WebhookListResponse</a></code>
@@ -54,12 +48,6 @@ Methods:
 Types:
 
 - <code><a href="./src/resources/templates.ts">APIResponseTemplate</a></code>
-- <code><a href="./src/resources/templates.ts">SentDmServicesCommonContractsPocOsAuthenticationConfig</a></code>
-- <code><a href="./src/resources/templates.ts">SentDmServicesCommonContractsPocOsTemplateBody</a></code>
-- <code><a href="./src/resources/templates.ts">SentDmServicesCommonContractsPocOsTemplateButton</a></code>
-- <code><a href="./src/resources/templates.ts">SentDmServicesCommonContractsPocOsTemplateButtonProps</a></code>
-- <code><a href="./src/resources/templates.ts">SentDmServicesCommonContractsPocOsTemplateFooter</a></code>
-- <code><a href="./src/resources/templates.ts">SentDmServicesCommonContractsPocOsTemplateHeader</a></code>
 - <code><a href="./src/resources/templates.ts">Template</a></code>
 - <code><a href="./src/resources/templates.ts">TemplateBodyContent</a></code>
 - <code><a href="./src/resources/templates.ts">TemplateDefinition</a></code>
@@ -84,13 +72,10 @@ Types:
 - <code><a href="./src/resources/profiles/profiles.ts">DestinationCountry</a></code>
 - <code><a href="./src/resources/profiles/profiles.ts">PaymentDetails</a></code>
 - <code><a href="./src/resources/profiles/profiles.ts">ProfileDetail</a></code>
-- <code><a href="./src/resources/profiles/profiles.ts">SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandBusinessInfo</a></code>
-- <code><a href="./src/resources/profiles/profiles.ts">SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfo</a></code>
-- <code><a href="./src/resources/profiles/profiles.ts">SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandContactInfo</a></code>
 - <code><a href="./src/resources/profiles/profiles.ts">TcrBrandRelationship</a></code>
 - <code><a href="./src/resources/profiles/profiles.ts">TcrVertical</a></code>
 - <code><a href="./src/resources/profiles/profiles.ts">ProfileListResponse</a></code>
-- <code><a href="./src/resources/profiles/profiles.ts">ProfileCompleteSetupResponse</a></code>
+- <code><a href="./src/resources/profiles/profiles.ts">ProfileCompleteResponse</a></code>
 
 Methods:
 
@@ -99,16 +84,16 @@ Methods:
 - <code title="patch /v3/profiles/{profileId}">client.profiles.<a href="./src/resources/profiles/profiles.ts">update</a>(profileID, { ...params }) -> APIResponseOfProfileDetail</code>
 - <code title="get /v3/profiles">client.profiles.<a href="./src/resources/profiles/profiles.ts">list</a>({ ...params }) -> ProfileListResponse</code>
 - <code title="delete /v3/profiles/{profileId}">client.profiles.<a href="./src/resources/profiles/profiles.ts">delete</a>(profileID, { ...params }) -> void</code>
-- <code title="post /v3/profiles/{profileId}/complete">client.profiles.<a href="./src/resources/profiles/profiles.ts">completeSetup</a>(profileID, { ...params }) -> unknown</code>
+- <code title="post /v3/profiles/{profileId}/complete">client.profiles.<a href="./src/resources/profiles/profiles.ts">complete</a>(profileID, { ...params }) -> unknown</code>
 
 ## Campaigns
 
 Types:
 
 - <code><a href="./src/resources/profiles/campaigns.ts">APIResponseOfTcrCampaignWithUseCases</a></code>
+- <code><a href="./src/resources/profiles/campaigns.ts">BaseDto</a></code>
 - <code><a href="./src/resources/profiles/campaigns.ts">CampaignData</a></code>
 - <code><a href="./src/resources/profiles/campaigns.ts">MessagingUseCaseUs</a></code>
-- <code><a href="./src/resources/profiles/campaigns.ts">SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData</a></code>
 - <code><a href="./src/resources/profiles/campaigns.ts">TcrCampaignWithUseCases</a></code>
 - <code><a href="./src/resources/profiles/campaigns.ts">CampaignListResponse</a></code>
 

@@ -338,7 +338,7 @@ export interface APIResponseWebhook {
   success?: boolean;
 }
 
-export interface MutationRequestBase {
+export interface MutationRequest {
   /**
    * Sandbox flag - when true, the operation is simulated without side effects Useful
    * for testing integrations without actual execution
@@ -839,7 +839,7 @@ export interface WebhookRotateSecretParams {
 }
 
 export namespace WebhookRotateSecretParams {
-  export interface Body extends WebhooksAPI.MutationRequestBase {}
+  export interface Body extends WebhooksAPI.MutationRequest {}
 }
 
 export interface WebhookTestParams {
@@ -901,7 +901,7 @@ export declare namespace Webhooks {
     type APIError as APIError,
     type APIMeta as APIMeta,
     type APIResponseWebhook as APIResponseWebhook,
-    type MutationRequestBase as MutationRequestBase,
+    type MutationRequest as MutationRequest,
     type PaginationMeta as PaginationMeta,
     type WebhookResponse as WebhookResponse,
     type WebhookListResponse as WebhookListResponse,

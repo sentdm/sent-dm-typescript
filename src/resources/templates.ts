@@ -167,132 +167,6 @@ export interface APIResponseTemplate {
 }
 
 /**
- * Configuration for AUTHENTICATION category templates
- */
-export interface SentDmServicesCommonContractsPocOsAuthenticationConfig {
-  /**
-   * Whether to add the security recommendation text: "For your security, do not
-   * share this code."
-   */
-  addSecurityRecommendation?: boolean;
-
-  /**
-   * Code expiration time in minutes (1-90). If set, adds footer: "This code expires
-   * in X minutes."
-   */
-  codeExpirationMinutes?: number | null;
-}
-
-/**
- * Body section of a message template with channel-specific content
- */
-export interface SentDmServicesCommonContractsPocOsTemplateBody {
-  /**
-   * Content that will be used for all channels (SMS and WhatsApp) unless
-   * channel-specific content is provided
-   */
-  multiChannel?: TemplateBodyContent | null;
-
-  /**
-   * SMS-specific content that overrides multi-channel content for SMS messages
-   */
-  sms?: TemplateBodyContent | null;
-
-  /**
-   * WhatsApp-specific content that overrides multi-channel content for WhatsApp
-   * messages
-   */
-  whatsapp?: TemplateBodyContent | null;
-}
-
-/**
- * Interactive button in a message template
- */
-export interface SentDmServicesCommonContractsPocOsTemplateButton {
-  /**
-   * The unique identifier of the button (1-based index)
-   */
-  id?: number;
-
-  /**
-   * Properties specific to the button type
-   */
-  props?: SentDmServicesCommonContractsPocOsTemplateButtonProps;
-
-  /**
-   * The type of button (e.g., QUICK_REPLY, URL, PHONE_NUMBER, VOICE_CALL, COPY_CODE)
-   */
-  type?: string;
-}
-
-export interface SentDmServicesCommonContractsPocOsTemplateButtonProps {
-  activeFor?: number | null;
-
-  autofillText?: string | null;
-
-  countryCode?: string | null;
-
-  offerCode?: string | null;
-
-  otpType?: string | null;
-
-  packageName?: string | null;
-
-  phoneNumber?: string | null;
-
-  quickReplyType?: string | null;
-
-  signatureHash?: string | null;
-
-  text?: string | null;
-
-  url?: string | null;
-
-  urlType?: string | null;
-}
-
-/**
- * Footer section of a message template
- */
-export interface SentDmServicesCommonContractsPocOsTemplateFooter {
-  /**
-   * The footer template text with optional variable placeholders
-   */
-  template?: string;
-
-  /**
-   * The type of footer (typically "text")
-   */
-  type?: string | null;
-
-  /**
-   * List of variables used in the footer template
-   */
-  variables?: Array<TemplateVariable> | null;
-}
-
-/**
- * Header section of a message template
- */
-export interface SentDmServicesCommonContractsPocOsTemplateHeader {
-  /**
-   * The header template text with optional variable placeholders (e.g., "Welcome to
-   * {{0:variable}}")
-   */
-  template?: string;
-
-  /**
-   * The type of header (e.g., "text", "image", "video", "document")
-   */
-  type?: string | null;
-
-  /**
-   * List of variables used in the header template
-   */
-  variables?: Array<TemplateVariable> | null;
-}
-
-/**
  * Template response for v3 API
  */
 export interface Template {
@@ -363,17 +237,17 @@ export interface TemplateDefinition {
   /**
    * Body section of a message template with channel-specific content
    */
-  body: SentDmServicesCommonContractsPocOsTemplateBody;
+  body: TemplateDefinition.Body;
 
   /**
    * Configuration for AUTHENTICATION category templates
    */
-  authenticationConfig?: SentDmServicesCommonContractsPocOsAuthenticationConfig | null;
+  authenticationConfig?: TemplateDefinition.AuthenticationConfig | null;
 
   /**
    * Optional list of interactive buttons (e.g., quick replies, URLs, phone numbers)
    */
-  buttons?: Array<SentDmServicesCommonContractsPocOsTemplateButton> | null;
+  buttons?: Array<TemplateDefinition.Button> | null;
 
   /**
    * The version of the template definition format
@@ -383,12 +257,145 @@ export interface TemplateDefinition {
   /**
    * Footer section of a message template
    */
-  footer?: SentDmServicesCommonContractsPocOsTemplateFooter | null;
+  footer?: TemplateDefinition.Footer | null;
 
   /**
    * Header section of a message template
    */
-  header?: SentDmServicesCommonContractsPocOsTemplateHeader | null;
+  header?: TemplateDefinition.Header | null;
+}
+
+export namespace TemplateDefinition {
+  /**
+   * Body section of a message template with channel-specific content
+   */
+  export interface Body {
+    /**
+     * Content that will be used for all channels (SMS and WhatsApp) unless
+     * channel-specific content is provided
+     */
+    multiChannel?: TemplatesAPI.TemplateBodyContent | null;
+
+    /**
+     * SMS-specific content that overrides multi-channel content for SMS messages
+     */
+    sms?: TemplatesAPI.TemplateBodyContent | null;
+
+    /**
+     * WhatsApp-specific content that overrides multi-channel content for WhatsApp
+     * messages
+     */
+    whatsapp?: TemplatesAPI.TemplateBodyContent | null;
+  }
+
+  /**
+   * Configuration for AUTHENTICATION category templates
+   */
+  export interface AuthenticationConfig {
+    /**
+     * Whether to add the security recommendation text: "For your security, do not
+     * share this code."
+     */
+    addSecurityRecommendation?: boolean;
+
+    /**
+     * Code expiration time in minutes (1-90). If set, adds footer: "This code expires
+     * in X minutes."
+     */
+    codeExpirationMinutes?: number | null;
+  }
+
+  /**
+   * Interactive button in a message template
+   */
+  export interface Button {
+    /**
+     * The unique identifier of the button (1-based index)
+     */
+    id?: number;
+
+    /**
+     * Properties specific to the button type
+     */
+    props?: Button.Props;
+
+    /**
+     * The type of button (e.g., QUICK_REPLY, URL, PHONE_NUMBER, VOICE_CALL, COPY_CODE)
+     */
+    type?: string;
+  }
+
+  export namespace Button {
+    /**
+     * Properties specific to the button type
+     */
+    export interface Props {
+      activeFor?: number | null;
+
+      autofillText?: string | null;
+
+      countryCode?: string | null;
+
+      offerCode?: string | null;
+
+      otpType?: string | null;
+
+      packageName?: string | null;
+
+      phoneNumber?: string | null;
+
+      quickReplyType?: string | null;
+
+      signatureHash?: string | null;
+
+      text?: string | null;
+
+      url?: string | null;
+
+      urlType?: string | null;
+    }
+  }
+
+  /**
+   * Footer section of a message template
+   */
+  export interface Footer {
+    /**
+     * The footer template text with optional variable placeholders
+     */
+    template?: string;
+
+    /**
+     * The type of footer (typically "text")
+     */
+    type?: string | null;
+
+    /**
+     * List of variables used in the footer template
+     */
+    variables?: Array<TemplatesAPI.TemplateVariable> | null;
+  }
+
+  /**
+   * Header section of a message template
+   */
+  export interface Header {
+    /**
+     * The header template text with optional variable placeholders (e.g., "Welcome to
+     * {{0:variable}}")
+     */
+    template?: string;
+
+    /**
+     * The type of header (e.g., "text", "image", "video", "document")
+     */
+    type?: string | null;
+
+    /**
+     * List of variables used in the header template
+     */
+    variables?: Array<TemplatesAPI.TemplateVariable> | null;
+  }
 }
 
 export interface TemplateVariable {
@@ -632,12 +639,6 @@ export interface TemplateDeleteParams {
 export declare namespace Templates {
   export {
     type APIResponseTemplate as APIResponseTemplate,
-    type SentDmServicesCommonContractsPocOsAuthenticationConfig as SentDmServicesCommonContractsPocOsAuthenticationConfig,
-    type SentDmServicesCommonContractsPocOsTemplateBody as SentDmServicesCommonContractsPocOsTemplateBody,
-    type SentDmServicesCommonContractsPocOsTemplateButton as SentDmServicesCommonContractsPocOsTemplateButton,
-    type SentDmServicesCommonContractsPocOsTemplateButtonProps as SentDmServicesCommonContractsPocOsTemplateButtonProps,
-    type SentDmServicesCommonContractsPocOsTemplateFooter as SentDmServicesCommonContractsPocOsTemplateFooter,
-    type SentDmServicesCommonContractsPocOsTemplateHeader as SentDmServicesCommonContractsPocOsTemplateHeader,
     type Template as Template,
     type TemplateBodyContent as TemplateBodyContent,
     type TemplateDefinition as TemplateDefinition,

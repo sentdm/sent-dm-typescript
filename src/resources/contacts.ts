@@ -403,7 +403,7 @@ export namespace ContactDeleteParams {
   /**
    * Request to delete/dissociate a contact
    */
-  export interface Body extends WebhooksAPI.MutationRequestBase {}
+  export interface Body extends WebhooksAPI.MutationRequest {}
 }
 
 export declare namespace Contacts {

@@ -2,9 +2,9 @@
 
 Types:
 
-- <code><a href="./src/resources/webhooks.ts">APIError</a></code>
 - <code><a href="./src/resources/webhooks.ts">APIMeta</a></code>
 - <code><a href="./src/resources/webhooks.ts">APIResponseWebhook</a></code>
+- <code><a href="./src/resources/webhooks.ts">ErrorDetail</a></code>
 - <code><a href="./src/resources/webhooks.ts">MutationRequest</a></code>
 - <code><a href="./src/resources/webhooks.ts">PaginationMeta</a></code>
 - <code><a href="./src/resources/webhooks.ts">WebhookResponse</a></code>

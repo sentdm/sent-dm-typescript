@@ -42,12 +42,6 @@ import {
 import { NumberLookupParams, NumberLookupResponse, Numbers } from './resources/numbers';
 import {
   APIResponseTemplate,
-  SentDmServicesCommonContractsPocOsAuthenticationConfig,
-  SentDmServicesCommonContractsPocOsTemplateBody,
-  SentDmServicesCommonContractsPocOsTemplateButton,
-  SentDmServicesCommonContractsPocOsTemplateButtonProps,
-  SentDmServicesCommonContractsPocOsTemplateFooter,
-  SentDmServicesCommonContractsPocOsTemplateHeader,
   Template,
   TemplateBodyContent,
   TemplateCreateParams,
@@ -75,7 +69,7 @@ import {
   APIError,
   APIMeta,
   APIResponseWebhook,
-  MutationRequestBase,
+  MutationRequest,
   PaginationMeta,
   WebhookCreateParams,
   WebhookDeleteParams,
@@ -101,8 +95,8 @@ import {
   BrandsBrandData,
   DestinationCountry,
   PaymentDetails,
-  ProfileCompleteSetupParams,
-  ProfileCompleteSetupResponse,
+  ProfileCompleteParams,
+  ProfileCompleteResponse,
   ProfileCreateParams,
   ProfileDeleteParams,
   ProfileDetail,
@@ -111,9 +105,6 @@ import {
   ProfileRetrieveParams,
   ProfileUpdateParams,
   Profiles,
-  SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandBusinessInfo,
-  SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfo,
-  SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandContactInfo,
   TcrBrandRelationship,
   TcrVertical,
 } from './resources/profiles/profiles';
@@ -868,7 +859,7 @@ export declare namespace SentDm {
     type APIError as APIError,
     type APIMeta as APIMeta,
     type APIResponseWebhook as APIResponseWebhook,
-    type MutationRequestBase as MutationRequestBase,
+    type MutationRequest as MutationRequest,
     type PaginationMeta as PaginationMeta,
     type WebhookResponse as WebhookResponse,
     type WebhookListResponse as WebhookListResponse,
@@ -903,12 +894,6 @@ export declare namespace SentDm {
   export {
     Templates as Templates,
     type APIResponseTemplate as APIResponseTemplate,
-    type SentDmServicesCommonContractsPocOsAuthenticationConfig as SentDmServicesCommonContractsPocOsAuthenticationConfig,
-    type SentDmServicesCommonContractsPocOsTemplateBody as SentDmServicesCommonContractsPocOsTemplateBody,
-    type SentDmServicesCommonContractsPocOsTemplateButton as SentDmServicesCommonContractsPocOsTemplateButton,
-    type SentDmServicesCommonContractsPocOsTemplateButtonProps as SentDmServicesCommonContractsPocOsTemplateButtonProps,
-    type SentDmServicesCommonContractsPocOsTemplateFooter as SentDmServicesCommonContractsPocOsTemplateFooter,
-    type SentDmServicesCommonContractsPocOsTemplateHeader as SentDmServicesCommonContractsPocOsTemplateHeader,
     type Template as Template,
     type TemplateBodyContent as TemplateBodyContent,
     type TemplateDefinition as TemplateDefinition,
@@ -929,19 +914,16 @@ export declare namespace SentDm {
     type DestinationCountry as DestinationCountry,
     type PaymentDetails as PaymentDetails,
     type ProfileDetail as ProfileDetail,
-    type SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandBusinessInfo as SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandBusinessInfo,
-    type SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfo as SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfo,
-    type SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandContactInfo as SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandContactInfo,
     type TcrBrandRelationship as TcrBrandRelationship,
     type TcrVertical as TcrVertical,
     type ProfileListResponse as ProfileListResponse,
-    type ProfileCompleteSetupResponse as ProfileCompleteSetupResponse,
+    type ProfileCompleteResponse as ProfileCompleteResponse,
     type ProfileCreateParams as ProfileCreateParams,
     type ProfileRetrieveParams as ProfileRetrieveParams,
     type ProfileUpdateParams as ProfileUpdateParams,
     type ProfileListParams as ProfileListParams,
     type ProfileDeleteParams as ProfileDeleteParams,
-    type ProfileCompleteSetupParams as ProfileCompleteSetupParams,
+    type ProfileCompleteParams as ProfileCompleteParams,
   };
 
   export {
@@ -978,6 +960,4 @@ export declare namespace SentDm {
     type MeRetrieveResponse as MeRetrieveResponse,
     type MeRetrieveParams as MeRetrieveParams,
   };
-
-  export type BaseDto = API.BaseDto;
 }

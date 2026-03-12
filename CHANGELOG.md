@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.16.1 (2026-03-12)
+
+Full Changelog: [v0.16.0...v0.16.1](https://github.com/sentdm/sent-dm-typescript/compare/v0.16.0...v0.16.1)
+
+### Chores
+
+* **internal:** update lock file ([7927129](https://github.com/sentdm/sent-dm-typescript/commit/792712952ec435e92a579544da09290b5a39443c))
+
 ## 0.16.0 (2026-03-12)
 
 Full Changelog: [v0.15.1...v0.16.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.15.1...v0.16.0)

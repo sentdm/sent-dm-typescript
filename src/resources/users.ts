@@ -151,7 +151,7 @@ export interface APIResponseOfUser {
   /**
    * Error information
    */
-  error?: WebhooksAPI.APIError | null;
+  error?: WebhooksAPI.ErrorDetail | null;
 
   /**
    * Request and response metadata
@@ -226,7 +226,7 @@ export interface UserListResponse {
   /**
    * Error information
    */
-  error?: WebhooksAPI.APIError | null;
+  error?: WebhooksAPI.ErrorDetail | null;
 
   /**
    * Request and response metadata

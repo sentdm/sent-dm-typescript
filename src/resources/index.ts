@@ -77,9 +77,9 @@ export {
 } from './users';
 export {
   Webhooks,
-  type APIError,
   type APIMeta,
   type APIResponseWebhook,
+  type ErrorDetail,
   type MutationRequest,
   type PaginationMeta,
   type WebhookResponse,

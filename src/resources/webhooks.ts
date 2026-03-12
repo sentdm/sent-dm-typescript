@@ -269,31 +269,6 @@ export class Webhooks extends APIResource {
 }
 
 /**
- * Error information
- */
-export interface APIError {
-  /**
-   * Machine-readable error code (e.g., "RESOURCE_001")
-   */
-  code?: string;
-
-  /**
-   * Additional validation error details (field-level errors)
-   */
-  details?: { [key: string]: Array<string> } | null;
-
-  /**
-   * URL to documentation about this error
-   */
-  doc_url?: string | null;
-
-  /**
-   * Human-readable error message
-   */
-  message?: string;
-}
-
-/**
  * Request and response metadata
  */
 export interface APIMeta {
@@ -325,7 +300,7 @@ export interface APIResponseWebhook {
   /**
    * Error information
    */
-  error?: APIError | null;
+  error?: ErrorDetail | null;
 
   /**
    * Request and response metadata
@@ -336,6 +311,31 @@ export interface APIResponseWebhook {
    * Indicates whether the request was successful
    */
   success?: boolean;
+}
+
+/**
+ * Error information
+ */
+export interface ErrorDetail {
+  /**
+   * Machine-readable error code (e.g., "RESOURCE_001")
+   */
+  code?: string;
+
+  /**
+   * Additional validation error details (field-level errors)
+   */
+  details?: { [key: string]: Array<string> } | null;
+
+  /**
+   * URL to documentation about this error
+   */
+  doc_url?: string | null;
+
+  /**
+   * Human-readable error message
+   */
+  message?: string;
 }
 
 export interface MutationRequest {
@@ -438,7 +438,7 @@ export interface WebhookListResponse {
   /**
    * Error information
    */
-  error?: APIError | null;
+  error?: ErrorDetail | null;
 
   /**
    * Request and response metadata
@@ -477,7 +477,7 @@ export interface WebhookListEventTypesResponse {
   /**
    * Error information
    */
-  error?: APIError | null;
+  error?: ErrorDetail | null;
 
   /**
    * Request and response metadata
@@ -523,7 +523,7 @@ export interface WebhookListEventsResponse {
   /**
    * Error information
    */
-  error?: APIError | null;
+  error?: ErrorDetail | null;
 
   /**
    * Request and response metadata
@@ -588,7 +588,7 @@ export interface WebhookRotateSecretResponse {
   /**
    * Error information
    */
-  error?: APIError | null;
+  error?: ErrorDetail | null;
 
   /**
    * Request and response metadata
@@ -622,7 +622,7 @@ export interface WebhookTestResponse {
   /**
    * Error information
    */
-  error?: APIError | null;
+  error?: ErrorDetail | null;
 
   /**
    * Request and response metadata
@@ -898,9 +898,9 @@ export interface WebhookToggleStatusParams {
 
 export declare namespace Webhooks {
   export {
-    type APIError as APIError,
     type APIMeta as APIMeta,
     type APIResponseWebhook as APIResponseWebhook,
+    type ErrorDetail as ErrorDetail,
     type MutationRequest as MutationRequest,
     type PaginationMeta as PaginationMeta,
     type WebhookResponse as WebhookResponse,

@@ -1,6 +1,5 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-import { APIError } from './core/error';
 import type { RequestInit, RequestInfo, BodyInit } from './internal/builtin-types';
 import type { HTTPMethod, PromiseOrValue, MergedRequestInit, FinalizedRequestInit } from './internal/types';
 import { uuid4 } from './internal/utils/uuid';
@@ -72,9 +71,9 @@ import {
   Users,
 } from './resources/users';
 import {
-  APIError,
   APIMeta,
   APIResponseWebhook,
+  ErrorDetail,
   MutationRequest,
   PaginationMeta,
   WebhookCreateParams,
@@ -865,9 +864,9 @@ export declare namespace SentDm {
 
   export {
     Webhooks as Webhooks,
-    type APIError as APIError,
     type APIMeta as APIMeta,
     type APIResponseWebhook as APIResponseWebhook,
+    type ErrorDetail as ErrorDetail,
     type MutationRequest as MutationRequest,
     type PaginationMeta as PaginationMeta,
     type WebhookResponse as WebhookResponse,

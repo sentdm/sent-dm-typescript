@@ -153,7 +153,7 @@ export interface APIResponseTemplate {
   /**
    * Error information
    */
-  error?: WebhooksAPI.APIError | null;
+  error?: WebhooksAPI.ErrorDetail | null;
 
   /**
    * Request and response metadata
@@ -431,7 +431,7 @@ export interface TemplateListResponse {
   /**
    * Error information
    */
-  error?: WebhooksAPI.APIError | null;
+  error?: WebhooksAPI.ErrorDetail | null;
 
   /**
    * Request and response metadata

@@ -323,12 +323,12 @@ export interface APIResponseWebhook {
   data?: WebhookResponse | null;
 
   /**
-   * Error details (null if successful)
+   * Error information
    */
   error?: APIError | null;
 
   /**
-   * Metadata about the request and response
+   * Request and response metadata
    */
   meta?: APIMeta;
 
@@ -351,7 +351,7 @@ export interface MutationRequestBase {
  */
 export interface PaginationMeta {
   /**
-   * Cursor-based pagination (optional)
+   * Cursor-based pagination pointers
    */
   cursors?: PaginationMeta.Cursors | null;
 
@@ -383,7 +383,7 @@ export interface PaginationMeta {
 
 export namespace PaginationMeta {
   /**
-   * Cursor-based pagination (optional)
+   * Cursor-based pagination pointers
    */
   export interface Cursors {
     /**
@@ -436,12 +436,12 @@ export interface WebhookListResponse {
   data?: WebhookListResponse.Data | null;
 
   /**
-   * Error details (null if successful)
+   * Error information
    */
   error?: APIError | null;
 
   /**
-   * Metadata about the request and response
+   * Request and response metadata
    */
   meta?: APIMeta;
 
@@ -475,12 +475,12 @@ export interface WebhookListEventTypesResponse {
   data?: WebhookListEventTypesResponse.Data | null;
 
   /**
-   * Error details (null if successful)
+   * Error information
    */
   error?: APIError | null;
 
   /**
-   * Metadata about the request and response
+   * Request and response metadata
    */
   meta?: APIMeta;
 
@@ -521,12 +521,12 @@ export interface WebhookListEventsResponse {
   data?: WebhookListEventsResponse.Data | null;
 
   /**
-   * Error details (null if successful)
+   * Error information
    */
   error?: APIError | null;
 
   /**
-   * Metadata about the request and response
+   * Request and response metadata
    */
   meta?: APIMeta;
 
@@ -586,12 +586,12 @@ export interface WebhookRotateSecretResponse {
   data?: WebhookRotateSecretResponse.Data | null;
 
   /**
-   * Error details (null if successful)
+   * Error information
    */
   error?: APIError | null;
 
   /**
-   * Metadata about the request and response
+   * Request and response metadata
    */
   meta?: APIMeta;
 
@@ -620,12 +620,12 @@ export interface WebhookTestResponse {
   data?: WebhookTestResponse.Data | null;
 
   /**
-   * Error details (null if successful)
+   * Error information
    */
   error?: APIError | null;
 
   /**
-   * Metadata about the request and response
+   * Request and response metadata
    */
   meta?: APIMeta;
 

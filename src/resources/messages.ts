@@ -96,17 +96,17 @@ export class Messages extends APIResource {
  */
 export interface MessageRetrieveActivitiesResponse {
   /**
-   * The response data (null if error)
+   * Response for GET /messages/{id}/activities
    */
   data?: MessageRetrieveActivitiesResponse.Data | null;
 
   /**
-   * Error details (null if successful)
+   * Error information
    */
   error?: WebhooksAPI.APIError | null;
 
   /**
-   * Metadata about the request and response
+   * Request and response metadata
    */
   meta?: WebhooksAPI.APIMeta;
 
@@ -118,7 +118,7 @@ export interface MessageRetrieveActivitiesResponse {
 
 export namespace MessageRetrieveActivitiesResponse {
   /**
-   * The response data (null if error)
+   * Response for GET /messages/{id}/activities
    */
   export interface Data {
     /**
@@ -172,17 +172,17 @@ export namespace MessageRetrieveActivitiesResponse {
  */
 export interface MessageRetrieveStatusResponse {
   /**
-   * The response data (null if error)
+   * Message response for v3 API — same shape as v2 with snake_case JSON conventions
    */
   data?: MessageRetrieveStatusResponse.Data | null;
 
   /**
-   * Error details (null if successful)
+   * Error information
    */
   error?: WebhooksAPI.APIError | null;
 
   /**
-   * Metadata about the request and response
+   * Request and response metadata
    */
   meta?: WebhooksAPI.APIMeta;
 
@@ -194,7 +194,7 @@ export interface MessageRetrieveStatusResponse {
 
 export namespace MessageRetrieveStatusResponse {
   /**
-   * The response data (null if error)
+   * Message response for v3 API — same shape as v2 with snake_case JSON conventions
    */
   export interface Data {
     id?: string;
@@ -275,17 +275,17 @@ export namespace MessageRetrieveStatusResponse {
  */
 export interface MessageSendResponse {
   /**
-   * The response data (null if error)
+   * Response for the multi-recipient send message endpoint
    */
   data?: MessageSendResponse.Data | null;
 
   /**
-   * Error details (null if successful)
+   * Error information
    */
   error?: WebhooksAPI.APIError | null;
 
   /**
-   * Metadata about the request and response
+   * Request and response metadata
    */
   meta?: WebhooksAPI.APIMeta;
 
@@ -297,7 +297,7 @@ export interface MessageSendResponse {
 
 export namespace MessageSendResponse {
   /**
-   * The response data (null if error)
+   * Response for the multi-recipient send message endpoint
    */
   export interface Data {
     /**
@@ -381,7 +381,8 @@ export interface MessageSendParams {
   sandbox?: boolean;
 
   /**
-   * Body param: Template reference (by id or name, with optional parameters)
+   * Body param: SDK-style template reference: resolve by ID or by name, with
+   * optional parameters.
    */
   template?: MessageSendParams.Template;
 
@@ -408,7 +409,8 @@ export interface MessageSendParams {
 
 export namespace MessageSendParams {
   /**
-   * Template reference (by id or name, with optional parameters)
+   * SDK-style template reference: resolve by ID or by name, with optional
+   * parameters.
    */
   export interface Template {
     /**

@@ -260,17 +260,17 @@ export class Profiles extends APIResource {
  */
 export interface APIResponseOfProfileDetail {
   /**
-   * The response data (null if error)
+   * Detailed profile response for v3 API
    */
   data?: ProfileDetail | null;
 
   /**
-   * Error details (null if successful)
+   * Error information
    */
   error?: WebhooksAPI.APIError | null;
 
   /**
-   * Metadata about the request and response
+   * Request and response metadata
    */
   meta?: WebhooksAPI.APIMeta;
 
@@ -312,17 +312,17 @@ export interface BillingContactInfo {
  */
 export interface BrandsBrandData {
   /**
-   * Compliance and TCR-related information
+   * Compliance and TCR information for brand registration
    */
   compliance: SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfo;
 
   /**
-   * Contact information for the brand
+   * Contact information for brand KYC
    */
   contact: SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandContactInfo;
 
   /**
-   * Business details and address information
+   * Business details and address for brand KYC
    */
   business?: SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandBusinessInfo | null;
 }
@@ -385,8 +385,7 @@ export interface ProfileDetail {
   allow_template_sharing?: boolean;
 
   /**
-   * Billing contact for this profile. Present when billing_model is "profile" or
-   * "profile_and_organization".
+   * Billing contact info returned in profile responses
    */
   billing_contact?: ProfileDetail.BillingContact | null;
 
@@ -396,8 +395,8 @@ export interface ProfileDetail {
   billing_model?: string;
 
   /**
-   * Brand associated with this profile. Null if no brand has been configured yet.
-   * Includes KYC information and TCR registration status.
+   * Brand response with nested contact, business, and compliance sections — mirrors
+   * the request structure.
    */
   brand?: ProfileDetail.Brand | null;
 
@@ -496,8 +495,7 @@ export interface ProfileDetail {
 
 export namespace ProfileDetail {
   /**
-   * Billing contact for this profile. Present when billing_model is "profile" or
-   * "profile_and_organization".
+   * Billing contact info returned in profile responses
    */
   export interface BillingContact {
     address?: string | null;
@@ -510,8 +508,8 @@ export namespace ProfileDetail {
   }
 
   /**
-   * Brand associated with this profile. Null if no brand has been configured yet.
-   * Includes KYC information and TCR registration status.
+   * Brand response with nested contact, business, and compliance sections — mirrors
+   * the request structure.
    */
   export interface Brand {
     /**
@@ -544,9 +542,6 @@ export namespace ProfileDetail {
      */
     csp_id?: string | null;
 
-    /**
-     * TCR brand identity verification status
-     */
     identity_status?: 'SELF_DECLARED' | 'UNVERIFIED' | 'VERIFIED' | 'VETTED_VERIFIED' | null;
 
     /**
@@ -554,9 +549,6 @@ export namespace ProfileDetail {
      */
     is_inherited?: boolean;
 
-    /**
-     * TCR brand status
-     */
     status?: 'ACTIVE' | 'INACTIVE' | 'SUSPENDED' | null;
 
     /**
@@ -650,9 +642,6 @@ export namespace ProfileDetail {
      * Compliance and TCR-related information
      */
     export interface Compliance {
-      /**
-       * Brand relationship level with TCR
-       */
       brand_relationship?: ProfilesAPI.TcrBrandRelationship | null;
 
       /**
@@ -685,9 +674,6 @@ export namespace ProfileDetail {
        */
       primary_use_case?: string | null;
 
-      /**
-       * Business vertical/industry category
-       */
       vertical?: ProfilesAPI.TcrVertical | null;
     }
 
@@ -747,9 +733,6 @@ export interface SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBran
    */
   countryOfRegistration?: string | null;
 
-  /**
-   * Business entity type
-   */
   entityType?: 'PRIVATE_PROFIT' | 'PUBLIC_PROFIT' | 'NON_PROFIT' | 'SOLE_PROPRIETOR' | 'GOVERNMENT' | null;
 
   /**
@@ -792,14 +775,8 @@ export interface SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBran
  * Compliance and TCR information for brand registration
  */
 export interface SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfo {
-  /**
-   * Brand relationship level with TCR (required for TCR)
-   */
   brandRelationship: TcrBrandRelationship;
 
-  /**
-   * Business vertical/industry category (required for TCR)
-   */
   vertical: TcrVertical;
 
   /**
@@ -905,17 +882,17 @@ export type TcrVertical =
  */
 export interface ProfileListResponse {
   /**
-   * The response data (null if error)
+   * List of profiles response
    */
   data?: ProfileListResponse.Data | null;
 
   /**
-   * Error details (null if successful)
+   * Error information
    */
   error?: WebhooksAPI.APIError | null;
 
   /**
-   * Metadata about the request and response
+   * Request and response metadata
    */
   meta?: WebhooksAPI.APIMeta;
 
@@ -927,7 +904,7 @@ export interface ProfileListResponse {
 
 export namespace ProfileListResponse {
   /**
-   * The response data (null if error)
+   * List of profiles response
    */
   export interface Data {
     /**
@@ -951,9 +928,8 @@ export interface ProfileCreateParams {
   allow_template_sharing?: boolean;
 
   /**
-   * Body param: Billing contact for this profile. Required when billing_model is
-   * "profile" or "profile_and_organization". Identifies who receives invoices and
-   * who is responsible for payment.
+   * Body param: Billing contact information for a profile. Required when
+   * billing_model is "profile" or "profile_and_organization".
    */
   billing_contact?: BillingContactInfo | null;
 
@@ -970,9 +946,8 @@ export interface ProfileCreateParams {
   billing_model?: string | null;
 
   /**
-   * Body param: Brand and KYC information for this profile (optional). When
-   * provided, creates the brand associated with this profile. Cannot be set when
-   * inherit_tcr_brand is true.
+   * Body param: Brand and KYC data grouped into contact, business, and compliance
+   * sections
    */
   brand?: BrandsBrandData | null;
 
@@ -1016,9 +991,9 @@ export interface ProfileCreateParams {
   name?: string;
 
   /**
-   * Body param: Payment card details for this profile (optional). Accepted when
-   * billing_model is "profile" or "profile_and_organization". Not persisted on our
-   * servers — forwarded to the payment processor.
+   * Body param: Payment card details for a profile. Accepted when billing_model is
+   * "profile" or "profile_and_organization". These details are not stored on our
+   * servers and will be forwarded to the payment processor.
    */
   payment_details?: PaymentDetails | null;
 
@@ -1036,11 +1011,11 @@ export interface ProfileCreateParams {
   short_name?: string | null;
 
   /**
-   * Body param: Direct WhatsApp Business Account credentials for this profile. When
-   * provided, the profile uses its own WhatsApp Business Account instead of
-   * inheriting from the organization. When omitted, the profile inherits the
-   * organization's WhatsApp Business Account (requires the organization to have
-   * completed WhatsApp Embedded Signup).
+   * Body param: Direct WhatsApp Business Account credentials for a profile. Use this
+   * when the profile should have its own WhatsApp Business Account instead of
+   * inheriting from the organization. Credentials must be obtained from Meta
+   * Business Manager by creating a System User with whatsapp_business_messaging and
+   * whatsapp_business_management scopes.
    */
   whatsapp_business_account?: ProfileCreateParams.WhatsappBusinessAccount | null;
 
@@ -1061,11 +1036,11 @@ export interface ProfileCreateParams {
 
 export namespace ProfileCreateParams {
   /**
-   * Direct WhatsApp Business Account credentials for this profile. When provided,
-   * the profile uses its own WhatsApp Business Account instead of inheriting from
-   * the organization. When omitted, the profile inherits the organization's WhatsApp
-   * Business Account (requires the organization to have completed WhatsApp Embedded
-   * Signup).
+   * Direct WhatsApp Business Account credentials for a profile. Use this when the
+   * profile should have its own WhatsApp Business Account instead of inheriting from
+   * the organization. Credentials must be obtained from Meta Business Manager by
+   * creating a System User with whatsapp_business_messaging and
+   * whatsapp_business_management scopes.
    */
   export interface WhatsappBusinessAccount {
     /**
@@ -1115,10 +1090,8 @@ export interface ProfileUpdateParams {
   allow_template_sharing?: boolean | null;
 
   /**
-   * Body param: Billing contact for this profile. Required when billing_model is
-   * "profile" or "profile_and_organization" and no billing contact has been
-   * configured yet. Identifies who receives invoices and who is responsible for
-   * payment.
+   * Body param: Billing contact information for a profile. Required when
+   * billing_model is "profile" or "profile_and_organization".
    */
   billing_contact?: BillingContactInfo | null;
 
@@ -1135,10 +1108,8 @@ export interface ProfileUpdateParams {
   billing_model?: string | null;
 
   /**
-   * Body param: Brand and KYC information for this profile (optional). When
-   * provided, creates or updates the brand associated with this profile. Cannot be
-   * set when inherit_tcr_brand is true. Once a brand has been submitted to TCR it
-   * cannot be modified.
+   * Body param: Brand and KYC data grouped into contact, business, and compliance
+   * sections
    */
   brand?: BrandsBrandData | null;
 
@@ -1179,9 +1150,9 @@ export interface ProfileUpdateParams {
   name?: string | null;
 
   /**
-   * Body param: Payment card details for this profile (optional). Accepted when
-   * billing_model is "profile" or "profile_and_organization". Not persisted on our
-   * servers — forwarded to the payment processor.
+   * Body param: Payment card details for a profile. Accepted when billing_model is
+   * "profile" or "profile_and_organization". These details are not stored on our
+   * servers and will be forwarded to the payment processor.
    */
   payment_details?: PaymentDetails | null;
 

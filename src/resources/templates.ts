@@ -146,17 +146,17 @@ export class Templates extends APIResource {
  */
 export interface APIResponseTemplate {
   /**
-   * The response data (null if error)
+   * Template response for v3 API
    */
   data?: Template | null;
 
   /**
-   * Error details (null if successful)
+   * Error information
    */
   error?: WebhooksAPI.APIError | null;
 
   /**
-   * Metadata about the request and response
+   * Request and response metadata
    */
   meta?: WebhooksAPI.APIMeta;
 
@@ -361,13 +361,12 @@ export interface TemplateBodyContent {
  */
 export interface TemplateDefinition {
   /**
-   * Required template body with content for different channels (multi-channel,
-   * SMS-specific, or WhatsApp-specific)
+   * Body section of a message template with channel-specific content
    */
   body: SentDmServicesCommonContractsPocOsTemplateBody;
 
   /**
-   * Configuration specific to AUTHENTICATION category templates (optional)
+   * Configuration for AUTHENTICATION category templates
    */
   authenticationConfig?: SentDmServicesCommonContractsPocOsAuthenticationConfig | null;
 
@@ -382,12 +381,12 @@ export interface TemplateDefinition {
   definitionVersion?: string | null;
 
   /**
-   * Optional template footer with optional variables
+   * Footer section of a message template
    */
   footer?: SentDmServicesCommonContractsPocOsTemplateFooter | null;
 
   /**
-   * Optional template header with optional variables
+   * Header section of a message template
    */
   header?: SentDmServicesCommonContractsPocOsTemplateHeader | null;
 }
@@ -425,17 +424,17 @@ export namespace TemplateVariable {
  */
 export interface TemplateListResponse {
   /**
-   * The response data (null if error)
+   * Paginated list of templates
    */
   data?: TemplateListResponse.Data | null;
 
   /**
-   * Error details (null if successful)
+   * Error information
    */
   error?: WebhooksAPI.APIError | null;
 
   /**
-   * Metadata about the request and response
+   * Request and response metadata
    */
   meta?: WebhooksAPI.APIMeta;
 
@@ -447,11 +446,11 @@ export interface TemplateListResponse {
 
 export namespace TemplateListResponse {
   /**
-   * The response data (null if error)
+   * Paginated list of templates
    */
   export interface Data {
     /**
-     * Pagination metadata
+     * Pagination metadata for list responses
      */
     pagination?: WebhooksAPI.PaginationMeta;
 
@@ -475,7 +474,8 @@ export interface TemplateCreateParams {
   creation_source?: string | null;
 
   /**
-   * Body param: Template definition including header, body, footer, and buttons
+   * Body param: Complete definition of a message template including header, body,
+   * footer, and buttons
    */
   definition?: TemplateDefinition;
 
@@ -527,7 +527,8 @@ export interface TemplateUpdateParams {
   category?: string | null;
 
   /**
-   * Body param: Template definition including header, body, footer, and buttons
+   * Body param: Complete definition of a message template including header, body,
+   * footer, and buttons
    */
   definition?: TemplateDefinition | null;
 

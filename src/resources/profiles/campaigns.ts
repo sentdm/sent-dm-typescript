@@ -174,12 +174,12 @@ export interface APIResponseOfTcrCampaignWithUseCases {
   data?: TcrCampaignWithUseCases | null;
 
   /**
-   * Error details (null if successful)
+   * Error information
    */
   error?: WebhooksAPI.APIError | null;
 
   /**
-   * Metadata about the request and response
+   * Request and response metadata
    */
   meta?: WebhooksAPI.APIMeta;
 
@@ -278,9 +278,6 @@ export type MessagingUseCaseUs =
  * Campaign use case with sample messages
  */
 export interface SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData {
-  /**
-   * US messaging use case category
-   */
   messagingUseCaseUs: MessagingUseCaseUs;
 
   /**
@@ -369,12 +366,12 @@ export interface CampaignListResponse {
   data?: Array<TcrCampaignWithUseCases> | null;
 
   /**
-   * Error details (null if successful)
+   * Error information
    */
   error?: WebhooksAPI.APIError | null;
 
   /**
-   * Metadata about the request and response
+   * Request and response metadata
    */
   meta?: WebhooksAPI.APIMeta;
 
@@ -386,7 +383,7 @@ export interface CampaignListResponse {
 
 export interface CampaignCreateParams {
   /**
-   * Body param: Campaign data
+   * Body param: Campaign data for create or update operation
    */
   campaign: CampaignData;
 
@@ -418,7 +415,7 @@ export interface CampaignUpdateParams {
   profileId: string;
 
   /**
-   * Body param: Campaign data
+   * Body param: Campaign data for create or update operation
    */
   campaign: CampaignData;
 

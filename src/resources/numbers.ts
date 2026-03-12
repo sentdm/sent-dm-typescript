@@ -49,12 +49,12 @@ export interface NumberLookupResponse {
   data?: NumberLookupResponse.Data | null;
 
   /**
-   * Error details (null if successful)
+   * Error information
    */
   error?: WebhooksAPI.APIError | null;
 
   /**
-   * Metadata about the request and response
+   * Request and response metadata
    */
   meta?: WebhooksAPI.APIMeta;
 

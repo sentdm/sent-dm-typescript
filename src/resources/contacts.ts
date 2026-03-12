@@ -147,17 +147,17 @@ export class Contacts extends APIResource {
  */
 export interface APIResponseOfContact {
   /**
-   * The response data (null if error)
+   * Contact response for v3 API Uses snake_case for JSON property names
    */
   data?: ContactResponse | null;
 
   /**
-   * Error details (null if successful)
+   * Error information
    */
   error?: WebhooksAPI.APIError | null;
 
   /**
-   * Metadata about the request and response
+   * Request and response metadata
    */
   meta?: WebhooksAPI.APIMeta;
 
@@ -247,17 +247,17 @@ export interface ContactResponse {
  */
 export interface ContactListResponse {
   /**
-   * The response data (null if error)
+   * Paginated list of contacts response
    */
   data?: ContactListResponse.Data | null;
 
   /**
-   * Error details (null if successful)
+   * Error information
    */
   error?: WebhooksAPI.APIError | null;
 
   /**
-   * Metadata about the request and response
+   * Request and response metadata
    */
   meta?: WebhooksAPI.APIMeta;
 
@@ -269,7 +269,7 @@ export interface ContactListResponse {
 
 export namespace ContactListResponse {
   /**
-   * The response data (null if error)
+   * Paginated list of contacts response
    */
   export interface Data {
     /**
@@ -278,7 +278,7 @@ export namespace ContactListResponse {
     contacts?: Array<ContactsAPI.ContactResponse>;
 
     /**
-     * Pagination metadata
+     * Pagination metadata for list responses
      */
     pagination?: WebhooksAPI.PaginationMeta;
   }

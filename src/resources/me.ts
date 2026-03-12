@@ -88,17 +88,19 @@ export interface ProfileSettings {
  */
 export interface MeRetrieveResponse {
   /**
-   * The response data (null if error)
+   * Account response for GET /v3/me endpoint. Returns organization (with profiles),
+   * user (standalone), or profile (child of an organization) data depending on the
+   * API key type. Always includes messaging channel configuration.
    */
   data?: MeRetrieveResponse.Data | null;
 
   /**
-   * Error details (null if successful)
+   * Error information
    */
   error?: WebhooksAPI.APIError | null;
 
   /**
-   * Metadata about the request and response
+   * Request and response metadata
    */
   meta?: WebhooksAPI.APIMeta;
 
@@ -110,7 +112,9 @@ export interface MeRetrieveResponse {
 
 export namespace MeRetrieveResponse {
   /**
-   * The response data (null if error)
+   * Account response for GET /v3/me endpoint. Returns organization (with profiles),
+   * user (standalone), or profile (child of an organization) data depending on the
+   * API key type. Always includes messaging channel configuration.
    */
   export interface Data {
     /**
@@ -119,7 +123,8 @@ export namespace MeRetrieveResponse {
     id?: string;
 
     /**
-     * Messaging channel configuration
+     * Messaging channel configuration. All three channels are always present. Each
+     * channel has a "configured" flag; configured channels expose additional details.
      */
     channels?: Data.Channels;
 
@@ -160,7 +165,7 @@ export namespace MeRetrieveResponse {
     profiles?: Array<Data.Profile>;
 
     /**
-     * Profile settings (only for profile type)
+     * Profile configuration settings
      */
     settings?: MeAPI.ProfileSettings | null;
 
@@ -184,28 +189,30 @@ export namespace MeRetrieveResponse {
 
   export namespace Data {
     /**
-     * Messaging channel configuration
+     * Messaging channel configuration. All three channels are always present. Each
+     * channel has a "configured" flag; configured channels expose additional details.
      */
     export interface Channels {
       /**
-       * RCS channel (provider: vibes)
+       * RCS channel configuration. When configured, includes the RCS phone number.
        */
       rcs?: Channels.Rcs;
 
       /**
-       * SMS channel (providers: telnyx, sinch)
+       * SMS channel configuration. When configured, includes the sending phone number.
        */
       sms?: Channels.SMS;
 
       /**
-       * WhatsApp Business channel (provider: meta)
+       * WhatsApp Business channel configuration. When configured, includes the WhatsApp
+       * phone number and business name.
        */
       whatsapp?: Channels.Whatsapp;
     }
 
     export namespace Channels {
       /**
-       * RCS channel (provider: vibes)
+       * RCS channel configuration. When configured, includes the RCS phone number.
        */
       export interface Rcs {
         /**
@@ -220,7 +227,7 @@ export namespace MeRetrieveResponse {
       }
 
       /**
-       * SMS channel (providers: telnyx, sinch)
+       * SMS channel configuration. When configured, includes the sending phone number.
        */
       export interface SMS {
         /**
@@ -235,7 +242,8 @@ export namespace MeRetrieveResponse {
       }
 
       /**
-       * WhatsApp Business channel (provider: meta)
+       * WhatsApp Business channel configuration. When configured, includes the WhatsApp
+       * phone number and business name.
        */
       export interface Whatsapp {
         /**

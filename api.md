@@ -48,6 +48,12 @@ Methods:
 Types:
 
 - <code><a href="./src/resources/templates.ts">APIResponseTemplate</a></code>
+- <code><a href="./src/resources/templates.ts">SentDmServicesCommonContractsPocOsAuthenticationConfig</a></code>
+- <code><a href="./src/resources/templates.ts">SentDmServicesCommonContractsPocOsTemplateBody</a></code>
+- <code><a href="./src/resources/templates.ts">SentDmServicesCommonContractsPocOsTemplateButton</a></code>
+- <code><a href="./src/resources/templates.ts">SentDmServicesCommonContractsPocOsTemplateButtonProps</a></code>
+- <code><a href="./src/resources/templates.ts">SentDmServicesCommonContractsPocOsTemplateFooter</a></code>
+- <code><a href="./src/resources/templates.ts">SentDmServicesCommonContractsPocOsTemplateHeader</a></code>
 - <code><a href="./src/resources/templates.ts">Template</a></code>
 - <code><a href="./src/resources/templates.ts">TemplateBodyContent</a></code>
 - <code><a href="./src/resources/templates.ts">TemplateDefinition</a></code>
@@ -72,6 +78,9 @@ Types:
 - <code><a href="./src/resources/profiles/profiles.ts">DestinationCountry</a></code>
 - <code><a href="./src/resources/profiles/profiles.ts">PaymentDetails</a></code>
 - <code><a href="./src/resources/profiles/profiles.ts">ProfileDetail</a></code>
+- <code><a href="./src/resources/profiles/profiles.ts">SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandBusinessInfo</a></code>
+- <code><a href="./src/resources/profiles/profiles.ts">SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfo</a></code>
+- <code><a href="./src/resources/profiles/profiles.ts">SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandContactInfo</a></code>
 - <code><a href="./src/resources/profiles/profiles.ts">TcrBrandRelationship</a></code>
 - <code><a href="./src/resources/profiles/profiles.ts">TcrVertical</a></code>
 - <code><a href="./src/resources/profiles/profiles.ts">ProfileListResponse</a></code>
@@ -94,6 +103,7 @@ Types:
 - <code><a href="./src/resources/profiles/campaigns.ts">BaseDto</a></code>
 - <code><a href="./src/resources/profiles/campaigns.ts">CampaignData</a></code>
 - <code><a href="./src/resources/profiles/campaigns.ts">MessagingUseCaseUs</a></code>
+- <code><a href="./src/resources/profiles/campaigns.ts">SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData</a></code>
 - <code><a href="./src/resources/profiles/campaigns.ts">TcrCampaignWithUseCases</a></code>
 - <code><a href="./src/resources/profiles/campaigns.ts">CampaignListResponse</a></code>
 

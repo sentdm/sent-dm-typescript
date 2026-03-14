@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.16.2 (2026-03-14)
+
+Full Changelog: [v0.16.1...v0.16.2](https://github.com/sentdm/sent-dm-typescript/compare/v0.16.1...v0.16.2)
+
+### Chores
+
+* **internal:** make generated MCP servers compatible with Cloudflare worker environments ([902cc44](https://github.com/sentdm/sent-dm-typescript/commit/902cc448d7413dd5fdc15dba6756f005b3abb801))
+* **internal:** support x-stainless-mcp-client-envs header in MCP servers ([aeea711](https://github.com/sentdm/sent-dm-typescript/commit/aeea711ab475da79edfec61f6972db7e9bac4d89))
+* **internal:** update lockfile ([588523b](https://github.com/sentdm/sent-dm-typescript/commit/588523b9b0d8220bd2f9e75c13612b9a92bd2346))
+
 ## 0.16.1 (2026-03-12)
 
 Full Changelog: [v0.16.0...v0.16.1](https://github.com/sentdm/sent-dm-typescript/compare/v0.16.0...v0.16.1)

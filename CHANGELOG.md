@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.17.0 (2026-03-16)
+
+Full Changelog: [v0.16.2...v0.17.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.16.2...v0.17.0)
+
+### Features
+
+* **api:** api update ([d52ba8d](https://github.com/sentdm/sent-dm-typescript/commit/d52ba8d6e8f0a8f3a5df1d2d312f9c3d7339ed9e))
+
 ## 0.16.2 (2026-03-14)
 
 Full Changelog: [v0.16.1...v0.16.2](https://github.com/sentdm/sent-dm-typescript/compare/v0.16.1...v0.16.2)

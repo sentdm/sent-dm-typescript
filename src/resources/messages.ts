@@ -301,11 +301,6 @@ export namespace MessageSendResponse {
    */
   export interface Data {
     /**
-     * Resolved template body text
-     */
-    body?: string | null;
-
-    /**
      * Per-recipient message results
      */
     recipients?: Array<Data.Recipient>;
@@ -331,6 +326,12 @@ export namespace MessageSendResponse {
      * Per-recipient result in the send message response
      */
     export interface Recipient {
+      /**
+       * Resolved template body text for this recipient's channel, or null for
+       * auto-detect
+       */
+      body?: string | null;
+
       /**
        * Channel this message will be sent on (e.g. "sms", "whatsapp"), or null for
        * auto-detect

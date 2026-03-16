@@ -1,7 +1,7 @@
 {
   "dxt_version": "0.2",
   "name": "@sentdm/sentdm-mcp",
-  "version": "0.16.2",
+  "version": "0.17.0",
   "description": "The official MCP Server for the Sent Dm API",
   "author": {
     "name": "Sent Dm",

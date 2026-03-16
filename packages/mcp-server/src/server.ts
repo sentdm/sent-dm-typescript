@@ -20,7 +20,7 @@ export const newMcpServer = async (stainlessApiKey: string | undefined) =>
   new McpServer(
     {
       name: 'sentdm_sentdm_api',
-      version: '0.16.2',
+      version: '0.17.0',
     },
     {
       instructions: await getInstructions(stainlessApiKey),

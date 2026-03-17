@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.17.1 (2026-03-17)
+
+Full Changelog: [v0.17.0...v0.17.1](https://github.com/sentdm/sent-dm-typescript/compare/v0.17.0...v0.17.1)
+
+### Chores
+
+* **internal:** support x-stainless-mcp-client-permissions headers in MCP servers ([80a9eda](https://github.com/sentdm/sent-dm-typescript/commit/80a9edab0f34fda72586a9652512dc72579e778c))
+* **internal:** tweak CI branches ([737937d](https://github.com/sentdm/sent-dm-typescript/commit/737937d15486fa8dfc34e73ae84ff1450488caf7))
+
 ## 0.17.0 (2026-03-16)
 
 Full Changelog: [v0.16.2...v0.17.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.16.2...v0.17.0)

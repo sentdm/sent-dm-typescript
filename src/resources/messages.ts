@@ -155,7 +155,7 @@ export namespace MessageRetrieveActivitiesResponse {
       price?: string | null;
 
       /**
-       * Activity status (e.g., ACCEPTED, PROCESSED, SENT, DELIVERED, FAILED)
+       * Activity status (e.g., QUEUED, PROCESSED, SENT, DELIVERED, FAILED)
        */
       status?: string;
 
@@ -306,7 +306,8 @@ export namespace MessageSendResponse {
     recipients?: Array<Data.Recipient>;
 
     /**
-     * Overall request status (e.g. "accepted")
+     * Overall request status: "QUEUED" when the batch has been accepted and published
+     * to Kafka.
      */
     status?: string;
 

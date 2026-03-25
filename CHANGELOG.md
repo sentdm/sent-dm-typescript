@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.18.0 (2026-03-25)
+
+Full Changelog: [v0.17.1...v0.18.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.17.1...v0.18.0)
+
+### Features
+
+* **api:** api update ([ca0958d](https://github.com/sentdm/sent-dm-typescript/commit/ca0958d963b85856d1448b3552169d2ba2a5c74b))
+* **api:** api update ([452fe4c](https://github.com/sentdm/sent-dm-typescript/commit/452fe4c5ad3aa7514f5124c1fac8b06c923727fe))
+
+
+### Chores
+
+* **ci:** skip lint on metadata-only changes ([6e0ffbf](https://github.com/sentdm/sent-dm-typescript/commit/6e0ffbff9a307ea07ea0ebd5c78d9efbcc933a23))
+* **internal:** fix MCP server TS errors that occur with required client options ([e0dc6aa](https://github.com/sentdm/sent-dm-typescript/commit/e0dc6aa273c7a68b16f183dc7ebdf7dc2f92f31a))
+* **internal:** update gitignore ([c1c15a0](https://github.com/sentdm/sent-dm-typescript/commit/c1c15a0fa9d86241723090d414775bc229a17095))
+
 ## 0.17.1 (2026-03-17)
 
 Full Changelog: [v0.17.0...v0.17.1](https://github.com/sentdm/sent-dm-typescript/compare/v0.17.0...v0.17.1)

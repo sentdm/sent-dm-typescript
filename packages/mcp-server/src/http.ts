@@ -23,7 +23,8 @@ const newServer = async ({
   res: express.Response;
 }): Promise<McpServer | null> => {
   const stainlessApiKey = getStainlessApiKey(req, mcpOptions);
-  const server = await newMcpServer(stainlessApiKey);
+  const customInstructionsPath = mcpOptions.customInstructionsPath;
+  const server = await newMcpServer({ stainlessApiKey, customInstructionsPath });
 
   const authOptions = parseClientAuthHeaders(req, false);
 
@@ -77,6 +78,11 @@ const newServer = async ({
     },
     stainlessApiKey: stainlessApiKey,
     upstreamClientEnvs,
+    mcpSessionId: (req as any).mcpSessionId,
+    mcpClientInfo:
+      typeof req.body?.params?.clientInfo?.name === 'string' ?
+        { name: req.body.params.clientInfo.name, version: String(req.body.params.clientInfo.version ?? '') }
+      : undefined,
   });
 
   return server;
@@ -134,6 +140,17 @@ export const streamableHTTPApp = ({
   const app = express();
   app.set('query parser', 'extended');
   app.use(express.json());
+  app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
+    const existing = req.headers['mcp-session-id'];
+    const sessionId = (Array.isArray(existing) ? existing[0] : existing) || crypto.randomUUID();
+    (req as any).mcpSessionId = sessionId;
+    const origWriteHead = res.writeHead.bind(res);
+    res.writeHead = function (statusCode: number, ...rest: any[]) {
+      res.setHeader('mcp-session-id', sessionId);
+      return origWriteHead(statusCode, ...rest);
+    } as typeof res.writeHead;
+    next();
+  });
   app.use(
     pinoHttp({
       logger: getLogger(),

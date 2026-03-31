@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-import { SentDmError } from '../../core/error';
+import { SentError } from '../../core/error';
 
 /**
  * Basic re-implementation of `qs.stringify` for primitive types.
@@ -15,7 +15,7 @@ export function stringifyQuery(query: object | Record<string, unknown>) {
       if (value === null) {
         return `${encodeURIComponent(key)}=`;
       }
-      throw new SentDmError(
+      throw new SentError(
         `Cannot stringify type ${typeof value}; Expected string, number, boolean, or null. If you need to pass nested query parameters, you can manually encode them, e.g. { query: { 'foo[key1]': value1, 'foo[key2]': value2 } }, and please open a GitHub issue requesting better support for your use case.`,
       );
     })

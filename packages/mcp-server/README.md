@@ -1,4 +1,4 @@
-# Sent Dm TypeScript MCP Server
+# Sent TypeScript MCP Server
 
 It is generated with [Stainless](https://www.stainless.com/).
 

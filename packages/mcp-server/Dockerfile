@@ -1,4 +1,4 @@
-# Dockerfile for Sent Dm MCP Server
+# Dockerfile for Sent MCP Server
 #
 # This Dockerfile builds a Docker image for the MCP Server.
 #

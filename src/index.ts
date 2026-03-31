@@ -1,12 +1,12 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-export { SentDm as default } from './client';
+export { Sent as default } from './client';
 
 export { type Uploadable, toFile } from './core/uploads';
 export { APIPromise } from './core/api-promise';
-export { SentDm, type ClientOptions } from './client';
+export { Sent, type ClientOptions } from './client';
 export {
-  SentDmError,
+  SentError,
   APIError,
   APIConnectionError,
   APIConnectionTimeoutError,

@@ -8,7 +8,7 @@ import {
   SetLevelRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
 import { ClientOptions } from '@sentdm/sentdm';
-import SentDm from '@sentdm/sentdm';
+import Sent from '@sentdm/sentdm';
 import { codeTool } from './code-tool';
 import docsSearchTool from './docs-search-tool';
 import { setLocalSearch } from './docs-search-tool';
@@ -72,15 +72,15 @@ export async function initMcpServer(params: {
     setLocalSearch(localSearch);
   }
 
-  let _client: SentDm | undefined;
+  let _client: Sent | undefined;
   let _clientError: Error | undefined;
   let _logLevel: 'debug' | 'info' | 'warn' | 'error' | 'off' | undefined;
 
-  const getClient = (): SentDm => {
+  const getClient = (): Sent => {
     if (_clientError) throw _clientError;
     if (!_client) {
       try {
-        _client = new SentDm({
+        _client = new Sent({
           logger,
           ...params.clientOptions,
           defaultHeaders: {
@@ -115,7 +115,7 @@ export async function initMcpServer(params: {
       throw new Error(`Unknown tool: ${name}`);
     }
 
-    let client: SentDm;
+    let client: Sent;
     try {
       client = getClient();
     } catch (error) {

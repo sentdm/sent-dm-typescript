@@ -1,11 +1,11 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-import type { SentDm } from '../client';
+import type { Sent } from '../client';
 
 export abstract class APIResource {
-  protected _client: SentDm;
+  protected _client: Sent;
 
-  constructor(client: SentDm) {
+  constructor(client: Sent) {
     this._client = client;
   }
 }

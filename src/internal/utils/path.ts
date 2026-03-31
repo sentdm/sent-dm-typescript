@@ -1,4 +1,4 @@
-import { SentDmError } from '../../core/error';
+import { SentError } from '../../core/error';
 
 /**
  * Percent-encode everything that isn't safe to have in a path without encoding safe chars.
@@ -72,7 +72,7 @@ export const createPathTagFunction = (pathEncoder = encodeURIPath) =>
         return acc + spaces + arrows;
       }, '');
 
-      throw new SentDmError(
+      throw new SentError(
         `Path parameters result in path with invalid segments:\n${invalidSegments
           .map((e) => e.error)
           .join('\n')}\n${path}\n${underline}`,

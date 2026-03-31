@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.18.1 (2026-03-31)
+
+Full Changelog: [v0.18.0...v0.18.1](https://github.com/sentdm/sent-dm-typescript/compare/v0.18.0...v0.18.1)
+
+### Chores
+
+* **ci:** escape input path in publish-npm workflow ([4e32c06](https://github.com/sentdm/sent-dm-typescript/commit/4e32c061a88409089b3cd0835167dfbb48d4b4fe))
+* **internal:** improve local docs search for MCP servers ([211fb8f](https://github.com/sentdm/sent-dm-typescript/commit/211fb8fbd03d60867ed61b9eb4c59c030aaf5d62))
+* **internal:** support custom-instructions-path flag in MCP servers ([4492438](https://github.com/sentdm/sent-dm-typescript/commit/4492438a1db461c4db3512d0e109f6e1bed6bbc8))
+* **internal:** support local docs search in MCP servers ([991f2a9](https://github.com/sentdm/sent-dm-typescript/commit/991f2a9b0a93682b0e452180590d4446f66ca526))
+* **mcp-server:** add support for session id, forward client info ([3b2a0fe](https://github.com/sentdm/sent-dm-typescript/commit/3b2a0fef9bd9e189fad05b20af775d1fb0fa24e0))
+
 ## 0.18.0 (2026-03-25)
 
 Full Changelog: [v0.17.1...v0.18.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.17.1...v0.18.0)

@@ -5,7 +5,7 @@ import util from 'node:util';
 import Fuse from 'fuse.js';
 import ts from 'typescript';
 import { WorkerOutput } from './code-tool-types';
-import { SentDm, ClientOptions } from '@sentdm/sentdm';
+import { Sent, ClientOptions } from '@sentdm/sentdm';
 
 function getRunFunctionSource(code: string): {
   type: 'declaration' | 'expression';
@@ -53,10 +53,10 @@ function getRunFunctionSource(code: string): {
 function getTSDiagnostics(code: string): string[] {
   const functionSource = getRunFunctionSource(code)!;
   const codeWithImport = [
-    'import { SentDm } from "@sentdm/sentdm";',
+    'import { Sent } from "@sentdm/sentdm";',
     functionSource.type === 'declaration' ?
-      `async function run(${functionSource.client}: SentDm)`
-    : `const run: (${functionSource.client}: SentDm) => Promise<unknown> =`,
+      `async function run(${functionSource.client}: Sent)`
+    : `const run: (${functionSource.client}: Sent) => Promise<unknown> =`,
     functionSource.code,
   ].join('\n');
   const sourcePath = path.resolve('code.ts');
@@ -270,7 +270,7 @@ const fetch = async (req: Request): Promise<Response> => {
     );
   }
 
-  const client = new SentDm({
+  const client = new Sent({
     ...opts,
   });
 

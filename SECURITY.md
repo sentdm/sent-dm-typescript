@@ -16,9 +16,9 @@ before making any information public.
 ## Reporting Non-SDK Related Security Issues
 
 If you encounter security issues that are not directly related to SDKs but pertain to the services
-or products provided by Sent Dm, please follow the respective company's security reporting guidelines.
+or products provided by Sent, please follow the respective company's security reporting guidelines.
 
-### Sent Dm Terms and Policies
+### Sent Terms and Policies
 
 Please contact support@sent.dm for any questions or concerns regarding the security of our services.
 

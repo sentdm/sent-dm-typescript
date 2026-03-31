@@ -17,7 +17,7 @@ import { SdkMethod } from './methods';
 import { McpCodeExecutionMode } from './options';
 import { ClientOptions } from '@sentdm/sentdm';
 
-const prompt = `Runs JavaScript code to interact with the Sent Dm API.
+const prompt = `Runs JavaScript code to interact with the Sent API.
 
 You are a skilled TypeScript programmer writing code to interface with the service.
 Define an async function named "run" that takes a single parameter of an initialized SDK client and it will be run.
@@ -157,7 +157,7 @@ const remoteStainlessHandler = async ({
       readEnv('SENT_DM_API_KEY') ?? client.apiKey,
       'set SENT_DM_API_KEY environment variable or provide apiKey client option',
     ),
-    SENT_DM_BASE_URL: readEnv('SENT_DM_BASE_URL') ?? client.baseURL ?? undefined,
+    SENT_BASE_URL: readEnv('SENT_BASE_URL') ?? client.baseURL ?? undefined,
   };
   // Merge any upstream client envs from the request header, with upstream values taking precedence.
   const mergedClientEnvs = { ...localClientEnvs, ...reqContext.upstreamClientEnvs };

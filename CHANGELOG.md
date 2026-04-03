@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.19.1 (2026-04-03)
+
+Full Changelog: [v0.19.0...v0.19.1](https://github.com/sentdm/sent-dm-typescript/compare/v0.19.0...v0.19.1)
+
+### Bug Fixes
+
+* **internal:** gitignore generated `oidc` dir ([c8f0200](https://github.com/sentdm/sent-dm-typescript/commit/c8f020059f4cf6b6ddc1555b29ecc782c1ce0092))
+
+
+### Chores
+
+* **internal:** codegen related update ([6c69ecb](https://github.com/sentdm/sent-dm-typescript/commit/6c69ecb22b10db44c9c9a43a1928768010e309fb))
+* **internal:** improve local docs search for MCP servers ([a75c88c](https://github.com/sentdm/sent-dm-typescript/commit/a75c88cfe379085a7b6aa496c06227185c0d240b))
+* **internal:** support type annotations when running MCP in local execution mode ([105ae3e](https://github.com/sentdm/sent-dm-typescript/commit/105ae3ea70b453481352e8ebe1263cd99aaac4da))
+* **mcp-server:** log client info ([37f1113](https://github.com/sentdm/sent-dm-typescript/commit/37f11130bc267515b44cc185763243eecc8cef2b))
+
 ## 0.19.0 (2026-03-31)
 
 Full Changelog: [v0.18.1...v0.19.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.18.1...v0.19.0)

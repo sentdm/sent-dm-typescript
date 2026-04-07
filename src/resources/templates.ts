@@ -210,45 +210,45 @@ export interface SentDmServicesCommonContractsPocOsTemplateBody {
  */
 export interface SentDmServicesCommonContractsPocOsTemplateButton {
   /**
-   * The unique identifier of the button (1-based index)
-   */
-  id?: number;
-
-  /**
    * Properties specific to the button type
    */
-  props?: SentDmServicesCommonContractsPocOsTemplateButtonProps;
+  props: SentDmServicesCommonContractsPocOsTemplateButtonProps;
 
   /**
    * The type of button (e.g., QUICK_REPLY, URL, PHONE_NUMBER, VOICE_CALL, COPY_CODE)
    */
-  type?: string;
+  type: string;
+
+  /**
+   * The unique identifier of the button (1-based index)
+   */
+  id?: number;
 }
 
 export interface SentDmServicesCommonContractsPocOsTemplateButtonProps {
-  activeFor?: number | null;
+  activeFor: number;
+
+  countryCode: string;
+
+  offerCode: string;
+
+  phoneNumber: string;
+
+  quickReplyType: string;
+
+  text: string;
+
+  url: string;
+
+  urlType: string;
 
   autofillText?: string | null;
-
-  countryCode?: string | null;
-
-  offerCode?: string | null;
 
   otpType?: string | null;
 
   packageName?: string | null;
 
-  phoneNumber?: string | null;
-
-  quickReplyType?: string | null;
-
   signatureHash?: string | null;
-
-  text?: string | null;
-
-  url?: string | null;
-
-  urlType?: string | null;
 }
 
 /**
@@ -258,7 +258,7 @@ export interface SentDmServicesCommonContractsPocOsTemplateFooter {
   /**
    * The footer template text with optional variable placeholders
    */
-  template?: string;
+  template: string;
 
   /**
    * The type of footer (typically "text")
@@ -279,7 +279,7 @@ export interface SentDmServicesCommonContractsPocOsTemplateHeader {
    * The header template text with optional variable placeholders (e.g., "Welcome to
    * {{0:variable}}")
    */
-  template?: string;
+  template: string;
 
   /**
    * The type of header (e.g., "text", "image", "video", "document")
@@ -348,7 +348,7 @@ export interface Template {
 }
 
 export interface TemplateBodyContent {
-  template?: string;
+  template: string;
 
   type?: string | null;
 
@@ -392,30 +392,30 @@ export interface TemplateDefinition {
 }
 
 export interface TemplateVariable {
+  name: string;
+
+  props: TemplateVariable.Props;
+
+  type: string;
+
   id?: number;
-
-  name?: string;
-
-  props?: TemplateVariable.Props;
-
-  type?: string;
 }
 
 export namespace TemplateVariable {
   export interface Props {
-    alt?: string | null;
+    mediaType: string;
 
-    mediaType?: string | null;
+    sample: string;
+
+    url: string;
+
+    variableType: string;
+
+    alt?: string | null;
 
     regex?: string | null;
 
-    sample?: string | null;
-
     shortUrl?: string | null;
-
-    url?: string | null;
-
-    variableType?: string | null;
   }
 }
 

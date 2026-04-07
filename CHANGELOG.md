@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.20.0 (2026-04-07)
+
+Full Changelog: [v0.19.1...v0.20.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.19.1...v0.20.0)
+
+### Features
+
+* **api:** api update ([295325f](https://github.com/sentdm/sent-dm-typescript/commit/295325f3d87332f995869b4e1ab62936f8931017))
+
+
+### Chores
+
+* **internal:** fix MCP server import ordering ([b4b5942](https://github.com/sentdm/sent-dm-typescript/commit/b4b59427e3fe189462e9f42a26a413933781580d))
+
 ## 0.19.1 (2026-04-03)
 
 Full Changelog: [v0.19.0...v0.19.1](https://github.com/sentdm/sent-dm-typescript/compare/v0.19.0...v0.19.1)

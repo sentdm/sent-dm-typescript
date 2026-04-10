@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.20.1 (2026-04-10)
+
+Full Changelog: [v0.20.0...v0.20.1](https://github.com/sentdm/sent-dm-typescript/compare/v0.20.0...v0.20.1)
+
+### Chores
+
+* **internal:** codegen related update ([964f64e](https://github.com/sentdm/sent-dm-typescript/commit/964f64e5b832d6c8a86cd8a0dafa2b02bf4c6829))
+* **internal:** show error causes in MCP servers when running in local mode ([3c87485](https://github.com/sentdm/sent-dm-typescript/commit/3c874859e4f1b2cac43cceb3cf1e7796c9b02ec5))
+* **mcp-server:** increase local docs search result count from 5 to 10 ([53a736b](https://github.com/sentdm/sent-dm-typescript/commit/53a736b38b7e6533ae99b54b0a10a9033a7dfe3d))
+
 ## 0.20.0 (2026-04-07)
 
 Full Changelog: [v0.19.1...v0.20.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.19.1...v0.20.0)

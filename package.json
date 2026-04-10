@@ -1,6 +1,6 @@
 {
   "name": "@sentdm/sentdm",
-  "version": "0.20.0",
+  "version": "0.20.1",
   "description": "The official TypeScript library for the Sent API",
   "author": "Sent <support@sent.dm>",
   "types": "dist/index.d.ts",

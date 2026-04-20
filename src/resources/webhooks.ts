@@ -409,6 +409,8 @@ export interface WebhookResponse {
 
   endpoint_url?: string;
 
+  event_filters?: { [key: string]: Array<string> } | null;
+
   event_types?: Array<string>;
 
   is_active?: boolean;
@@ -504,9 +506,13 @@ export namespace WebhookListEventTypesResponse {
 
       display_name?: string;
 
+      event_type?: string | null;
+
       is_active?: boolean;
 
       name?: string;
+
+      sub_types?: Array<unknown> | null;
     }
   }
 }
@@ -660,6 +666,11 @@ export interface WebhookCreateParams {
   /**
    * Body param
    */
+  event_filters?: { [key: string]: Array<string> } | null;
+
+  /**
+   * Body param
+   */
   event_types?: Array<string>;
 
   /**
@@ -711,6 +722,11 @@ export interface WebhookUpdateParams {
    * Body param
    */
   endpoint_url?: string;
+
+  /**
+   * Body param
+   */
+  event_filters?: { [key: string]: Array<string> } | null;
 
   /**
    * Body param

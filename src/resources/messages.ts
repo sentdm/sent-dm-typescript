@@ -149,6 +149,13 @@ export namespace MessageRetrieveActivitiesResponse {
       description?: string;
 
       /**
+       * Sender phone number for this activity (the customer's sending number for
+       * outbound, the external sender for inbound). Null when not reported by the
+       * provider.
+       */
+      from?: string | null;
+
+      /**
        * Channel cost for this activity (e.g., SMS/WhatsApp provider cost), formatted to
        * 4 decimal places.
        */

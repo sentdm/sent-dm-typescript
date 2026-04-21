@@ -216,6 +216,8 @@ export namespace MessageRetrieveStatusResponse {
 
     customer_id?: string;
 
+    direction?: string;
+
     events?: Array<Data.Event> | null;
 
     /**
@@ -234,11 +236,11 @@ export namespace MessageRetrieveStatusResponse {
 
     status?: string;
 
-    template_category?: string;
+    template_category?: string | null;
 
     template_id?: string | null;
 
-    template_name?: string;
+    template_name?: string | null;
   }
 
   export namespace Data {

@@ -182,6 +182,14 @@ export interface ContactResponse {
   available_channels?: string;
 
   /**
+   * Consent status by channel. Keys: "sms", "whatsapp". Values: "opted_in",
+   * "opted_out". All channels will have the same status because consent is global
+   * across channels. A STOP on any channel opts out of all channels; a START opts in
+   * to all.
+   */
+  channel_consent?: { [key: string]: string } | null;
+
+  /**
    * Country calling code (e.g., 1 for US/Canada)
    */
   country_code?: string;
@@ -320,6 +328,16 @@ export interface ContactRetrieveParams {
 }
 
 export interface ContactUpdateParams {
+  /**
+   * Body param: Consent status by channel. Keys: "sms", "whatsapp". Values:
+   * "opted_in", "opted_out". All entries must have the same status — mixed values
+   * (e.g., sms: opted_out + whatsapp: opted_in) are rejected with 400. The provided
+   * status is applied to ALL channels regardless of which keys are specified,
+   * because consent is global across channels. When provided, takes precedence over
+   * the opt_out field.
+   */
+  channel_consent?: { [key: string]: string } | null;
+
   /**
    * Body param: Default messaging channel: "sms" or "whatsapp"
    */

@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.22.1 (2026-04-24)
+
+Full Changelog: [v0.22.0...v0.22.1](https://github.com/sentdm/sent-dm-typescript/compare/v0.22.0...v0.22.1)
+
+### Chores
+
+* **internal:** more robust bootstrap script ([045c910](https://github.com/sentdm/sent-dm-typescript/commit/045c910c9dcbabedcb6e22a8879dc7a38398ebd3))
+* **internal:** update docs ordering ([6ed7c2f](https://github.com/sentdm/sent-dm-typescript/commit/6ed7c2f9ebe0d1f273ff3024a0efa8068e92adc3))
+
 ## 0.22.0 (2026-04-21)
 
 Full Changelog: [v0.21.0...v0.22.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.21.0...v0.22.0)

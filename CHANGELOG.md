@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.22.2 (2026-04-26)
+
+Full Changelog: [v0.22.1...v0.22.2](https://github.com/sentdm/sent-dm-typescript/compare/v0.22.1...v0.22.2)
+
+### Chores
+
+* restructure docs search code ([ccf1aba](https://github.com/sentdm/sent-dm-typescript/commit/ccf1aba6bdb0dc814ef8191fbc2ff0a6f3fe5c82))
+
 ## 0.22.1 (2026-04-24)
 
 Full Changelog: [v0.22.0...v0.22.1](https://github.com/sentdm/sent-dm-typescript/compare/v0.22.0...v0.22.1)

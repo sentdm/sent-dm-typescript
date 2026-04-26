@@ -74,44 +74,44 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## create\n\n`client.webhooks.create(display_name?: string, endpoint_url?: string, event_filters?: object, event_types?: string[], retry_count?: number, sandbox?: boolean, timeout_seconds?: number, Idempotency-Key?: string, x-profile-id?: string): { data?: webhook_response; error?: error_detail; meta?: api_meta; success?: boolean; }`\n\n**post** `/v3/webhooks`\n\nCreates a new webhook endpoint for the authenticated customer.\n\n### Parameters\n\n- `display_name?: string`\n\n- `endpoint_url?: string`\n\n- `event_filters?: object`\n\n- `event_types?: string[]`\n\n- `retry_count?: number`\n\n- `sandbox?: boolean`\n  Sandbox flag - when true, the operation is simulated without side effects\nUseful for testing integrations without actual execution\n\n- `timeout_seconds?: number`\n\n- `Idempotency-Key?: string`\n\n- `x-profile-id?: string`\n\n### Returns\n\n- `{ data?: { id?: string; consecutive_failures?: number; created_at?: string; display_name?: string; endpoint_url?: string; event_filters?: object; event_types?: string[]; is_active?: boolean; last_delivery_attempt_at?: string; last_successful_delivery_at?: string; retry_count?: number; signing_secret?: string; timeout_seconds?: number; updated_at?: string; }; error?: { code?: string; details?: object; doc_url?: string; message?: string; }; meta?: { request_id?: string; timestamp?: string; version?: string; }; success?: boolean; }`\n  Standard API response envelope for all v3 endpoints\n\n  - `data?: { id?: string; consecutive_failures?: number; created_at?: string; display_name?: string; endpoint_url?: string; event_filters?: object; event_types?: string[]; is_active?: boolean; last_delivery_attempt_at?: string; last_successful_delivery_at?: string; retry_count?: number; signing_secret?: string; timeout_seconds?: number; updated_at?: string; }`\n  - `error?: { code?: string; details?: object; doc_url?: string; message?: string; }`\n  - `meta?: { request_id?: string; timestamp?: string; version?: string; }`\n  - `success?: boolean`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nconst apiResponseWebhook = await client.webhooks.create();\n\nconsole.log(apiResponseWebhook);\n```",
     perLanguage: {
-      csharp: {
-        method: 'Webhooks.Create',
+      typescript: {
+        method: 'client.webhooks.create',
         example:
-          'WebhookCreateParams parameters = new();\n\nvar apiResponseWebhook = await client.Webhooks.Create(parameters);\n\nConsole.WriteLine(apiResponseWebhook);',
-      },
-      go: {
-        method: 'client.Webhooks.New',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tapiResponseWebhook, err := client.Webhooks.New(context.TODO(), sentdm.WebhookNewParams{})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", apiResponseWebhook.Data)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://api.sent.dm/v3/webhooks \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "display_name": "Order Notifications",\n          "endpoint_url": "https://example.com/webhooks/orders",\n          "event_filters": {\n            "message": [\n              "delivered",\n              "failed"\n            ]\n          },\n          "event_types": [\n            "message",\n            "templates"\n          ],\n          "retry_count": 3,\n          "timeout_seconds": 30\n        }\'',
-      },
-      java: {
-        method: 'webhooks().create',
-        example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.webhooks.ApiResponseWebhook;\nimport dm.sent.models.webhooks.WebhookCreateParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        ApiResponseWebhook apiResponseWebhook = client.webhooks().create();\n    }\n}',
-      },
-      php: {
-        method: 'webhooks->create',
-        example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$apiResponseWebhook = $client->webhooks->create(\n  displayName: 'Order Notifications',\n  endpointURL: 'https://example.com/webhooks/orders',\n  eventFilters: ['message' => ['delivered', 'failed']],\n  eventTypes: ['message', 'templates'],\n  retryCount: 3,\n  sandbox: false,\n  timeoutSeconds: 30,\n  idempotencyKey: 'req_abc123_retry1',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($apiResponseWebhook);",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst apiResponseWebhook = await client.webhooks.create();\n\nconsole.log(apiResponseWebhook.data);",
       },
       python: {
         method: 'webhooks.create',
         example:
           'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\napi_response_webhook = client.webhooks.create()\nprint(api_response_webhook.data)',
       },
+      java: {
+        method: 'webhooks().create',
+        example:
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.webhooks.ApiResponseWebhook;\nimport dm.sent.models.webhooks.WebhookCreateParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        ApiResponseWebhook apiResponseWebhook = client.webhooks().create();\n    }\n}',
+      },
+      go: {
+        method: 'client.Webhooks.New',
+        example:
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tapiResponseWebhook, err := client.Webhooks.New(context.TODO(), sentdm.WebhookNewParams{})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", apiResponseWebhook.Data)\n}\n',
+      },
       ruby: {
         method: 'webhooks.create',
         example:
           'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\napi_response_webhook = sent.webhooks.create\n\nputs(api_response_webhook)',
       },
-      typescript: {
-        method: 'client.webhooks.create',
+      php: {
+        method: 'webhooks->create',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst apiResponseWebhook = await client.webhooks.create();\n\nconsole.log(apiResponseWebhook.data);",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$apiResponseWebhook = $client->webhooks->create(\n  displayName: 'Order Notifications',\n  endpointURL: 'https://example.com/webhooks/orders',\n  eventFilters: ['message' => ['delivered', 'failed']],\n  eventTypes: ['message', 'templates'],\n  retryCount: 3,\n  sandbox: false,\n  timeoutSeconds: 30,\n  idempotencyKey: 'req_abc123_retry1',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($apiResponseWebhook);",
+      },
+      csharp: {
+        method: 'Webhooks.Create',
+        example:
+          'WebhookCreateParams parameters = new();\n\nvar apiResponseWebhook = await client.Webhooks.Create(parameters);\n\nConsole.WriteLine(apiResponseWebhook);',
+      },
+      http: {
+        example:
+          'curl https://api.sent.dm/v3/webhooks \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "display_name": "Order Notifications",\n          "endpoint_url": "https://example.com/webhooks/orders",\n          "event_filters": {\n            "message": [\n              "delivered",\n              "failed"\n            ]\n          },\n          "event_types": [\n            "message",\n            "templates"\n          ],\n          "retry_count": 3,\n          "timeout_seconds": 30\n        }\'',
       },
     },
   },
@@ -135,43 +135,43 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## list\n\n`client.webhooks.list(page: number, page_size: number, is_active?: boolean, search?: string, x-profile-id?: string): { data?: object; error?: error_detail; meta?: api_meta; success?: boolean; }`\n\n**get** `/v3/webhooks`\n\nRetrieves a paginated list of webhooks for the authenticated customer.\n\n### Parameters\n\n- `page: number`\n\n- `page_size: number`\n\n- `is_active?: boolean`\n\n- `search?: string`\n\n- `x-profile-id?: string`\n\n### Returns\n\n- `{ data?: { pagination?: object; webhooks?: object[]; }; error?: { code?: string; details?: object; doc_url?: string; message?: string; }; meta?: { request_id?: string; timestamp?: string; version?: string; }; success?: boolean; }`\n  Standard API response envelope for all v3 endpoints\n\n  - `data?: { pagination?: { cursors?: { after?: string; before?: string; }; has_more?: boolean; page?: number; page_size?: number; total_count?: number; total_pages?: number; }; webhooks?: { id?: string; consecutive_failures?: number; created_at?: string; display_name?: string; endpoint_url?: string; event_filters?: object; event_types?: string[]; is_active?: boolean; last_delivery_attempt_at?: string; last_successful_delivery_at?: string; retry_count?: number; signing_secret?: string; timeout_seconds?: number; updated_at?: string; }[]; }`\n  - `error?: { code?: string; details?: object; doc_url?: string; message?: string; }`\n  - `meta?: { request_id?: string; timestamp?: string; version?: string; }`\n  - `success?: boolean`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nconst webhooks = await client.webhooks.list({ page: 0, page_size: 0 });\n\nconsole.log(webhooks);\n```",
     perLanguage: {
-      csharp: {
-        method: 'Webhooks.List',
+      typescript: {
+        method: 'client.webhooks.list',
         example:
-          'WebhookListParams parameters = new()\n{\n    Page = 0,\n    PageSize = 0,\n};\n\nvar webhooks = await client.Webhooks.List(parameters);\n\nConsole.WriteLine(webhooks);',
-      },
-      go: {
-        method: 'client.Webhooks.List',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\twebhooks, err := client.Webhooks.List(context.TODO(), sentdm.WebhookListParams{\n\t\tPage:     0,\n\t\tPageSize: 0,\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", webhooks.Data)\n}\n',
-      },
-      http: {
-        example: 'curl https://api.sent.dm/v3/webhooks \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
-      },
-      java: {
-        method: 'webhooks().list',
-        example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.webhooks.WebhookListParams;\nimport dm.sent.models.webhooks.WebhookListResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        WebhookListParams params = WebhookListParams.builder()\n            .page(0)\n            .pageSize(0)\n            .build();\n        WebhookListResponse webhooks = client.webhooks().list(params);\n    }\n}',
-      },
-      php: {
-        method: 'webhooks->list',
-        example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$webhooks = $client->webhooks->list(\n  page: 0,\n  pageSize: 0,\n  isActive: true,\n  search: 'search',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($webhooks);",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst webhooks = await client.webhooks.list({ page: 0, page_size: 0 });\n\nconsole.log(webhooks.data);",
       },
       python: {
         method: 'webhooks.list',
         example:
           'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\nwebhooks = client.webhooks.list(\n    page=0,\n    page_size=0,\n)\nprint(webhooks.data)',
       },
+      java: {
+        method: 'webhooks().list',
+        example:
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.webhooks.WebhookListParams;\nimport dm.sent.models.webhooks.WebhookListResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        WebhookListParams params = WebhookListParams.builder()\n            .page(0)\n            .pageSize(0)\n            .build();\n        WebhookListResponse webhooks = client.webhooks().list(params);\n    }\n}',
+      },
+      go: {
+        method: 'client.Webhooks.List',
+        example:
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\twebhooks, err := client.Webhooks.List(context.TODO(), sentdm.WebhookListParams{\n\t\tPage:     0,\n\t\tPageSize: 0,\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", webhooks.Data)\n}\n',
+      },
       ruby: {
         method: 'webhooks.list',
         example:
           'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\nwebhooks = sent.webhooks.list(page: 0, page_size: 0)\n\nputs(webhooks)',
       },
-      typescript: {
-        method: 'client.webhooks.list',
+      php: {
+        method: 'webhooks->list',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst webhooks = await client.webhooks.list({ page: 0, page_size: 0 });\n\nconsole.log(webhooks.data);",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$webhooks = $client->webhooks->list(\n  page: 0,\n  pageSize: 0,\n  isActive: true,\n  search: 'search',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($webhooks);",
+      },
+      csharp: {
+        method: 'Webhooks.List',
+        example:
+          'WebhookListParams parameters = new()\n{\n    Page = 0,\n    PageSize = 0,\n};\n\nvar webhooks = await client.Webhooks.List(parameters);\n\nConsole.WriteLine(webhooks);',
+      },
+      http: {
+        example: 'curl https://api.sent.dm/v3/webhooks \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
       },
     },
   },
@@ -187,44 +187,44 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## delete\n\n`client.webhooks.delete(id: string, x-profile-id?: string): void`\n\n**delete** `/v3/webhooks/{id}`\n\nDeletes a webhook for the authenticated customer.\n\n### Parameters\n\n- `id: string`\n\n- `x-profile-id?: string`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nawait client.webhooks.delete('d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8')\n```",
     perLanguage: {
-      csharp: {
-        method: 'Webhooks.Delete',
+      typescript: {
+        method: 'client.webhooks.delete',
         example:
-          'WebhookDeleteParams parameters = new()\n{\n    ID = "d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8"\n};\n\nawait client.Webhooks.Delete(parameters);',
-      },
-      go: {
-        method: 'client.Webhooks.Delete',
-        example:
-          'package main\n\nimport (\n\t"context"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\terr := client.Webhooks.Delete(\n\t\tcontext.TODO(),\n\t\t"d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8",\n\t\tsentdm.WebhookDeleteParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n}\n',
-      },
-      http: {
-        example:
-          'curl https://api.sent.dm/v3/webhooks/$ID \\\n    -X DELETE \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
-      },
-      java: {
-        method: 'webhooks().delete',
-        example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.webhooks.WebhookDeleteParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        client.webhooks().delete("d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8");\n    }\n}',
-      },
-      php: {
-        method: 'webhooks->delete',
-        example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$result = $client->webhooks->delete(\n  'd4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($result);",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nawait client.webhooks.delete('d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8');",
       },
       python: {
         method: 'webhooks.delete',
         example:
           'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\nclient.webhooks.delete(\n    id="d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8",\n)',
       },
+      java: {
+        method: 'webhooks().delete',
+        example:
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.webhooks.WebhookDeleteParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        client.webhooks().delete("d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8");\n    }\n}',
+      },
+      go: {
+        method: 'client.Webhooks.Delete',
+        example:
+          'package main\n\nimport (\n\t"context"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\terr := client.Webhooks.Delete(\n\t\tcontext.TODO(),\n\t\t"d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8",\n\t\tsentdm.WebhookDeleteParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n}\n',
+      },
       ruby: {
         method: 'webhooks.delete',
         example:
           'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\nresult = sent.webhooks.delete("d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8")\n\nputs(result)',
       },
-      typescript: {
-        method: 'client.webhooks.delete',
+      php: {
+        method: 'webhooks->delete',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nawait client.webhooks.delete('d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8');",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$result = $client->webhooks->delete(\n  'd4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($result);",
+      },
+      csharp: {
+        method: 'Webhooks.Delete',
+        example:
+          'WebhookDeleteParams parameters = new()\n{\n    ID = "d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8"\n};\n\nawait client.Webhooks.Delete(parameters);',
+      },
+      http: {
+        example:
+          'curl https://api.sent.dm/v3/webhooks/$ID \\\n    -X DELETE \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
       },
     },
   },
@@ -242,43 +242,43 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## retrieve\n\n`client.webhooks.retrieve(id: string, x-profile-id?: string): { data?: webhook_response; error?: error_detail; meta?: api_meta; success?: boolean; }`\n\n**get** `/v3/webhooks/{id}`\n\nRetrieves a single webhook by ID for the authenticated customer.\n\n### Parameters\n\n- `id: string`\n\n- `x-profile-id?: string`\n\n### Returns\n\n- `{ data?: { id?: string; consecutive_failures?: number; created_at?: string; display_name?: string; endpoint_url?: string; event_filters?: object; event_types?: string[]; is_active?: boolean; last_delivery_attempt_at?: string; last_successful_delivery_at?: string; retry_count?: number; signing_secret?: string; timeout_seconds?: number; updated_at?: string; }; error?: { code?: string; details?: object; doc_url?: string; message?: string; }; meta?: { request_id?: string; timestamp?: string; version?: string; }; success?: boolean; }`\n  Standard API response envelope for all v3 endpoints\n\n  - `data?: { id?: string; consecutive_failures?: number; created_at?: string; display_name?: string; endpoint_url?: string; event_filters?: object; event_types?: string[]; is_active?: boolean; last_delivery_attempt_at?: string; last_successful_delivery_at?: string; retry_count?: number; signing_secret?: string; timeout_seconds?: number; updated_at?: string; }`\n  - `error?: { code?: string; details?: object; doc_url?: string; message?: string; }`\n  - `meta?: { request_id?: string; timestamp?: string; version?: string; }`\n  - `success?: boolean`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nconst apiResponseWebhook = await client.webhooks.retrieve('d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8');\n\nconsole.log(apiResponseWebhook);\n```",
     perLanguage: {
-      csharp: {
-        method: 'Webhooks.Retrieve',
+      typescript: {
+        method: 'client.webhooks.retrieve',
         example:
-          'WebhookRetrieveParams parameters = new()\n{\n    ID = "d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8"\n};\n\nvar apiResponseWebhook = await client.Webhooks.Retrieve(parameters);\n\nConsole.WriteLine(apiResponseWebhook);',
-      },
-      go: {
-        method: 'client.Webhooks.Get',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tapiResponseWebhook, err := client.Webhooks.Get(\n\t\tcontext.TODO(),\n\t\t"d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8",\n\t\tsentdm.WebhookGetParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", apiResponseWebhook.Data)\n}\n',
-      },
-      http: {
-        example: 'curl https://api.sent.dm/v3/webhooks/$ID \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
-      },
-      java: {
-        method: 'webhooks().retrieve',
-        example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.webhooks.ApiResponseWebhook;\nimport dm.sent.models.webhooks.WebhookRetrieveParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        ApiResponseWebhook apiResponseWebhook = client.webhooks().retrieve("d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8");\n    }\n}',
-      },
-      php: {
-        method: 'webhooks->retrieve',
-        example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$apiResponseWebhook = $client->webhooks->retrieve(\n  'd4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($apiResponseWebhook);",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst apiResponseWebhook = await client.webhooks.retrieve('d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8');\n\nconsole.log(apiResponseWebhook.data);",
       },
       python: {
         method: 'webhooks.retrieve',
         example:
           'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\napi_response_webhook = client.webhooks.retrieve(\n    id="d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8",\n)\nprint(api_response_webhook.data)',
       },
+      java: {
+        method: 'webhooks().retrieve',
+        example:
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.webhooks.ApiResponseWebhook;\nimport dm.sent.models.webhooks.WebhookRetrieveParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        ApiResponseWebhook apiResponseWebhook = client.webhooks().retrieve("d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8");\n    }\n}',
+      },
+      go: {
+        method: 'client.Webhooks.Get',
+        example:
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tapiResponseWebhook, err := client.Webhooks.Get(\n\t\tcontext.TODO(),\n\t\t"d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8",\n\t\tsentdm.WebhookGetParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", apiResponseWebhook.Data)\n}\n',
+      },
       ruby: {
         method: 'webhooks.retrieve',
         example:
           'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\napi_response_webhook = sent.webhooks.retrieve("d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8")\n\nputs(api_response_webhook)',
       },
-      typescript: {
-        method: 'client.webhooks.retrieve',
+      php: {
+        method: 'webhooks->retrieve',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst apiResponseWebhook = await client.webhooks.retrieve('d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8');\n\nconsole.log(apiResponseWebhook.data);",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$apiResponseWebhook = $client->webhooks->retrieve(\n  'd4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($apiResponseWebhook);",
+      },
+      csharp: {
+        method: 'Webhooks.Retrieve',
+        example:
+          'WebhookRetrieveParams parameters = new()\n{\n    ID = "d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8"\n};\n\nvar apiResponseWebhook = await client.Webhooks.Retrieve(parameters);\n\nConsole.WriteLine(apiResponseWebhook);',
+      },
+      http: {
+        example: 'curl https://api.sent.dm/v3/webhooks/$ID \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
       },
     },
   },
@@ -307,44 +307,44 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## update\n\n`client.webhooks.update(id: string, display_name?: string, endpoint_url?: string, event_filters?: object, event_types?: string[], retry_count?: number, sandbox?: boolean, timeout_seconds?: number, Idempotency-Key?: string, x-profile-id?: string): { data?: webhook_response; error?: error_detail; meta?: api_meta; success?: boolean; }`\n\n**put** `/v3/webhooks/{id}`\n\nUpdates an existing webhook for the authenticated customer.\n\n### Parameters\n\n- `id: string`\n\n- `display_name?: string`\n\n- `endpoint_url?: string`\n\n- `event_filters?: object`\n\n- `event_types?: string[]`\n\n- `retry_count?: number`\n\n- `sandbox?: boolean`\n  Sandbox flag - when true, the operation is simulated without side effects\nUseful for testing integrations without actual execution\n\n- `timeout_seconds?: number`\n\n- `Idempotency-Key?: string`\n\n- `x-profile-id?: string`\n\n### Returns\n\n- `{ data?: { id?: string; consecutive_failures?: number; created_at?: string; display_name?: string; endpoint_url?: string; event_filters?: object; event_types?: string[]; is_active?: boolean; last_delivery_attempt_at?: string; last_successful_delivery_at?: string; retry_count?: number; signing_secret?: string; timeout_seconds?: number; updated_at?: string; }; error?: { code?: string; details?: object; doc_url?: string; message?: string; }; meta?: { request_id?: string; timestamp?: string; version?: string; }; success?: boolean; }`\n  Standard API response envelope for all v3 endpoints\n\n  - `data?: { id?: string; consecutive_failures?: number; created_at?: string; display_name?: string; endpoint_url?: string; event_filters?: object; event_types?: string[]; is_active?: boolean; last_delivery_attempt_at?: string; last_successful_delivery_at?: string; retry_count?: number; signing_secret?: string; timeout_seconds?: number; updated_at?: string; }`\n  - `error?: { code?: string; details?: object; doc_url?: string; message?: string; }`\n  - `meta?: { request_id?: string; timestamp?: string; version?: string; }`\n  - `success?: boolean`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nconst apiResponseWebhook = await client.webhooks.update('d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8');\n\nconsole.log(apiResponseWebhook);\n```",
     perLanguage: {
-      csharp: {
-        method: 'Webhooks.Update',
+      typescript: {
+        method: 'client.webhooks.update',
         example:
-          'WebhookUpdateParams parameters = new()\n{\n    ID = "d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8"\n};\n\nvar apiResponseWebhook = await client.Webhooks.Update(parameters);\n\nConsole.WriteLine(apiResponseWebhook);',
-      },
-      go: {
-        method: 'client.Webhooks.Update',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tapiResponseWebhook, err := client.Webhooks.Update(\n\t\tcontext.TODO(),\n\t\t"d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8",\n\t\tsentdm.WebhookUpdateParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", apiResponseWebhook.Data)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://api.sent.dm/v3/webhooks/$ID \\\n    -X PUT \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "display_name": "Updated Order Notifications",\n          "endpoint_url": "https://example.com/webhooks/orders-v2",\n          "event_filters": {\n            "message": [\n              "delivered",\n              "failed"\n            ]\n          },\n          "event_types": [\n            "message",\n            "templates"\n          ],\n          "retry_count": 5,\n          "timeout_seconds": 60\n        }\'',
-      },
-      java: {
-        method: 'webhooks().update',
-        example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.webhooks.ApiResponseWebhook;\nimport dm.sent.models.webhooks.WebhookUpdateParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        ApiResponseWebhook apiResponseWebhook = client.webhooks().update("d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8");\n    }\n}',
-      },
-      php: {
-        method: 'webhooks->update',
-        example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$apiResponseWebhook = $client->webhooks->update(\n  'd4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8',\n  displayName: 'Updated Order Notifications',\n  endpointURL: 'https://example.com/webhooks/orders-v2',\n  eventFilters: ['message' => ['delivered', 'failed']],\n  eventTypes: ['message', 'templates'],\n  retryCount: 5,\n  sandbox: false,\n  timeoutSeconds: 60,\n  idempotencyKey: 'req_abc123_retry1',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($apiResponseWebhook);",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst apiResponseWebhook = await client.webhooks.update('d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8');\n\nconsole.log(apiResponseWebhook.data);",
       },
       python: {
         method: 'webhooks.update',
         example:
           'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\napi_response_webhook = client.webhooks.update(\n    id="d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8",\n)\nprint(api_response_webhook.data)',
       },
+      java: {
+        method: 'webhooks().update',
+        example:
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.webhooks.ApiResponseWebhook;\nimport dm.sent.models.webhooks.WebhookUpdateParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        ApiResponseWebhook apiResponseWebhook = client.webhooks().update("d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8");\n    }\n}',
+      },
+      go: {
+        method: 'client.Webhooks.Update',
+        example:
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tapiResponseWebhook, err := client.Webhooks.Update(\n\t\tcontext.TODO(),\n\t\t"d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8",\n\t\tsentdm.WebhookUpdateParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", apiResponseWebhook.Data)\n}\n',
+      },
       ruby: {
         method: 'webhooks.update',
         example:
           'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\napi_response_webhook = sent.webhooks.update("d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8")\n\nputs(api_response_webhook)',
       },
-      typescript: {
-        method: 'client.webhooks.update',
+      php: {
+        method: 'webhooks->update',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst apiResponseWebhook = await client.webhooks.update('d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8');\n\nconsole.log(apiResponseWebhook.data);",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$apiResponseWebhook = $client->webhooks->update(\n  'd4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8',\n  displayName: 'Updated Order Notifications',\n  endpointURL: 'https://example.com/webhooks/orders-v2',\n  eventFilters: ['message' => ['delivered', 'failed']],\n  eventTypes: ['message', 'templates'],\n  retryCount: 5,\n  sandbox: false,\n  timeoutSeconds: 60,\n  idempotencyKey: 'req_abc123_retry1',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($apiResponseWebhook);",
+      },
+      csharp: {
+        method: 'Webhooks.Update',
+        example:
+          'WebhookUpdateParams parameters = new()\n{\n    ID = "d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8"\n};\n\nvar apiResponseWebhook = await client.Webhooks.Update(parameters);\n\nConsole.WriteLine(apiResponseWebhook);',
+      },
+      http: {
+        example:
+          'curl https://api.sent.dm/v3/webhooks/$ID \\\n    -X PUT \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "display_name": "Updated Order Notifications",\n          "endpoint_url": "https://example.com/webhooks/orders-v2",\n          "event_filters": {\n            "message": [\n              "delivered",\n              "failed"\n            ]\n          },\n          "event_types": [\n            "message",\n            "templates"\n          ],\n          "retry_count": 5,\n          "timeout_seconds": 60\n        }\'',
       },
     },
   },
@@ -368,43 +368,43 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## list_events\n\n`client.webhooks.listEvents(id: string, page: number, page_size: number, search?: string, x-profile-id?: string): { data?: object; error?: error_detail; meta?: api_meta; success?: boolean; }`\n\n**get** `/v3/webhooks/{id}/events`\n\nRetrieves a paginated list of delivery events for the specified webhook.\n\n### Parameters\n\n- `id: string`\n\n- `page: number`\n\n- `page_size: number`\n\n- `search?: string`\n\n- `x-profile-id?: string`\n\n### Returns\n\n- `{ data?: { events?: { id?: string; created_at?: string; delivery_attempts?: number; delivery_status?: string; error_message?: string; event_data?: object; event_type?: string; http_status_code?: number; processing_completed_at?: string; processing_started_at?: string; response_body?: string; }[]; pagination?: object; }; error?: { code?: string; details?: object; doc_url?: string; message?: string; }; meta?: { request_id?: string; timestamp?: string; version?: string; }; success?: boolean; }`\n  Standard API response envelope for all v3 endpoints\n\n  - `data?: { events?: { id?: string; created_at?: string; delivery_attempts?: number; delivery_status?: string; error_message?: string; event_data?: object; event_type?: string; http_status_code?: number; processing_completed_at?: string; processing_started_at?: string; response_body?: string; }[]; pagination?: { cursors?: { after?: string; before?: string; }; has_more?: boolean; page?: number; page_size?: number; total_count?: number; total_pages?: number; }; }`\n  - `error?: { code?: string; details?: object; doc_url?: string; message?: string; }`\n  - `meta?: { request_id?: string; timestamp?: string; version?: string; }`\n  - `success?: boolean`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nconst response = await client.webhooks.listEvents('d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8', { page: 0, page_size: 0 });\n\nconsole.log(response);\n```",
     perLanguage: {
-      csharp: {
-        method: 'Webhooks.ListEvents',
+      typescript: {
+        method: 'client.webhooks.listEvents',
         example:
-          'WebhookListEventsParams parameters = new()\n{\n    ID = "d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8",\n    Page = 0,\n    PageSize = 0,\n};\n\nvar response = await client.Webhooks.ListEvents(parameters);\n\nConsole.WriteLine(response);',
-      },
-      go: {
-        method: 'client.Webhooks.ListEvents',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tresponse, err := client.Webhooks.ListEvents(\n\t\tcontext.TODO(),\n\t\t"d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8",\n\t\tsentdm.WebhookListEventsParams{\n\t\t\tPage:     0,\n\t\t\tPageSize: 0,\n\t\t},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", response.Data)\n}\n',
-      },
-      http: {
-        example: 'curl https://api.sent.dm/v3/webhooks/$ID/events \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
-      },
-      java: {
-        method: 'webhooks().listEvents',
-        example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.webhooks.WebhookListEventsParams;\nimport dm.sent.models.webhooks.WebhookListEventsResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        WebhookListEventsParams params = WebhookListEventsParams.builder()\n            .id("d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8")\n            .page(0)\n            .pageSize(0)\n            .build();\n        WebhookListEventsResponse response = client.webhooks().listEvents(params);\n    }\n}',
-      },
-      php: {
-        method: 'webhooks->listEvents',
-        example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$response = $client->webhooks->listEvents(\n  'd4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8',\n  page: 0,\n  pageSize: 0,\n  search: 'search',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($response);",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst response = await client.webhooks.listEvents('d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8', {\n  page: 0,\n  page_size: 0,\n});\n\nconsole.log(response.data);",
       },
       python: {
         method: 'webhooks.list_events',
         example:
           'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\nresponse = client.webhooks.list_events(\n    id="d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8",\n    page=0,\n    page_size=0,\n)\nprint(response.data)',
       },
+      java: {
+        method: 'webhooks().listEvents',
+        example:
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.webhooks.WebhookListEventsParams;\nimport dm.sent.models.webhooks.WebhookListEventsResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        WebhookListEventsParams params = WebhookListEventsParams.builder()\n            .id("d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8")\n            .page(0)\n            .pageSize(0)\n            .build();\n        WebhookListEventsResponse response = client.webhooks().listEvents(params);\n    }\n}',
+      },
+      go: {
+        method: 'client.Webhooks.ListEvents',
+        example:
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tresponse, err := client.Webhooks.ListEvents(\n\t\tcontext.TODO(),\n\t\t"d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8",\n\t\tsentdm.WebhookListEventsParams{\n\t\t\tPage:     0,\n\t\t\tPageSize: 0,\n\t\t},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", response.Data)\n}\n',
+      },
       ruby: {
         method: 'webhooks.list_events',
         example:
           'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\nresponse = sent.webhooks.list_events("d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8", page: 0, page_size: 0)\n\nputs(response)',
       },
-      typescript: {
-        method: 'client.webhooks.listEvents',
+      php: {
+        method: 'webhooks->listEvents',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst response = await client.webhooks.listEvents('d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8', {\n  page: 0,\n  page_size: 0,\n});\n\nconsole.log(response.data);",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$response = $client->webhooks->listEvents(\n  'd4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8',\n  page: 0,\n  pageSize: 0,\n  search: 'search',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($response);",
+      },
+      csharp: {
+        method: 'Webhooks.ListEvents',
+        example:
+          'WebhookListEventsParams parameters = new()\n{\n    ID = "d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8",\n    Page = 0,\n    PageSize = 0,\n};\n\nvar response = await client.Webhooks.ListEvents(parameters);\n\nConsole.WriteLine(response);',
+      },
+      http: {
+        example: 'curl https://api.sent.dm/v3/webhooks/$ID/events \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
       },
     },
   },
@@ -422,43 +422,43 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## list_event_types\n\n`client.webhooks.listEventTypes(x-profile-id?: string): { data?: object; error?: error_detail; meta?: api_meta; success?: boolean; }`\n\n**get** `/v3/webhooks/event-types`\n\nRetrieves all available webhook event types that can be subscribed to.\n\n### Parameters\n\n- `x-profile-id?: string`\n\n### Returns\n\n- `{ data?: { event_types?: { description?: string; display_name?: string; event_type?: string; is_active?: boolean; name?: string; sub_types?: object[]; }[]; }; error?: { code?: string; details?: object; doc_url?: string; message?: string; }; meta?: { request_id?: string; timestamp?: string; version?: string; }; success?: boolean; }`\n  Standard API response envelope for all v3 endpoints\n\n  - `data?: { event_types?: { description?: string; display_name?: string; event_type?: string; is_active?: boolean; name?: string; sub_types?: object[]; }[]; }`\n  - `error?: { code?: string; details?: object; doc_url?: string; message?: string; }`\n  - `meta?: { request_id?: string; timestamp?: string; version?: string; }`\n  - `success?: boolean`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nconst response = await client.webhooks.listEventTypes();\n\nconsole.log(response);\n```",
     perLanguage: {
-      csharp: {
-        method: 'Webhooks.ListEventTypes',
+      typescript: {
+        method: 'client.webhooks.listEventTypes',
         example:
-          'WebhookListEventTypesParams parameters = new();\n\nvar response = await client.Webhooks.ListEventTypes(parameters);\n\nConsole.WriteLine(response);',
-      },
-      go: {
-        method: 'client.Webhooks.ListEventTypes',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tresponse, err := client.Webhooks.ListEventTypes(context.TODO(), sentdm.WebhookListEventTypesParams{})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", response.Data)\n}\n',
-      },
-      http: {
-        example: 'curl https://api.sent.dm/v3/webhooks/event-types \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
-      },
-      java: {
-        method: 'webhooks().listEventTypes',
-        example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.webhooks.WebhookListEventTypesParams;\nimport dm.sent.models.webhooks.WebhookListEventTypesResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        WebhookListEventTypesResponse response = client.webhooks().listEventTypes();\n    }\n}',
-      },
-      php: {
-        method: 'webhooks->listEventTypes',
-        example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$response = $client->webhooks->listEventTypes(\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e'\n);\n\nvar_dump($response);",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst response = await client.webhooks.listEventTypes();\n\nconsole.log(response.data);",
       },
       python: {
         method: 'webhooks.list_event_types',
         example:
           'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\nresponse = client.webhooks.list_event_types()\nprint(response.data)',
       },
+      java: {
+        method: 'webhooks().listEventTypes',
+        example:
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.webhooks.WebhookListEventTypesParams;\nimport dm.sent.models.webhooks.WebhookListEventTypesResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        WebhookListEventTypesResponse response = client.webhooks().listEventTypes();\n    }\n}',
+      },
+      go: {
+        method: 'client.Webhooks.ListEventTypes',
+        example:
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tresponse, err := client.Webhooks.ListEventTypes(context.TODO(), sentdm.WebhookListEventTypesParams{})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", response.Data)\n}\n',
+      },
       ruby: {
         method: 'webhooks.list_event_types',
         example:
           'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\nresponse = sent.webhooks.list_event_types\n\nputs(response)',
       },
-      typescript: {
-        method: 'client.webhooks.listEventTypes',
+      php: {
+        method: 'webhooks->listEventTypes',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst response = await client.webhooks.listEventTypes();\n\nconsole.log(response.data);",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$response = $client->webhooks->listEventTypes(\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e'\n);\n\nvar_dump($response);",
+      },
+      csharp: {
+        method: 'Webhooks.ListEventTypes',
+        example:
+          'WebhookListEventTypesParams parameters = new();\n\nvar response = await client.Webhooks.ListEventTypes(parameters);\n\nConsole.WriteLine(response);',
+      },
+      http: {
+        example: 'curl https://api.sent.dm/v3/webhooks/event-types \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
       },
     },
   },
@@ -482,44 +482,44 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## rotate_secret\n\n`client.webhooks.rotateSecret(id: string, body: { sandbox?: boolean; }, Idempotency-Key?: string, x-profile-id?: string): { data?: object; error?: error_detail; meta?: api_meta; success?: boolean; }`\n\n**post** `/v3/webhooks/{id}/rotate-secret`\n\nGenerates a new signing secret for the specified webhook. The old secret is immediately invalidated.\n\n### Parameters\n\n- `id: string`\n\n- `body: { sandbox?: boolean; }`\n\n- `Idempotency-Key?: string`\n\n- `x-profile-id?: string`\n\n### Returns\n\n- `{ data?: { signing_secret?: string; }; error?: { code?: string; details?: object; doc_url?: string; message?: string; }; meta?: { request_id?: string; timestamp?: string; version?: string; }; success?: boolean; }`\n  Standard API response envelope for all v3 endpoints\n\n  - `data?: { signing_secret?: string; }`\n  - `error?: { code?: string; details?: object; doc_url?: string; message?: string; }`\n  - `meta?: { request_id?: string; timestamp?: string; version?: string; }`\n  - `success?: boolean`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nconst response = await client.webhooks.rotateSecret('d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8', { body: {} });\n\nconsole.log(response);\n```",
     perLanguage: {
-      csharp: {
-        method: 'Webhooks.RotateSecret',
+      typescript: {
+        method: 'client.webhooks.rotateSecret',
         example:
-          'WebhookRotateSecretParams parameters = new()\n{\n    ID = "d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8",\n    Body = new() { Sandbox = false },\n};\n\nvar response = await client.Webhooks.RotateSecret(parameters);\n\nConsole.WriteLine(response);',
-      },
-      go: {
-        method: 'client.Webhooks.RotateSecret',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tresponse, err := client.Webhooks.RotateSecret(\n\t\tcontext.TODO(),\n\t\t"d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8",\n\t\tsentdm.WebhookRotateSecretParams{\n\t\t\tBody: sentdm.WebhookRotateSecretParamsBody{\n\t\t\t\tMutationRequestParam: sentdm.MutationRequestParam{},\n\t\t\t},\n\t\t},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", response.Data)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://api.sent.dm/v3/webhooks/$ID/rotate-secret \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "sandbox": false\n        }\'',
-      },
-      java: {
-        method: 'webhooks().rotateSecret',
-        example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.webhooks.WebhookRotateSecretParams;\nimport dm.sent.models.webhooks.WebhookRotateSecretResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        WebhookRotateSecretResponse response = client.webhooks().rotateSecret("d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8");\n    }\n}',
-      },
-      php: {
-        method: 'webhooks->rotateSecret',
-        example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$response = $client->webhooks->rotateSecret(\n  'd4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8',\n  body: ['sandbox' => false],\n  idempotencyKey: 'req_abc123_retry1',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($response);",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst response = await client.webhooks.rotateSecret('d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8', {\n  body: {},\n});\n\nconsole.log(response.data);",
       },
       python: {
         method: 'webhooks.rotate_secret',
         example:
           'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\nresponse = client.webhooks.rotate_secret(\n    id="d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8",\n    body={},\n)\nprint(response.data)',
       },
+      java: {
+        method: 'webhooks().rotateSecret',
+        example:
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.webhooks.WebhookRotateSecretParams;\nimport dm.sent.models.webhooks.WebhookRotateSecretResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        WebhookRotateSecretResponse response = client.webhooks().rotateSecret("d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8");\n    }\n}',
+      },
+      go: {
+        method: 'client.Webhooks.RotateSecret',
+        example:
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tresponse, err := client.Webhooks.RotateSecret(\n\t\tcontext.TODO(),\n\t\t"d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8",\n\t\tsentdm.WebhookRotateSecretParams{\n\t\t\tBody: sentdm.WebhookRotateSecretParamsBody{\n\t\t\t\tMutationRequestParam: sentdm.MutationRequestParam{},\n\t\t\t},\n\t\t},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", response.Data)\n}\n',
+      },
       ruby: {
         method: 'webhooks.rotate_secret',
         example:
           'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\nresponse = sent.webhooks.rotate_secret("d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8", body: {})\n\nputs(response)',
       },
-      typescript: {
-        method: 'client.webhooks.rotateSecret',
+      php: {
+        method: 'webhooks->rotateSecret',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst response = await client.webhooks.rotateSecret('d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8', {\n  body: {},\n});\n\nconsole.log(response.data);",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$response = $client->webhooks->rotateSecret(\n  'd4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8',\n  body: ['sandbox' => false],\n  idempotencyKey: 'req_abc123_retry1',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($response);",
+      },
+      csharp: {
+        method: 'Webhooks.RotateSecret',
+        example:
+          'WebhookRotateSecretParams parameters = new()\n{\n    ID = "d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8",\n    Body = new() { Sandbox = false },\n};\n\nvar response = await client.Webhooks.RotateSecret(parameters);\n\nConsole.WriteLine(response);',
+      },
+      http: {
+        example:
+          'curl https://api.sent.dm/v3/webhooks/$ID/rotate-secret \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "sandbox": false\n        }\'',
       },
     },
   },
@@ -543,44 +543,44 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## test\n\n`client.webhooks.test(id: string, event_type?: string, sandbox?: boolean, Idempotency-Key?: string, x-profile-id?: string): { data?: object; error?: error_detail; meta?: api_meta; success?: boolean; }`\n\n**post** `/v3/webhooks/{id}/test`\n\nSends a test event to the specified webhook endpoint to verify connectivity.\n\n### Parameters\n\n- `id: string`\n\n- `event_type?: string`\n\n- `sandbox?: boolean`\n  Sandbox flag - when true, the operation is simulated without side effects\nUseful for testing integrations without actual execution\n\n- `Idempotency-Key?: string`\n\n- `x-profile-id?: string`\n\n### Returns\n\n- `{ data?: { message?: string; success?: boolean; }; error?: { code?: string; details?: object; doc_url?: string; message?: string; }; meta?: { request_id?: string; timestamp?: string; version?: string; }; success?: boolean; }`\n  Standard API response envelope for all v3 endpoints\n\n  - `data?: { message?: string; success?: boolean; }`\n  - `error?: { code?: string; details?: object; doc_url?: string; message?: string; }`\n  - `meta?: { request_id?: string; timestamp?: string; version?: string; }`\n  - `success?: boolean`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nconst response = await client.webhooks.test('d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8');\n\nconsole.log(response);\n```",
     perLanguage: {
-      csharp: {
-        method: 'Webhooks.Test',
+      typescript: {
+        method: 'client.webhooks.test',
         example:
-          'WebhookTestParams parameters = new()\n{\n    ID = "d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8"\n};\n\nvar response = await client.Webhooks.Test(parameters);\n\nConsole.WriteLine(response);',
-      },
-      go: {
-        method: 'client.Webhooks.Test',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tresponse, err := client.Webhooks.Test(\n\t\tcontext.TODO(),\n\t\t"d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8",\n\t\tsentdm.WebhookTestParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", response.Data)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://api.sent.dm/v3/webhooks/$ID/test \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "event_type": "message.sent"\n        }\'',
-      },
-      java: {
-        method: 'webhooks().test',
-        example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.webhooks.WebhookTestParams;\nimport dm.sent.models.webhooks.WebhookTestResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        WebhookTestResponse response = client.webhooks().test("d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8");\n    }\n}',
-      },
-      php: {
-        method: 'webhooks->test',
-        example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$response = $client->webhooks->test(\n  'd4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8',\n  eventType: 'message.sent',\n  sandbox: false,\n  idempotencyKey: 'req_abc123_retry1',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($response);",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst response = await client.webhooks.test('d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8');\n\nconsole.log(response.data);",
       },
       python: {
         method: 'webhooks.test',
         example:
           'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\nresponse = client.webhooks.test(\n    id="d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8",\n)\nprint(response.data)',
       },
+      java: {
+        method: 'webhooks().test',
+        example:
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.webhooks.WebhookTestParams;\nimport dm.sent.models.webhooks.WebhookTestResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        WebhookTestResponse response = client.webhooks().test("d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8");\n    }\n}',
+      },
+      go: {
+        method: 'client.Webhooks.Test',
+        example:
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tresponse, err := client.Webhooks.Test(\n\t\tcontext.TODO(),\n\t\t"d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8",\n\t\tsentdm.WebhookTestParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", response.Data)\n}\n',
+      },
       ruby: {
         method: 'webhooks.test_',
         example:
           'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\nresponse = sent.webhooks.test_("d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8")\n\nputs(response)',
       },
-      typescript: {
-        method: 'client.webhooks.test',
+      php: {
+        method: 'webhooks->test',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst response = await client.webhooks.test('d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8');\n\nconsole.log(response.data);",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$response = $client->webhooks->test(\n  'd4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8',\n  eventType: 'message.sent',\n  sandbox: false,\n  idempotencyKey: 'req_abc123_retry1',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($response);",
+      },
+      csharp: {
+        method: 'Webhooks.Test',
+        example:
+          'WebhookTestParams parameters = new()\n{\n    ID = "d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8"\n};\n\nvar response = await client.Webhooks.Test(parameters);\n\nConsole.WriteLine(response);',
+      },
+      http: {
+        example:
+          'curl https://api.sent.dm/v3/webhooks/$ID/test \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "event_type": "message.sent"\n        }\'',
       },
     },
   },
@@ -604,44 +604,44 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## toggle_status\n\n`client.webhooks.toggleStatus(id: string, is_active?: boolean, sandbox?: boolean, Idempotency-Key?: string, x-profile-id?: string): { data?: webhook_response; error?: error_detail; meta?: api_meta; success?: boolean; }`\n\n**patch** `/v3/webhooks/{id}/toggle-status`\n\nActivates or deactivates a webhook for the authenticated customer.\n\n### Parameters\n\n- `id: string`\n\n- `is_active?: boolean`\n\n- `sandbox?: boolean`\n  Sandbox flag - when true, the operation is simulated without side effects\nUseful for testing integrations without actual execution\n\n- `Idempotency-Key?: string`\n\n- `x-profile-id?: string`\n\n### Returns\n\n- `{ data?: { id?: string; consecutive_failures?: number; created_at?: string; display_name?: string; endpoint_url?: string; event_filters?: object; event_types?: string[]; is_active?: boolean; last_delivery_attempt_at?: string; last_successful_delivery_at?: string; retry_count?: number; signing_secret?: string; timeout_seconds?: number; updated_at?: string; }; error?: { code?: string; details?: object; doc_url?: string; message?: string; }; meta?: { request_id?: string; timestamp?: string; version?: string; }; success?: boolean; }`\n  Standard API response envelope for all v3 endpoints\n\n  - `data?: { id?: string; consecutive_failures?: number; created_at?: string; display_name?: string; endpoint_url?: string; event_filters?: object; event_types?: string[]; is_active?: boolean; last_delivery_attempt_at?: string; last_successful_delivery_at?: string; retry_count?: number; signing_secret?: string; timeout_seconds?: number; updated_at?: string; }`\n  - `error?: { code?: string; details?: object; doc_url?: string; message?: string; }`\n  - `meta?: { request_id?: string; timestamp?: string; version?: string; }`\n  - `success?: boolean`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nconst apiResponseWebhook = await client.webhooks.toggleStatus('d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8');\n\nconsole.log(apiResponseWebhook);\n```",
     perLanguage: {
-      csharp: {
-        method: 'Webhooks.ToggleStatus',
+      typescript: {
+        method: 'client.webhooks.toggleStatus',
         example:
-          'WebhookToggleStatusParams parameters = new()\n{\n    ID = "d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8"\n};\n\nvar apiResponseWebhook = await client.Webhooks.ToggleStatus(parameters);\n\nConsole.WriteLine(apiResponseWebhook);',
-      },
-      go: {
-        method: 'client.Webhooks.ToggleStatus',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tapiResponseWebhook, err := client.Webhooks.ToggleStatus(\n\t\tcontext.TODO(),\n\t\t"d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8",\n\t\tsentdm.WebhookToggleStatusParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", apiResponseWebhook.Data)\n}\n',
-      },
-      http: {
-        example:
-          "curl https://api.sent.dm/v3/webhooks/$ID/toggle-status \\\n    -X PATCH \\\n    -H 'Content-Type: application/json' \\\n    -H \"x-api-key: $SENT_DM_API_KEY\" \\\n    -d '{}'",
-      },
-      java: {
-        method: 'webhooks().toggleStatus',
-        example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.webhooks.ApiResponseWebhook;\nimport dm.sent.models.webhooks.WebhookToggleStatusParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        ApiResponseWebhook apiResponseWebhook = client.webhooks().toggleStatus("d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8");\n    }\n}',
-      },
-      php: {
-        method: 'webhooks->toggleStatus',
-        example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$apiResponseWebhook = $client->webhooks->toggleStatus(\n  'd4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8',\n  isActive: false,\n  sandbox: false,\n  idempotencyKey: 'req_abc123_retry1',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($apiResponseWebhook);",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst apiResponseWebhook = await client.webhooks.toggleStatus(\n  'd4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8',\n);\n\nconsole.log(apiResponseWebhook.data);",
       },
       python: {
         method: 'webhooks.toggle_status',
         example:
           'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\napi_response_webhook = client.webhooks.toggle_status(\n    id="d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8",\n)\nprint(api_response_webhook.data)',
       },
+      java: {
+        method: 'webhooks().toggleStatus',
+        example:
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.webhooks.ApiResponseWebhook;\nimport dm.sent.models.webhooks.WebhookToggleStatusParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        ApiResponseWebhook apiResponseWebhook = client.webhooks().toggleStatus("d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8");\n    }\n}',
+      },
+      go: {
+        method: 'client.Webhooks.ToggleStatus',
+        example:
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tapiResponseWebhook, err := client.Webhooks.ToggleStatus(\n\t\tcontext.TODO(),\n\t\t"d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8",\n\t\tsentdm.WebhookToggleStatusParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", apiResponseWebhook.Data)\n}\n',
+      },
       ruby: {
         method: 'webhooks.toggle_status',
         example:
           'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\napi_response_webhook = sent.webhooks.toggle_status("d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8")\n\nputs(api_response_webhook)',
       },
-      typescript: {
-        method: 'client.webhooks.toggleStatus',
+      php: {
+        method: 'webhooks->toggleStatus',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst apiResponseWebhook = await client.webhooks.toggleStatus(\n  'd4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8',\n);\n\nconsole.log(apiResponseWebhook.data);",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$apiResponseWebhook = $client->webhooks->toggleStatus(\n  'd4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8',\n  isActive: false,\n  sandbox: false,\n  idempotencyKey: 'req_abc123_retry1',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($apiResponseWebhook);",
+      },
+      csharp: {
+        method: 'Webhooks.ToggleStatus',
+        example:
+          'WebhookToggleStatusParams parameters = new()\n{\n    ID = "d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8"\n};\n\nvar apiResponseWebhook = await client.Webhooks.ToggleStatus(parameters);\n\nConsole.WriteLine(apiResponseWebhook);',
+      },
+      http: {
+        example:
+          "curl https://api.sent.dm/v3/webhooks/$ID/toggle-status \\\n    -X PATCH \\\n    -H 'Content-Type: application/json' \\\n    -H \"x-api-key: $SENT_DM_API_KEY\" \\\n    -d '{}'",
       },
     },
   },
@@ -660,43 +660,43 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## retrieve\n\n`client.users.retrieve(userId: string, x-profile-id?: string): { data?: user_response; error?: error_detail; meta?: api_meta; success?: boolean; }`\n\n**get** `/v3/users/{userId}`\n\nRetrieves detailed information about a specific user in an organization or profile. Requires developer role or higher.\n\n### Parameters\n\n- `userId: string`\n\n- `x-profile-id?: string`\n\n### Returns\n\n- `{ data?: { id?: string; created_at?: string; email?: string; invited_at?: string; last_login_at?: string; name?: string; role?: string; status?: string; updated_at?: string; }; error?: { code?: string; details?: object; doc_url?: string; message?: string; }; meta?: { request_id?: string; timestamp?: string; version?: string; }; success?: boolean; }`\n  Standard API response envelope for all v3 endpoints\n\n  - `data?: { id?: string; created_at?: string; email?: string; invited_at?: string; last_login_at?: string; name?: string; role?: string; status?: string; updated_at?: string; }`\n  - `error?: { code?: string; details?: object; doc_url?: string; message?: string; }`\n  - `meta?: { request_id?: string; timestamp?: string; version?: string; }`\n  - `success?: boolean`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nconst apiResponseOfUser = await client.users.retrieve('userId');\n\nconsole.log(apiResponseOfUser);\n```",
     perLanguage: {
-      csharp: {
-        method: 'Users.Retrieve',
+      typescript: {
+        method: 'client.users.retrieve',
         example:
-          'UserRetrieveParams parameters = new() { UserID = "userId" };\n\nvar apiResponseOfUser = await client.Users.Retrieve(parameters);\n\nConsole.WriteLine(apiResponseOfUser);',
-      },
-      go: {
-        method: 'client.Users.Get',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tapiResponseOfUser, err := client.Users.Get(\n\t\tcontext.TODO(),\n\t\t"userId",\n\t\tsentdm.UserGetParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", apiResponseOfUser.Data)\n}\n',
-      },
-      http: {
-        example: 'curl https://api.sent.dm/v3/users/$USER_ID \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
-      },
-      java: {
-        method: 'users().retrieve',
-        example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.users.ApiResponseOfUser;\nimport dm.sent.models.users.UserRetrieveParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        ApiResponseOfUser apiResponseOfUser = client.users().retrieve("userId");\n    }\n}',
-      },
-      php: {
-        method: 'users->retrieve',
-        example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$apiResponseOfUser = $client->users->retrieve(\n  'userId', xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e'\n);\n\nvar_dump($apiResponseOfUser);",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst apiResponseOfUser = await client.users.retrieve('userId');\n\nconsole.log(apiResponseOfUser.data);",
       },
       python: {
         method: 'users.retrieve',
         example:
           'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\napi_response_of_user = client.users.retrieve(\n    user_id="userId",\n)\nprint(api_response_of_user.data)',
       },
+      java: {
+        method: 'users().retrieve',
+        example:
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.users.ApiResponseOfUser;\nimport dm.sent.models.users.UserRetrieveParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        ApiResponseOfUser apiResponseOfUser = client.users().retrieve("userId");\n    }\n}',
+      },
+      go: {
+        method: 'client.Users.Get',
+        example:
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tapiResponseOfUser, err := client.Users.Get(\n\t\tcontext.TODO(),\n\t\t"userId",\n\t\tsentdm.UserGetParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", apiResponseOfUser.Data)\n}\n',
+      },
       ruby: {
         method: 'users.retrieve',
         example:
           'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\napi_response_of_user = sent.users.retrieve("userId")\n\nputs(api_response_of_user)',
       },
-      typescript: {
-        method: 'client.users.retrieve',
+      php: {
+        method: 'users->retrieve',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst apiResponseOfUser = await client.users.retrieve('userId');\n\nconsole.log(apiResponseOfUser.data);",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$apiResponseOfUser = $client->users->retrieve(\n  'userId', xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e'\n);\n\nvar_dump($apiResponseOfUser);",
+      },
+      csharp: {
+        method: 'Users.Retrieve',
+        example:
+          'UserRetrieveParams parameters = new() { UserID = "userId" };\n\nvar apiResponseOfUser = await client.Users.Retrieve(parameters);\n\nConsole.WriteLine(apiResponseOfUser);',
+      },
+      http: {
+        example: 'curl https://api.sent.dm/v3/users/$USER_ID \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
       },
     },
   },
@@ -713,44 +713,44 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## remove\n\n`client.users.remove(userId: string, body: { sandbox?: boolean; }, x-profile-id?: string): void`\n\n**delete** `/v3/users/{userId}`\n\nRemoves a user's access to an organization or profile. Requires admin role. You cannot remove yourself or remove the last admin.\n\n### Parameters\n\n- `userId: string`\n\n- `body: { sandbox?: boolean; }`\n  Request to remove a user from an organization\n\n- `x-profile-id?: string`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nawait client.users.remove('userId', { body: {} })\n```",
     perLanguage: {
-      csharp: {
-        method: 'Users.Remove',
+      typescript: {
+        method: 'client.users.remove',
         example:
-          'UserRemoveParams parameters = new()\n{\n    UserID = "userId",\n    Body = new() { Sandbox = false },\n};\n\nawait client.Users.Remove(parameters);',
-      },
-      go: {
-        method: 'client.Users.Remove',
-        example:
-          'package main\n\nimport (\n\t"context"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\terr := client.Users.Remove(\n\t\tcontext.TODO(),\n\t\t"userId",\n\t\tsentdm.UserRemoveParams{\n\t\t\tBody: sentdm.UserRemoveParamsBody{\n\t\t\t\tMutationRequestParam: sentdm.MutationRequestParam{},\n\t\t\t},\n\t\t},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n}\n',
-      },
-      http: {
-        example:
-          'curl https://api.sent.dm/v3/users/$USER_ID \\\n    -X DELETE \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
-      },
-      java: {
-        method: 'users().remove',
-        example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.users.UserRemoveParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        client.users().remove("userId");\n    }\n}',
-      },
-      php: {
-        method: 'users->remove',
-        example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$result = $client->users->remove(\n  'userId',\n  body: ['sandbox' => false],\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($result);",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nawait client.users.remove('userId', { body: {} });",
       },
       python: {
         method: 'users.remove',
         example:
           'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\nclient.users.remove(\n    user_id="userId",\n    body={},\n)',
       },
+      java: {
+        method: 'users().remove',
+        example:
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.users.UserRemoveParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        client.users().remove("userId");\n    }\n}',
+      },
+      go: {
+        method: 'client.Users.Remove',
+        example:
+          'package main\n\nimport (\n\t"context"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\terr := client.Users.Remove(\n\t\tcontext.TODO(),\n\t\t"userId",\n\t\tsentdm.UserRemoveParams{\n\t\t\tBody: sentdm.UserRemoveParamsBody{\n\t\t\t\tMutationRequestParam: sentdm.MutationRequestParam{},\n\t\t\t},\n\t\t},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n}\n',
+      },
       ruby: {
         method: 'users.remove',
         example:
           'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\nresult = sent.users.remove("userId", body: {})\n\nputs(result)',
       },
-      typescript: {
-        method: 'client.users.remove',
+      php: {
+        method: 'users->remove',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nawait client.users.remove('userId', { body: {} });",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$result = $client->users->remove(\n  'userId',\n  body: ['sandbox' => false],\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($result);",
+      },
+      csharp: {
+        method: 'Users.Remove',
+        example:
+          'UserRemoveParams parameters = new()\n{\n    UserID = "userId",\n    Body = new() { Sandbox = false },\n};\n\nawait client.Users.Remove(parameters);',
+      },
+      http: {
+        example:
+          'curl https://api.sent.dm/v3/users/$USER_ID \\\n    -X DELETE \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
       },
     },
   },
@@ -775,44 +775,44 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## update_role\n\n`client.users.updateRole(userId: string, role?: string, sandbox?: boolean, Idempotency-Key?: string, x-profile-id?: string): { data?: user_response; error?: error_detail; meta?: api_meta; success?: boolean; }`\n\n**patch** `/v3/users/{userId}`\n\nUpdates a user's role in the organization or profile. Requires admin role. You cannot change your own role or demote the last admin.\n\n### Parameters\n\n- `userId: string`\n\n- `role?: string`\n  User role: admin, billing, or developer (required)\n\n- `sandbox?: boolean`\n  Sandbox flag - when true, the operation is simulated without side effects\nUseful for testing integrations without actual execution\n\n- `Idempotency-Key?: string`\n\n- `x-profile-id?: string`\n\n### Returns\n\n- `{ data?: { id?: string; created_at?: string; email?: string; invited_at?: string; last_login_at?: string; name?: string; role?: string; status?: string; updated_at?: string; }; error?: { code?: string; details?: object; doc_url?: string; message?: string; }; meta?: { request_id?: string; timestamp?: string; version?: string; }; success?: boolean; }`\n  Standard API response envelope for all v3 endpoints\n\n  - `data?: { id?: string; created_at?: string; email?: string; invited_at?: string; last_login_at?: string; name?: string; role?: string; status?: string; updated_at?: string; }`\n  - `error?: { code?: string; details?: object; doc_url?: string; message?: string; }`\n  - `meta?: { request_id?: string; timestamp?: string; version?: string; }`\n  - `success?: boolean`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nconst apiResponseOfUser = await client.users.updateRole('userId');\n\nconsole.log(apiResponseOfUser);\n```",
     perLanguage: {
-      csharp: {
-        method: 'Users.UpdateRole',
+      typescript: {
+        method: 'client.users.updateRole',
         example:
-          'UserUpdateRoleParams parameters = new() { UserID = "userId" };\n\nvar apiResponseOfUser = await client.Users.UpdateRole(parameters);\n\nConsole.WriteLine(apiResponseOfUser);',
-      },
-      go: {
-        method: 'client.Users.UpdateRole',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tapiResponseOfUser, err := client.Users.UpdateRole(\n\t\tcontext.TODO(),\n\t\t"userId",\n\t\tsentdm.UserUpdateRoleParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", apiResponseOfUser.Data)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://api.sent.dm/v3/users/$USER_ID \\\n    -X PATCH \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "role": "billing"\n        }\'',
-      },
-      java: {
-        method: 'users().updateRole',
-        example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.users.ApiResponseOfUser;\nimport dm.sent.models.users.UserUpdateRoleParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        ApiResponseOfUser apiResponseOfUser = client.users().updateRole("userId");\n    }\n}',
-      },
-      php: {
-        method: 'users->updateRole',
-        example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$apiResponseOfUser = $client->users->updateRole(\n  'userId',\n  role: 'billing',\n  sandbox: false,\n  idempotencyKey: 'req_abc123_retry1',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($apiResponseOfUser);",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst apiResponseOfUser = await client.users.updateRole('userId');\n\nconsole.log(apiResponseOfUser.data);",
       },
       python: {
         method: 'users.update_role',
         example:
           'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\napi_response_of_user = client.users.update_role(\n    user_id="userId",\n)\nprint(api_response_of_user.data)',
       },
+      java: {
+        method: 'users().updateRole',
+        example:
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.users.ApiResponseOfUser;\nimport dm.sent.models.users.UserUpdateRoleParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        ApiResponseOfUser apiResponseOfUser = client.users().updateRole("userId");\n    }\n}',
+      },
+      go: {
+        method: 'client.Users.UpdateRole',
+        example:
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tapiResponseOfUser, err := client.Users.UpdateRole(\n\t\tcontext.TODO(),\n\t\t"userId",\n\t\tsentdm.UserUpdateRoleParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", apiResponseOfUser.Data)\n}\n',
+      },
       ruby: {
         method: 'users.update_role',
         example:
           'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\napi_response_of_user = sent.users.update_role("userId")\n\nputs(api_response_of_user)',
       },
-      typescript: {
-        method: 'client.users.updateRole',
+      php: {
+        method: 'users->updateRole',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst apiResponseOfUser = await client.users.updateRole('userId');\n\nconsole.log(apiResponseOfUser.data);",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$apiResponseOfUser = $client->users->updateRole(\n  'userId',\n  role: 'billing',\n  sandbox: false,\n  idempotencyKey: 'req_abc123_retry1',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($apiResponseOfUser);",
+      },
+      csharp: {
+        method: 'Users.UpdateRole',
+        example:
+          'UserUpdateRoleParams parameters = new() { UserID = "userId" };\n\nvar apiResponseOfUser = await client.Users.UpdateRole(parameters);\n\nConsole.WriteLine(apiResponseOfUser);',
+      },
+      http: {
+        example:
+          'curl https://api.sent.dm/v3/users/$USER_ID \\\n    -X PATCH \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "role": "billing"\n        }\'',
       },
     },
   },
@@ -831,43 +831,43 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## list\n\n`client.users.list(x-profile-id?: string): { data?: object; error?: error_detail; meta?: api_meta; success?: boolean; }`\n\n**get** `/v3/users`\n\nRetrieves all users who have access to the organization or profile identified by the API key, including their roles and status. Shows invited users (pending acceptance) and active users. Requires developer role or higher.\n\n### Parameters\n\n- `x-profile-id?: string`\n\n### Returns\n\n- `{ data?: { users?: object[]; }; error?: { code?: string; details?: object; doc_url?: string; message?: string; }; meta?: { request_id?: string; timestamp?: string; version?: string; }; success?: boolean; }`\n  Standard API response envelope for all v3 endpoints\n\n  - `data?: { users?: { id?: string; created_at?: string; email?: string; invited_at?: string; last_login_at?: string; name?: string; role?: string; status?: string; updated_at?: string; }[]; }`\n  - `error?: { code?: string; details?: object; doc_url?: string; message?: string; }`\n  - `meta?: { request_id?: string; timestamp?: string; version?: string; }`\n  - `success?: boolean`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nconst users = await client.users.list();\n\nconsole.log(users);\n```",
     perLanguage: {
-      csharp: {
-        method: 'Users.List',
+      typescript: {
+        method: 'client.users.list',
         example:
-          'UserListParams parameters = new();\n\nvar users = await client.Users.List(parameters);\n\nConsole.WriteLine(users);',
-      },
-      go: {
-        method: 'client.Users.List',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tusers, err := client.Users.List(context.TODO(), sentdm.UserListParams{})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", users.Data)\n}\n',
-      },
-      http: {
-        example: 'curl https://api.sent.dm/v3/users \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
-      },
-      java: {
-        method: 'users().list',
-        example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.users.UserListParams;\nimport dm.sent.models.users.UserListResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        UserListResponse users = client.users().list();\n    }\n}',
-      },
-      php: {
-        method: 'users->list',
-        example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$users = $client->users->list(\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e'\n);\n\nvar_dump($users);",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst users = await client.users.list();\n\nconsole.log(users.data);",
       },
       python: {
         method: 'users.list',
         example:
           'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\nusers = client.users.list()\nprint(users.data)',
       },
+      java: {
+        method: 'users().list',
+        example:
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.users.UserListParams;\nimport dm.sent.models.users.UserListResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        UserListResponse users = client.users().list();\n    }\n}',
+      },
+      go: {
+        method: 'client.Users.List',
+        example:
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tusers, err := client.Users.List(context.TODO(), sentdm.UserListParams{})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", users.Data)\n}\n',
+      },
       ruby: {
         method: 'users.list',
         example:
           'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\nusers = sent.users.list\n\nputs(users)',
       },
-      typescript: {
-        method: 'client.users.list',
+      php: {
+        method: 'users->list',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst users = await client.users.list();\n\nconsole.log(users.data);",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$users = $client->users->list(\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e'\n);\n\nvar_dump($users);",
+      },
+      csharp: {
+        method: 'Users.List',
+        example:
+          'UserListParams parameters = new();\n\nvar users = await client.Users.List(parameters);\n\nConsole.WriteLine(users);',
+      },
+      http: {
+        example: 'curl https://api.sent.dm/v3/users \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
       },
     },
   },
@@ -893,44 +893,44 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## invite\n\n`client.users.invite(email?: string, name?: string, role?: string, sandbox?: boolean, Idempotency-Key?: string, x-profile-id?: string): { data?: user_response; error?: error_detail; meta?: api_meta; success?: boolean; }`\n\n**post** `/v3/users`\n\nSends an invitation to a user to join the organization or profile with a specific role. Requires admin role. The user will receive an invitation email with a token to accept. Invitation tokens expire after 7 days.\n\n### Parameters\n\n- `email?: string`\n  User email address (required)\n\n- `name?: string`\n  User full name (required)\n\n- `role?: string`\n  User role: admin, billing, or developer (required)\n\n- `sandbox?: boolean`\n  Sandbox flag - when true, the operation is simulated without side effects\nUseful for testing integrations without actual execution\n\n- `Idempotency-Key?: string`\n\n- `x-profile-id?: string`\n\n### Returns\n\n- `{ data?: { id?: string; created_at?: string; email?: string; invited_at?: string; last_login_at?: string; name?: string; role?: string; status?: string; updated_at?: string; }; error?: { code?: string; details?: object; doc_url?: string; message?: string; }; meta?: { request_id?: string; timestamp?: string; version?: string; }; success?: boolean; }`\n  Standard API response envelope for all v3 endpoints\n\n  - `data?: { id?: string; created_at?: string; email?: string; invited_at?: string; last_login_at?: string; name?: string; role?: string; status?: string; updated_at?: string; }`\n  - `error?: { code?: string; details?: object; doc_url?: string; message?: string; }`\n  - `meta?: { request_id?: string; timestamp?: string; version?: string; }`\n  - `success?: boolean`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nconst apiResponseOfUser = await client.users.invite();\n\nconsole.log(apiResponseOfUser);\n```",
     perLanguage: {
-      csharp: {
-        method: 'Users.Invite',
+      typescript: {
+        method: 'client.users.invite',
         example:
-          'UserInviteParams parameters = new();\n\nvar apiResponseOfUser = await client.Users.Invite(parameters);\n\nConsole.WriteLine(apiResponseOfUser);',
-      },
-      go: {
-        method: 'client.Users.Invite',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tapiResponseOfUser, err := client.Users.Invite(context.TODO(), sentdm.UserInviteParams{})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", apiResponseOfUser.Data)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://api.sent.dm/v3/users \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "email": "newuser@example.com",\n          "name": "New User",\n          "role": "developer"\n        }\'',
-      },
-      java: {
-        method: 'users().invite',
-        example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.users.ApiResponseOfUser;\nimport dm.sent.models.users.UserInviteParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        ApiResponseOfUser apiResponseOfUser = client.users().invite();\n    }\n}',
-      },
-      php: {
-        method: 'users->invite',
-        example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$apiResponseOfUser = $client->users->invite(\n  email: 'newuser@example.com',\n  name: 'New User',\n  role: 'developer',\n  sandbox: false,\n  idempotencyKey: 'req_abc123_retry1',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($apiResponseOfUser);",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst apiResponseOfUser = await client.users.invite();\n\nconsole.log(apiResponseOfUser.data);",
       },
       python: {
         method: 'users.invite',
         example:
           'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\napi_response_of_user = client.users.invite()\nprint(api_response_of_user.data)',
       },
+      java: {
+        method: 'users().invite',
+        example:
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.users.ApiResponseOfUser;\nimport dm.sent.models.users.UserInviteParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        ApiResponseOfUser apiResponseOfUser = client.users().invite();\n    }\n}',
+      },
+      go: {
+        method: 'client.Users.Invite',
+        example:
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tapiResponseOfUser, err := client.Users.Invite(context.TODO(), sentdm.UserInviteParams{})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", apiResponseOfUser.Data)\n}\n',
+      },
       ruby: {
         method: 'users.invite',
         example:
           'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\napi_response_of_user = sent.users.invite\n\nputs(api_response_of_user)',
       },
-      typescript: {
-        method: 'client.users.invite',
+      php: {
+        method: 'users->invite',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst apiResponseOfUser = await client.users.invite();\n\nconsole.log(apiResponseOfUser.data);",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$apiResponseOfUser = $client->users->invite(\n  email: 'newuser@example.com',\n  name: 'New User',\n  role: 'developer',\n  sandbox: false,\n  idempotencyKey: 'req_abc123_retry1',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($apiResponseOfUser);",
+      },
+      csharp: {
+        method: 'Users.Invite',
+        example:
+          'UserInviteParams parameters = new();\n\nvar apiResponseOfUser = await client.Users.Invite(parameters);\n\nConsole.WriteLine(apiResponseOfUser);',
+      },
+      http: {
+        example:
+          'curl https://api.sent.dm/v3/users \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "email": "newuser@example.com",\n          "name": "New User",\n          "role": "developer"\n        }\'',
       },
     },
   },
@@ -958,44 +958,44 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## create\n\n`client.templates.create(category?: string, creation_source?: string, definition?: { body: sent_dm_services_common_contracts_poc_os_template_body; authenticationConfig?: sent_dm_services_common_contracts_poc_os_authentication_config; buttons?: sent_dm_services_common_contracts_poc_os_template_button[]; definitionVersion?: string; footer?: sent_dm_services_common_contracts_poc_os_template_footer; header?: sent_dm_services_common_contracts_poc_os_template_header; }, language?: string, sandbox?: boolean, submit_for_review?: boolean, Idempotency-Key?: string, x-profile-id?: string): { data?: template; error?: error_detail; meta?: api_meta; success?: boolean; }`\n\n**post** `/v3/templates`\n\nCreates a new message template with header, body, footer, and buttons. The template can be submitted for review immediately or saved as draft for later submission.\n\n### Parameters\n\n- `category?: string`\n  Template category: MARKETING, UTILITY, AUTHENTICATION (optional, auto-detected if not provided)\n\n- `creation_source?: string`\n  Source of template creation (default: from-api)\n\n- `definition?: { body: { multiChannel?: template_body_content; sms?: template_body_content; whatsapp?: template_body_content; }; authenticationConfig?: { addSecurityRecommendation?: boolean; codeExpirationMinutes?: number; }; buttons?: { props: sent_dm_services_common_contracts_poc_os_template_button_props; type: string; id?: number; }[]; definitionVersion?: string; footer?: { template: string; type?: string; variables?: template_variable[]; }; header?: { template: string; type?: string; variables?: template_variable[]; }; }`\n  Complete definition of a message template including header, body, footer, and buttons\n  - `body: { multiChannel?: { template: string; type?: string; variables?: template_variable[]; }; sms?: { template: string; type?: string; variables?: template_variable[]; }; whatsapp?: { template: string; type?: string; variables?: template_variable[]; }; }`\n    Body section of a message template with channel-specific content\n  - `authenticationConfig?: { addSecurityRecommendation?: boolean; codeExpirationMinutes?: number; }`\n    Configuration for AUTHENTICATION category templates\n  - `buttons?: { props: { activeFor: number; countryCode: string; offerCode: string; phoneNumber: string; quickReplyType: string; text: string; url: string; urlType: string; autofillText?: string; otpType?: string; packageName?: string; signatureHash?: string; }; type: string; id?: number; }[]`\n    Optional list of interactive buttons (e.g., quick replies, URLs, phone numbers)\n  - `definitionVersion?: string`\n    The version of the template definition format\n  - `footer?: { template: string; type?: string; variables?: { name: string; props: object; type: string; id?: number; }[]; }`\n    Footer section of a message template\n  - `header?: { template: string; type?: string; variables?: { name: string; props: object; type: string; id?: number; }[]; }`\n    Header section of a message template\n\n- `language?: string`\n  Template language code (e.g., en_US) (optional, auto-detected if not provided)\n\n- `sandbox?: boolean`\n  Sandbox flag - when true, the operation is simulated without side effects\nUseful for testing integrations without actual execution\n\n- `submit_for_review?: boolean`\n  Whether to submit the template for review after creation (default: false)\n\n- `Idempotency-Key?: string`\n\n- `x-profile-id?: string`\n\n### Returns\n\n- `{ data?: { id?: string; category?: string; channels?: string[]; created_at?: string; is_published?: boolean; language?: string; name?: string; status?: string; updated_at?: string; variables?: string[]; }; error?: { code?: string; details?: object; doc_url?: string; message?: string; }; meta?: { request_id?: string; timestamp?: string; version?: string; }; success?: boolean; }`\n  Standard API response envelope for all v3 endpoints\n\n  - `data?: { id?: string; category?: string; channels?: string[]; created_at?: string; is_published?: boolean; language?: string; name?: string; status?: string; updated_at?: string; variables?: string[]; }`\n  - `error?: { code?: string; details?: object; doc_url?: string; message?: string; }`\n  - `meta?: { request_id?: string; timestamp?: string; version?: string; }`\n  - `success?: boolean`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nconst apiResponseTemplate = await client.templates.create();\n\nconsole.log(apiResponseTemplate);\n```",
     perLanguage: {
-      csharp: {
-        method: 'Templates.Create',
+      typescript: {
+        method: 'client.templates.create',
         example:
-          'TemplateCreateParams parameters = new();\n\nvar apiResponseTemplate = await client.Templates.Create(parameters);\n\nConsole.WriteLine(apiResponseTemplate);',
-      },
-      go: {
-        method: 'client.Templates.New',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tapiResponseTemplate, err := client.Templates.New(context.TODO(), sentdm.TemplateNewParams{})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", apiResponseTemplate.Data)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://api.sent.dm/v3/templates \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "category": "MARKETING",\n          "language": "en_US"\n        }\'',
-      },
-      java: {
-        method: 'templates().create',
-        example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.templates.ApiResponseTemplate;\nimport dm.sent.models.templates.TemplateCreateParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        ApiResponseTemplate apiResponseTemplate = client.templates().create();\n    }\n}',
-      },
-      php: {
-        method: 'templates->create',
-        example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$apiResponseTemplate = $client->templates->create(\n  category: 'MARKETING',\n  creationSource: null,\n  definition: [\n    'body' => [\n      'multiChannel' => [\n        'template' => 'Hello {{0:variable}}! Welcome to {{1:variable}}.',\n        'type' => null,\n        'variables' => [\n          [\n            'name' => 'name',\n            'props' => [\n              'mediaType' => 'x',\n              'sample' => 'John',\n              'url' => 'x',\n              'variableType' => 'text',\n              'alt' => null,\n              'regex' => null,\n              'shortURL' => null,\n            ],\n            'type' => 'variable',\n            'id' => 0,\n          ],\n          [\n            'name' => 'company',\n            'props' => [\n              'mediaType' => 'x',\n              'sample' => 'SentDM',\n              'url' => 'x',\n              'variableType' => 'text',\n              'alt' => null,\n              'regex' => null,\n              'shortURL' => null,\n            ],\n            'type' => 'variable',\n            'id' => 1,\n          ],\n        ],\n      ],\n      'sms' => [\n        'template' => 'template',\n        'type' => 'type',\n        'variables' => [\n          [\n            'name' => 'x',\n            'props' => [\n              'mediaType' => 'x',\n              'sample' => 'x',\n              'url' => 'x',\n              'variableType' => 'x',\n              'alt' => 'alt',\n              'regex' => 'regex',\n              'shortURL' => 'shortUrl',\n            ],\n            'type' => 'x',\n            'id' => 0,\n          ],\n        ],\n      ],\n      'whatsapp' => [\n        'template' => 'template',\n        'type' => 'type',\n        'variables' => [\n          [\n            'name' => 'x',\n            'props' => [\n              'mediaType' => 'x',\n              'sample' => 'x',\n              'url' => 'x',\n              'variableType' => 'x',\n              'alt' => 'alt',\n              'regex' => 'regex',\n              'shortURL' => 'shortUrl',\n            ],\n            'type' => 'x',\n            'id' => 0,\n          ],\n        ],\n      ],\n    ],\n    'authenticationConfig' => [\n      'addSecurityRecommendation' => true, 'codeExpirationMinutes' => 0\n    ],\n    'buttons' => [\n      [\n        'props' => [\n          'activeFor' => 1,\n          'countryCode' => 'x',\n          'offerCode' => 'x',\n          'phoneNumber' => 'x',\n          'quickReplyType' => 'x',\n          'text' => 'text',\n          'url' => 'x',\n          'urlType' => 'x',\n          'autofillText' => 'autofillText',\n          'otpType' => 'otpType',\n          'packageName' => 'packageName',\n          'signatureHash' => 'signatureHash',\n        ],\n        'type' => 'x',\n        'id' => 0,\n      ],\n    ],\n    'definitionVersion' => '1.0',\n    'footer' => [\n      'template' => 'template',\n      'type' => 'type',\n      'variables' => [\n        [\n          'name' => 'x',\n          'props' => [\n            'mediaType' => 'x',\n            'sample' => 'x',\n            'url' => 'x',\n            'variableType' => 'x',\n            'alt' => 'alt',\n            'regex' => 'regex',\n            'shortURL' => 'shortUrl',\n          ],\n          'type' => 'x',\n          'id' => 0,\n        ],\n      ],\n    ],\n    'header' => [\n      'template' => 'template',\n      'type' => 'type',\n      'variables' => [\n        [\n          'name' => 'x',\n          'props' => [\n            'mediaType' => 'x',\n            'sample' => 'x',\n            'url' => 'x',\n            'variableType' => 'x',\n            'alt' => 'alt',\n            'regex' => 'regex',\n            'shortURL' => 'shortUrl',\n          ],\n          'type' => 'x',\n          'id' => 0,\n        ],\n      ],\n    ],\n  ],\n  language: 'en_US',\n  sandbox: false,\n  submitForReview: false,\n  idempotencyKey: 'req_abc123_retry1',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($apiResponseTemplate);",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst apiResponseTemplate = await client.templates.create();\n\nconsole.log(apiResponseTemplate.data);",
       },
       python: {
         method: 'templates.create',
         example:
           'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\napi_response_template = client.templates.create()\nprint(api_response_template.data)',
       },
+      java: {
+        method: 'templates().create',
+        example:
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.templates.ApiResponseTemplate;\nimport dm.sent.models.templates.TemplateCreateParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        ApiResponseTemplate apiResponseTemplate = client.templates().create();\n    }\n}',
+      },
+      go: {
+        method: 'client.Templates.New',
+        example:
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tapiResponseTemplate, err := client.Templates.New(context.TODO(), sentdm.TemplateNewParams{})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", apiResponseTemplate.Data)\n}\n',
+      },
       ruby: {
         method: 'templates.create',
         example:
           'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\napi_response_template = sent.templates.create\n\nputs(api_response_template)',
       },
-      typescript: {
-        method: 'client.templates.create',
+      php: {
+        method: 'templates->create',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst apiResponseTemplate = await client.templates.create();\n\nconsole.log(apiResponseTemplate.data);",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$apiResponseTemplate = $client->templates->create(\n  category: 'MARKETING',\n  creationSource: null,\n  definition: [\n    'body' => [\n      'multiChannel' => [\n        'template' => 'Hello {{0:variable}}! Welcome to {{1:variable}}.',\n        'type' => null,\n        'variables' => [\n          [\n            'name' => 'name',\n            'props' => [\n              'mediaType' => 'x',\n              'sample' => 'John',\n              'url' => 'x',\n              'variableType' => 'text',\n              'alt' => null,\n              'regex' => null,\n              'shortURL' => null,\n            ],\n            'type' => 'variable',\n            'id' => 0,\n          ],\n          [\n            'name' => 'company',\n            'props' => [\n              'mediaType' => 'x',\n              'sample' => 'SentDM',\n              'url' => 'x',\n              'variableType' => 'text',\n              'alt' => null,\n              'regex' => null,\n              'shortURL' => null,\n            ],\n            'type' => 'variable',\n            'id' => 1,\n          ],\n        ],\n      ],\n      'sms' => [\n        'template' => 'template',\n        'type' => 'type',\n        'variables' => [\n          [\n            'name' => 'x',\n            'props' => [\n              'mediaType' => 'x',\n              'sample' => 'x',\n              'url' => 'x',\n              'variableType' => 'x',\n              'alt' => 'alt',\n              'regex' => 'regex',\n              'shortURL' => 'shortUrl',\n            ],\n            'type' => 'x',\n            'id' => 0,\n          ],\n        ],\n      ],\n      'whatsapp' => [\n        'template' => 'template',\n        'type' => 'type',\n        'variables' => [\n          [\n            'name' => 'x',\n            'props' => [\n              'mediaType' => 'x',\n              'sample' => 'x',\n              'url' => 'x',\n              'variableType' => 'x',\n              'alt' => 'alt',\n              'regex' => 'regex',\n              'shortURL' => 'shortUrl',\n            ],\n            'type' => 'x',\n            'id' => 0,\n          ],\n        ],\n      ],\n    ],\n    'authenticationConfig' => [\n      'addSecurityRecommendation' => true, 'codeExpirationMinutes' => 0\n    ],\n    'buttons' => [\n      [\n        'props' => [\n          'activeFor' => 1,\n          'countryCode' => 'x',\n          'offerCode' => 'x',\n          'phoneNumber' => 'x',\n          'quickReplyType' => 'x',\n          'text' => 'text',\n          'url' => 'x',\n          'urlType' => 'x',\n          'autofillText' => 'autofillText',\n          'otpType' => 'otpType',\n          'packageName' => 'packageName',\n          'signatureHash' => 'signatureHash',\n        ],\n        'type' => 'x',\n        'id' => 0,\n      ],\n    ],\n    'definitionVersion' => '1.0',\n    'footer' => [\n      'template' => 'template',\n      'type' => 'type',\n      'variables' => [\n        [\n          'name' => 'x',\n          'props' => [\n            'mediaType' => 'x',\n            'sample' => 'x',\n            'url' => 'x',\n            'variableType' => 'x',\n            'alt' => 'alt',\n            'regex' => 'regex',\n            'shortURL' => 'shortUrl',\n          ],\n          'type' => 'x',\n          'id' => 0,\n        ],\n      ],\n    ],\n    'header' => [\n      'template' => 'template',\n      'type' => 'type',\n      'variables' => [\n        [\n          'name' => 'x',\n          'props' => [\n            'mediaType' => 'x',\n            'sample' => 'x',\n            'url' => 'x',\n            'variableType' => 'x',\n            'alt' => 'alt',\n            'regex' => 'regex',\n            'shortURL' => 'shortUrl',\n          ],\n          'type' => 'x',\n          'id' => 0,\n        ],\n      ],\n    ],\n  ],\n  language: 'en_US',\n  sandbox: false,\n  submitForReview: false,\n  idempotencyKey: 'req_abc123_retry1',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($apiResponseTemplate);",
+      },
+      csharp: {
+        method: 'Templates.Create',
+        example:
+          'TemplateCreateParams parameters = new();\n\nvar apiResponseTemplate = await client.Templates.Create(parameters);\n\nConsole.WriteLine(apiResponseTemplate);',
+      },
+      http: {
+        example:
+          'curl https://api.sent.dm/v3/templates \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "category": "MARKETING",\n          "language": "en_US"\n        }\'',
       },
     },
   },
@@ -1022,43 +1022,43 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## list\n\n`client.templates.list(page: number, page_size: number, category?: string, is_welcome_playground?: boolean, search?: string, status?: string, x-profile-id?: string): { data?: object; error?: error_detail; meta?: api_meta; success?: boolean; }`\n\n**get** `/v3/templates`\n\nRetrieves a paginated list of message templates for the authenticated customer. Supports filtering by status, category, and search term.\n\n### Parameters\n\n- `page: number`\n  Page number (1-indexed)\n\n- `page_size: number`\n  Number of items per page\n\n- `category?: string`\n  Optional category filter: MARKETING, UTILITY, AUTHENTICATION\n\n- `is_welcome_playground?: boolean`\n  Optional filter by welcome playground flag\n\n- `search?: string`\n  Optional search term for filtering templates\n\n- `status?: string`\n  Optional status filter: APPROVED, PENDING, REJECTED\n\n- `x-profile-id?: string`\n\n### Returns\n\n- `{ data?: { pagination?: object; templates?: object[]; }; error?: { code?: string; details?: object; doc_url?: string; message?: string; }; meta?: { request_id?: string; timestamp?: string; version?: string; }; success?: boolean; }`\n  Standard API response envelope for all v3 endpoints\n\n  - `data?: { pagination?: { cursors?: { after?: string; before?: string; }; has_more?: boolean; page?: number; page_size?: number; total_count?: number; total_pages?: number; }; templates?: { id?: string; category?: string; channels?: string[]; created_at?: string; is_published?: boolean; language?: string; name?: string; status?: string; updated_at?: string; variables?: string[]; }[]; }`\n  - `error?: { code?: string; details?: object; doc_url?: string; message?: string; }`\n  - `meta?: { request_id?: string; timestamp?: string; version?: string; }`\n  - `success?: boolean`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nconst templates = await client.templates.list({ page: 0, page_size: 0 });\n\nconsole.log(templates);\n```",
     perLanguage: {
-      csharp: {
-        method: 'Templates.List',
+      typescript: {
+        method: 'client.templates.list',
         example:
-          'TemplateListParams parameters = new()\n{\n    Page = 0,\n    PageSize = 0,\n};\n\nvar templates = await client.Templates.List(parameters);\n\nConsole.WriteLine(templates);',
-      },
-      go: {
-        method: 'client.Templates.List',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\ttemplates, err := client.Templates.List(context.TODO(), sentdm.TemplateListParams{\n\t\tPage:     0,\n\t\tPageSize: 0,\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", templates.Data)\n}\n',
-      },
-      http: {
-        example: 'curl https://api.sent.dm/v3/templates \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
-      },
-      java: {
-        method: 'templates().list',
-        example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.templates.TemplateListParams;\nimport dm.sent.models.templates.TemplateListResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        TemplateListParams params = TemplateListParams.builder()\n            .page(0)\n            .pageSize(0)\n            .build();\n        TemplateListResponse templates = client.templates().list(params);\n    }\n}',
-      },
-      php: {
-        method: 'templates->list',
-        example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$templates = $client->templates->list(\n  page: 0,\n  pageSize: 0,\n  category: 'category',\n  isWelcomePlayground: true,\n  search: 'search',\n  status: 'status',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($templates);",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst templates = await client.templates.list({ page: 0, page_size: 0 });\n\nconsole.log(templates.data);",
       },
       python: {
         method: 'templates.list',
         example:
           'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\ntemplates = client.templates.list(\n    page=0,\n    page_size=0,\n)\nprint(templates.data)',
       },
+      java: {
+        method: 'templates().list',
+        example:
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.templates.TemplateListParams;\nimport dm.sent.models.templates.TemplateListResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        TemplateListParams params = TemplateListParams.builder()\n            .page(0)\n            .pageSize(0)\n            .build();\n        TemplateListResponse templates = client.templates().list(params);\n    }\n}',
+      },
+      go: {
+        method: 'client.Templates.List',
+        example:
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\ttemplates, err := client.Templates.List(context.TODO(), sentdm.TemplateListParams{\n\t\tPage:     0,\n\t\tPageSize: 0,\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", templates.Data)\n}\n',
+      },
       ruby: {
         method: 'templates.list',
         example:
           'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\ntemplates = sent.templates.list(page: 0, page_size: 0)\n\nputs(templates)',
       },
-      typescript: {
-        method: 'client.templates.list',
+      php: {
+        method: 'templates->list',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst templates = await client.templates.list({ page: 0, page_size: 0 });\n\nconsole.log(templates.data);",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$templates = $client->templates->list(\n  page: 0,\n  pageSize: 0,\n  category: 'category',\n  isWelcomePlayground: true,\n  search: 'search',\n  status: 'status',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($templates);",
+      },
+      csharp: {
+        method: 'Templates.List',
+        example:
+          'TemplateListParams parameters = new()\n{\n    Page = 0,\n    PageSize = 0,\n};\n\nvar templates = await client.Templates.List(parameters);\n\nConsole.WriteLine(templates);',
+      },
+      http: {
+        example: 'curl https://api.sent.dm/v3/templates \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
       },
     },
   },
@@ -1075,44 +1075,44 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## delete\n\n`client.templates.delete(id: string, delete_from_meta?: boolean, sandbox?: boolean, x-profile-id?: string): void`\n\n**delete** `/v3/templates/{id}`\n\nDeletes a template by ID. Optionally, you can also delete the template from WhatsApp/Meta by setting delete_from_meta=true.\n\n### Parameters\n\n- `id: string`\n\n- `delete_from_meta?: boolean`\n  Whether to also delete the template from WhatsApp/Meta (optional, defaults to false)\n\n- `sandbox?: boolean`\n  Sandbox flag - when true, the operation is simulated without side effects\nUseful for testing integrations without actual execution\n\n- `x-profile-id?: string`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nawait client.templates.delete('7ba7b820-9dad-11d1-80b4-00c04fd430c8')\n```",
     perLanguage: {
-      csharp: {
-        method: 'Templates.Delete',
+      typescript: {
+        method: 'client.templates.delete',
         example:
-          'TemplateDeleteParams parameters = new()\n{\n    ID = "7ba7b820-9dad-11d1-80b4-00c04fd430c8"\n};\n\nawait client.Templates.Delete(parameters);',
-      },
-      go: {
-        method: 'client.Templates.Delete',
-        example:
-          'package main\n\nimport (\n\t"context"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\terr := client.Templates.Delete(\n\t\tcontext.TODO(),\n\t\t"7ba7b820-9dad-11d1-80b4-00c04fd430c8",\n\t\tsentdm.TemplateDeleteParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n}\n',
-      },
-      http: {
-        example:
-          'curl https://api.sent.dm/v3/templates/$ID \\\n    -X DELETE \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
-      },
-      java: {
-        method: 'templates().delete',
-        example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.templates.TemplateDeleteParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        client.templates().delete("7ba7b820-9dad-11d1-80b4-00c04fd430c8");\n    }\n}',
-      },
-      php: {
-        method: 'templates->delete',
-        example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$result = $client->templates->delete(\n  '7ba7b820-9dad-11d1-80b4-00c04fd430c8',\n  deleteFromMeta: false,\n  sandbox: false,\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($result);",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nawait client.templates.delete('7ba7b820-9dad-11d1-80b4-00c04fd430c8');",
       },
       python: {
         method: 'templates.delete',
         example:
           'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\nclient.templates.delete(\n    id="7ba7b820-9dad-11d1-80b4-00c04fd430c8",\n)',
       },
+      java: {
+        method: 'templates().delete',
+        example:
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.templates.TemplateDeleteParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        client.templates().delete("7ba7b820-9dad-11d1-80b4-00c04fd430c8");\n    }\n}',
+      },
+      go: {
+        method: 'client.Templates.Delete',
+        example:
+          'package main\n\nimport (\n\t"context"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\terr := client.Templates.Delete(\n\t\tcontext.TODO(),\n\t\t"7ba7b820-9dad-11d1-80b4-00c04fd430c8",\n\t\tsentdm.TemplateDeleteParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n}\n',
+      },
       ruby: {
         method: 'templates.delete',
         example:
           'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\nresult = sent.templates.delete("7ba7b820-9dad-11d1-80b4-00c04fd430c8")\n\nputs(result)',
       },
-      typescript: {
-        method: 'client.templates.delete',
+      php: {
+        method: 'templates->delete',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nawait client.templates.delete('7ba7b820-9dad-11d1-80b4-00c04fd430c8');",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$result = $client->templates->delete(\n  '7ba7b820-9dad-11d1-80b4-00c04fd430c8',\n  deleteFromMeta: false,\n  sandbox: false,\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($result);",
+      },
+      csharp: {
+        method: 'Templates.Delete',
+        example:
+          'TemplateDeleteParams parameters = new()\n{\n    ID = "7ba7b820-9dad-11d1-80b4-00c04fd430c8"\n};\n\nawait client.Templates.Delete(parameters);',
+      },
+      http: {
+        example:
+          'curl https://api.sent.dm/v3/templates/$ID \\\n    -X DELETE \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
       },
     },
   },
@@ -1131,43 +1131,43 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## retrieve\n\n`client.templates.retrieve(id: string, x-profile-id?: string): { data?: template; error?: error_detail; meta?: api_meta; success?: boolean; }`\n\n**get** `/v3/templates/{id}`\n\nRetrieves a specific template by its ID. Returns template details including name, category, language, status, and definition.\n\n### Parameters\n\n- `id: string`\n\n- `x-profile-id?: string`\n\n### Returns\n\n- `{ data?: { id?: string; category?: string; channels?: string[]; created_at?: string; is_published?: boolean; language?: string; name?: string; status?: string; updated_at?: string; variables?: string[]; }; error?: { code?: string; details?: object; doc_url?: string; message?: string; }; meta?: { request_id?: string; timestamp?: string; version?: string; }; success?: boolean; }`\n  Standard API response envelope for all v3 endpoints\n\n  - `data?: { id?: string; category?: string; channels?: string[]; created_at?: string; is_published?: boolean; language?: string; name?: string; status?: string; updated_at?: string; variables?: string[]; }`\n  - `error?: { code?: string; details?: object; doc_url?: string; message?: string; }`\n  - `meta?: { request_id?: string; timestamp?: string; version?: string; }`\n  - `success?: boolean`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nconst apiResponseTemplate = await client.templates.retrieve('7ba7b820-9dad-11d1-80b4-00c04fd430c8');\n\nconsole.log(apiResponseTemplate);\n```",
     perLanguage: {
-      csharp: {
-        method: 'Templates.Retrieve',
+      typescript: {
+        method: 'client.templates.retrieve',
         example:
-          'TemplateRetrieveParams parameters = new()\n{\n    ID = "7ba7b820-9dad-11d1-80b4-00c04fd430c8"\n};\n\nvar apiResponseTemplate = await client.Templates.Retrieve(parameters);\n\nConsole.WriteLine(apiResponseTemplate);',
-      },
-      go: {
-        method: 'client.Templates.Get',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tapiResponseTemplate, err := client.Templates.Get(\n\t\tcontext.TODO(),\n\t\t"7ba7b820-9dad-11d1-80b4-00c04fd430c8",\n\t\tsentdm.TemplateGetParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", apiResponseTemplate.Data)\n}\n',
-      },
-      http: {
-        example: 'curl https://api.sent.dm/v3/templates/$ID \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
-      },
-      java: {
-        method: 'templates().retrieve',
-        example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.templates.ApiResponseTemplate;\nimport dm.sent.models.templates.TemplateRetrieveParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        ApiResponseTemplate apiResponseTemplate = client.templates().retrieve("7ba7b820-9dad-11d1-80b4-00c04fd430c8");\n    }\n}',
-      },
-      php: {
-        method: 'templates->retrieve',
-        example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$apiResponseTemplate = $client->templates->retrieve(\n  '7ba7b820-9dad-11d1-80b4-00c04fd430c8',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($apiResponseTemplate);",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst apiResponseTemplate = await client.templates.retrieve('7ba7b820-9dad-11d1-80b4-00c04fd430c8');\n\nconsole.log(apiResponseTemplate.data);",
       },
       python: {
         method: 'templates.retrieve',
         example:
           'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\napi_response_template = client.templates.retrieve(\n    id="7ba7b820-9dad-11d1-80b4-00c04fd430c8",\n)\nprint(api_response_template.data)',
       },
+      java: {
+        method: 'templates().retrieve',
+        example:
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.templates.ApiResponseTemplate;\nimport dm.sent.models.templates.TemplateRetrieveParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        ApiResponseTemplate apiResponseTemplate = client.templates().retrieve("7ba7b820-9dad-11d1-80b4-00c04fd430c8");\n    }\n}',
+      },
+      go: {
+        method: 'client.Templates.Get',
+        example:
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tapiResponseTemplate, err := client.Templates.Get(\n\t\tcontext.TODO(),\n\t\t"7ba7b820-9dad-11d1-80b4-00c04fd430c8",\n\t\tsentdm.TemplateGetParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", apiResponseTemplate.Data)\n}\n',
+      },
       ruby: {
         method: 'templates.retrieve',
         example:
           'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\napi_response_template = sent.templates.retrieve("7ba7b820-9dad-11d1-80b4-00c04fd430c8")\n\nputs(api_response_template)',
       },
-      typescript: {
-        method: 'client.templates.retrieve',
+      php: {
+        method: 'templates->retrieve',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst apiResponseTemplate = await client.templates.retrieve('7ba7b820-9dad-11d1-80b4-00c04fd430c8');\n\nconsole.log(apiResponseTemplate.data);",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$apiResponseTemplate = $client->templates->retrieve(\n  '7ba7b820-9dad-11d1-80b4-00c04fd430c8',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($apiResponseTemplate);",
+      },
+      csharp: {
+        method: 'Templates.Retrieve',
+        example:
+          'TemplateRetrieveParams parameters = new()\n{\n    ID = "7ba7b820-9dad-11d1-80b4-00c04fd430c8"\n};\n\nvar apiResponseTemplate = await client.Templates.Retrieve(parameters);\n\nConsole.WriteLine(apiResponseTemplate);',
+      },
+      http: {
+        example: 'curl https://api.sent.dm/v3/templates/$ID \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
       },
     },
   },
@@ -1196,44 +1196,44 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## update\n\n`client.templates.update(id: string, category?: string, definition?: { body: sent_dm_services_common_contracts_poc_os_template_body; authenticationConfig?: sent_dm_services_common_contracts_poc_os_authentication_config; buttons?: sent_dm_services_common_contracts_poc_os_template_button[]; definitionVersion?: string; footer?: sent_dm_services_common_contracts_poc_os_template_footer; header?: sent_dm_services_common_contracts_poc_os_template_header; }, language?: string, name?: string, sandbox?: boolean, submit_for_review?: boolean, Idempotency-Key?: string, x-profile-id?: string): { data?: template; error?: error_detail; meta?: api_meta; success?: boolean; }`\n\n**put** `/v3/templates/{id}`\n\nUpdates an existing template's name, category, language, definition, or submits it for review.\n\n### Parameters\n\n- `id: string`\n\n- `category?: string`\n  Template category: MARKETING, UTILITY, AUTHENTICATION\n\n- `definition?: { body: { multiChannel?: template_body_content; sms?: template_body_content; whatsapp?: template_body_content; }; authenticationConfig?: { addSecurityRecommendation?: boolean; codeExpirationMinutes?: number; }; buttons?: { props: sent_dm_services_common_contracts_poc_os_template_button_props; type: string; id?: number; }[]; definitionVersion?: string; footer?: { template: string; type?: string; variables?: template_variable[]; }; header?: { template: string; type?: string; variables?: template_variable[]; }; }`\n  Complete definition of a message template including header, body, footer, and buttons\n  - `body: { multiChannel?: { template: string; type?: string; variables?: template_variable[]; }; sms?: { template: string; type?: string; variables?: template_variable[]; }; whatsapp?: { template: string; type?: string; variables?: template_variable[]; }; }`\n    Body section of a message template with channel-specific content\n  - `authenticationConfig?: { addSecurityRecommendation?: boolean; codeExpirationMinutes?: number; }`\n    Configuration for AUTHENTICATION category templates\n  - `buttons?: { props: { activeFor: number; countryCode: string; offerCode: string; phoneNumber: string; quickReplyType: string; text: string; url: string; urlType: string; autofillText?: string; otpType?: string; packageName?: string; signatureHash?: string; }; type: string; id?: number; }[]`\n    Optional list of interactive buttons (e.g., quick replies, URLs, phone numbers)\n  - `definitionVersion?: string`\n    The version of the template definition format\n  - `footer?: { template: string; type?: string; variables?: { name: string; props: object; type: string; id?: number; }[]; }`\n    Footer section of a message template\n  - `header?: { template: string; type?: string; variables?: { name: string; props: object; type: string; id?: number; }[]; }`\n    Header section of a message template\n\n- `language?: string`\n  Template language code (e.g., en_US)\n\n- `name?: string`\n  Template display name\n\n- `sandbox?: boolean`\n  Sandbox flag - when true, the operation is simulated without side effects\nUseful for testing integrations without actual execution\n\n- `submit_for_review?: boolean`\n  Whether to submit the template for review after updating (default: false)\n\n- `Idempotency-Key?: string`\n\n- `x-profile-id?: string`\n\n### Returns\n\n- `{ data?: { id?: string; category?: string; channels?: string[]; created_at?: string; is_published?: boolean; language?: string; name?: string; status?: string; updated_at?: string; variables?: string[]; }; error?: { code?: string; details?: object; doc_url?: string; message?: string; }; meta?: { request_id?: string; timestamp?: string; version?: string; }; success?: boolean; }`\n  Standard API response envelope for all v3 endpoints\n\n  - `data?: { id?: string; category?: string; channels?: string[]; created_at?: string; is_published?: boolean; language?: string; name?: string; status?: string; updated_at?: string; variables?: string[]; }`\n  - `error?: { code?: string; details?: object; doc_url?: string; message?: string; }`\n  - `meta?: { request_id?: string; timestamp?: string; version?: string; }`\n  - `success?: boolean`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nconst apiResponseTemplate = await client.templates.update('7ba7b820-9dad-11d1-80b4-00c04fd430c8');\n\nconsole.log(apiResponseTemplate);\n```",
     perLanguage: {
-      csharp: {
-        method: 'Templates.Update',
+      typescript: {
+        method: 'client.templates.update',
         example:
-          'TemplateUpdateParams parameters = new()\n{\n    ID = "7ba7b820-9dad-11d1-80b4-00c04fd430c8"\n};\n\nvar apiResponseTemplate = await client.Templates.Update(parameters);\n\nConsole.WriteLine(apiResponseTemplate);',
-      },
-      go: {
-        method: 'client.Templates.Update',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tapiResponseTemplate, err := client.Templates.Update(\n\t\tcontext.TODO(),\n\t\t"7ba7b820-9dad-11d1-80b4-00c04fd430c8",\n\t\tsentdm.TemplateUpdateParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", apiResponseTemplate.Data)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://api.sent.dm/v3/templates/$ID \\\n    -X PUT \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "category": "MARKETING",\n          "name": "Updated Welcome Message"\n        }\'',
-      },
-      java: {
-        method: 'templates().update',
-        example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.templates.ApiResponseTemplate;\nimport dm.sent.models.templates.TemplateUpdateParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        ApiResponseTemplate apiResponseTemplate = client.templates().update("7ba7b820-9dad-11d1-80b4-00c04fd430c8");\n    }\n}',
-      },
-      php: {
-        method: 'templates->update',
-        example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$apiResponseTemplate = $client->templates->update(\n  '7ba7b820-9dad-11d1-80b4-00c04fd430c8',\n  category: 'MARKETING',\n  definition: [\n    'body' => [\n      'multiChannel' => [\n        'template' => 'template',\n        'type' => 'type',\n        'variables' => [\n          [\n            'name' => 'x',\n            'props' => [\n              'mediaType' => 'x',\n              'sample' => 'x',\n              'url' => 'x',\n              'variableType' => 'x',\n              'alt' => 'alt',\n              'regex' => 'regex',\n              'shortURL' => 'shortUrl',\n            ],\n            'type' => 'x',\n            'id' => 0,\n          ],\n        ],\n      ],\n      'sms' => [\n        'template' => 'template',\n        'type' => 'type',\n        'variables' => [\n          [\n            'name' => 'x',\n            'props' => [\n              'mediaType' => 'x',\n              'sample' => 'x',\n              'url' => 'x',\n              'variableType' => 'x',\n              'alt' => 'alt',\n              'regex' => 'regex',\n              'shortURL' => 'shortUrl',\n            ],\n            'type' => 'x',\n            'id' => 0,\n          ],\n        ],\n      ],\n      'whatsapp' => [\n        'template' => 'template',\n        'type' => 'type',\n        'variables' => [\n          [\n            'name' => 'x',\n            'props' => [\n              'mediaType' => 'x',\n              'sample' => 'x',\n              'url' => 'x',\n              'variableType' => 'x',\n              'alt' => 'alt',\n              'regex' => 'regex',\n              'shortURL' => 'shortUrl',\n            ],\n            'type' => 'x',\n            'id' => 0,\n          ],\n        ],\n      ],\n    ],\n    'authenticationConfig' => [\n      'addSecurityRecommendation' => true, 'codeExpirationMinutes' => 0\n    ],\n    'buttons' => [\n      [\n        'props' => [\n          'activeFor' => 1,\n          'countryCode' => 'x',\n          'offerCode' => 'x',\n          'phoneNumber' => 'x',\n          'quickReplyType' => 'x',\n          'text' => 'text',\n          'url' => 'x',\n          'urlType' => 'x',\n          'autofillText' => 'autofillText',\n          'otpType' => 'otpType',\n          'packageName' => 'packageName',\n          'signatureHash' => 'signatureHash',\n        ],\n        'type' => 'x',\n        'id' => 0,\n      ],\n    ],\n    'definitionVersion' => 'definitionVersion',\n    'footer' => [\n      'template' => 'template',\n      'type' => 'type',\n      'variables' => [\n        [\n          'name' => 'x',\n          'props' => [\n            'mediaType' => 'x',\n            'sample' => 'x',\n            'url' => 'x',\n            'variableType' => 'x',\n            'alt' => 'alt',\n            'regex' => 'regex',\n            'shortURL' => 'shortUrl',\n          ],\n          'type' => 'x',\n          'id' => 0,\n        ],\n      ],\n    ],\n    'header' => [\n      'template' => 'template',\n      'type' => 'type',\n      'variables' => [\n        [\n          'name' => 'x',\n          'props' => [\n            'mediaType' => 'x',\n            'sample' => 'x',\n            'url' => 'x',\n            'variableType' => 'x',\n            'alt' => 'alt',\n            'regex' => 'regex',\n            'shortURL' => 'shortUrl',\n          ],\n          'type' => 'x',\n          'id' => 0,\n        ],\n      ],\n    ],\n  ],\n  language: null,\n  name: 'Updated Welcome Message',\n  sandbox: false,\n  submitForReview: false,\n  idempotencyKey: 'req_abc123_retry1',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($apiResponseTemplate);",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst apiResponseTemplate = await client.templates.update('7ba7b820-9dad-11d1-80b4-00c04fd430c8');\n\nconsole.log(apiResponseTemplate.data);",
       },
       python: {
         method: 'templates.update',
         example:
           'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\napi_response_template = client.templates.update(\n    id="7ba7b820-9dad-11d1-80b4-00c04fd430c8",\n)\nprint(api_response_template.data)',
       },
+      java: {
+        method: 'templates().update',
+        example:
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.templates.ApiResponseTemplate;\nimport dm.sent.models.templates.TemplateUpdateParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        ApiResponseTemplate apiResponseTemplate = client.templates().update("7ba7b820-9dad-11d1-80b4-00c04fd430c8");\n    }\n}',
+      },
+      go: {
+        method: 'client.Templates.Update',
+        example:
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tapiResponseTemplate, err := client.Templates.Update(\n\t\tcontext.TODO(),\n\t\t"7ba7b820-9dad-11d1-80b4-00c04fd430c8",\n\t\tsentdm.TemplateUpdateParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", apiResponseTemplate.Data)\n}\n',
+      },
       ruby: {
         method: 'templates.update',
         example:
           'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\napi_response_template = sent.templates.update("7ba7b820-9dad-11d1-80b4-00c04fd430c8")\n\nputs(api_response_template)',
       },
-      typescript: {
-        method: 'client.templates.update',
+      php: {
+        method: 'templates->update',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst apiResponseTemplate = await client.templates.update('7ba7b820-9dad-11d1-80b4-00c04fd430c8');\n\nconsole.log(apiResponseTemplate.data);",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$apiResponseTemplate = $client->templates->update(\n  '7ba7b820-9dad-11d1-80b4-00c04fd430c8',\n  category: 'MARKETING',\n  definition: [\n    'body' => [\n      'multiChannel' => [\n        'template' => 'template',\n        'type' => 'type',\n        'variables' => [\n          [\n            'name' => 'x',\n            'props' => [\n              'mediaType' => 'x',\n              'sample' => 'x',\n              'url' => 'x',\n              'variableType' => 'x',\n              'alt' => 'alt',\n              'regex' => 'regex',\n              'shortURL' => 'shortUrl',\n            ],\n            'type' => 'x',\n            'id' => 0,\n          ],\n        ],\n      ],\n      'sms' => [\n        'template' => 'template',\n        'type' => 'type',\n        'variables' => [\n          [\n            'name' => 'x',\n            'props' => [\n              'mediaType' => 'x',\n              'sample' => 'x',\n              'url' => 'x',\n              'variableType' => 'x',\n              'alt' => 'alt',\n              'regex' => 'regex',\n              'shortURL' => 'shortUrl',\n            ],\n            'type' => 'x',\n            'id' => 0,\n          ],\n        ],\n      ],\n      'whatsapp' => [\n        'template' => 'template',\n        'type' => 'type',\n        'variables' => [\n          [\n            'name' => 'x',\n            'props' => [\n              'mediaType' => 'x',\n              'sample' => 'x',\n              'url' => 'x',\n              'variableType' => 'x',\n              'alt' => 'alt',\n              'regex' => 'regex',\n              'shortURL' => 'shortUrl',\n            ],\n            'type' => 'x',\n            'id' => 0,\n          ],\n        ],\n      ],\n    ],\n    'authenticationConfig' => [\n      'addSecurityRecommendation' => true, 'codeExpirationMinutes' => 0\n    ],\n    'buttons' => [\n      [\n        'props' => [\n          'activeFor' => 1,\n          'countryCode' => 'x',\n          'offerCode' => 'x',\n          'phoneNumber' => 'x',\n          'quickReplyType' => 'x',\n          'text' => 'text',\n          'url' => 'x',\n          'urlType' => 'x',\n          'autofillText' => 'autofillText',\n          'otpType' => 'otpType',\n          'packageName' => 'packageName',\n          'signatureHash' => 'signatureHash',\n        ],\n        'type' => 'x',\n        'id' => 0,\n      ],\n    ],\n    'definitionVersion' => 'definitionVersion',\n    'footer' => [\n      'template' => 'template',\n      'type' => 'type',\n      'variables' => [\n        [\n          'name' => 'x',\n          'props' => [\n            'mediaType' => 'x',\n            'sample' => 'x',\n            'url' => 'x',\n            'variableType' => 'x',\n            'alt' => 'alt',\n            'regex' => 'regex',\n            'shortURL' => 'shortUrl',\n          ],\n          'type' => 'x',\n          'id' => 0,\n        ],\n      ],\n    ],\n    'header' => [\n      'template' => 'template',\n      'type' => 'type',\n      'variables' => [\n        [\n          'name' => 'x',\n          'props' => [\n            'mediaType' => 'x',\n            'sample' => 'x',\n            'url' => 'x',\n            'variableType' => 'x',\n            'alt' => 'alt',\n            'regex' => 'regex',\n            'shortURL' => 'shortUrl',\n          ],\n          'type' => 'x',\n          'id' => 0,\n        ],\n      ],\n    ],\n  ],\n  language: null,\n  name: 'Updated Welcome Message',\n  sandbox: false,\n  submitForReview: false,\n  idempotencyKey: 'req_abc123_retry1',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($apiResponseTemplate);",
+      },
+      csharp: {
+        method: 'Templates.Update',
+        example:
+          'TemplateUpdateParams parameters = new()\n{\n    ID = "7ba7b820-9dad-11d1-80b4-00c04fd430c8"\n};\n\nvar apiResponseTemplate = await client.Templates.Update(parameters);\n\nConsole.WriteLine(apiResponseTemplate);',
+      },
+      http: {
+        example:
+          'curl https://api.sent.dm/v3/templates/$ID \\\n    -X PUT \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "category": "MARKETING",\n          "name": "Updated Welcome Message"\n        }\'',
       },
     },
   },
@@ -1257,44 +1257,44 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## complete\n\n`client.profiles.complete(profileId: string, webHookUrl: string, sandbox?: boolean, Idempotency-Key?: string, x-profile-id?: string): object`\n\n**post** `/v3/profiles/{profileId}/complete`\n\nFinal step in profile compliance workflow. Validates all prerequisites (general data, brand, campaigns), connects profile to Telnyx/WhatsApp, and sets status based on configuration. The process runs in the background and calls the provided webhook URL when finished.\n\n                Prerequisites:\n                - Profile must be completed\n                - If inheritTcrBrand=false: Profile must have existing brand\n                - If inheritTcrBrand=true: Parent must have existing brand\n                - If TCR application: Must have at least one campaign (own or inherited)\n                - If inheritTcrCampaign=false: Profile should have campaigns\n                - If inheritTcrCampaign=true: Parent must have campaigns\n\n                Status Logic:\n                - If both SMS and WhatsApp channels are missing → SUBMITTED\n                - If TCR application and not inheriting brand/campaigns → SUBMITTED\n                - If non-TCR with destination country (IsMain=true) → SUBMITTED\n                - Otherwise → COMPLETED\n\n### Parameters\n\n- `profileId: string`\n\n- `webHookUrl: string`\n  Webhook URL to call when profile completion finishes (success or failure)\n\n- `sandbox?: boolean`\n  Sandbox flag - when true, the operation is simulated without side effects\nUseful for testing integrations without actual execution\n\n- `Idempotency-Key?: string`\n\n- `x-profile-id?: string`\n\n### Returns\n\n- `object`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nconst response = await client.profiles.complete('660e8400-e29b-41d4-a716-446655440000', { webHookUrl: 'https://your-app.com/webhook/profile-complete' });\n\nconsole.log(response);\n```",
     perLanguage: {
-      csharp: {
-        method: 'Profiles.Complete',
+      typescript: {
+        method: 'client.profiles.complete',
         example:
-          'ProfileCompleteParams parameters = new()\n{\n    ProfileID = "660e8400-e29b-41d4-a716-446655440000",\n    WebHookUrl = "https://your-app.com/webhook/profile-complete",\n};\n\nvar response = await client.Profiles.Complete(parameters);\n\nConsole.WriteLine(response);',
-      },
-      go: {
-        method: 'client.Profiles.Complete',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tresponse, err := client.Profiles.Complete(\n\t\tcontext.TODO(),\n\t\t"660e8400-e29b-41d4-a716-446655440000",\n\t\tsentdm.ProfileCompleteParams{\n\t\t\tWebHookURL: "https://your-app.com/webhook/profile-complete",\n\t\t},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", response)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://api.sent.dm/v3/profiles/$PROFILE_ID/complete \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "webHookUrl": "https://your-app.com/webhook/profile-complete"\n        }\'',
-      },
-      java: {
-        method: 'profiles().complete',
-        example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.profiles.ProfileCompleteParams;\nimport dm.sent.models.profiles.ProfileCompleteResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        ProfileCompleteParams params = ProfileCompleteParams.builder()\n            .profileId("660e8400-e29b-41d4-a716-446655440000")\n            .webHookUrl("https://your-app.com/webhook/profile-complete")\n            .build();\n        ProfileCompleteResponse response = client.profiles().complete(params);\n    }\n}',
-      },
-      php: {
-        method: 'profiles->complete',
-        example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$response = $client->profiles->complete(\n  '660e8400-e29b-41d4-a716-446655440000',\n  webHookURL: 'https://your-app.com/webhook/profile-complete',\n  sandbox: false,\n  idempotencyKey: 'req_abc123_retry1',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($response);",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst response = await client.profiles.complete('660e8400-e29b-41d4-a716-446655440000', {\n  webHookUrl: 'https://your-app.com/webhook/profile-complete',\n});\n\nconsole.log(response);",
       },
       python: {
         method: 'profiles.complete',
         example:
           'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\nresponse = client.profiles.complete(\n    profile_id="660e8400-e29b-41d4-a716-446655440000",\n    web_hook_url="https://your-app.com/webhook/profile-complete",\n)\nprint(response)',
       },
+      java: {
+        method: 'profiles().complete',
+        example:
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.profiles.ProfileCompleteParams;\nimport dm.sent.models.profiles.ProfileCompleteResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        ProfileCompleteParams params = ProfileCompleteParams.builder()\n            .profileId("660e8400-e29b-41d4-a716-446655440000")\n            .webHookUrl("https://your-app.com/webhook/profile-complete")\n            .build();\n        ProfileCompleteResponse response = client.profiles().complete(params);\n    }\n}',
+      },
+      go: {
+        method: 'client.Profiles.Complete',
+        example:
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tresponse, err := client.Profiles.Complete(\n\t\tcontext.TODO(),\n\t\t"660e8400-e29b-41d4-a716-446655440000",\n\t\tsentdm.ProfileCompleteParams{\n\t\t\tWebHookURL: "https://your-app.com/webhook/profile-complete",\n\t\t},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", response)\n}\n',
+      },
       ruby: {
         method: 'profiles.complete',
         example:
           'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\nresponse = sent.profiles.complete(\n  "660e8400-e29b-41d4-a716-446655440000",\n  web_hook_url: "https://your-app.com/webhook/profile-complete"\n)\n\nputs(response)',
       },
-      typescript: {
-        method: 'client.profiles.complete',
+      php: {
+        method: 'profiles->complete',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst response = await client.profiles.complete('660e8400-e29b-41d4-a716-446655440000', {\n  webHookUrl: 'https://your-app.com/webhook/profile-complete',\n});\n\nconsole.log(response);",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$response = $client->profiles->complete(\n  '660e8400-e29b-41d4-a716-446655440000',\n  webHookURL: 'https://your-app.com/webhook/profile-complete',\n  sandbox: false,\n  idempotencyKey: 'req_abc123_retry1',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($response);",
+      },
+      csharp: {
+        method: 'Profiles.Complete',
+        example:
+          'ProfileCompleteParams parameters = new()\n{\n    ProfileID = "660e8400-e29b-41d4-a716-446655440000",\n    WebHookUrl = "https://your-app.com/webhook/profile-complete",\n};\n\nvar response = await client.Profiles.Complete(parameters);\n\nConsole.WriteLine(response);',
+      },
+      http: {
+        example:
+          'curl https://api.sent.dm/v3/profiles/$PROFILE_ID/complete \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "webHookUrl": "https://your-app.com/webhook/profile-complete"\n        }\'',
       },
     },
   },
@@ -1332,44 +1332,44 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## create\n\n`client.profiles.create(allow_contact_sharing?: boolean, allow_template_sharing?: boolean, billing_contact?: { email: string; name: string; address?: string; phone?: string; }, billing_model?: string, brand?: { compliance: sent_dm_services_endpoints_customer_ap_iv3_contracts_requests_brands_brand_compliance_info; contact: sent_dm_services_endpoints_customer_ap_iv3_contracts_requests_brands_brand_contact_info; business?: sent_dm_services_endpoints_customer_ap_iv3_contracts_requests_brands_brand_business_info; }, description?: string, icon?: string, inherit_contacts?: boolean, inherit_tcr_brand?: boolean, inherit_tcr_campaign?: boolean, inherit_templates?: boolean, name?: string, payment_details?: { card_number: string; cvc: string; expiry: string; zip_code: string; }, sandbox?: boolean, short_name?: string, whatsapp_business_account?: { access_token: string; waba_id: string; phone_number_id?: string; }, Idempotency-Key?: string, x-profile-id?: string): { data?: profile_detail; error?: error_detail; meta?: api_meta; success?: boolean; }`\n\n**post** `/v3/profiles`\n\nCreates a new sender profile within an organization. Profiles represent different brands, departments, or use cases, each with their own messaging configuration and settings. Requires admin role in the organization.\n\n## WhatsApp Business Account\n\nEvery profile must be linked to a WhatsApp Business Account. There are two ways to do this:\n\n**1. Inherit from organization (default)** — Omit the `whatsapp_business_account` field. The profile will share the organization's WhatsApp Business Account, which must have been set up via WhatsApp Embedded Signup. This is the recommended path for most use cases.\n\n**2. Direct credentials** — Provide a `whatsapp_business_account` object with `waba_id`, `phone_number_id`, and `access_token`. Use this when the profile needs its own independent WhatsApp Business Account. Obtain these from Meta Business Manager by creating a System User with `whatsapp_business_messaging` and `whatsapp_business_management` permissions.\n\nIf the `whatsapp_business_account` field is omitted and the organization has no WhatsApp Business Account configured, the request will be rejected with HTTP 422.\n\n## Brand\n\nInclude the optional `brand` field to create the brand for this profile at the same time. Cannot be used when `inherit_tcr_brand` is `true`.\n\n## Payment Details\n\nWhen `billing_model` is `\"profile\"` or `\"profile_and_organization\"` you may include a `payment_details` object containing the card number, expiry (MM/YY), CVC, and billing ZIP code. Payment details are **never stored** on our servers and are forwarded directly to the payment processor. Providing `payment_details` when `billing_model` is `\"organization\"` is not allowed.\n\n### Parameters\n\n- `allow_contact_sharing?: boolean`\n  Whether contacts are shared across profiles (default: false)\n\n- `allow_template_sharing?: boolean`\n  Whether templates are shared across profiles (default: false)\n\n- `billing_contact?: { email: string; name: string; address?: string; phone?: string; }`\n  Billing contact information for a profile.\nRequired when billing_model is \"profile\" or \"profile_and_organization\".\n  - `email: string`\n    Email address where invoices will be sent (required)\n  - `name: string`\n    Full name of the billing contact or company (required)\n  - `address?: string`\n    Billing address (optional). Free-form text including street, city, state, postal code, and country.\n  - `phone?: string`\n    Phone number for the billing contact (optional)\n\n- `billing_model?: string`\n  Billing model: profile, organization, or profile_and_organization (default: profile).\n- \"organization\": the organization's billing details are used; no profile-level billing info needed.\n- \"profile\": the profile is billed independently; billing_contact is required.\n- \"profile_and_organization\": the profile is billed first with the organization as fallback; billing_contact is required.\n\n- `brand?: { compliance: { brandRelationship: tcr_brand_relationship; vertical: tcr_vertical; destinationCountries?: destination_country[]; expectedMessagingVolume?: string; isTcrApplication?: boolean; notes?: string; phoneNumberPrefix?: string; primaryUseCase?: string; }; contact: { name: string; businessName?: string; email?: string; phone?: string; phoneCountryCode?: string; role?: string; }; business?: { city?: string; country?: string; countryOfRegistration?: string; entityType?: 'PRIVATE_PROFIT' | 'PUBLIC_PROFIT' | 'NON_PROFIT' | 'SOLE_PROPRIETOR' | 'GOVERNMENT'; legalName?: string; postalCode?: string; state?: string; street?: string; taxId?: string; taxIdType?: string; url?: string; }; }`\n  Brand and KYC data grouped into contact, business, and compliance sections\n  - `compliance: { brandRelationship: 'BASIC_ACCOUNT' | 'MEDIUM_ACCOUNT' | 'LARGE_ACCOUNT' | 'SMALL_ACCOUNT' | 'KEY_ACCOUNT'; vertical: string; destinationCountries?: { id?: string; isMain?: boolean; }[]; expectedMessagingVolume?: string; isTcrApplication?: boolean; notes?: string; phoneNumberPrefix?: string; primaryUseCase?: string; }`\n    Compliance and TCR information for brand registration\n  - `contact: { name: string; businessName?: string; email?: string; phone?: string; phoneCountryCode?: string; role?: string; }`\n    Contact information for brand KYC\n  - `business?: { city?: string; country?: string; countryOfRegistration?: string; entityType?: 'PRIVATE_PROFIT' | 'PUBLIC_PROFIT' | 'NON_PROFIT' | 'SOLE_PROPRIETOR' | 'GOVERNMENT'; legalName?: string; postalCode?: string; state?: string; street?: string; taxId?: string; taxIdType?: string; url?: string; }`\n    Business details and address for brand KYC\n\n- `description?: string`\n  Profile description (optional)\n\n- `icon?: string`\n  Profile icon URL (optional)\n\n- `inherit_contacts?: boolean`\n  Whether this profile inherits contacts from organization (default: true)\n\n- `inherit_tcr_brand?: boolean`\n  Whether this profile inherits TCR brand from organization (default: true)\n\n- `inherit_tcr_campaign?: boolean`\n  Whether this profile inherits TCR campaign from organization (default: true)\n\n- `inherit_templates?: boolean`\n  Whether this profile inherits templates from organization (default: true)\n\n- `name?: string`\n  Profile name (required)\n\n- `payment_details?: { card_number: string; cvc: string; expiry: string; zip_code: string; }`\n  Payment card details for a profile.\nAccepted when billing_model is \"profile\" or \"profile_and_organization\".\nThese details are not stored on our servers and will be forwarded to the payment processor.\n  - `card_number: string`\n    Card number (digits only, 13–19 characters)\n  - `cvc: string`\n    Card security code (3–4 digits)\n  - `expiry: string`\n    Card expiry date in MM/YY format (e.g. \"09/27\")\n  - `zip_code: string`\n    Billing ZIP / postal code associated with the card\n\n- `sandbox?: boolean`\n  Sandbox flag - when true, the operation is simulated without side effects\nUseful for testing integrations without actual execution\n\n- `short_name?: string`\n  Profile short name/abbreviation (optional). Must be 3–11 characters, contain only letters, numbers,\nand spaces, and include at least one letter. Example: \"SALES\", \"Mkt 2\", \"Support1\".\n\n- `whatsapp_business_account?: { access_token: string; waba_id: string; phone_number_id?: string; }`\n  Direct WhatsApp Business Account credentials for a profile.\nUse this when the profile should have its own WhatsApp Business Account instead of inheriting from the organization.\nCredentials must be obtained from Meta Business Manager by creating a System User with\nwhatsapp_business_messaging and whatsapp_business_management scopes.\n  - `access_token: string`\n    System User access token with whatsapp_business_messaging and\nwhatsapp_business_management permissions. This value is stored securely\nand never returned in API responses.\n  - `waba_id: string`\n    WhatsApp Business Account ID from Meta Business Manager\n  - `phone_number_id?: string`\n    Phone Number ID of an existing number already registered under this WABA in Meta Business Manager.\nOptional — when omitted, a number will be provisioned from our pool and registered in the WABA\nduring the onboarding flow. When provided, the number must already exist in the WABA.\n\n- `Idempotency-Key?: string`\n\n- `x-profile-id?: string`\n\n### Returns\n\n- `{ data?: { id?: string; allow_contact_sharing?: boolean; allow_number_change_during_onboarding?: boolean; allow_template_sharing?: boolean; billing_contact?: object; billing_model?: string; brand?: object; created_at?: string; description?: string; email?: string; icon?: string; inherit_contacts?: boolean; inherit_tcr_brand?: boolean; inherit_tcr_campaign?: boolean; inherit_templates?: boolean; name?: string; organization_id?: string; sending_phone_number?: string; sending_phone_number_profile_id?: string; sending_whatsapp_number_profile_id?: string; short_name?: string; status?: string; updated_at?: string; waba_id?: string; whatsapp_phone_number?: string; }; error?: { code?: string; details?: object; doc_url?: string; message?: string; }; meta?: { request_id?: string; timestamp?: string; version?: string; }; success?: boolean; }`\n  Standard API response envelope for all v3 endpoints\n\n  - `data?: { id?: string; allow_contact_sharing?: boolean; allow_number_change_during_onboarding?: boolean; allow_template_sharing?: boolean; billing_contact?: { address?: string; email?: string; name?: string; phone?: string; }; billing_model?: string; brand?: { id?: string; business?: { city?: string; country?: string; country_of_registration?: string; entity_type?: string; legal_name?: string; postal_code?: string; state?: string; street?: string; tax_id?: string; tax_id_type?: string; url?: string; }; compliance?: { brand_relationship?: tcr_brand_relationship; destination_countries?: destination_country[]; expected_messaging_volume?: string; is_tcr_application?: boolean; notes?: string; phone_number_prefix?: string; primary_use_case?: string; vertical?: tcr_vertical; }; contact?: { business_name?: string; email?: string; name?: string; phone?: string; phone_country_code?: string; role?: string; }; created_at?: string; csp_id?: string; identity_status?: 'SELF_DECLARED' | 'UNVERIFIED' | 'VERIFIED' | 'VETTED_VERIFIED'; is_inherited?: boolean; status?: 'ACTIVE' | 'INACTIVE' | 'SUSPENDED'; submitted_at?: string; submitted_to_tcr?: boolean; tcr_brand_id?: string; universal_ein?: string; updated_at?: string; }; created_at?: string; description?: string; email?: string; icon?: string; inherit_contacts?: boolean; inherit_tcr_brand?: boolean; inherit_tcr_campaign?: boolean; inherit_templates?: boolean; name?: string; organization_id?: string; sending_phone_number?: string; sending_phone_number_profile_id?: string; sending_whatsapp_number_profile_id?: string; short_name?: string; status?: string; updated_at?: string; waba_id?: string; whatsapp_phone_number?: string; }`\n  - `error?: { code?: string; details?: object; doc_url?: string; message?: string; }`\n  - `meta?: { request_id?: string; timestamp?: string; version?: string; }`\n  - `success?: boolean`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nconst apiResponseOfProfileDetail = await client.profiles.create();\n\nconsole.log(apiResponseOfProfileDetail);\n```",
     perLanguage: {
-      csharp: {
-        method: 'Profiles.Create',
+      typescript: {
+        method: 'client.profiles.create',
         example:
-          'ProfileCreateParams parameters = new();\n\nvar apiResponseOfProfileDetail = await client.Profiles.Create(parameters);\n\nConsole.WriteLine(apiResponseOfProfileDetail);',
-      },
-      go: {
-        method: 'client.Profiles.New',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tapiResponseOfProfileDetail, err := client.Profiles.New(context.TODO(), sentdm.ProfileNewParams{})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", apiResponseOfProfileDetail.Data)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://api.sent.dm/v3/profiles \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "allow_contact_sharing": true,\n          "billing_model": "profile",\n          "description": "Sales department sender profile",\n          "icon": "https://example.com/sales-icon.png",\n          "inherit_contacts": true,\n          "inherit_templates": true,\n          "name": "Sales Team",\n          "short_name": "SALES",\n          "whatsapp_business_account": {\n            "access_token": "EAAxxxxxxxxxxxxxxx",\n            "waba_id": "123456789012345",\n            "phone_number_id": "987654321098765"\n          }\n        }\'',
-      },
-      java: {
-        method: 'profiles().create',
-        example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.profiles.ApiResponseOfProfileDetail;\nimport dm.sent.models.profiles.ProfileCreateParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        ApiResponseOfProfileDetail apiResponseOfProfileDetail = client.profiles().create();\n    }\n}',
-      },
-      php: {
-        method: 'profiles->create',
-        example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$apiResponseOfProfileDetail = $client->profiles->create(\n  allowContactSharing: true,\n  allowTemplateSharing: false,\n  billingContact: [\n    'email' => 'billing@acmecorp.com',\n    'name' => 'Acme Corp',\n    'address' => '123 Main Street, New York, NY 10001, US',\n    'phone' => '+12025551234',\n  ],\n  billingModel: 'profile',\n  brand: [\n    'compliance' => [\n      'brandRelationship' => TcrBrandRelationship::SMALL_ACCOUNT,\n      'vertical' => TcrVertical::PROFESSIONAL,\n      'destinationCountries' => [['id' => 'US', 'isMain' => false]],\n      'expectedMessagingVolume' => '10000',\n      'isTcrApplication' => true,\n      'notes' => null,\n      'phoneNumberPrefix' => '+1',\n      'primaryUseCase' => 'Customer notifications and appointment reminders',\n    ],\n    'contact' => [\n      'name' => 'John Smith',\n      'businessName' => 'Acme Corp',\n      'email' => 'john@acmecorp.com',\n      'phone' => '+12025551234',\n      'phoneCountryCode' => '1',\n      'role' => 'CEO',\n    ],\n    'business' => [\n      'city' => 'New York',\n      'country' => 'US',\n      'countryOfRegistration' => 'US',\n      'entityType' => 'PRIVATE_PROFIT',\n      'legalName' => 'Acme Corporation LLC',\n      'postalCode' => '10001',\n      'state' => 'NY',\n      'street' => '123 Main Street',\n      'taxID' => '12-3456789',\n      'taxIDType' => 'us_ein',\n      'url' => 'https://acmecorp.com',\n    ],\n  ],\n  description: 'Sales department sender profile',\n  icon: 'https://example.com/sales-icon.png',\n  inheritContacts: true,\n  inheritTcrBrand: false,\n  inheritTcrCampaign: false,\n  inheritTemplates: true,\n  name: 'Sales Team',\n  paymentDetails: [\n    'cardNumber' => '4111111111111111',\n    'cvc' => '123',\n    'expiry' => '09/27',\n    'zipCode' => '10001',\n  ],\n  sandbox: false,\n  shortName: 'SALES',\n  whatsappBusinessAccount: [\n    'accessToken' => 'EAAxxxxxxxxxxxxxxx',\n    'wabaID' => '123456789012345',\n    'phoneNumberID' => '987654321098765',\n  ],\n  idempotencyKey: 'req_abc123_retry1',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($apiResponseOfProfileDetail);",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst apiResponseOfProfileDetail = await client.profiles.create();\n\nconsole.log(apiResponseOfProfileDetail.data);",
       },
       python: {
         method: 'profiles.create',
         example:
           'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\napi_response_of_profile_detail = client.profiles.create()\nprint(api_response_of_profile_detail.data)',
       },
+      java: {
+        method: 'profiles().create',
+        example:
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.profiles.ApiResponseOfProfileDetail;\nimport dm.sent.models.profiles.ProfileCreateParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        ApiResponseOfProfileDetail apiResponseOfProfileDetail = client.profiles().create();\n    }\n}',
+      },
+      go: {
+        method: 'client.Profiles.New',
+        example:
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tapiResponseOfProfileDetail, err := client.Profiles.New(context.TODO(), sentdm.ProfileNewParams{})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", apiResponseOfProfileDetail.Data)\n}\n',
+      },
       ruby: {
         method: 'profiles.create',
         example:
           'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\napi_response_of_profile_detail = sent.profiles.create\n\nputs(api_response_of_profile_detail)',
       },
-      typescript: {
-        method: 'client.profiles.create',
+      php: {
+        method: 'profiles->create',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst apiResponseOfProfileDetail = await client.profiles.create();\n\nconsole.log(apiResponseOfProfileDetail.data);",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$apiResponseOfProfileDetail = $client->profiles->create(\n  allowContactSharing: true,\n  allowTemplateSharing: false,\n  billingContact: [\n    'email' => 'billing@acmecorp.com',\n    'name' => 'Acme Corp',\n    'address' => '123 Main Street, New York, NY 10001, US',\n    'phone' => '+12025551234',\n  ],\n  billingModel: 'profile',\n  brand: [\n    'compliance' => [\n      'brandRelationship' => TcrBrandRelationship::SMALL_ACCOUNT,\n      'vertical' => TcrVertical::PROFESSIONAL,\n      'destinationCountries' => [['id' => 'US', 'isMain' => false]],\n      'expectedMessagingVolume' => '10000',\n      'isTcrApplication' => true,\n      'notes' => null,\n      'phoneNumberPrefix' => '+1',\n      'primaryUseCase' => 'Customer notifications and appointment reminders',\n    ],\n    'contact' => [\n      'name' => 'John Smith',\n      'businessName' => 'Acme Corp',\n      'email' => 'john@acmecorp.com',\n      'phone' => '+12025551234',\n      'phoneCountryCode' => '1',\n      'role' => 'CEO',\n    ],\n    'business' => [\n      'city' => 'New York',\n      'country' => 'US',\n      'countryOfRegistration' => 'US',\n      'entityType' => 'PRIVATE_PROFIT',\n      'legalName' => 'Acme Corporation LLC',\n      'postalCode' => '10001',\n      'state' => 'NY',\n      'street' => '123 Main Street',\n      'taxID' => '12-3456789',\n      'taxIDType' => 'us_ein',\n      'url' => 'https://acmecorp.com',\n    ],\n  ],\n  description: 'Sales department sender profile',\n  icon: 'https://example.com/sales-icon.png',\n  inheritContacts: true,\n  inheritTcrBrand: false,\n  inheritTcrCampaign: false,\n  inheritTemplates: true,\n  name: 'Sales Team',\n  paymentDetails: [\n    'cardNumber' => '4111111111111111',\n    'cvc' => '123',\n    'expiry' => '09/27',\n    'zipCode' => '10001',\n  ],\n  sandbox: false,\n  shortName: 'SALES',\n  whatsappBusinessAccount: [\n    'accessToken' => 'EAAxxxxxxxxxxxxxxx',\n    'wabaID' => '123456789012345',\n    'phoneNumberID' => '987654321098765',\n  ],\n  idempotencyKey: 'req_abc123_retry1',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($apiResponseOfProfileDetail);",
+      },
+      csharp: {
+        method: 'Profiles.Create',
+        example:
+          'ProfileCreateParams parameters = new();\n\nvar apiResponseOfProfileDetail = await client.Profiles.Create(parameters);\n\nConsole.WriteLine(apiResponseOfProfileDetail);',
+      },
+      http: {
+        example:
+          'curl https://api.sent.dm/v3/profiles \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "allow_contact_sharing": true,\n          "billing_model": "profile",\n          "description": "Sales department sender profile",\n          "icon": "https://example.com/sales-icon.png",\n          "inherit_contacts": true,\n          "inherit_templates": true,\n          "name": "Sales Team",\n          "short_name": "SALES",\n          "whatsapp_business_account": {\n            "access_token": "EAAxxxxxxxxxxxxxxx",\n            "waba_id": "123456789012345",\n            "phone_number_id": "987654321098765"\n          }\n        }\'',
       },
     },
   },
@@ -1388,43 +1388,43 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## list\n\n`client.profiles.list(x-profile-id?: string): { data?: object; error?: error_detail; meta?: api_meta; success?: boolean; }`\n\n**get** `/v3/profiles`\n\nRetrieves all sender profiles within an organization, including brand information for each profile. Profiles represent different brands, departments, or use cases within an organization, each with their own messaging configuration.\n\n### Parameters\n\n- `x-profile-id?: string`\n\n### Returns\n\n- `{ data?: { profiles?: object[]; }; error?: { code?: string; details?: object; doc_url?: string; message?: string; }; meta?: { request_id?: string; timestamp?: string; version?: string; }; success?: boolean; }`\n  Standard API response envelope for all v3 endpoints\n\n  - `data?: { profiles?: { id?: string; allow_contact_sharing?: boolean; allow_number_change_during_onboarding?: boolean; allow_template_sharing?: boolean; billing_contact?: { address?: string; email?: string; name?: string; phone?: string; }; billing_model?: string; brand?: { id?: string; business?: object; compliance?: object; contact?: object; created_at?: string; csp_id?: string; identity_status?: 'SELF_DECLARED' | 'UNVERIFIED' | 'VERIFIED' | 'VETTED_VERIFIED'; is_inherited?: boolean; status?: 'ACTIVE' | 'INACTIVE' | 'SUSPENDED'; submitted_at?: string; submitted_to_tcr?: boolean; tcr_brand_id?: string; universal_ein?: string; updated_at?: string; }; created_at?: string; description?: string; email?: string; icon?: string; inherit_contacts?: boolean; inherit_tcr_brand?: boolean; inherit_tcr_campaign?: boolean; inherit_templates?: boolean; name?: string; organization_id?: string; sending_phone_number?: string; sending_phone_number_profile_id?: string; sending_whatsapp_number_profile_id?: string; short_name?: string; status?: string; updated_at?: string; waba_id?: string; whatsapp_phone_number?: string; }[]; }`\n  - `error?: { code?: string; details?: object; doc_url?: string; message?: string; }`\n  - `meta?: { request_id?: string; timestamp?: string; version?: string; }`\n  - `success?: boolean`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nconst profiles = await client.profiles.list();\n\nconsole.log(profiles);\n```",
     perLanguage: {
-      csharp: {
-        method: 'Profiles.List',
+      typescript: {
+        method: 'client.profiles.list',
         example:
-          'ProfileListParams parameters = new();\n\nvar profiles = await client.Profiles.List(parameters);\n\nConsole.WriteLine(profiles);',
-      },
-      go: {
-        method: 'client.Profiles.List',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tprofiles, err := client.Profiles.List(context.TODO(), sentdm.ProfileListParams{})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", profiles.Data)\n}\n',
-      },
-      http: {
-        example: 'curl https://api.sent.dm/v3/profiles \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
-      },
-      java: {
-        method: 'profiles().list',
-        example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.profiles.ProfileListParams;\nimport dm.sent.models.profiles.ProfileListResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        ProfileListResponse profiles = client.profiles().list();\n    }\n}',
-      },
-      php: {
-        method: 'profiles->list',
-        example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$profiles = $client->profiles->list(\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e'\n);\n\nvar_dump($profiles);",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst profiles = await client.profiles.list();\n\nconsole.log(profiles.data);",
       },
       python: {
         method: 'profiles.list',
         example:
           'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\nprofiles = client.profiles.list()\nprint(profiles.data)',
       },
+      java: {
+        method: 'profiles().list',
+        example:
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.profiles.ProfileListParams;\nimport dm.sent.models.profiles.ProfileListResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        ProfileListResponse profiles = client.profiles().list();\n    }\n}',
+      },
+      go: {
+        method: 'client.Profiles.List',
+        example:
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tprofiles, err := client.Profiles.List(context.TODO(), sentdm.ProfileListParams{})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", profiles.Data)\n}\n',
+      },
       ruby: {
         method: 'profiles.list',
         example:
           'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\nprofiles = sent.profiles.list\n\nputs(profiles)',
       },
-      typescript: {
-        method: 'client.profiles.list',
+      php: {
+        method: 'profiles->list',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst profiles = await client.profiles.list();\n\nconsole.log(profiles.data);",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$profiles = $client->profiles->list(\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e'\n);\n\nvar_dump($profiles);",
+      },
+      csharp: {
+        method: 'Profiles.List',
+        example:
+          'ProfileListParams parameters = new();\n\nvar profiles = await client.Profiles.List(parameters);\n\nConsole.WriteLine(profiles);',
+      },
+      http: {
+        example: 'curl https://api.sent.dm/v3/profiles \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
       },
     },
   },
@@ -1441,44 +1441,44 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## delete\n\n`client.profiles.delete(profileId: string, body: { sandbox?: boolean; }, x-profile-id?: string): void`\n\n**delete** `/v3/profiles/{profileId}`\n\nSoft deletes a sender profile. The profile will be marked as deleted but data is retained. Requires admin role in the organization.\n\n### Parameters\n\n- `profileId: string`\n\n- `body: { sandbox?: boolean; }`\n  Request to delete a profile\n\n- `x-profile-id?: string`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nawait client.profiles.delete('profileId', { body: {} })\n```",
     perLanguage: {
-      csharp: {
-        method: 'Profiles.Delete',
+      typescript: {
+        method: 'client.profiles.delete',
         example:
-          'ProfileDeleteParams parameters = new()\n{\n    ProfileID = "profileId",\n    Body = new() { Sandbox = false },\n};\n\nawait client.Profiles.Delete(parameters);',
-      },
-      go: {
-        method: 'client.Profiles.Delete',
-        example:
-          'package main\n\nimport (\n\t"context"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\terr := client.Profiles.Delete(\n\t\tcontext.TODO(),\n\t\t"profileId",\n\t\tsentdm.ProfileDeleteParams{\n\t\t\tBody: sentdm.ProfileDeleteParamsBody{\n\t\t\t\tMutationRequestParam: sentdm.MutationRequestParam{},\n\t\t\t},\n\t\t},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n}\n',
-      },
-      http: {
-        example:
-          'curl https://api.sent.dm/v3/profiles/$PROFILE_ID \\\n    -X DELETE \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
-      },
-      java: {
-        method: 'profiles().delete',
-        example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.profiles.ProfileDeleteParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        client.profiles().delete("profileId");\n    }\n}',
-      },
-      php: {
-        method: 'profiles->delete',
-        example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$result = $client->profiles->delete(\n  'profileId',\n  body: ['sandbox' => false],\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($result);",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nawait client.profiles.delete('profileId', { body: {} });",
       },
       python: {
         method: 'profiles.delete',
         example:
           'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\nclient.profiles.delete(\n    profile_id="profileId",\n    body={},\n)',
       },
+      java: {
+        method: 'profiles().delete',
+        example:
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.profiles.ProfileDeleteParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        client.profiles().delete("profileId");\n    }\n}',
+      },
+      go: {
+        method: 'client.Profiles.Delete',
+        example:
+          'package main\n\nimport (\n\t"context"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\terr := client.Profiles.Delete(\n\t\tcontext.TODO(),\n\t\t"profileId",\n\t\tsentdm.ProfileDeleteParams{\n\t\t\tBody: sentdm.ProfileDeleteParamsBody{\n\t\t\t\tMutationRequestParam: sentdm.MutationRequestParam{},\n\t\t\t},\n\t\t},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n}\n',
+      },
       ruby: {
         method: 'profiles.delete',
         example:
           'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\nresult = sent.profiles.delete("profileId", body: {})\n\nputs(result)',
       },
-      typescript: {
-        method: 'client.profiles.delete',
+      php: {
+        method: 'profiles->delete',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nawait client.profiles.delete('profileId', { body: {} });",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$result = $client->profiles->delete(\n  'profileId',\n  body: ['sandbox' => false],\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($result);",
+      },
+      csharp: {
+        method: 'Profiles.Delete',
+        example:
+          'ProfileDeleteParams parameters = new()\n{\n    ProfileID = "profileId",\n    Body = new() { Sandbox = false },\n};\n\nawait client.Profiles.Delete(parameters);',
+      },
+      http: {
+        example:
+          'curl https://api.sent.dm/v3/profiles/$PROFILE_ID \\\n    -X DELETE \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
       },
     },
   },
@@ -1497,43 +1497,43 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## retrieve\n\n`client.profiles.retrieve(profileId: string, x-profile-id?: string): { data?: profile_detail; error?: error_detail; meta?: api_meta; success?: boolean; }`\n\n**get** `/v3/profiles/{profileId}`\n\nRetrieves detailed information about a specific sender profile within an organization, including brand and KYC information if a brand has been configured.\n\n### Parameters\n\n- `profileId: string`\n\n- `x-profile-id?: string`\n\n### Returns\n\n- `{ data?: { id?: string; allow_contact_sharing?: boolean; allow_number_change_during_onboarding?: boolean; allow_template_sharing?: boolean; billing_contact?: object; billing_model?: string; brand?: object; created_at?: string; description?: string; email?: string; icon?: string; inherit_contacts?: boolean; inherit_tcr_brand?: boolean; inherit_tcr_campaign?: boolean; inherit_templates?: boolean; name?: string; organization_id?: string; sending_phone_number?: string; sending_phone_number_profile_id?: string; sending_whatsapp_number_profile_id?: string; short_name?: string; status?: string; updated_at?: string; waba_id?: string; whatsapp_phone_number?: string; }; error?: { code?: string; details?: object; doc_url?: string; message?: string; }; meta?: { request_id?: string; timestamp?: string; version?: string; }; success?: boolean; }`\n  Standard API response envelope for all v3 endpoints\n\n  - `data?: { id?: string; allow_contact_sharing?: boolean; allow_number_change_during_onboarding?: boolean; allow_template_sharing?: boolean; billing_contact?: { address?: string; email?: string; name?: string; phone?: string; }; billing_model?: string; brand?: { id?: string; business?: { city?: string; country?: string; country_of_registration?: string; entity_type?: string; legal_name?: string; postal_code?: string; state?: string; street?: string; tax_id?: string; tax_id_type?: string; url?: string; }; compliance?: { brand_relationship?: tcr_brand_relationship; destination_countries?: destination_country[]; expected_messaging_volume?: string; is_tcr_application?: boolean; notes?: string; phone_number_prefix?: string; primary_use_case?: string; vertical?: tcr_vertical; }; contact?: { business_name?: string; email?: string; name?: string; phone?: string; phone_country_code?: string; role?: string; }; created_at?: string; csp_id?: string; identity_status?: 'SELF_DECLARED' | 'UNVERIFIED' | 'VERIFIED' | 'VETTED_VERIFIED'; is_inherited?: boolean; status?: 'ACTIVE' | 'INACTIVE' | 'SUSPENDED'; submitted_at?: string; submitted_to_tcr?: boolean; tcr_brand_id?: string; universal_ein?: string; updated_at?: string; }; created_at?: string; description?: string; email?: string; icon?: string; inherit_contacts?: boolean; inherit_tcr_brand?: boolean; inherit_tcr_campaign?: boolean; inherit_templates?: boolean; name?: string; organization_id?: string; sending_phone_number?: string; sending_phone_number_profile_id?: string; sending_whatsapp_number_profile_id?: string; short_name?: string; status?: string; updated_at?: string; waba_id?: string; whatsapp_phone_number?: string; }`\n  - `error?: { code?: string; details?: object; doc_url?: string; message?: string; }`\n  - `meta?: { request_id?: string; timestamp?: string; version?: string; }`\n  - `success?: boolean`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nconst apiResponseOfProfileDetail = await client.profiles.retrieve('profileId');\n\nconsole.log(apiResponseOfProfileDetail);\n```",
     perLanguage: {
-      csharp: {
-        method: 'Profiles.Retrieve',
+      typescript: {
+        method: 'client.profiles.retrieve',
         example:
-          'ProfileRetrieveParams parameters = new() { ProfileID = "profileId" };\n\nvar apiResponseOfProfileDetail = await client.Profiles.Retrieve(parameters);\n\nConsole.WriteLine(apiResponseOfProfileDetail);',
-      },
-      go: {
-        method: 'client.Profiles.Get',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tapiResponseOfProfileDetail, err := client.Profiles.Get(\n\t\tcontext.TODO(),\n\t\t"profileId",\n\t\tsentdm.ProfileGetParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", apiResponseOfProfileDetail.Data)\n}\n',
-      },
-      http: {
-        example: 'curl https://api.sent.dm/v3/profiles/$PROFILE_ID \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
-      },
-      java: {
-        method: 'profiles().retrieve',
-        example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.profiles.ApiResponseOfProfileDetail;\nimport dm.sent.models.profiles.ProfileRetrieveParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        ApiResponseOfProfileDetail apiResponseOfProfileDetail = client.profiles().retrieve("profileId");\n    }\n}',
-      },
-      php: {
-        method: 'profiles->retrieve',
-        example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$apiResponseOfProfileDetail = $client->profiles->retrieve(\n  'profileId', xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e'\n);\n\nvar_dump($apiResponseOfProfileDetail);",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst apiResponseOfProfileDetail = await client.profiles.retrieve('profileId');\n\nconsole.log(apiResponseOfProfileDetail.data);",
       },
       python: {
         method: 'profiles.retrieve',
         example:
           'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\napi_response_of_profile_detail = client.profiles.retrieve(\n    profile_id="profileId",\n)\nprint(api_response_of_profile_detail.data)',
       },
+      java: {
+        method: 'profiles().retrieve',
+        example:
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.profiles.ApiResponseOfProfileDetail;\nimport dm.sent.models.profiles.ProfileRetrieveParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        ApiResponseOfProfileDetail apiResponseOfProfileDetail = client.profiles().retrieve("profileId");\n    }\n}',
+      },
+      go: {
+        method: 'client.Profiles.Get',
+        example:
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tapiResponseOfProfileDetail, err := client.Profiles.Get(\n\t\tcontext.TODO(),\n\t\t"profileId",\n\t\tsentdm.ProfileGetParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", apiResponseOfProfileDetail.Data)\n}\n',
+      },
       ruby: {
         method: 'profiles.retrieve',
         example:
           'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\napi_response_of_profile_detail = sent.profiles.retrieve("profileId")\n\nputs(api_response_of_profile_detail)',
       },
-      typescript: {
-        method: 'client.profiles.retrieve',
+      php: {
+        method: 'profiles->retrieve',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst apiResponseOfProfileDetail = await client.profiles.retrieve('profileId');\n\nconsole.log(apiResponseOfProfileDetail.data);",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$apiResponseOfProfileDetail = $client->profiles->retrieve(\n  'profileId', xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e'\n);\n\nvar_dump($apiResponseOfProfileDetail);",
+      },
+      csharp: {
+        method: 'Profiles.Retrieve',
+        example:
+          'ProfileRetrieveParams parameters = new() { ProfileID = "profileId" };\n\nvar apiResponseOfProfileDetail = await client.Profiles.Retrieve(parameters);\n\nConsole.WriteLine(apiResponseOfProfileDetail);',
+      },
+      http: {
+        example: 'curl https://api.sent.dm/v3/profiles/$PROFILE_ID \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
       },
     },
   },
@@ -1576,44 +1576,44 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## update\n\n`client.profiles.update(profileId: string, allow_contact_sharing?: boolean, allow_number_change_during_onboarding?: boolean, allow_template_sharing?: boolean, billing_contact?: { email: string; name: string; address?: string; phone?: string; }, billing_model?: string, brand?: { compliance: sent_dm_services_endpoints_customer_ap_iv3_contracts_requests_brands_brand_compliance_info; contact: sent_dm_services_endpoints_customer_ap_iv3_contracts_requests_brands_brand_contact_info; business?: sent_dm_services_endpoints_customer_ap_iv3_contracts_requests_brands_brand_business_info; }, description?: string, icon?: string, inherit_contacts?: boolean, inherit_tcr_brand?: boolean, inherit_tcr_campaign?: boolean, inherit_templates?: boolean, name?: string, payment_details?: { card_number: string; cvc: string; expiry: string; zip_code: string; }, sandbox?: boolean, sending_phone_number?: string, sending_phone_number_profile_id?: string, sending_whatsapp_number_profile_id?: string, short_name?: string, whatsapp_phone_number?: string, Idempotency-Key?: string, x-profile-id?: string): { data?: profile_detail; error?: error_detail; meta?: api_meta; success?: boolean; }`\n\n**patch** `/v3/profiles/{profileId}`\n\nUpdates a profile's configuration and settings. Requires admin role in the organization. Only provided fields will be updated (partial update).\n\n## Brand Management\n\nInclude the optional `brand` field to create or update the brand associated with this profile. The brand holds KYC and TCR compliance data (legal business info, contact details, messaging vertical). Once a brand has been submitted to TCR it cannot be modified. Setting `inherit_tcr_brand: true` and providing `brand` in the same request is not allowed.\n\n## Payment Details\n\nWhen `billing_model` is `\"profile\"` or `\"profile_and_organization\"` you may include a `payment_details` object containing the card number, expiry (MM/YY), CVC, and billing ZIP code. Payment details are **never stored** on our servers and are forwarded directly to the payment processor. Providing `payment_details` when `billing_model` is `\"organization\"` is not allowed.\n\n### Parameters\n\n- `profileId: string`\n\n- `allow_contact_sharing?: boolean`\n  Whether contacts are shared across profiles (optional)\n\n- `allow_number_change_during_onboarding?: boolean`\n  Whether number changes are allowed during onboarding (optional)\n\n- `allow_template_sharing?: boolean`\n  Whether templates are shared across profiles (optional)\n\n- `billing_contact?: { email: string; name: string; address?: string; phone?: string; }`\n  Billing contact information for a profile.\nRequired when billing_model is \"profile\" or \"profile_and_organization\".\n  - `email: string`\n    Email address where invoices will be sent (required)\n  - `name: string`\n    Full name of the billing contact or company (required)\n  - `address?: string`\n    Billing address (optional). Free-form text including street, city, state, postal code, and country.\n  - `phone?: string`\n    Phone number for the billing contact (optional)\n\n- `billing_model?: string`\n  Billing model: profile, organization, or profile_and_organization (optional).\n- \"organization\": the organization's billing details are used; no profile-level billing info needed.\n- \"profile\": the profile is billed independently; billing_contact is required.\n- \"profile_and_organization\": the profile is billed first with the organization as fallback; billing_contact is required.\n\n- `brand?: { compliance: { brandRelationship: tcr_brand_relationship; vertical: tcr_vertical; destinationCountries?: destination_country[]; expectedMessagingVolume?: string; isTcrApplication?: boolean; notes?: string; phoneNumberPrefix?: string; primaryUseCase?: string; }; contact: { name: string; businessName?: string; email?: string; phone?: string; phoneCountryCode?: string; role?: string; }; business?: { city?: string; country?: string; countryOfRegistration?: string; entityType?: 'PRIVATE_PROFIT' | 'PUBLIC_PROFIT' | 'NON_PROFIT' | 'SOLE_PROPRIETOR' | 'GOVERNMENT'; legalName?: string; postalCode?: string; state?: string; street?: string; taxId?: string; taxIdType?: string; url?: string; }; }`\n  Brand and KYC data grouped into contact, business, and compliance sections\n  - `compliance: { brandRelationship: 'BASIC_ACCOUNT' | 'MEDIUM_ACCOUNT' | 'LARGE_ACCOUNT' | 'SMALL_ACCOUNT' | 'KEY_ACCOUNT'; vertical: string; destinationCountries?: { id?: string; isMain?: boolean; }[]; expectedMessagingVolume?: string; isTcrApplication?: boolean; notes?: string; phoneNumberPrefix?: string; primaryUseCase?: string; }`\n    Compliance and TCR information for brand registration\n  - `contact: { name: string; businessName?: string; email?: string; phone?: string; phoneCountryCode?: string; role?: string; }`\n    Contact information for brand KYC\n  - `business?: { city?: string; country?: string; countryOfRegistration?: string; entityType?: 'PRIVATE_PROFIT' | 'PUBLIC_PROFIT' | 'NON_PROFIT' | 'SOLE_PROPRIETOR' | 'GOVERNMENT'; legalName?: string; postalCode?: string; state?: string; street?: string; taxId?: string; taxIdType?: string; url?: string; }`\n    Business details and address for brand KYC\n\n- `description?: string`\n  Profile description (optional)\n\n- `icon?: string`\n  Profile icon URL (optional)\n\n- `inherit_contacts?: boolean`\n  Whether this profile inherits contacts from organization (optional)\n\n- `inherit_tcr_brand?: boolean`\n  Whether this profile inherits TCR brand from organization (optional)\n\n- `inherit_tcr_campaign?: boolean`\n  Whether this profile inherits TCR campaign from organization (optional)\n\n- `inherit_templates?: boolean`\n  Whether this profile inherits templates from organization (optional)\n\n- `name?: string`\n  Profile name (optional)\n\n- `payment_details?: { card_number: string; cvc: string; expiry: string; zip_code: string; }`\n  Payment card details for a profile.\nAccepted when billing_model is \"profile\" or \"profile_and_organization\".\nThese details are not stored on our servers and will be forwarded to the payment processor.\n  - `card_number: string`\n    Card number (digits only, 13–19 characters)\n  - `cvc: string`\n    Card security code (3–4 digits)\n  - `expiry: string`\n    Card expiry date in MM/YY format (e.g. \"09/27\")\n  - `zip_code: string`\n    Billing ZIP / postal code associated with the card\n\n- `sandbox?: boolean`\n  Sandbox flag - when true, the operation is simulated without side effects\nUseful for testing integrations without actual execution\n\n- `sending_phone_number?: string`\n  Direct phone number for SMS sending (optional)\n\n- `sending_phone_number_profile_id?: string`\n  Reference to another profile to use for SMS/Telnyx configuration (optional)\n\n- `sending_whatsapp_number_profile_id?: string`\n  Reference to another profile to use for WhatsApp configuration (optional)\n\n- `short_name?: string`\n  Profile short name/abbreviation (optional). Must be 3–11 characters, contain only letters, numbers,\nand spaces, and include at least one letter. Example: \"SALES\", \"Mkt 2\", \"Support1\".\n\n- `whatsapp_phone_number?: string`\n  Direct phone number for WhatsApp sending (optional)\n\n- `Idempotency-Key?: string`\n\n- `x-profile-id?: string`\n\n### Returns\n\n- `{ data?: { id?: string; allow_contact_sharing?: boolean; allow_number_change_during_onboarding?: boolean; allow_template_sharing?: boolean; billing_contact?: object; billing_model?: string; brand?: object; created_at?: string; description?: string; email?: string; icon?: string; inherit_contacts?: boolean; inherit_tcr_brand?: boolean; inherit_tcr_campaign?: boolean; inherit_templates?: boolean; name?: string; organization_id?: string; sending_phone_number?: string; sending_phone_number_profile_id?: string; sending_whatsapp_number_profile_id?: string; short_name?: string; status?: string; updated_at?: string; waba_id?: string; whatsapp_phone_number?: string; }; error?: { code?: string; details?: object; doc_url?: string; message?: string; }; meta?: { request_id?: string; timestamp?: string; version?: string; }; success?: boolean; }`\n  Standard API response envelope for all v3 endpoints\n\n  - `data?: { id?: string; allow_contact_sharing?: boolean; allow_number_change_during_onboarding?: boolean; allow_template_sharing?: boolean; billing_contact?: { address?: string; email?: string; name?: string; phone?: string; }; billing_model?: string; brand?: { id?: string; business?: { city?: string; country?: string; country_of_registration?: string; entity_type?: string; legal_name?: string; postal_code?: string; state?: string; street?: string; tax_id?: string; tax_id_type?: string; url?: string; }; compliance?: { brand_relationship?: tcr_brand_relationship; destination_countries?: destination_country[]; expected_messaging_volume?: string; is_tcr_application?: boolean; notes?: string; phone_number_prefix?: string; primary_use_case?: string; vertical?: tcr_vertical; }; contact?: { business_name?: string; email?: string; name?: string; phone?: string; phone_country_code?: string; role?: string; }; created_at?: string; csp_id?: string; identity_status?: 'SELF_DECLARED' | 'UNVERIFIED' | 'VERIFIED' | 'VETTED_VERIFIED'; is_inherited?: boolean; status?: 'ACTIVE' | 'INACTIVE' | 'SUSPENDED'; submitted_at?: string; submitted_to_tcr?: boolean; tcr_brand_id?: string; universal_ein?: string; updated_at?: string; }; created_at?: string; description?: string; email?: string; icon?: string; inherit_contacts?: boolean; inherit_tcr_brand?: boolean; inherit_tcr_campaign?: boolean; inherit_templates?: boolean; name?: string; organization_id?: string; sending_phone_number?: string; sending_phone_number_profile_id?: string; sending_whatsapp_number_profile_id?: string; short_name?: string; status?: string; updated_at?: string; waba_id?: string; whatsapp_phone_number?: string; }`\n  - `error?: { code?: string; details?: object; doc_url?: string; message?: string; }`\n  - `meta?: { request_id?: string; timestamp?: string; version?: string; }`\n  - `success?: boolean`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nconst apiResponseOfProfileDetail = await client.profiles.update('profileId');\n\nconsole.log(apiResponseOfProfileDetail);\n```",
     perLanguage: {
-      csharp: {
-        method: 'Profiles.Update',
+      typescript: {
+        method: 'client.profiles.update',
         example:
-          'ProfileUpdateParams parameters = new() { ProfileID = "profileId" };\n\nvar apiResponseOfProfileDetail = await client.Profiles.Update(parameters);\n\nConsole.WriteLine(apiResponseOfProfileDetail);',
-      },
-      go: {
-        method: 'client.Profiles.Update',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tapiResponseOfProfileDetail, err := client.Profiles.Update(\n\t\tcontext.TODO(),\n\t\t"profileId",\n\t\tsentdm.ProfileUpdateParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", apiResponseOfProfileDetail.Data)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://api.sent.dm/v3/profiles/$PROFILE_ID \\\n    -X PATCH \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "allow_contact_sharing": true,\n          "billing_model": "organization",\n          "description": "Updated sales department sender profile",\n          "name": "Sales Team - Updated",\n          "short_name": "SALES"\n        }\'',
-      },
-      java: {
-        method: 'profiles().update',
-        example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.profiles.ApiResponseOfProfileDetail;\nimport dm.sent.models.profiles.ProfileUpdateParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        ApiResponseOfProfileDetail apiResponseOfProfileDetail = client.profiles().update("profileId");\n    }\n}',
-      },
-      php: {
-        method: 'profiles->update',
-        example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$apiResponseOfProfileDetail = $client->profiles->update(\n  'profileId',\n  allowContactSharing: true,\n  allowNumberChangeDuringOnboarding: null,\n  allowTemplateSharing: null,\n  billingContact: [\n    'email' => 'dev@stainless.com',\n    'name' => 'x',\n    'address' => 'address',\n    'phone' => 'phone',\n  ],\n  billingModel: 'organization',\n  brand: [\n    'compliance' => [\n      'brandRelationship' => TcrBrandRelationship::SMALL_ACCOUNT,\n      'vertical' => TcrVertical::PROFESSIONAL,\n      'destinationCountries' => [['id' => 'US', 'isMain' => false]],\n      'expectedMessagingVolume' => '10000',\n      'isTcrApplication' => true,\n      'notes' => null,\n      'phoneNumberPrefix' => '+1',\n      'primaryUseCase' => 'Customer notifications and appointment reminders',\n    ],\n    'contact' => [\n      'name' => 'John Smith',\n      'businessName' => 'Acme Corp',\n      'email' => 'john@acmecorp.com',\n      'phone' => '+12025551234',\n      'phoneCountryCode' => '1',\n      'role' => 'CEO',\n    ],\n    'business' => [\n      'city' => 'New York',\n      'country' => 'US',\n      'countryOfRegistration' => 'US',\n      'entityType' => 'PRIVATE_PROFIT',\n      'legalName' => 'Acme Corporation LLC',\n      'postalCode' => '10001',\n      'state' => 'NY',\n      'street' => '123 Main Street',\n      'taxID' => '12-3456789',\n      'taxIDType' => 'us_ein',\n      'url' => 'https://acmecorp.com',\n    ],\n  ],\n  description: 'Updated sales department sender profile',\n  icon: null,\n  inheritContacts: null,\n  inheritTcrBrand: null,\n  inheritTcrCampaign: null,\n  inheritTemplates: null,\n  name: 'Sales Team - Updated',\n  paymentDetails: [\n    'cardNumber' => '3216699102256101',\n    'cvc' => '3216',\n    'expiry' => '11/66',\n    'zipCode' => 'x',\n  ],\n  sandbox: false,\n  sendingPhoneNumber: null,\n  sendingPhoneNumberProfileID: null,\n  sendingWhatsappNumberProfileID: null,\n  shortName: 'SALES',\n  whatsappPhoneNumber: null,\n  idempotencyKey: 'req_abc123_retry1',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($apiResponseOfProfileDetail);",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst apiResponseOfProfileDetail = await client.profiles.update('profileId');\n\nconsole.log(apiResponseOfProfileDetail.data);",
       },
       python: {
         method: 'profiles.update',
         example:
           'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\napi_response_of_profile_detail = client.profiles.update(\n    profile_id="profileId",\n)\nprint(api_response_of_profile_detail.data)',
       },
+      java: {
+        method: 'profiles().update',
+        example:
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.profiles.ApiResponseOfProfileDetail;\nimport dm.sent.models.profiles.ProfileUpdateParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        ApiResponseOfProfileDetail apiResponseOfProfileDetail = client.profiles().update("profileId");\n    }\n}',
+      },
+      go: {
+        method: 'client.Profiles.Update',
+        example:
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tapiResponseOfProfileDetail, err := client.Profiles.Update(\n\t\tcontext.TODO(),\n\t\t"profileId",\n\t\tsentdm.ProfileUpdateParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", apiResponseOfProfileDetail.Data)\n}\n',
+      },
       ruby: {
         method: 'profiles.update',
         example:
           'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\napi_response_of_profile_detail = sent.profiles.update("profileId")\n\nputs(api_response_of_profile_detail)',
       },
-      typescript: {
-        method: 'client.profiles.update',
+      php: {
+        method: 'profiles->update',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst apiResponseOfProfileDetail = await client.profiles.update('profileId');\n\nconsole.log(apiResponseOfProfileDetail.data);",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$apiResponseOfProfileDetail = $client->profiles->update(\n  'profileId',\n  allowContactSharing: true,\n  allowNumberChangeDuringOnboarding: null,\n  allowTemplateSharing: null,\n  billingContact: [\n    'email' => 'dev@stainless.com',\n    'name' => 'x',\n    'address' => 'address',\n    'phone' => 'phone',\n  ],\n  billingModel: 'organization',\n  brand: [\n    'compliance' => [\n      'brandRelationship' => TcrBrandRelationship::SMALL_ACCOUNT,\n      'vertical' => TcrVertical::PROFESSIONAL,\n      'destinationCountries' => [['id' => 'US', 'isMain' => false]],\n      'expectedMessagingVolume' => '10000',\n      'isTcrApplication' => true,\n      'notes' => null,\n      'phoneNumberPrefix' => '+1',\n      'primaryUseCase' => 'Customer notifications and appointment reminders',\n    ],\n    'contact' => [\n      'name' => 'John Smith',\n      'businessName' => 'Acme Corp',\n      'email' => 'john@acmecorp.com',\n      'phone' => '+12025551234',\n      'phoneCountryCode' => '1',\n      'role' => 'CEO',\n    ],\n    'business' => [\n      'city' => 'New York',\n      'country' => 'US',\n      'countryOfRegistration' => 'US',\n      'entityType' => 'PRIVATE_PROFIT',\n      'legalName' => 'Acme Corporation LLC',\n      'postalCode' => '10001',\n      'state' => 'NY',\n      'street' => '123 Main Street',\n      'taxID' => '12-3456789',\n      'taxIDType' => 'us_ein',\n      'url' => 'https://acmecorp.com',\n    ],\n  ],\n  description: 'Updated sales department sender profile',\n  icon: null,\n  inheritContacts: null,\n  inheritTcrBrand: null,\n  inheritTcrCampaign: null,\n  inheritTemplates: null,\n  name: 'Sales Team - Updated',\n  paymentDetails: [\n    'cardNumber' => '3216699102256101',\n    'cvc' => '3216',\n    'expiry' => '11/66',\n    'zipCode' => 'x',\n  ],\n  sandbox: false,\n  sendingPhoneNumber: null,\n  sendingPhoneNumberProfileID: null,\n  sendingWhatsappNumberProfileID: null,\n  shortName: 'SALES',\n  whatsappPhoneNumber: null,\n  idempotencyKey: 'req_abc123_retry1',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($apiResponseOfProfileDetail);",
+      },
+      csharp: {
+        method: 'Profiles.Update',
+        example:
+          'ProfileUpdateParams parameters = new() { ProfileID = "profileId" };\n\nvar apiResponseOfProfileDetail = await client.Profiles.Update(parameters);\n\nConsole.WriteLine(apiResponseOfProfileDetail);',
+      },
+      http: {
+        example:
+          'curl https://api.sent.dm/v3/profiles/$PROFILE_ID \\\n    -X PATCH \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "allow_contact_sharing": true,\n          "billing_model": "organization",\n          "description": "Updated sales department sender profile",\n          "name": "Sales Team - Updated",\n          "short_name": "SALES"\n        }\'',
       },
     },
   },
@@ -1638,44 +1638,44 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## create\n\n`client.profiles.campaigns.create(profileId: string, campaign: { description: string; name: string; type: string; useCases: sent_dm_services_endpoints_customer_ap_iv3_contracts_requests_campaigns_campaign_use_case_data[]; helpKeywords?: string; helpMessage?: string; messageFlow?: string; optinKeywords?: string; optinMessage?: string; optoutKeywords?: string; optoutMessage?: string; privacyPolicyLink?: string; termsAndConditionsLink?: string; }, sandbox?: boolean, Idempotency-Key?: string, x-profile-id?: string): { data?: tcr_campaign_with_use_cases; error?: error_detail; meta?: api_meta; success?: boolean; }`\n\n**post** `/v3/profiles/{profileId}/campaigns`\n\nCreates a new campaign scoped under the brand of the specified profile. Each campaign must include at least one use case with sample messages.\n\n### Parameters\n\n- `profileId: string`\n\n- `campaign: { description: string; name: string; type: string; useCases: { messagingUseCaseUs: messaging_use_case_us; sampleMessages: string[]; }[]; helpKeywords?: string; helpMessage?: string; messageFlow?: string; optinKeywords?: string; optinMessage?: string; optoutKeywords?: string; optoutMessage?: string; privacyPolicyLink?: string; termsAndConditionsLink?: string; }`\n  Campaign data for create or update operation\n  - `description: string`\n    Campaign description\n  - `name: string`\n    Campaign name\n  - `type: string`\n    Campaign type (e.g., \"KYC\", \"App\")\n  - `useCases: { messagingUseCaseUs: string; sampleMessages: string[]; }[]`\n    List of use cases with sample messages\n  - `helpKeywords?: string`\n    Comma-separated keywords that trigger help message (e.g., \"HELP, INFO, SUPPORT\")\n  - `helpMessage?: string`\n    Message sent when user requests help\n  - `messageFlow?: string`\n    Description of how messages flow in the campaign\n  - `optinKeywords?: string`\n    Comma-separated keywords that trigger opt-in (e.g., \"YES, START, SUBSCRIBE\")\n  - `optinMessage?: string`\n    Message sent when user opts in\n  - `optoutKeywords?: string`\n    Comma-separated keywords that trigger opt-out (e.g., \"STOP, UNSUBSCRIBE, END\")\n  - `optoutMessage?: string`\n    Message sent when user opts out\n  - `privacyPolicyLink?: string`\n    URL to privacy policy\n  - `termsAndConditionsLink?: string`\n    URL to terms and conditions\n\n- `sandbox?: boolean`\n  Sandbox flag - when true, the operation is simulated without side effects\nUseful for testing integrations without actual execution\n\n- `Idempotency-Key?: string`\n\n- `x-profile-id?: string`\n\n### Returns\n\n- `{ data?: object; error?: { code?: string; details?: object; doc_url?: string; message?: string; }; meta?: { request_id?: string; timestamp?: string; version?: string; }; success?: boolean; }`\n  Standard API response envelope for all v3 endpoints\n\n  - `data?: { id?: string; createdAt?: string; updatedAt?: string; }`\n  - `error?: { code?: string; details?: object; doc_url?: string; message?: string; }`\n  - `meta?: { request_id?: string; timestamp?: string; version?: string; }`\n  - `success?: boolean`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nconst apiResponseOfTcrCampaignWithUseCases = await client.profiles.campaigns.create('770e8400-e29b-41d4-a716-446655440002', { campaign: {\n  description: 'Appointment reminders and account notifications',\n  name: 'Customer Notifications',\n  type: 'App',\n  useCases: [{ messagingUseCaseUs: 'ACCOUNT_NOTIFICATION', sampleMessages: ['Hi {name}, your appointment is confirmed for {date} at {time}.', 'Your order #{order_id} has been shipped. Track at {url}'] }],\n} });\n\nconsole.log(apiResponseOfTcrCampaignWithUseCases);\n```",
     perLanguage: {
-      csharp: {
-        method: 'Profiles.Campaigns.Create',
+      typescript: {
+        method: 'client.profiles.campaigns.create',
         example:
-          'CampaignCreateParams parameters = new()\n{\n    ProfileID = "770e8400-e29b-41d4-a716-446655440002",\n    Campaign = new()\n    {\n        Description = "Appointment reminders and account notifications",\n        Name = "Customer Notifications",\n        Type = "App",\n        UseCases =\n        [\n            new()\n            {\n                MessagingUseCaseUs = MessagingUseCaseUs.AccountNotification,\n                SampleMessages =\n                [\n                    "Hi {name}, your appointment is confirmed for {date} at {time}.",\n                    "Your order #{order_id} has been shipped. Track at {url}",\n                ],\n            },\n        ],\n        HelpKeywords = "HELP, INFO, SUPPORT",\n        HelpMessage = "Reply STOP to unsubscribe or contact support@acmecorp.com",\n        MessageFlow = "User signs up on website and opts in to receive SMS notifications",\n        OptinKeywords = "YES, START, SUBSCRIBE",\n        OptinMessage = "You have opted in to Acme Corp notifications. Reply STOP to opt out.",\n        OptoutKeywords = "STOP, UNSUBSCRIBE, END",\n        OptoutMessage = "You have been unsubscribed. Reply START to opt back in.",\n        PrivacyPolicyLink = "https://acmecorp.com/privacy",\n        TermsAndConditionsLink = "https://acmecorp.com/terms",\n    },\n};\n\nvar apiResponseOfTcrCampaignWithUseCases = await client.Profiles.Campaigns.Create(parameters);\n\nConsole.WriteLine(apiResponseOfTcrCampaignWithUseCases);',
-      },
-      go: {
-        method: 'client.Profiles.Campaigns.New',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tapiResponseOfTcrCampaignWithUseCases, err := client.Profiles.Campaigns.New(\n\t\tcontext.TODO(),\n\t\t"770e8400-e29b-41d4-a716-446655440002",\n\t\tsentdm.ProfileCampaignNewParams{\n\t\t\tCampaign: sentdm.CampaignDataParam{\n\t\t\t\tDescription: "Appointment reminders and account notifications",\n\t\t\t\tName:        "Customer Notifications",\n\t\t\t\tType:        "App",\n\t\t\t\tUseCases: []sentdm.SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseDataParam{{\n\t\t\t\t\tMessagingUseCaseUs: sentdm.MessagingUseCaseUsAccountNotification,\n\t\t\t\t\tSampleMessages:     []string{"Hi {name}, your appointment is confirmed for {date} at {time}.", "Your order #{order_id} has been shipped. Track at {url}"},\n\t\t\t\t}},\n\t\t\t},\n\t\t},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", apiResponseOfTcrCampaignWithUseCases.Data)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://api.sent.dm/v3/profiles/$PROFILE_ID/campaigns \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "campaign": {\n            "description": "Appointment reminders and account notifications",\n            "name": "Customer Notifications",\n            "type": "App",\n            "useCases": [\n              {\n                "messagingUseCaseUs": "ACCOUNT_NOTIFICATION",\n                "sampleMessages": [\n                  "Hi {name}, your appointment is confirmed for {date} at {time}.",\n                  "Your order #{order_id} has been shipped. Track at {url}"\n                ]\n              }\n            ],\n            "helpKeywords": "HELP, INFO, SUPPORT",\n            "helpMessage": "Reply STOP to unsubscribe or contact support@acmecorp.com",\n            "messageFlow": "User signs up on website and opts in to receive SMS notifications",\n            "optinKeywords": "YES, START, SUBSCRIBE",\n            "optinMessage": "You have opted in to Acme Corp notifications. Reply STOP to opt out.",\n            "optoutKeywords": "STOP, UNSUBSCRIBE, END",\n            "optoutMessage": "You have been unsubscribed. Reply START to opt back in.",\n            "privacyPolicyLink": "https://acmecorp.com/privacy",\n            "termsAndConditionsLink": "https://acmecorp.com/terms"\n          }\n        }\'',
-      },
-      java: {
-        method: 'profiles().campaigns().create',
-        example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.profiles.campaigns.ApiResponseOfTcrCampaignWithUseCases;\nimport dm.sent.models.profiles.campaigns.CampaignCreateParams;\nimport dm.sent.models.profiles.campaigns.CampaignData;\nimport dm.sent.models.profiles.campaigns.MessagingUseCaseUs;\nimport dm.sent.models.profiles.campaigns.SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        CampaignCreateParams params = CampaignCreateParams.builder()\n            .profileId("770e8400-e29b-41d4-a716-446655440002")\n            .campaign(CampaignData.builder()\n                .description("Appointment reminders and account notifications")\n                .name("Customer Notifications")\n                .type("App")\n                .addUseCase(SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData.builder()\n                    .messagingUseCaseUs(MessagingUseCaseUs.ACCOUNT_NOTIFICATION)\n                    .addSampleMessage("Hi {name}, your appointment is confirmed for {date} at {time}.")\n                    .addSampleMessage("Your order #{order_id} has been shipped. Track at {url}")\n                    .build())\n                .build())\n            .build();\n        ApiResponseOfTcrCampaignWithUseCases apiResponseOfTcrCampaignWithUseCases = client.profiles().campaigns().create(params);\n    }\n}',
-      },
-      php: {
-        method: 'profiles->campaigns->create',
-        example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$apiResponseOfTcrCampaignWithUseCases = $client->profiles->campaigns->create(\n  '770e8400-e29b-41d4-a716-446655440002',\n  campaign: [\n    'description' => 'Appointment reminders and account notifications',\n    'name' => 'Customer Notifications',\n    'type' => 'App',\n    'useCases' => [\n      [\n        'messagingUseCaseUs' => MessagingUseCaseUs::ACCOUNT_NOTIFICATION,\n        'sampleMessages' => [\n          'Hi {name}, your appointment is confirmed for {date} at {time}.',\n          'Your order #{order_id} has been shipped. Track at {url}',\n        ],\n      ],\n    ],\n    'helpKeywords' => 'HELP, INFO, SUPPORT',\n    'helpMessage' => 'Reply STOP to unsubscribe or contact support@acmecorp.com',\n    'messageFlow' => 'User signs up on website and opts in to receive SMS notifications',\n    'optinKeywords' => 'YES, START, SUBSCRIBE',\n    'optinMessage' => 'You have opted in to Acme Corp notifications. Reply STOP to opt out.',\n    'optoutKeywords' => 'STOP, UNSUBSCRIBE, END',\n    'optoutMessage' => 'You have been unsubscribed. Reply START to opt back in.',\n    'privacyPolicyLink' => 'https://acmecorp.com/privacy',\n    'termsAndConditionsLink' => 'https://acmecorp.com/terms',\n  ],\n  sandbox: false,\n  idempotencyKey: 'req_abc123_retry1',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($apiResponseOfTcrCampaignWithUseCases);",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst apiResponseOfTcrCampaignWithUseCases = await client.profiles.campaigns.create(\n  '770e8400-e29b-41d4-a716-446655440002',\n  {\n    campaign: {\n      description: 'Appointment reminders and account notifications',\n      name: 'Customer Notifications',\n      type: 'App',\n      useCases: [\n        {\n          messagingUseCaseUs: 'ACCOUNT_NOTIFICATION',\n          sampleMessages: [\n            'Hi {name}, your appointment is confirmed for {date} at {time}.',\n            'Your order #{order_id} has been shipped. Track at {url}',\n          ],\n        },\n      ],\n    },\n  },\n);\n\nconsole.log(apiResponseOfTcrCampaignWithUseCases.data);",
       },
       python: {
         method: 'profiles.campaigns.create',
         example:
           'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\napi_response_of_tcr_campaign_with_use_cases = client.profiles.campaigns.create(\n    profile_id="770e8400-e29b-41d4-a716-446655440002",\n    campaign={\n        "description": "Appointment reminders and account notifications",\n        "name": "Customer Notifications",\n        "type": "App",\n        "use_cases": [{\n            "messaging_use_case_us": "ACCOUNT_NOTIFICATION",\n            "sample_messages": ["Hi {name}, your appointment is confirmed for {date} at {time}.", "Your order #{order_id} has been shipped. Track at {url}"],\n        }],\n    },\n)\nprint(api_response_of_tcr_campaign_with_use_cases.data)',
       },
+      java: {
+        method: 'profiles().campaigns().create',
+        example:
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.profiles.campaigns.ApiResponseOfTcrCampaignWithUseCases;\nimport dm.sent.models.profiles.campaigns.CampaignCreateParams;\nimport dm.sent.models.profiles.campaigns.CampaignData;\nimport dm.sent.models.profiles.campaigns.MessagingUseCaseUs;\nimport dm.sent.models.profiles.campaigns.SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        CampaignCreateParams params = CampaignCreateParams.builder()\n            .profileId("770e8400-e29b-41d4-a716-446655440002")\n            .campaign(CampaignData.builder()\n                .description("Appointment reminders and account notifications")\n                .name("Customer Notifications")\n                .type("App")\n                .addUseCase(SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData.builder()\n                    .messagingUseCaseUs(MessagingUseCaseUs.ACCOUNT_NOTIFICATION)\n                    .addSampleMessage("Hi {name}, your appointment is confirmed for {date} at {time}.")\n                    .addSampleMessage("Your order #{order_id} has been shipped. Track at {url}")\n                    .build())\n                .build())\n            .build();\n        ApiResponseOfTcrCampaignWithUseCases apiResponseOfTcrCampaignWithUseCases = client.profiles().campaigns().create(params);\n    }\n}',
+      },
+      go: {
+        method: 'client.Profiles.Campaigns.New',
+        example:
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tapiResponseOfTcrCampaignWithUseCases, err := client.Profiles.Campaigns.New(\n\t\tcontext.TODO(),\n\t\t"770e8400-e29b-41d4-a716-446655440002",\n\t\tsentdm.ProfileCampaignNewParams{\n\t\t\tCampaign: sentdm.CampaignDataParam{\n\t\t\t\tDescription: "Appointment reminders and account notifications",\n\t\t\t\tName:        "Customer Notifications",\n\t\t\t\tType:        "App",\n\t\t\t\tUseCases: []sentdm.SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseDataParam{{\n\t\t\t\t\tMessagingUseCaseUs: sentdm.MessagingUseCaseUsAccountNotification,\n\t\t\t\t\tSampleMessages:     []string{"Hi {name}, your appointment is confirmed for {date} at {time}.", "Your order #{order_id} has been shipped. Track at {url}"},\n\t\t\t\t}},\n\t\t\t},\n\t\t},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", apiResponseOfTcrCampaignWithUseCases.Data)\n}\n',
+      },
       ruby: {
         method: 'profiles.campaigns.create',
         example:
           'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\napi_response_of_tcr_campaign_with_use_cases = sent.profiles.campaigns.create(\n  "770e8400-e29b-41d4-a716-446655440002",\n  campaign: {\n    description: "Appointment reminders and account notifications",\n    name: "Customer Notifications",\n    type: "App",\n    useCases: [\n      {\n        messagingUseCaseUs: :ACCOUNT_NOTIFICATION,\n        sampleMessages: [\n          "Hi {name}, your appointment is confirmed for {date} at {time}.",\n          "Your order \\#{order_id} has been shipped. Track at {url}"\n        ]\n      }\n    ]\n  }\n)\n\nputs(api_response_of_tcr_campaign_with_use_cases)',
       },
-      typescript: {
-        method: 'client.profiles.campaigns.create',
+      php: {
+        method: 'profiles->campaigns->create',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst apiResponseOfTcrCampaignWithUseCases = await client.profiles.campaigns.create(\n  '770e8400-e29b-41d4-a716-446655440002',\n  {\n    campaign: {\n      description: 'Appointment reminders and account notifications',\n      name: 'Customer Notifications',\n      type: 'App',\n      useCases: [\n        {\n          messagingUseCaseUs: 'ACCOUNT_NOTIFICATION',\n          sampleMessages: [\n            'Hi {name}, your appointment is confirmed for {date} at {time}.',\n            'Your order #{order_id} has been shipped. Track at {url}',\n          ],\n        },\n      ],\n    },\n  },\n);\n\nconsole.log(apiResponseOfTcrCampaignWithUseCases.data);",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$apiResponseOfTcrCampaignWithUseCases = $client->profiles->campaigns->create(\n  '770e8400-e29b-41d4-a716-446655440002',\n  campaign: [\n    'description' => 'Appointment reminders and account notifications',\n    'name' => 'Customer Notifications',\n    'type' => 'App',\n    'useCases' => [\n      [\n        'messagingUseCaseUs' => MessagingUseCaseUs::ACCOUNT_NOTIFICATION,\n        'sampleMessages' => [\n          'Hi {name}, your appointment is confirmed for {date} at {time}.',\n          'Your order #{order_id} has been shipped. Track at {url}',\n        ],\n      ],\n    ],\n    'helpKeywords' => 'HELP, INFO, SUPPORT',\n    'helpMessage' => 'Reply STOP to unsubscribe or contact support@acmecorp.com',\n    'messageFlow' => 'User signs up on website and opts in to receive SMS notifications',\n    'optinKeywords' => 'YES, START, SUBSCRIBE',\n    'optinMessage' => 'You have opted in to Acme Corp notifications. Reply STOP to opt out.',\n    'optoutKeywords' => 'STOP, UNSUBSCRIBE, END',\n    'optoutMessage' => 'You have been unsubscribed. Reply START to opt back in.',\n    'privacyPolicyLink' => 'https://acmecorp.com/privacy',\n    'termsAndConditionsLink' => 'https://acmecorp.com/terms',\n  ],\n  sandbox: false,\n  idempotencyKey: 'req_abc123_retry1',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($apiResponseOfTcrCampaignWithUseCases);",
+      },
+      csharp: {
+        method: 'Profiles.Campaigns.Create',
+        example:
+          'CampaignCreateParams parameters = new()\n{\n    ProfileID = "770e8400-e29b-41d4-a716-446655440002",\n    Campaign = new()\n    {\n        Description = "Appointment reminders and account notifications",\n        Name = "Customer Notifications",\n        Type = "App",\n        UseCases =\n        [\n            new()\n            {\n                MessagingUseCaseUs = MessagingUseCaseUs.AccountNotification,\n                SampleMessages =\n                [\n                    "Hi {name}, your appointment is confirmed for {date} at {time}.",\n                    "Your order #{order_id} has been shipped. Track at {url}",\n                ],\n            },\n        ],\n        HelpKeywords = "HELP, INFO, SUPPORT",\n        HelpMessage = "Reply STOP to unsubscribe or contact support@acmecorp.com",\n        MessageFlow = "User signs up on website and opts in to receive SMS notifications",\n        OptinKeywords = "YES, START, SUBSCRIBE",\n        OptinMessage = "You have opted in to Acme Corp notifications. Reply STOP to opt out.",\n        OptoutKeywords = "STOP, UNSUBSCRIBE, END",\n        OptoutMessage = "You have been unsubscribed. Reply START to opt back in.",\n        PrivacyPolicyLink = "https://acmecorp.com/privacy",\n        TermsAndConditionsLink = "https://acmecorp.com/terms",\n    },\n};\n\nvar apiResponseOfTcrCampaignWithUseCases = await client.Profiles.Campaigns.Create(parameters);\n\nConsole.WriteLine(apiResponseOfTcrCampaignWithUseCases);',
+      },
+      http: {
+        example:
+          'curl https://api.sent.dm/v3/profiles/$PROFILE_ID/campaigns \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "campaign": {\n            "description": "Appointment reminders and account notifications",\n            "name": "Customer Notifications",\n            "type": "App",\n            "useCases": [\n              {\n                "messagingUseCaseUs": "ACCOUNT_NOTIFICATION",\n                "sampleMessages": [\n                  "Hi {name}, your appointment is confirmed for {date} at {time}.",\n                  "Your order #{order_id} has been shipped. Track at {url}"\n                ]\n              }\n            ],\n            "helpKeywords": "HELP, INFO, SUPPORT",\n            "helpMessage": "Reply STOP to unsubscribe or contact support@acmecorp.com",\n            "messageFlow": "User signs up on website and opts in to receive SMS notifications",\n            "optinKeywords": "YES, START, SUBSCRIBE",\n            "optinMessage": "You have opted in to Acme Corp notifications. Reply STOP to opt out.",\n            "optoutKeywords": "STOP, UNSUBSCRIBE, END",\n            "optoutMessage": "You have been unsubscribed. Reply START to opt back in.",\n            "privacyPolicyLink": "https://acmecorp.com/privacy",\n            "termsAndConditionsLink": "https://acmecorp.com/terms"\n          }\n        }\'',
       },
     },
   },
@@ -1694,44 +1694,44 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## list\n\n`client.profiles.campaigns.list(profileId: string, x-profile-id?: string): { data?: tcr_campaign_with_use_cases[]; error?: error_detail; meta?: api_meta; success?: boolean; }`\n\n**get** `/v3/profiles/{profileId}/campaigns`\n\nRetrieves all campaigns linked to the profile's brand, including use cases and sample messages. Returns inherited campaigns if inherit_tcr_campaign=true.\n\n### Parameters\n\n- `profileId: string`\n\n- `x-profile-id?: string`\n\n### Returns\n\n- `{ data?: object[]; error?: { code?: string; details?: object; doc_url?: string; message?: string; }; meta?: { request_id?: string; timestamp?: string; version?: string; }; success?: boolean; }`\n  Standard API response envelope for all v3 endpoints\n\n  - `data?: { id?: string; createdAt?: string; updatedAt?: string; }[]`\n  - `error?: { code?: string; details?: object; doc_url?: string; message?: string; }`\n  - `meta?: { request_id?: string; timestamp?: string; version?: string; }`\n  - `success?: boolean`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nconst campaigns = await client.profiles.campaigns.list('770e8400-e29b-41d4-a716-446655440002');\n\nconsole.log(campaigns);\n```",
     perLanguage: {
-      csharp: {
-        method: 'Profiles.Campaigns.List',
+      typescript: {
+        method: 'client.profiles.campaigns.list',
         example:
-          'CampaignListParams parameters = new()\n{\n    ProfileID = "770e8400-e29b-41d4-a716-446655440002"\n};\n\nvar campaigns = await client.Profiles.Campaigns.List(parameters);\n\nConsole.WriteLine(campaigns);',
-      },
-      go: {
-        method: 'client.Profiles.Campaigns.List',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tcampaigns, err := client.Profiles.Campaigns.List(\n\t\tcontext.TODO(),\n\t\t"770e8400-e29b-41d4-a716-446655440002",\n\t\tsentdm.ProfileCampaignListParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", campaigns.Data)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://api.sent.dm/v3/profiles/$PROFILE_ID/campaigns \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
-      },
-      java: {
-        method: 'profiles().campaigns().list',
-        example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.profiles.campaigns.CampaignListParams;\nimport dm.sent.models.profiles.campaigns.CampaignListResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        CampaignListResponse campaigns = client.profiles().campaigns().list("770e8400-e29b-41d4-a716-446655440002");\n    }\n}',
-      },
-      php: {
-        method: 'profiles->campaigns->list',
-        example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$campaigns = $client->profiles->campaigns->list(\n  '770e8400-e29b-41d4-a716-446655440002',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($campaigns);",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst campaigns = await client.profiles.campaigns.list('770e8400-e29b-41d4-a716-446655440002');\n\nconsole.log(campaigns.data);",
       },
       python: {
         method: 'profiles.campaigns.list',
         example:
           'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\ncampaigns = client.profiles.campaigns.list(\n    profile_id="770e8400-e29b-41d4-a716-446655440002",\n)\nprint(campaigns.data)',
       },
+      java: {
+        method: 'profiles().campaigns().list',
+        example:
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.profiles.campaigns.CampaignListParams;\nimport dm.sent.models.profiles.campaigns.CampaignListResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        CampaignListResponse campaigns = client.profiles().campaigns().list("770e8400-e29b-41d4-a716-446655440002");\n    }\n}',
+      },
+      go: {
+        method: 'client.Profiles.Campaigns.List',
+        example:
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tcampaigns, err := client.Profiles.Campaigns.List(\n\t\tcontext.TODO(),\n\t\t"770e8400-e29b-41d4-a716-446655440002",\n\t\tsentdm.ProfileCampaignListParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", campaigns.Data)\n}\n',
+      },
       ruby: {
         method: 'profiles.campaigns.list',
         example:
           'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\ncampaigns = sent.profiles.campaigns.list("770e8400-e29b-41d4-a716-446655440002")\n\nputs(campaigns)',
       },
-      typescript: {
-        method: 'client.profiles.campaigns.list',
+      php: {
+        method: 'profiles->campaigns->list',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst campaigns = await client.profiles.campaigns.list('770e8400-e29b-41d4-a716-446655440002');\n\nconsole.log(campaigns.data);",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$campaigns = $client->profiles->campaigns->list(\n  '770e8400-e29b-41d4-a716-446655440002',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($campaigns);",
+      },
+      csharp: {
+        method: 'Profiles.Campaigns.List',
+        example:
+          'CampaignListParams parameters = new()\n{\n    ProfileID = "770e8400-e29b-41d4-a716-446655440002"\n};\n\nvar campaigns = await client.Profiles.Campaigns.List(parameters);\n\nConsole.WriteLine(campaigns);',
+      },
+      http: {
+        example:
+          'curl https://api.sent.dm/v3/profiles/$PROFILE_ID/campaigns \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
       },
     },
   },
@@ -1753,44 +1753,44 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## delete\n\n`client.profiles.campaigns.delete(profileId: string, campaignId: string, body: { sandbox?: boolean; }, x-profile-id?: string): void`\n\n**delete** `/v3/profiles/{profileId}/campaigns/{campaignId}`\n\nDeletes a campaign by ID from the brand of the specified profile. The profile must belong to the authenticated organization.\n\n### Parameters\n\n- `profileId: string`\n\n- `campaignId: string`\n\n- `body: { sandbox?: boolean; }`\n  Request to delete a campaign from a brand\n\n- `x-profile-id?: string`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nawait client.profiles.campaigns.delete('b2c3d4e5-f6a7-8901-bcde-f12345678901', {\n  profileId: '770e8400-e29b-41d4-a716-446655440002',\n  body: {},\n})\n```",
     perLanguage: {
-      csharp: {
-        method: 'Profiles.Campaigns.Delete',
+      typescript: {
+        method: 'client.profiles.campaigns.delete',
         example:
-          'CampaignDeleteParams parameters = new()\n{\n    ProfileID = "770e8400-e29b-41d4-a716-446655440002",\n    CampaignID = "b2c3d4e5-f6a7-8901-bcde-f12345678901",\n    Body = new() { Sandbox = false },\n};\n\nawait client.Profiles.Campaigns.Delete(parameters);',
-      },
-      go: {
-        method: 'client.Profiles.Campaigns.Delete',
-        example:
-          'package main\n\nimport (\n\t"context"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\terr := client.Profiles.Campaigns.Delete(\n\t\tcontext.TODO(),\n\t\t"b2c3d4e5-f6a7-8901-bcde-f12345678901",\n\t\tsentdm.ProfileCampaignDeleteParams{\n\t\t\tProfileID: "770e8400-e29b-41d4-a716-446655440002",\n\t\t\tBody: sentdm.ProfileCampaignDeleteParamsBody{\n\t\t\t\tMutationRequestParam: sentdm.MutationRequestParam{},\n\t\t\t},\n\t\t},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n}\n',
-      },
-      http: {
-        example:
-          'curl https://api.sent.dm/v3/profiles/$PROFILE_ID/campaigns/$CAMPAIGN_ID \\\n    -X DELETE \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
-      },
-      java: {
-        method: 'profiles().campaigns().delete',
-        example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.profiles.campaigns.CampaignDeleteParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        CampaignDeleteParams params = CampaignDeleteParams.builder()\n            .profileId("770e8400-e29b-41d4-a716-446655440002")\n            .campaignId("b2c3d4e5-f6a7-8901-bcde-f12345678901")\n            .build();\n        client.profiles().campaigns().delete(params);\n    }\n}',
-      },
-      php: {
-        method: 'profiles->campaigns->delete',
-        example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$result = $client->profiles->campaigns->delete(\n  'b2c3d4e5-f6a7-8901-bcde-f12345678901',\n  profileID: '770e8400-e29b-41d4-a716-446655440002',\n  body: ['sandbox' => false],\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($result);",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nawait client.profiles.campaigns.delete('b2c3d4e5-f6a7-8901-bcde-f12345678901', {\n  profileId: '770e8400-e29b-41d4-a716-446655440002',\n  body: {},\n});",
       },
       python: {
         method: 'profiles.campaigns.delete',
         example:
           'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\nclient.profiles.campaigns.delete(\n    campaign_id="b2c3d4e5-f6a7-8901-bcde-f12345678901",\n    profile_id="770e8400-e29b-41d4-a716-446655440002",\n    body={},\n)',
       },
+      java: {
+        method: 'profiles().campaigns().delete',
+        example:
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.profiles.campaigns.CampaignDeleteParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        CampaignDeleteParams params = CampaignDeleteParams.builder()\n            .profileId("770e8400-e29b-41d4-a716-446655440002")\n            .campaignId("b2c3d4e5-f6a7-8901-bcde-f12345678901")\n            .build();\n        client.profiles().campaigns().delete(params);\n    }\n}',
+      },
+      go: {
+        method: 'client.Profiles.Campaigns.Delete',
+        example:
+          'package main\n\nimport (\n\t"context"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\terr := client.Profiles.Campaigns.Delete(\n\t\tcontext.TODO(),\n\t\t"b2c3d4e5-f6a7-8901-bcde-f12345678901",\n\t\tsentdm.ProfileCampaignDeleteParams{\n\t\t\tProfileID: "770e8400-e29b-41d4-a716-446655440002",\n\t\t\tBody: sentdm.ProfileCampaignDeleteParamsBody{\n\t\t\t\tMutationRequestParam: sentdm.MutationRequestParam{},\n\t\t\t},\n\t\t},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n}\n',
+      },
       ruby: {
         method: 'profiles.campaigns.delete',
         example:
           'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\nresult = sent.profiles.campaigns.delete(\n  "b2c3d4e5-f6a7-8901-bcde-f12345678901",\n  profile_id: "770e8400-e29b-41d4-a716-446655440002",\n  body: {}\n)\n\nputs(result)',
       },
-      typescript: {
-        method: 'client.profiles.campaigns.delete',
+      php: {
+        method: 'profiles->campaigns->delete',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nawait client.profiles.campaigns.delete('b2c3d4e5-f6a7-8901-bcde-f12345678901', {\n  profileId: '770e8400-e29b-41d4-a716-446655440002',\n  body: {},\n});",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$result = $client->profiles->campaigns->delete(\n  'b2c3d4e5-f6a7-8901-bcde-f12345678901',\n  profileID: '770e8400-e29b-41d4-a716-446655440002',\n  body: ['sandbox' => false],\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($result);",
+      },
+      csharp: {
+        method: 'Profiles.Campaigns.Delete',
+        example:
+          'CampaignDeleteParams parameters = new()\n{\n    ProfileID = "770e8400-e29b-41d4-a716-446655440002",\n    CampaignID = "b2c3d4e5-f6a7-8901-bcde-f12345678901",\n    Body = new() { Sandbox = false },\n};\n\nawait client.Profiles.Campaigns.Delete(parameters);',
+      },
+      http: {
+        example:
+          'curl https://api.sent.dm/v3/profiles/$PROFILE_ID/campaigns/$CAMPAIGN_ID \\\n    -X DELETE \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
       },
     },
   },
@@ -1816,44 +1816,44 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## update\n\n`client.profiles.campaigns.update(profileId: string, campaignId: string, campaign: { description: string; name: string; type: string; useCases: sent_dm_services_endpoints_customer_ap_iv3_contracts_requests_campaigns_campaign_use_case_data[]; helpKeywords?: string; helpMessage?: string; messageFlow?: string; optinKeywords?: string; optinMessage?: string; optoutKeywords?: string; optoutMessage?: string; privacyPolicyLink?: string; termsAndConditionsLink?: string; }, sandbox?: boolean, Idempotency-Key?: string, x-profile-id?: string): { data?: tcr_campaign_with_use_cases; error?: error_detail; meta?: api_meta; success?: boolean; }`\n\n**put** `/v3/profiles/{profileId}/campaigns/{campaignId}`\n\nUpdates an existing campaign under the brand of the specified profile. Cannot update campaigns that have already been submitted to TCR.\n\n### Parameters\n\n- `profileId: string`\n\n- `campaignId: string`\n\n- `campaign: { description: string; name: string; type: string; useCases: { messagingUseCaseUs: messaging_use_case_us; sampleMessages: string[]; }[]; helpKeywords?: string; helpMessage?: string; messageFlow?: string; optinKeywords?: string; optinMessage?: string; optoutKeywords?: string; optoutMessage?: string; privacyPolicyLink?: string; termsAndConditionsLink?: string; }`\n  Campaign data for create or update operation\n  - `description: string`\n    Campaign description\n  - `name: string`\n    Campaign name\n  - `type: string`\n    Campaign type (e.g., \"KYC\", \"App\")\n  - `useCases: { messagingUseCaseUs: string; sampleMessages: string[]; }[]`\n    List of use cases with sample messages\n  - `helpKeywords?: string`\n    Comma-separated keywords that trigger help message (e.g., \"HELP, INFO, SUPPORT\")\n  - `helpMessage?: string`\n    Message sent when user requests help\n  - `messageFlow?: string`\n    Description of how messages flow in the campaign\n  - `optinKeywords?: string`\n    Comma-separated keywords that trigger opt-in (e.g., \"YES, START, SUBSCRIBE\")\n  - `optinMessage?: string`\n    Message sent when user opts in\n  - `optoutKeywords?: string`\n    Comma-separated keywords that trigger opt-out (e.g., \"STOP, UNSUBSCRIBE, END\")\n  - `optoutMessage?: string`\n    Message sent when user opts out\n  - `privacyPolicyLink?: string`\n    URL to privacy policy\n  - `termsAndConditionsLink?: string`\n    URL to terms and conditions\n\n- `sandbox?: boolean`\n  Sandbox flag - when true, the operation is simulated without side effects\nUseful for testing integrations without actual execution\n\n- `Idempotency-Key?: string`\n\n- `x-profile-id?: string`\n\n### Returns\n\n- `{ data?: object; error?: { code?: string; details?: object; doc_url?: string; message?: string; }; meta?: { request_id?: string; timestamp?: string; version?: string; }; success?: boolean; }`\n  Standard API response envelope for all v3 endpoints\n\n  - `data?: { id?: string; createdAt?: string; updatedAt?: string; }`\n  - `error?: { code?: string; details?: object; doc_url?: string; message?: string; }`\n  - `meta?: { request_id?: string; timestamp?: string; version?: string; }`\n  - `success?: boolean`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nconst apiResponseOfTcrCampaignWithUseCases = await client.profiles.campaigns.update('b2c3d4e5-f6a7-8901-bcde-f12345678901', {\n  profileId: '770e8400-e29b-41d4-a716-446655440002',\n  campaign: {\n  description: 'Updated appointment reminders and account notifications',\n  name: 'Customer Notifications Updated',\n  type: 'App',\n  useCases: [{ messagingUseCaseUs: 'ACCOUNT_NOTIFICATION', sampleMessages: ['Hi {name}, your appointment is confirmed for {date} at {time}.', 'Your order #{order_id} has been shipped. Track at {url}'] }],\n},\n});\n\nconsole.log(apiResponseOfTcrCampaignWithUseCases);\n```",
     perLanguage: {
-      csharp: {
-        method: 'Profiles.Campaigns.Update',
+      typescript: {
+        method: 'client.profiles.campaigns.update',
         example:
-          'CampaignUpdateParams parameters = new()\n{\n    ProfileID = "770e8400-e29b-41d4-a716-446655440002",\n    CampaignID = "b2c3d4e5-f6a7-8901-bcde-f12345678901",\n    Campaign = new()\n    {\n        Description = "Updated appointment reminders and account notifications",\n        Name = "Customer Notifications Updated",\n        Type = "App",\n        UseCases =\n        [\n            new()\n            {\n                MessagingUseCaseUs = MessagingUseCaseUs.AccountNotification,\n                SampleMessages =\n                [\n                    "Hi {name}, your appointment is confirmed for {date} at {time}.",\n                    "Your order #{order_id} has been shipped. Track at {url}",\n                ],\n            },\n        ],\n        HelpKeywords = null,\n        HelpMessage = null,\n        MessageFlow = "User signs up on website and opts in to receive SMS notifications",\n        OptinKeywords = null,\n        OptinMessage = null,\n        OptoutKeywords = null,\n        OptoutMessage = null,\n        PrivacyPolicyLink = null,\n        TermsAndConditionsLink = null,\n    },\n};\n\nvar apiResponseOfTcrCampaignWithUseCases = await client.Profiles.Campaigns.Update(parameters);\n\nConsole.WriteLine(apiResponseOfTcrCampaignWithUseCases);',
-      },
-      go: {
-        method: 'client.Profiles.Campaigns.Update',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tapiResponseOfTcrCampaignWithUseCases, err := client.Profiles.Campaigns.Update(\n\t\tcontext.TODO(),\n\t\t"b2c3d4e5-f6a7-8901-bcde-f12345678901",\n\t\tsentdm.ProfileCampaignUpdateParams{\n\t\t\tProfileID: "770e8400-e29b-41d4-a716-446655440002",\n\t\t\tCampaign: sentdm.CampaignDataParam{\n\t\t\t\tDescription: "Updated appointment reminders and account notifications",\n\t\t\t\tName:        "Customer Notifications Updated",\n\t\t\t\tType:        "App",\n\t\t\t\tUseCases: []sentdm.SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseDataParam{{\n\t\t\t\t\tMessagingUseCaseUs: sentdm.MessagingUseCaseUsAccountNotification,\n\t\t\t\t\tSampleMessages:     []string{"Hi {name}, your appointment is confirmed for {date} at {time}.", "Your order #{order_id} has been shipped. Track at {url}"},\n\t\t\t\t}},\n\t\t\t},\n\t\t},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", apiResponseOfTcrCampaignWithUseCases.Data)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://api.sent.dm/v3/profiles/$PROFILE_ID/campaigns/$CAMPAIGN_ID \\\n    -X PUT \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "campaign": {\n            "description": "Updated appointment reminders and account notifications",\n            "name": "Customer Notifications Updated",\n            "type": "App",\n            "useCases": [\n              {\n                "messagingUseCaseUs": "ACCOUNT_NOTIFICATION",\n                "sampleMessages": [\n                  "Hi {name}, your appointment is confirmed for {date} at {time}.",\n                  "Your order #{order_id} has been shipped. Track at {url}"\n                ]\n              }\n            ],\n            "helpKeywords": null,\n            "helpMessage": null,\n            "messageFlow": "User signs up on website and opts in to receive SMS notifications",\n            "optinKeywords": null,\n            "optinMessage": null,\n            "optoutKeywords": null,\n            "optoutMessage": null,\n            "privacyPolicyLink": null,\n            "termsAndConditionsLink": null\n          }\n        }\'',
-      },
-      java: {
-        method: 'profiles().campaigns().update',
-        example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.profiles.campaigns.ApiResponseOfTcrCampaignWithUseCases;\nimport dm.sent.models.profiles.campaigns.CampaignData;\nimport dm.sent.models.profiles.campaigns.CampaignUpdateParams;\nimport dm.sent.models.profiles.campaigns.MessagingUseCaseUs;\nimport dm.sent.models.profiles.campaigns.SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        CampaignUpdateParams params = CampaignUpdateParams.builder()\n            .profileId("770e8400-e29b-41d4-a716-446655440002")\n            .campaignId("b2c3d4e5-f6a7-8901-bcde-f12345678901")\n            .campaign(CampaignData.builder()\n                .description("Updated appointment reminders and account notifications")\n                .name("Customer Notifications Updated")\n                .type("App")\n                .addUseCase(SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData.builder()\n                    .messagingUseCaseUs(MessagingUseCaseUs.ACCOUNT_NOTIFICATION)\n                    .addSampleMessage("Hi {name}, your appointment is confirmed for {date} at {time}.")\n                    .addSampleMessage("Your order #{order_id} has been shipped. Track at {url}")\n                    .build())\n                .build())\n            .build();\n        ApiResponseOfTcrCampaignWithUseCases apiResponseOfTcrCampaignWithUseCases = client.profiles().campaigns().update(params);\n    }\n}',
-      },
-      php: {
-        method: 'profiles->campaigns->update',
-        example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$apiResponseOfTcrCampaignWithUseCases = $client->profiles->campaigns->update(\n  'b2c3d4e5-f6a7-8901-bcde-f12345678901',\n  profileID: '770e8400-e29b-41d4-a716-446655440002',\n  campaign: [\n    'description' => 'Updated appointment reminders and account notifications',\n    'name' => 'Customer Notifications Updated',\n    'type' => 'App',\n    'useCases' => [\n      [\n        'messagingUseCaseUs' => MessagingUseCaseUs::ACCOUNT_NOTIFICATION,\n        'sampleMessages' => [\n          'Hi {name}, your appointment is confirmed for {date} at {time}.',\n          'Your order #{order_id} has been shipped. Track at {url}',\n        ],\n      ],\n    ],\n    'helpKeywords' => null,\n    'helpMessage' => null,\n    'messageFlow' => 'User signs up on website and opts in to receive SMS notifications',\n    'optinKeywords' => null,\n    'optinMessage' => null,\n    'optoutKeywords' => null,\n    'optoutMessage' => null,\n    'privacyPolicyLink' => null,\n    'termsAndConditionsLink' => null,\n  ],\n  sandbox: false,\n  idempotencyKey: 'req_abc123_retry1',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($apiResponseOfTcrCampaignWithUseCases);",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst apiResponseOfTcrCampaignWithUseCases = await client.profiles.campaigns.update(\n  'b2c3d4e5-f6a7-8901-bcde-f12345678901',\n  {\n    profileId: '770e8400-e29b-41d4-a716-446655440002',\n    campaign: {\n      description: 'Updated appointment reminders and account notifications',\n      name: 'Customer Notifications Updated',\n      type: 'App',\n      useCases: [\n        {\n          messagingUseCaseUs: 'ACCOUNT_NOTIFICATION',\n          sampleMessages: [\n            'Hi {name}, your appointment is confirmed for {date} at {time}.',\n            'Your order #{order_id} has been shipped. Track at {url}',\n          ],\n        },\n      ],\n    },\n  },\n);\n\nconsole.log(apiResponseOfTcrCampaignWithUseCases.data);",
       },
       python: {
         method: 'profiles.campaigns.update',
         example:
           'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\napi_response_of_tcr_campaign_with_use_cases = client.profiles.campaigns.update(\n    campaign_id="b2c3d4e5-f6a7-8901-bcde-f12345678901",\n    profile_id="770e8400-e29b-41d4-a716-446655440002",\n    campaign={\n        "description": "Updated appointment reminders and account notifications",\n        "name": "Customer Notifications Updated",\n        "type": "App",\n        "use_cases": [{\n            "messaging_use_case_us": "ACCOUNT_NOTIFICATION",\n            "sample_messages": ["Hi {name}, your appointment is confirmed for {date} at {time}.", "Your order #{order_id} has been shipped. Track at {url}"],\n        }],\n    },\n)\nprint(api_response_of_tcr_campaign_with_use_cases.data)',
       },
+      java: {
+        method: 'profiles().campaigns().update',
+        example:
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.profiles.campaigns.ApiResponseOfTcrCampaignWithUseCases;\nimport dm.sent.models.profiles.campaigns.CampaignData;\nimport dm.sent.models.profiles.campaigns.CampaignUpdateParams;\nimport dm.sent.models.profiles.campaigns.MessagingUseCaseUs;\nimport dm.sent.models.profiles.campaigns.SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        CampaignUpdateParams params = CampaignUpdateParams.builder()\n            .profileId("770e8400-e29b-41d4-a716-446655440002")\n            .campaignId("b2c3d4e5-f6a7-8901-bcde-f12345678901")\n            .campaign(CampaignData.builder()\n                .description("Updated appointment reminders and account notifications")\n                .name("Customer Notifications Updated")\n                .type("App")\n                .addUseCase(SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData.builder()\n                    .messagingUseCaseUs(MessagingUseCaseUs.ACCOUNT_NOTIFICATION)\n                    .addSampleMessage("Hi {name}, your appointment is confirmed for {date} at {time}.")\n                    .addSampleMessage("Your order #{order_id} has been shipped. Track at {url}")\n                    .build())\n                .build())\n            .build();\n        ApiResponseOfTcrCampaignWithUseCases apiResponseOfTcrCampaignWithUseCases = client.profiles().campaigns().update(params);\n    }\n}',
+      },
+      go: {
+        method: 'client.Profiles.Campaigns.Update',
+        example:
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tapiResponseOfTcrCampaignWithUseCases, err := client.Profiles.Campaigns.Update(\n\t\tcontext.TODO(),\n\t\t"b2c3d4e5-f6a7-8901-bcde-f12345678901",\n\t\tsentdm.ProfileCampaignUpdateParams{\n\t\t\tProfileID: "770e8400-e29b-41d4-a716-446655440002",\n\t\t\tCampaign: sentdm.CampaignDataParam{\n\t\t\t\tDescription: "Updated appointment reminders and account notifications",\n\t\t\t\tName:        "Customer Notifications Updated",\n\t\t\t\tType:        "App",\n\t\t\t\tUseCases: []sentdm.SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseDataParam{{\n\t\t\t\t\tMessagingUseCaseUs: sentdm.MessagingUseCaseUsAccountNotification,\n\t\t\t\t\tSampleMessages:     []string{"Hi {name}, your appointment is confirmed for {date} at {time}.", "Your order #{order_id} has been shipped. Track at {url}"},\n\t\t\t\t}},\n\t\t\t},\n\t\t},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", apiResponseOfTcrCampaignWithUseCases.Data)\n}\n',
+      },
       ruby: {
         method: 'profiles.campaigns.update',
         example:
           'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\napi_response_of_tcr_campaign_with_use_cases = sent.profiles.campaigns.update(\n  "b2c3d4e5-f6a7-8901-bcde-f12345678901",\n  profile_id: "770e8400-e29b-41d4-a716-446655440002",\n  campaign: {\n    description: "Updated appointment reminders and account notifications",\n    name: "Customer Notifications Updated",\n    type: "App",\n    useCases: [\n      {\n        messagingUseCaseUs: :ACCOUNT_NOTIFICATION,\n        sampleMessages: [\n          "Hi {name}, your appointment is confirmed for {date} at {time}.",\n          "Your order \\#{order_id} has been shipped. Track at {url}"\n        ]\n      }\n    ]\n  }\n)\n\nputs(api_response_of_tcr_campaign_with_use_cases)',
       },
-      typescript: {
-        method: 'client.profiles.campaigns.update',
+      php: {
+        method: 'profiles->campaigns->update',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst apiResponseOfTcrCampaignWithUseCases = await client.profiles.campaigns.update(\n  'b2c3d4e5-f6a7-8901-bcde-f12345678901',\n  {\n    profileId: '770e8400-e29b-41d4-a716-446655440002',\n    campaign: {\n      description: 'Updated appointment reminders and account notifications',\n      name: 'Customer Notifications Updated',\n      type: 'App',\n      useCases: [\n        {\n          messagingUseCaseUs: 'ACCOUNT_NOTIFICATION',\n          sampleMessages: [\n            'Hi {name}, your appointment is confirmed for {date} at {time}.',\n            'Your order #{order_id} has been shipped. Track at {url}',\n          ],\n        },\n      ],\n    },\n  },\n);\n\nconsole.log(apiResponseOfTcrCampaignWithUseCases.data);",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$apiResponseOfTcrCampaignWithUseCases = $client->profiles->campaigns->update(\n  'b2c3d4e5-f6a7-8901-bcde-f12345678901',\n  profileID: '770e8400-e29b-41d4-a716-446655440002',\n  campaign: [\n    'description' => 'Updated appointment reminders and account notifications',\n    'name' => 'Customer Notifications Updated',\n    'type' => 'App',\n    'useCases' => [\n      [\n        'messagingUseCaseUs' => MessagingUseCaseUs::ACCOUNT_NOTIFICATION,\n        'sampleMessages' => [\n          'Hi {name}, your appointment is confirmed for {date} at {time}.',\n          'Your order #{order_id} has been shipped. Track at {url}',\n        ],\n      ],\n    ],\n    'helpKeywords' => null,\n    'helpMessage' => null,\n    'messageFlow' => 'User signs up on website and opts in to receive SMS notifications',\n    'optinKeywords' => null,\n    'optinMessage' => null,\n    'optoutKeywords' => null,\n    'optoutMessage' => null,\n    'privacyPolicyLink' => null,\n    'termsAndConditionsLink' => null,\n  ],\n  sandbox: false,\n  idempotencyKey: 'req_abc123_retry1',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($apiResponseOfTcrCampaignWithUseCases);",
+      },
+      csharp: {
+        method: 'Profiles.Campaigns.Update',
+        example:
+          'CampaignUpdateParams parameters = new()\n{\n    ProfileID = "770e8400-e29b-41d4-a716-446655440002",\n    CampaignID = "b2c3d4e5-f6a7-8901-bcde-f12345678901",\n    Campaign = new()\n    {\n        Description = "Updated appointment reminders and account notifications",\n        Name = "Customer Notifications Updated",\n        Type = "App",\n        UseCases =\n        [\n            new()\n            {\n                MessagingUseCaseUs = MessagingUseCaseUs.AccountNotification,\n                SampleMessages =\n                [\n                    "Hi {name}, your appointment is confirmed for {date} at {time}.",\n                    "Your order #{order_id} has been shipped. Track at {url}",\n                ],\n            },\n        ],\n        HelpKeywords = null,\n        HelpMessage = null,\n        MessageFlow = "User signs up on website and opts in to receive SMS notifications",\n        OptinKeywords = null,\n        OptinMessage = null,\n        OptoutKeywords = null,\n        OptoutMessage = null,\n        PrivacyPolicyLink = null,\n        TermsAndConditionsLink = null,\n    },\n};\n\nvar apiResponseOfTcrCampaignWithUseCases = await client.Profiles.Campaigns.Update(parameters);\n\nConsole.WriteLine(apiResponseOfTcrCampaignWithUseCases);',
+      },
+      http: {
+        example:
+          'curl https://api.sent.dm/v3/profiles/$PROFILE_ID/campaigns/$CAMPAIGN_ID \\\n    -X PUT \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "campaign": {\n            "description": "Updated appointment reminders and account notifications",\n            "name": "Customer Notifications Updated",\n            "type": "App",\n            "useCases": [\n              {\n                "messagingUseCaseUs": "ACCOUNT_NOTIFICATION",\n                "sampleMessages": [\n                  "Hi {name}, your appointment is confirmed for {date} at {time}.",\n                  "Your order #{order_id} has been shipped. Track at {url}"\n                ]\n              }\n            ],\n            "helpKeywords": null,\n            "helpMessage": null,\n            "messageFlow": "User signs up on website and opts in to receive SMS notifications",\n            "optinKeywords": null,\n            "optinMessage": null,\n            "optoutKeywords": null,\n            "optoutMessage": null,\n            "privacyPolicyLink": null,\n            "termsAndConditionsLink": null\n          }\n        }\'',
       },
     },
   },
@@ -1872,44 +1872,44 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## lookup\n\n`client.numbers.lookup(phoneNumber: string, x-profile-id?: string): { data?: object; error?: error_detail; meta?: api_meta; success?: boolean; }`\n\n**get** `/v3/numbers/lookup/{phoneNumber}`\n\nRetrieves detailed information about a phone number including carrier, line type, porting status, and VoIP detection. Uses the customer's messaging provider for rich data, with fallback to the internal index.\n\n### Parameters\n\n- `phoneNumber: string`\n\n- `x-profile-id?: string`\n\n### Returns\n\n- `{ data?: { carrier_name?: string; country_code?: string; is_ported?: boolean; is_valid?: boolean; is_voip?: boolean; line_type?: string; mobile_country_code?: string; mobile_network_code?: string; phone_number?: string; }; error?: { code?: string; details?: object; doc_url?: string; message?: string; }; meta?: { request_id?: string; timestamp?: string; version?: string; }; success?: boolean; }`\n  Standard API response envelope for all v3 endpoints\n\n  - `data?: { carrier_name?: string; country_code?: string; is_ported?: boolean; is_valid?: boolean; is_voip?: boolean; line_type?: string; mobile_country_code?: string; mobile_network_code?: string; phone_number?: string; }`\n  - `error?: { code?: string; details?: object; doc_url?: string; message?: string; }`\n  - `meta?: { request_id?: string; timestamp?: string; version?: string; }`\n  - `success?: boolean`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nconst response = await client.numbers.lookup('+12025551234');\n\nconsole.log(response);\n```",
     perLanguage: {
-      csharp: {
-        method: 'Numbers.Lookup',
+      typescript: {
+        method: 'client.numbers.lookup',
         example:
-          'NumberLookupParams parameters = new() { PhoneNumber = "+12025551234" };\n\nvar response = await client.Numbers.Lookup(parameters);\n\nConsole.WriteLine(response);',
-      },
-      go: {
-        method: 'client.Numbers.Lookup',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tresponse, err := client.Numbers.Lookup(\n\t\tcontext.TODO(),\n\t\t"+12025551234",\n\t\tsentdm.NumberLookupParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", response.Data)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://api.sent.dm/v3/numbers/lookup/$PHONE_NUMBER \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
-      },
-      java: {
-        method: 'numbers().lookup',
-        example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.numbers.NumberLookupParams;\nimport dm.sent.models.numbers.NumberLookupResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        NumberLookupResponse response = client.numbers().lookup("+12025551234");\n    }\n}',
-      },
-      php: {
-        method: 'numbers->lookup',
-        example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$response = $client->numbers->lookup(\n  '+12025551234', xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e'\n);\n\nvar_dump($response);",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst response = await client.numbers.lookup('+12025551234');\n\nconsole.log(response.data);",
       },
       python: {
         method: 'numbers.lookup',
         example:
           'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\nresponse = client.numbers.lookup(\n    phone_number="+12025551234",\n)\nprint(response.data)',
       },
+      java: {
+        method: 'numbers().lookup',
+        example:
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.numbers.NumberLookupParams;\nimport dm.sent.models.numbers.NumberLookupResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        NumberLookupResponse response = client.numbers().lookup("+12025551234");\n    }\n}',
+      },
+      go: {
+        method: 'client.Numbers.Lookup',
+        example:
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tresponse, err := client.Numbers.Lookup(\n\t\tcontext.TODO(),\n\t\t"+12025551234",\n\t\tsentdm.NumberLookupParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", response.Data)\n}\n',
+      },
       ruby: {
         method: 'numbers.lookup',
         example:
           'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\nresponse = sent.numbers.lookup("+12025551234")\n\nputs(response)',
       },
-      typescript: {
-        method: 'client.numbers.lookup',
+      php: {
+        method: 'numbers->lookup',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst response = await client.numbers.lookup('+12025551234');\n\nconsole.log(response.data);",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$response = $client->numbers->lookup(\n  '+12025551234', xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e'\n);\n\nvar_dump($response);",
+      },
+      csharp: {
+        method: 'Numbers.Lookup',
+        example:
+          'NumberLookupParams parameters = new() { PhoneNumber = "+12025551234" };\n\nvar response = await client.Numbers.Lookup(parameters);\n\nConsole.WriteLine(response);',
+      },
+      http: {
+        example:
+          'curl https://api.sent.dm/v3/numbers/lookup/$PHONE_NUMBER \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
       },
     },
   },
@@ -1928,44 +1928,44 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## retrieve_activities\n\n`client.messages.retrieveActivities(id: string, x-profile-id?: string): { data?: object; error?: error_detail; meta?: api_meta; success?: boolean; }`\n\n**get** `/v3/messages/{id}/activities`\n\nRetrieves the activity log for a specific message. Activities track the message lifecycle including acceptance, processing, sending, delivery, and any errors.\n\n### Parameters\n\n- `id: string`\n\n- `x-profile-id?: string`\n\n### Returns\n\n- `{ data?: { activities?: { active_contact_price?: string; description?: string; from?: string; price?: string; status?: string; timestamp?: string; }[]; message_id?: string; }; error?: { code?: string; details?: object; doc_url?: string; message?: string; }; meta?: { request_id?: string; timestamp?: string; version?: string; }; success?: boolean; }`\n  Standard API response envelope for all v3 endpoints\n\n  - `data?: { activities?: { active_contact_price?: string; description?: string; from?: string; price?: string; status?: string; timestamp?: string; }[]; message_id?: string; }`\n  - `error?: { code?: string; details?: object; doc_url?: string; message?: string; }`\n  - `meta?: { request_id?: string; timestamp?: string; version?: string; }`\n  - `success?: boolean`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nconst response = await client.messages.retrieveActivities('8ba7b830-9dad-11d1-80b4-00c04fd430c8');\n\nconsole.log(response);\n```",
     perLanguage: {
-      csharp: {
-        method: 'Messages.RetrieveActivities',
+      typescript: {
+        method: 'client.messages.retrieveActivities',
         example:
-          'MessageRetrieveActivitiesParams parameters = new()\n{\n    ID = "8ba7b830-9dad-11d1-80b4-00c04fd430c8"\n};\n\nvar response = await client.Messages.RetrieveActivities(parameters);\n\nConsole.WriteLine(response);',
-      },
-      go: {
-        method: 'client.Messages.GetActivities',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tresponse, err := client.Messages.GetActivities(\n\t\tcontext.TODO(),\n\t\t"8ba7b830-9dad-11d1-80b4-00c04fd430c8",\n\t\tsentdm.MessageGetActivitiesParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", response.Data)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://api.sent.dm/v3/messages/$ID/activities \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
-      },
-      java: {
-        method: 'messages().retrieveActivities',
-        example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.messages.MessageRetrieveActivitiesParams;\nimport dm.sent.models.messages.MessageRetrieveActivitiesResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        MessageRetrieveActivitiesResponse response = client.messages().retrieveActivities("8ba7b830-9dad-11d1-80b4-00c04fd430c8");\n    }\n}',
-      },
-      php: {
-        method: 'messages->retrieveActivities',
-        example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$response = $client->messages->retrieveActivities(\n  '8ba7b830-9dad-11d1-80b4-00c04fd430c8',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($response);",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst response = await client.messages.retrieveActivities('8ba7b830-9dad-11d1-80b4-00c04fd430c8');\n\nconsole.log(response.data);",
       },
       python: {
         method: 'messages.retrieve_activities',
         example:
           'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\nresponse = client.messages.retrieve_activities(\n    id="8ba7b830-9dad-11d1-80b4-00c04fd430c8",\n)\nprint(response.data)',
       },
+      java: {
+        method: 'messages().retrieveActivities',
+        example:
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.messages.MessageRetrieveActivitiesParams;\nimport dm.sent.models.messages.MessageRetrieveActivitiesResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        MessageRetrieveActivitiesResponse response = client.messages().retrieveActivities("8ba7b830-9dad-11d1-80b4-00c04fd430c8");\n    }\n}',
+      },
+      go: {
+        method: 'client.Messages.GetActivities',
+        example:
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tresponse, err := client.Messages.GetActivities(\n\t\tcontext.TODO(),\n\t\t"8ba7b830-9dad-11d1-80b4-00c04fd430c8",\n\t\tsentdm.MessageGetActivitiesParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", response.Data)\n}\n',
+      },
       ruby: {
         method: 'messages.retrieve_activities',
         example:
           'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\nresponse = sent.messages.retrieve_activities("8ba7b830-9dad-11d1-80b4-00c04fd430c8")\n\nputs(response)',
       },
-      typescript: {
-        method: 'client.messages.retrieveActivities',
+      php: {
+        method: 'messages->retrieveActivities',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst response = await client.messages.retrieveActivities('8ba7b830-9dad-11d1-80b4-00c04fd430c8');\n\nconsole.log(response.data);",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$response = $client->messages->retrieveActivities(\n  '8ba7b830-9dad-11d1-80b4-00c04fd430c8',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($response);",
+      },
+      csharp: {
+        method: 'Messages.RetrieveActivities',
+        example:
+          'MessageRetrieveActivitiesParams parameters = new()\n{\n    ID = "8ba7b830-9dad-11d1-80b4-00c04fd430c8"\n};\n\nvar response = await client.Messages.RetrieveActivities(parameters);\n\nConsole.WriteLine(response);',
+      },
+      http: {
+        example:
+          'curl https://api.sent.dm/v3/messages/$ID/activities \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
       },
     },
   },
@@ -1984,43 +1984,43 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## retrieve_status\n\n`client.messages.retrieveStatus(id: string, x-profile-id?: string): { data?: object; error?: error_detail; meta?: api_meta; success?: boolean; }`\n\n**get** `/v3/messages/{id}`\n\nRetrieves the current status and details of a message by ID. Includes delivery status, timestamps, and error information if applicable.\n\n### Parameters\n\n- `id: string`\n\n- `x-profile-id?: string`\n\n### Returns\n\n- `{ data?: { id?: string; active_contact_price?: number; channel?: string; contact_id?: string; created_at?: string; customer_id?: string; direction?: string; events?: { description?: string; status?: string; timestamp?: string; }[]; message_body?: { buttons?: object[]; content?: string; footer?: string; header?: string; }; phone?: string; phone_international?: string; price?: number; region_code?: string; status?: string; template_category?: string; template_id?: string; template_name?: string; }; error?: { code?: string; details?: object; doc_url?: string; message?: string; }; meta?: { request_id?: string; timestamp?: string; version?: string; }; success?: boolean; }`\n  Standard API response envelope for all v3 endpoints\n\n  - `data?: { id?: string; active_contact_price?: number; channel?: string; contact_id?: string; created_at?: string; customer_id?: string; direction?: string; events?: { description?: string; status?: string; timestamp?: string; }[]; message_body?: { buttons?: { type?: string; value?: string; }[]; content?: string; footer?: string; header?: string; }; phone?: string; phone_international?: string; price?: number; region_code?: string; status?: string; template_category?: string; template_id?: string; template_name?: string; }`\n  - `error?: { code?: string; details?: object; doc_url?: string; message?: string; }`\n  - `meta?: { request_id?: string; timestamp?: string; version?: string; }`\n  - `success?: boolean`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nconst response = await client.messages.retrieveStatus('8ba7b830-9dad-11d1-80b4-00c04fd430c8');\n\nconsole.log(response);\n```",
     perLanguage: {
-      csharp: {
-        method: 'Messages.RetrieveStatus',
+      typescript: {
+        method: 'client.messages.retrieveStatus',
         example:
-          'MessageRetrieveStatusParams parameters = new()\n{\n    ID = "8ba7b830-9dad-11d1-80b4-00c04fd430c8"\n};\n\nvar response = await client.Messages.RetrieveStatus(parameters);\n\nConsole.WriteLine(response);',
-      },
-      go: {
-        method: 'client.Messages.GetStatus',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tresponse, err := client.Messages.GetStatus(\n\t\tcontext.TODO(),\n\t\t"8ba7b830-9dad-11d1-80b4-00c04fd430c8",\n\t\tsentdm.MessageGetStatusParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", response.Data)\n}\n',
-      },
-      http: {
-        example: 'curl https://api.sent.dm/v3/messages/$ID \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
-      },
-      java: {
-        method: 'messages().retrieveStatus',
-        example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.messages.MessageRetrieveStatusParams;\nimport dm.sent.models.messages.MessageRetrieveStatusResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        MessageRetrieveStatusResponse response = client.messages().retrieveStatus("8ba7b830-9dad-11d1-80b4-00c04fd430c8");\n    }\n}',
-      },
-      php: {
-        method: 'messages->retrieveStatus',
-        example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$response = $client->messages->retrieveStatus(\n  '8ba7b830-9dad-11d1-80b4-00c04fd430c8',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($response);",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst response = await client.messages.retrieveStatus('8ba7b830-9dad-11d1-80b4-00c04fd430c8');\n\nconsole.log(response.data);",
       },
       python: {
         method: 'messages.retrieve_status',
         example:
           'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\nresponse = client.messages.retrieve_status(\n    id="8ba7b830-9dad-11d1-80b4-00c04fd430c8",\n)\nprint(response.data)',
       },
+      java: {
+        method: 'messages().retrieveStatus',
+        example:
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.messages.MessageRetrieveStatusParams;\nimport dm.sent.models.messages.MessageRetrieveStatusResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        MessageRetrieveStatusResponse response = client.messages().retrieveStatus("8ba7b830-9dad-11d1-80b4-00c04fd430c8");\n    }\n}',
+      },
+      go: {
+        method: 'client.Messages.GetStatus',
+        example:
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tresponse, err := client.Messages.GetStatus(\n\t\tcontext.TODO(),\n\t\t"8ba7b830-9dad-11d1-80b4-00c04fd430c8",\n\t\tsentdm.MessageGetStatusParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", response.Data)\n}\n',
+      },
       ruby: {
         method: 'messages.retrieve_status',
         example:
           'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\nresponse = sent.messages.retrieve_status("8ba7b830-9dad-11d1-80b4-00c04fd430c8")\n\nputs(response)',
       },
-      typescript: {
-        method: 'client.messages.retrieveStatus',
+      php: {
+        method: 'messages->retrieveStatus',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst response = await client.messages.retrieveStatus('8ba7b830-9dad-11d1-80b4-00c04fd430c8');\n\nconsole.log(response.data);",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$response = $client->messages->retrieveStatus(\n  '8ba7b830-9dad-11d1-80b4-00c04fd430c8',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($response);",
+      },
+      csharp: {
+        method: 'Messages.RetrieveStatus',
+        example:
+          'MessageRetrieveStatusParams parameters = new()\n{\n    ID = "8ba7b830-9dad-11d1-80b4-00c04fd430c8"\n};\n\nvar response = await client.Messages.RetrieveStatus(parameters);\n\nConsole.WriteLine(response);',
+      },
+      http: {
+        example: 'curl https://api.sent.dm/v3/messages/$ID \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
       },
     },
   },
@@ -2046,44 +2046,44 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       '## send\n\n`client.messages.send(channel?: string[], sandbox?: boolean, template?: { id?: string; name?: string; parameters?: object; }, to?: string[], Idempotency-Key?: string, x-profile-id?: string): { data?: object; error?: error_detail; meta?: api_meta; success?: boolean; }`\n\n**post** `/v3/messages`\n\nSends a message to one or more recipients using a template. Supports multi-channel broadcast — when multiple channels are specified (e.g. ["sms", "whatsapp"]), a separate message is created for each (recipient, channel) pair. Returns immediately with per-recipient message IDs for async tracking via webhooks or the GET /messages/{id} endpoint.\n\n### Parameters\n\n- `channel?: string[]`\n  Channels to broadcast on, e.g. ["whatsapp", "sms"].\nEach channel produces a separate message per recipient.\n"sent" = auto-detect, "rcs" = reserved (skipped).\nDefaults to ["sent"] (auto-detect) if omitted.\n\n- `sandbox?: boolean`\n  Sandbox flag - when true, the operation is simulated without side effects\nUseful for testing integrations without actual execution\n\n- `template?: { id?: string; name?: string; parameters?: object; }`\n  SDK-style template reference: resolve by ID or by name, with optional parameters.\n  - `id?: string`\n    Template ID (mutually exclusive with name)\n  - `name?: string`\n    Template name (mutually exclusive with id)\n  - `parameters?: object`\n    Template variable parameters for personalization\n\n- `to?: string[]`\n  List of recipient phone numbers in E.164 format (multi-recipient fan-out)\n\n- `Idempotency-Key?: string`\n\n- `x-profile-id?: string`\n\n### Returns\n\n- `{ data?: { recipients?: { body?: string; channel?: string; message_id?: string; to?: string; }[]; status?: string; template_id?: string; template_name?: string; }; error?: { code?: string; details?: object; doc_url?: string; message?: string; }; meta?: { request_id?: string; timestamp?: string; version?: string; }; success?: boolean; }`\n  Standard API response envelope for all v3 endpoints\n\n  - `data?: { recipients?: { body?: string; channel?: string; message_id?: string; to?: string; }[]; status?: string; template_id?: string; template_name?: string; }`\n  - `error?: { code?: string; details?: object; doc_url?: string; message?: string; }`\n  - `meta?: { request_id?: string; timestamp?: string; version?: string; }`\n  - `success?: boolean`\n\n### Example\n\n```typescript\nimport Sent from \'@sentdm/sentdm\';\n\nconst client = new Sent();\n\nconst response = await client.messages.send();\n\nconsole.log(response);\n```',
     perLanguage: {
-      csharp: {
-        method: 'Messages.Send',
+      typescript: {
+        method: 'client.messages.send',
         example:
-          'MessageSendParams parameters = new();\n\nvar response = await client.Messages.Send(parameters);\n\nConsole.WriteLine(response);',
-      },
-      go: {
-        method: 'client.Messages.Send',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tresponse, err := client.Messages.Send(context.TODO(), sentdm.MessageSendParams{})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", response.Data)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://api.sent.dm/v3/messages \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "channel": [\n            "sms",\n            "whatsapp"\n          ],\n          "template": {\n            "id": "7ba7b820-9dad-11d1-80b4-00c04fd430c8",\n            "name": "order_confirmation",\n            "parameters": {\n              "name": "John Doe",\n              "order_id": "12345"\n            }\n          },\n          "to": [\n            "+14155551234",\n            "+14155555678"\n          ]\n        }\'',
-      },
-      java: {
-        method: 'messages().send',
-        example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.messages.MessageSendParams;\nimport dm.sent.models.messages.MessageSendResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        MessageSendResponse response = client.messages().send();\n    }\n}',
-      },
-      php: {
-        method: 'messages->send',
-        example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$response = $client->messages->send(\n  channel: ['sms', 'whatsapp'],\n  sandbox: false,\n  template: [\n    'id' => '7ba7b820-9dad-11d1-80b4-00c04fd430c8',\n    'name' => 'order_confirmation',\n    'parameters' => ['name' => 'John Doe', 'order_id' => '12345'],\n  ],\n  to: ['+14155551234', '+14155555678'],\n  idempotencyKey: 'req_abc123_retry1',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($response);",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst response = await client.messages.send();\n\nconsole.log(response.data);",
       },
       python: {
         method: 'messages.send',
         example:
           'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\nresponse = client.messages.send()\nprint(response.data)',
       },
+      java: {
+        method: 'messages().send',
+        example:
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.messages.MessageSendParams;\nimport dm.sent.models.messages.MessageSendResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        MessageSendResponse response = client.messages().send();\n    }\n}',
+      },
+      go: {
+        method: 'client.Messages.Send',
+        example:
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tresponse, err := client.Messages.Send(context.TODO(), sentdm.MessageSendParams{})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", response.Data)\n}\n',
+      },
       ruby: {
         method: 'messages.send_',
         example:
           'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\nresponse = sent.messages.send_\n\nputs(response)',
       },
-      typescript: {
-        method: 'client.messages.send',
+      php: {
+        method: 'messages->send',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst response = await client.messages.send();\n\nconsole.log(response.data);",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$response = $client->messages->send(\n  channel: ['sms', 'whatsapp'],\n  sandbox: false,\n  template: [\n    'id' => '7ba7b820-9dad-11d1-80b4-00c04fd430c8',\n    'name' => 'order_confirmation',\n    'parameters' => ['name' => 'John Doe', 'order_id' => '12345'],\n  ],\n  to: ['+14155551234', '+14155555678'],\n  idempotencyKey: 'req_abc123_retry1',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($response);",
+      },
+      csharp: {
+        method: 'Messages.Send',
+        example:
+          'MessageSendParams parameters = new();\n\nvar response = await client.Messages.Send(parameters);\n\nConsole.WriteLine(response);',
+      },
+      http: {
+        example:
+          'curl https://api.sent.dm/v3/messages \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "channel": [\n            "sms",\n            "whatsapp"\n          ],\n          "template": {\n            "id": "7ba7b820-9dad-11d1-80b4-00c04fd430c8",\n            "name": "order_confirmation",\n            "parameters": {\n              "name": "John Doe",\n              "order_id": "12345"\n            }\n          },\n          "to": [\n            "+14155551234",\n            "+14155555678"\n          ]\n        }\'',
       },
     },
   },
@@ -2106,44 +2106,44 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## create\n\n`client.contacts.create(phone_number?: string, sandbox?: boolean, Idempotency-Key?: string, x-profile-id?: string): { data?: contact_response; error?: error_detail; meta?: api_meta; success?: boolean; }`\n\n**post** `/v3/contacts`\n\nCreates a new contact by phone number and associates it with the authenticated customer.\n\n### Parameters\n\n- `phone_number?: string`\n  Phone number of the contact to create\n\n- `sandbox?: boolean`\n  Sandbox flag - when true, the operation is simulated without side effects\nUseful for testing integrations without actual execution\n\n- `Idempotency-Key?: string`\n\n- `x-profile-id?: string`\n\n### Returns\n\n- `{ data?: { id?: string; available_channels?: string; channel_consent?: object; country_code?: string; created_at?: string; default_channel?: string; format_e164?: string; format_international?: string; format_national?: string; format_rfc?: string; is_inherited?: boolean; opt_out?: boolean; phone_number?: string; region_code?: string; updated_at?: string; }; error?: { code?: string; details?: object; doc_url?: string; message?: string; }; meta?: { request_id?: string; timestamp?: string; version?: string; }; success?: boolean; }`\n  Standard API response envelope for all v3 endpoints\n\n  - `data?: { id?: string; available_channels?: string; channel_consent?: object; country_code?: string; created_at?: string; default_channel?: string; format_e164?: string; format_international?: string; format_national?: string; format_rfc?: string; is_inherited?: boolean; opt_out?: boolean; phone_number?: string; region_code?: string; updated_at?: string; }`\n  - `error?: { code?: string; details?: object; doc_url?: string; message?: string; }`\n  - `meta?: { request_id?: string; timestamp?: string; version?: string; }`\n  - `success?: boolean`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nconst apiResponseOfContact = await client.contacts.create();\n\nconsole.log(apiResponseOfContact);\n```",
     perLanguage: {
-      csharp: {
-        method: 'Contacts.Create',
+      typescript: {
+        method: 'client.contacts.create',
         example:
-          'ContactCreateParams parameters = new();\n\nvar apiResponseOfContact = await client.Contacts.Create(parameters);\n\nConsole.WriteLine(apiResponseOfContact);',
-      },
-      go: {
-        method: 'client.Contacts.New',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tapiResponseOfContact, err := client.Contacts.New(context.TODO(), sentdm.ContactNewParams{})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", apiResponseOfContact.Data)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://api.sent.dm/v3/contacts \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "phone_number": "+1234567890"\n        }\'',
-      },
-      java: {
-        method: 'contacts().create',
-        example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.contacts.ApiResponseOfContact;\nimport dm.sent.models.contacts.ContactCreateParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        ApiResponseOfContact apiResponseOfContact = client.contacts().create();\n    }\n}',
-      },
-      php: {
-        method: 'contacts->create',
-        example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$apiResponseOfContact = $client->contacts->create(\n  phoneNumber: '+1234567890',\n  sandbox: false,\n  idempotencyKey: 'req_abc123_retry1',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($apiResponseOfContact);",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst apiResponseOfContact = await client.contacts.create();\n\nconsole.log(apiResponseOfContact.data);",
       },
       python: {
         method: 'contacts.create',
         example:
           'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\napi_response_of_contact = client.contacts.create()\nprint(api_response_of_contact.data)',
       },
+      java: {
+        method: 'contacts().create',
+        example:
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.contacts.ApiResponseOfContact;\nimport dm.sent.models.contacts.ContactCreateParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        ApiResponseOfContact apiResponseOfContact = client.contacts().create();\n    }\n}',
+      },
+      go: {
+        method: 'client.Contacts.New',
+        example:
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tapiResponseOfContact, err := client.Contacts.New(context.TODO(), sentdm.ContactNewParams{})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", apiResponseOfContact.Data)\n}\n',
+      },
       ruby: {
         method: 'contacts.create',
         example:
           'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\napi_response_of_contact = sent.contacts.create\n\nputs(api_response_of_contact)',
       },
-      typescript: {
-        method: 'client.contacts.create',
+      php: {
+        method: 'contacts->create',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst apiResponseOfContact = await client.contacts.create();\n\nconsole.log(apiResponseOfContact.data);",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$apiResponseOfContact = $client->contacts->create(\n  phoneNumber: '+1234567890',\n  sandbox: false,\n  idempotencyKey: 'req_abc123_retry1',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($apiResponseOfContact);",
+      },
+      csharp: {
+        method: 'Contacts.Create',
+        example:
+          'ContactCreateParams parameters = new();\n\nvar apiResponseOfContact = await client.Contacts.Create(parameters);\n\nConsole.WriteLine(apiResponseOfContact);',
+      },
+      http: {
+        example:
+          'curl https://api.sent.dm/v3/contacts \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "phone_number": "+1234567890"\n        }\'',
       },
     },
   },
@@ -2169,43 +2169,43 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## list\n\n`client.contacts.list(page: number, page_size: number, channel?: string, phone?: string, search?: string, x-profile-id?: string): { data?: object; error?: error_detail; meta?: api_meta; success?: boolean; }`\n\n**get** `/v3/contacts`\n\nRetrieves a paginated list of contacts for the authenticated customer. Supports filtering by search term, channel, or phone number.\n\n### Parameters\n\n- `page: number`\n  Page number (1-indexed)\n\n- `page_size: number`\n  Number of items per page\n\n- `channel?: string`\n  Optional channel filter (sms, whatsapp)\n\n- `phone?: string`\n  Optional phone number filter (alternative to list view)\n\n- `search?: string`\n  Optional search term for filtering contacts\n\n- `x-profile-id?: string`\n\n### Returns\n\n- `{ data?: { contacts?: object[]; pagination?: object; }; error?: { code?: string; details?: object; doc_url?: string; message?: string; }; meta?: { request_id?: string; timestamp?: string; version?: string; }; success?: boolean; }`\n  Standard API response envelope for all v3 endpoints\n\n  - `data?: { contacts?: { id?: string; available_channels?: string; channel_consent?: object; country_code?: string; created_at?: string; default_channel?: string; format_e164?: string; format_international?: string; format_national?: string; format_rfc?: string; is_inherited?: boolean; opt_out?: boolean; phone_number?: string; region_code?: string; updated_at?: string; }[]; pagination?: { cursors?: { after?: string; before?: string; }; has_more?: boolean; page?: number; page_size?: number; total_count?: number; total_pages?: number; }; }`\n  - `error?: { code?: string; details?: object; doc_url?: string; message?: string; }`\n  - `meta?: { request_id?: string; timestamp?: string; version?: string; }`\n  - `success?: boolean`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nconst contacts = await client.contacts.list({ page: 0, page_size: 0 });\n\nconsole.log(contacts);\n```",
     perLanguage: {
-      csharp: {
-        method: 'Contacts.List',
+      typescript: {
+        method: 'client.contacts.list',
         example:
-          'ContactListParams parameters = new()\n{\n    Page = 0,\n    PageSize = 0,\n};\n\nvar contacts = await client.Contacts.List(parameters);\n\nConsole.WriteLine(contacts);',
-      },
-      go: {
-        method: 'client.Contacts.List',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tcontacts, err := client.Contacts.List(context.TODO(), sentdm.ContactListParams{\n\t\tPage:     0,\n\t\tPageSize: 0,\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", contacts.Data)\n}\n',
-      },
-      http: {
-        example: 'curl https://api.sent.dm/v3/contacts \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
-      },
-      java: {
-        method: 'contacts().list',
-        example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.contacts.ContactListParams;\nimport dm.sent.models.contacts.ContactListResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        ContactListParams params = ContactListParams.builder()\n            .page(0)\n            .pageSize(0)\n            .build();\n        ContactListResponse contacts = client.contacts().list(params);\n    }\n}',
-      },
-      php: {
-        method: 'contacts->list',
-        example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$contacts = $client->contacts->list(\n  page: 0,\n  pageSize: 0,\n  channel: 'channel',\n  phone: 'phone',\n  search: 'search',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($contacts);",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst contacts = await client.contacts.list({ page: 0, page_size: 0 });\n\nconsole.log(contacts.data);",
       },
       python: {
         method: 'contacts.list',
         example:
           'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\ncontacts = client.contacts.list(\n    page=0,\n    page_size=0,\n)\nprint(contacts.data)',
       },
+      java: {
+        method: 'contacts().list',
+        example:
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.contacts.ContactListParams;\nimport dm.sent.models.contacts.ContactListResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        ContactListParams params = ContactListParams.builder()\n            .page(0)\n            .pageSize(0)\n            .build();\n        ContactListResponse contacts = client.contacts().list(params);\n    }\n}',
+      },
+      go: {
+        method: 'client.Contacts.List',
+        example:
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tcontacts, err := client.Contacts.List(context.TODO(), sentdm.ContactListParams{\n\t\tPage:     0,\n\t\tPageSize: 0,\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", contacts.Data)\n}\n',
+      },
       ruby: {
         method: 'contacts.list',
         example:
           'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\ncontacts = sent.contacts.list(page: 0, page_size: 0)\n\nputs(contacts)',
       },
-      typescript: {
-        method: 'client.contacts.list',
+      php: {
+        method: 'contacts->list',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst contacts = await client.contacts.list({ page: 0, page_size: 0 });\n\nconsole.log(contacts.data);",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$contacts = $client->contacts->list(\n  page: 0,\n  pageSize: 0,\n  channel: 'channel',\n  phone: 'phone',\n  search: 'search',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($contacts);",
+      },
+      csharp: {
+        method: 'Contacts.List',
+        example:
+          'ContactListParams parameters = new()\n{\n    Page = 0,\n    PageSize = 0,\n};\n\nvar contacts = await client.Contacts.List(parameters);\n\nConsole.WriteLine(contacts);',
+      },
+      http: {
+        example: 'curl https://api.sent.dm/v3/contacts \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
       },
     },
   },
@@ -2222,44 +2222,44 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## delete\n\n`client.contacts.delete(id: string, body: { sandbox?: boolean; }, x-profile-id?: string): void`\n\n**delete** `/v3/contacts/{id}`\n\nDissociates a contact from the authenticated customer. Inherited contacts cannot be deleted.\n\n### Parameters\n\n- `id: string`\n\n- `body: { sandbox?: boolean; }`\n  Request to delete/dissociate a contact\n\n- `x-profile-id?: string`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nawait client.contacts.delete('6ba7b810-9dad-11d1-80b4-00c04fd430c8', { body: {} })\n```",
     perLanguage: {
-      csharp: {
-        method: 'Contacts.Delete',
+      typescript: {
+        method: 'client.contacts.delete',
         example:
-          'ContactDeleteParams parameters = new()\n{\n    ID = "6ba7b810-9dad-11d1-80b4-00c04fd430c8",\n    Body = new() { Sandbox = false },\n};\n\nawait client.Contacts.Delete(parameters);',
-      },
-      go: {
-        method: 'client.Contacts.Delete',
-        example:
-          'package main\n\nimport (\n\t"context"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\terr := client.Contacts.Delete(\n\t\tcontext.TODO(),\n\t\t"6ba7b810-9dad-11d1-80b4-00c04fd430c8",\n\t\tsentdm.ContactDeleteParams{\n\t\t\tBody: sentdm.ContactDeleteParamsBody{\n\t\t\t\tMutationRequestParam: sentdm.MutationRequestParam{},\n\t\t\t},\n\t\t},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n}\n',
-      },
-      http: {
-        example:
-          'curl https://api.sent.dm/v3/contacts/$ID \\\n    -X DELETE \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
-      },
-      java: {
-        method: 'contacts().delete',
-        example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.contacts.ContactDeleteParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        client.contacts().delete("6ba7b810-9dad-11d1-80b4-00c04fd430c8");\n    }\n}',
-      },
-      php: {
-        method: 'contacts->delete',
-        example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$result = $client->contacts->delete(\n  '6ba7b810-9dad-11d1-80b4-00c04fd430c8',\n  body: ['sandbox' => false],\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($result);",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nawait client.contacts.delete('6ba7b810-9dad-11d1-80b4-00c04fd430c8', { body: {} });",
       },
       python: {
         method: 'contacts.delete',
         example:
           'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\nclient.contacts.delete(\n    id="6ba7b810-9dad-11d1-80b4-00c04fd430c8",\n    body={},\n)',
       },
+      java: {
+        method: 'contacts().delete',
+        example:
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.contacts.ContactDeleteParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        client.contacts().delete("6ba7b810-9dad-11d1-80b4-00c04fd430c8");\n    }\n}',
+      },
+      go: {
+        method: 'client.Contacts.Delete',
+        example:
+          'package main\n\nimport (\n\t"context"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\terr := client.Contacts.Delete(\n\t\tcontext.TODO(),\n\t\t"6ba7b810-9dad-11d1-80b4-00c04fd430c8",\n\t\tsentdm.ContactDeleteParams{\n\t\t\tBody: sentdm.ContactDeleteParamsBody{\n\t\t\t\tMutationRequestParam: sentdm.MutationRequestParam{},\n\t\t\t},\n\t\t},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n}\n',
+      },
       ruby: {
         method: 'contacts.delete',
         example:
           'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\nresult = sent.contacts.delete("6ba7b810-9dad-11d1-80b4-00c04fd430c8", body: {})\n\nputs(result)',
       },
-      typescript: {
-        method: 'client.contacts.delete',
+      php: {
+        method: 'contacts->delete',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nawait client.contacts.delete('6ba7b810-9dad-11d1-80b4-00c04fd430c8', { body: {} });",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$result = $client->contacts->delete(\n  '6ba7b810-9dad-11d1-80b4-00c04fd430c8',\n  body: ['sandbox' => false],\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($result);",
+      },
+      csharp: {
+        method: 'Contacts.Delete',
+        example:
+          'ContactDeleteParams parameters = new()\n{\n    ID = "6ba7b810-9dad-11d1-80b4-00c04fd430c8",\n    Body = new() { Sandbox = false },\n};\n\nawait client.Contacts.Delete(parameters);',
+      },
+      http: {
+        example:
+          'curl https://api.sent.dm/v3/contacts/$ID \\\n    -X DELETE \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
       },
     },
   },
@@ -2278,43 +2278,43 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## retrieve\n\n`client.contacts.retrieve(id: string, x-profile-id?: string): { data?: contact_response; error?: error_detail; meta?: api_meta; success?: boolean; }`\n\n**get** `/v3/contacts/{id}`\n\nRetrieves a specific contact by their unique identifier. Returns detailed contact information including phone formats, available channels, and opt-out status.\n\n### Parameters\n\n- `id: string`\n\n- `x-profile-id?: string`\n\n### Returns\n\n- `{ data?: { id?: string; available_channels?: string; channel_consent?: object; country_code?: string; created_at?: string; default_channel?: string; format_e164?: string; format_international?: string; format_national?: string; format_rfc?: string; is_inherited?: boolean; opt_out?: boolean; phone_number?: string; region_code?: string; updated_at?: string; }; error?: { code?: string; details?: object; doc_url?: string; message?: string; }; meta?: { request_id?: string; timestamp?: string; version?: string; }; success?: boolean; }`\n  Standard API response envelope for all v3 endpoints\n\n  - `data?: { id?: string; available_channels?: string; channel_consent?: object; country_code?: string; created_at?: string; default_channel?: string; format_e164?: string; format_international?: string; format_national?: string; format_rfc?: string; is_inherited?: boolean; opt_out?: boolean; phone_number?: string; region_code?: string; updated_at?: string; }`\n  - `error?: { code?: string; details?: object; doc_url?: string; message?: string; }`\n  - `meta?: { request_id?: string; timestamp?: string; version?: string; }`\n  - `success?: boolean`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nconst apiResponseOfContact = await client.contacts.retrieve('6ba7b810-9dad-11d1-80b4-00c04fd430c8');\n\nconsole.log(apiResponseOfContact);\n```",
     perLanguage: {
-      csharp: {
-        method: 'Contacts.Retrieve',
+      typescript: {
+        method: 'client.contacts.retrieve',
         example:
-          'ContactRetrieveParams parameters = new()\n{\n    ID = "6ba7b810-9dad-11d1-80b4-00c04fd430c8"\n};\n\nvar apiResponseOfContact = await client.Contacts.Retrieve(parameters);\n\nConsole.WriteLine(apiResponseOfContact);',
-      },
-      go: {
-        method: 'client.Contacts.Get',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tapiResponseOfContact, err := client.Contacts.Get(\n\t\tcontext.TODO(),\n\t\t"6ba7b810-9dad-11d1-80b4-00c04fd430c8",\n\t\tsentdm.ContactGetParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", apiResponseOfContact.Data)\n}\n',
-      },
-      http: {
-        example: 'curl https://api.sent.dm/v3/contacts/$ID \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
-      },
-      java: {
-        method: 'contacts().retrieve',
-        example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.contacts.ApiResponseOfContact;\nimport dm.sent.models.contacts.ContactRetrieveParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        ApiResponseOfContact apiResponseOfContact = client.contacts().retrieve("6ba7b810-9dad-11d1-80b4-00c04fd430c8");\n    }\n}',
-      },
-      php: {
-        method: 'contacts->retrieve',
-        example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$apiResponseOfContact = $client->contacts->retrieve(\n  '6ba7b810-9dad-11d1-80b4-00c04fd430c8',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($apiResponseOfContact);",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst apiResponseOfContact = await client.contacts.retrieve('6ba7b810-9dad-11d1-80b4-00c04fd430c8');\n\nconsole.log(apiResponseOfContact.data);",
       },
       python: {
         method: 'contacts.retrieve',
         example:
           'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\napi_response_of_contact = client.contacts.retrieve(\n    id="6ba7b810-9dad-11d1-80b4-00c04fd430c8",\n)\nprint(api_response_of_contact.data)',
       },
+      java: {
+        method: 'contacts().retrieve',
+        example:
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.contacts.ApiResponseOfContact;\nimport dm.sent.models.contacts.ContactRetrieveParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        ApiResponseOfContact apiResponseOfContact = client.contacts().retrieve("6ba7b810-9dad-11d1-80b4-00c04fd430c8");\n    }\n}',
+      },
+      go: {
+        method: 'client.Contacts.Get',
+        example:
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tapiResponseOfContact, err := client.Contacts.Get(\n\t\tcontext.TODO(),\n\t\t"6ba7b810-9dad-11d1-80b4-00c04fd430c8",\n\t\tsentdm.ContactGetParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", apiResponseOfContact.Data)\n}\n',
+      },
       ruby: {
         method: 'contacts.retrieve',
         example:
           'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\napi_response_of_contact = sent.contacts.retrieve("6ba7b810-9dad-11d1-80b4-00c04fd430c8")\n\nputs(api_response_of_contact)',
       },
-      typescript: {
-        method: 'client.contacts.retrieve',
+      php: {
+        method: 'contacts->retrieve',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst apiResponseOfContact = await client.contacts.retrieve('6ba7b810-9dad-11d1-80b4-00c04fd430c8');\n\nconsole.log(apiResponseOfContact.data);",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$apiResponseOfContact = $client->contacts->retrieve(\n  '6ba7b810-9dad-11d1-80b4-00c04fd430c8',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($apiResponseOfContact);",
+      },
+      csharp: {
+        method: 'Contacts.Retrieve',
+        example:
+          'ContactRetrieveParams parameters = new()\n{\n    ID = "6ba7b810-9dad-11d1-80b4-00c04fd430c8"\n};\n\nvar apiResponseOfContact = await client.Contacts.Retrieve(parameters);\n\nConsole.WriteLine(apiResponseOfContact);',
+      },
+      http: {
+        example: 'curl https://api.sent.dm/v3/contacts/$ID \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
       },
     },
   },
@@ -2341,44 +2341,44 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       '## update\n\n`client.contacts.update(id: string, channel_consent?: object, default_channel?: string, opt_out?: boolean, sandbox?: boolean, Idempotency-Key?: string, x-profile-id?: string): { data?: contact_response; error?: error_detail; meta?: api_meta; success?: boolean; }`\n\n**patch** `/v3/contacts/{id}`\n\nUpdates a contact\'s default channel and/or opt-out status. Inherited contacts cannot be updated.\n\n### Parameters\n\n- `id: string`\n\n- `channel_consent?: object`\n  Consent status by channel. Keys: "sms", "whatsapp". Values: "opted_in", "opted_out".\nAll entries must have the same status — mixed values (e.g., sms: opted_out + whatsapp: opted_in)\nare rejected with 400. The provided status is applied to ALL channels regardless of which keys\nare specified, because consent is global across channels.\nWhen provided, takes precedence over the opt_out field.\n\n- `default_channel?: string`\n  Default messaging channel: "sms" or "whatsapp"\n\n- `opt_out?: boolean`\n  Whether the contact has opted out of messaging\n\n- `sandbox?: boolean`\n  Sandbox flag - when true, the operation is simulated without side effects\nUseful for testing integrations without actual execution\n\n- `Idempotency-Key?: string`\n\n- `x-profile-id?: string`\n\n### Returns\n\n- `{ data?: { id?: string; available_channels?: string; channel_consent?: object; country_code?: string; created_at?: string; default_channel?: string; format_e164?: string; format_international?: string; format_national?: string; format_rfc?: string; is_inherited?: boolean; opt_out?: boolean; phone_number?: string; region_code?: string; updated_at?: string; }; error?: { code?: string; details?: object; doc_url?: string; message?: string; }; meta?: { request_id?: string; timestamp?: string; version?: string; }; success?: boolean; }`\n  Standard API response envelope for all v3 endpoints\n\n  - `data?: { id?: string; available_channels?: string; channel_consent?: object; country_code?: string; created_at?: string; default_channel?: string; format_e164?: string; format_international?: string; format_national?: string; format_rfc?: string; is_inherited?: boolean; opt_out?: boolean; phone_number?: string; region_code?: string; updated_at?: string; }`\n  - `error?: { code?: string; details?: object; doc_url?: string; message?: string; }`\n  - `meta?: { request_id?: string; timestamp?: string; version?: string; }`\n  - `success?: boolean`\n\n### Example\n\n```typescript\nimport Sent from \'@sentdm/sentdm\';\n\nconst client = new Sent();\n\nconst apiResponseOfContact = await client.contacts.update(\'6ba7b810-9dad-11d1-80b4-00c04fd430c8\');\n\nconsole.log(apiResponseOfContact);\n```',
     perLanguage: {
-      csharp: {
-        method: 'Contacts.Update',
+      typescript: {
+        method: 'client.contacts.update',
         example:
-          'ContactUpdateParams parameters = new()\n{\n    ID = "6ba7b810-9dad-11d1-80b4-00c04fd430c8"\n};\n\nvar apiResponseOfContact = await client.Contacts.Update(parameters);\n\nConsole.WriteLine(apiResponseOfContact);',
-      },
-      go: {
-        method: 'client.Contacts.Update',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tapiResponseOfContact, err := client.Contacts.Update(\n\t\tcontext.TODO(),\n\t\t"6ba7b810-9dad-11d1-80b4-00c04fd430c8",\n\t\tsentdm.ContactUpdateParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", apiResponseOfContact.Data)\n}\n',
-      },
-      http: {
-        example:
-          'curl https://api.sent.dm/v3/contacts/$ID \\\n    -X PATCH \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "default_channel": "whatsapp"\n        }\'',
-      },
-      java: {
-        method: 'contacts().update',
-        example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.contacts.ApiResponseOfContact;\nimport dm.sent.models.contacts.ContactUpdateParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        ApiResponseOfContact apiResponseOfContact = client.contacts().update("6ba7b810-9dad-11d1-80b4-00c04fd430c8");\n    }\n}',
-      },
-      php: {
-        method: 'contacts->update',
-        example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$apiResponseOfContact = $client->contacts->update(\n  '6ba7b810-9dad-11d1-80b4-00c04fd430c8',\n  channelConsent: ['foo' => 'string'],\n  defaultChannel: 'whatsapp',\n  optOut: false,\n  sandbox: false,\n  idempotencyKey: 'req_abc123_retry1',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($apiResponseOfContact);",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst apiResponseOfContact = await client.contacts.update('6ba7b810-9dad-11d1-80b4-00c04fd430c8');\n\nconsole.log(apiResponseOfContact.data);",
       },
       python: {
         method: 'contacts.update',
         example:
           'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\napi_response_of_contact = client.contacts.update(\n    id="6ba7b810-9dad-11d1-80b4-00c04fd430c8",\n)\nprint(api_response_of_contact.data)',
       },
+      java: {
+        method: 'contacts().update',
+        example:
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.contacts.ApiResponseOfContact;\nimport dm.sent.models.contacts.ContactUpdateParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        ApiResponseOfContact apiResponseOfContact = client.contacts().update("6ba7b810-9dad-11d1-80b4-00c04fd430c8");\n    }\n}',
+      },
+      go: {
+        method: 'client.Contacts.Update',
+        example:
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tapiResponseOfContact, err := client.Contacts.Update(\n\t\tcontext.TODO(),\n\t\t"6ba7b810-9dad-11d1-80b4-00c04fd430c8",\n\t\tsentdm.ContactUpdateParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", apiResponseOfContact.Data)\n}\n',
+      },
       ruby: {
         method: 'contacts.update',
         example:
           'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\napi_response_of_contact = sent.contacts.update("6ba7b810-9dad-11d1-80b4-00c04fd430c8")\n\nputs(api_response_of_contact)',
       },
-      typescript: {
-        method: 'client.contacts.update',
+      php: {
+        method: 'contacts->update',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst apiResponseOfContact = await client.contacts.update('6ba7b810-9dad-11d1-80b4-00c04fd430c8');\n\nconsole.log(apiResponseOfContact.data);",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$apiResponseOfContact = $client->contacts->update(\n  '6ba7b810-9dad-11d1-80b4-00c04fd430c8',\n  channelConsent: ['foo' => 'string'],\n  defaultChannel: 'whatsapp',\n  optOut: false,\n  sandbox: false,\n  idempotencyKey: 'req_abc123_retry1',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($apiResponseOfContact);",
+      },
+      csharp: {
+        method: 'Contacts.Update',
+        example:
+          'ContactUpdateParams parameters = new()\n{\n    ID = "6ba7b810-9dad-11d1-80b4-00c04fd430c8"\n};\n\nvar apiResponseOfContact = await client.Contacts.Update(parameters);\n\nConsole.WriteLine(apiResponseOfContact);',
+      },
+      http: {
+        example:
+          'curl https://api.sent.dm/v3/contacts/$ID \\\n    -X PATCH \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "default_channel": "whatsapp"\n        }\'',
       },
     },
   },
@@ -2397,43 +2397,43 @@ const EMBEDDED_METHODS: MethodEntry[] = [
     markdown:
       "## retrieve\n\n`client.me.retrieve(x-profile-id?: string): { data?: object; error?: error_detail; meta?: api_meta; success?: boolean; }`\n\n**get** `/v3/me`\n\nReturns the account associated with the provided API key. The response includes account identity, contact information, messaging channel configuration, and — depending on the account type — either a list of child profiles or the profile's own settings.\n\n**Account types:**\n- `organization` — Has child profiles. The `profiles` array is populated.\n- `user` — Standalone account with no profiles.\n- `profile` — Child of an organization. Includes `organization_id`, `short_name`, `status`, and `settings`.\n\n**Channels:**\nThe `channels` object always includes `sms`, `whatsapp`, and `rcs`. Each channel has a `configured` boolean. Configured channels expose additional details such as `phone_number`.\n\n### Parameters\n\n- `x-profile-id?: string`\n\n### Returns\n\n- `{ data?: { id?: string; channels?: { rcs?: object; sms?: object; whatsapp?: object; }; created_at?: string; description?: string; email?: string; icon?: string; name?: string; organization_id?: string; profiles?: { id?: string; created_at?: string; description?: string; icon?: string; name?: string; role?: string; settings?: profile_settings; short_name?: string; status?: string; }[]; settings?: object; short_name?: string; status?: string; type?: string; }; error?: { code?: string; details?: object; doc_url?: string; message?: string; }; meta?: { request_id?: string; timestamp?: string; version?: string; }; success?: boolean; }`\n  Standard API response envelope for all v3 endpoints\n\n  - `data?: { id?: string; channels?: { rcs?: { configured?: boolean; phone_number?: string; }; sms?: { configured?: boolean; phone_number?: string; }; whatsapp?: { business_name?: string; configured?: boolean; phone_number?: string; }; }; created_at?: string; description?: string; email?: string; icon?: string; name?: string; organization_id?: string; profiles?: { id?: string; created_at?: string; description?: string; icon?: string; name?: string; role?: string; settings?: { allow_contact_sharing?: boolean; allow_template_sharing?: boolean; billing_model?: string; inherit_contacts?: boolean; inherit_tcr_brand?: boolean; inherit_tcr_campaign?: boolean; inherit_templates?: boolean; }; short_name?: string; status?: string; }[]; settings?: { allow_contact_sharing?: boolean; allow_template_sharing?: boolean; billing_model?: string; inherit_contacts?: boolean; inherit_tcr_brand?: boolean; inherit_tcr_campaign?: boolean; inherit_templates?: boolean; }; short_name?: string; status?: string; type?: string; }`\n  - `error?: { code?: string; details?: object; doc_url?: string; message?: string; }`\n  - `meta?: { request_id?: string; timestamp?: string; version?: string; }`\n  - `success?: boolean`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nconst me = await client.me.retrieve();\n\nconsole.log(me);\n```",
     perLanguage: {
-      csharp: {
-        method: 'Me.Retrieve',
+      typescript: {
+        method: 'client.me.retrieve',
         example:
-          'MeRetrieveParams parameters = new();\n\nvar me = await client.Me.Retrieve(parameters);\n\nConsole.WriteLine(me);',
-      },
-      go: {
-        method: 'client.Me.Get',
-        example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tme, err := client.Me.Get(context.TODO(), sentdm.MeGetParams{})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", me.Data)\n}\n',
-      },
-      http: {
-        example: 'curl https://api.sent.dm/v3/me \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
-      },
-      java: {
-        method: 'me().retrieve',
-        example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.me.MeRetrieveParams;\nimport dm.sent.models.me.MeRetrieveResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        MeRetrieveResponse me = client.me().retrieve();\n    }\n}',
-      },
-      php: {
-        method: 'me->retrieve',
-        example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$me = $client->me->retrieve(xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e');\n\nvar_dump($me);",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst me = await client.me.retrieve();\n\nconsole.log(me.data);",
       },
       python: {
         method: 'me.retrieve',
         example:
           'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\nme = client.me.retrieve()\nprint(me.data)',
       },
+      java: {
+        method: 'me().retrieve',
+        example:
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.me.MeRetrieveParams;\nimport dm.sent.models.me.MeRetrieveResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        MeRetrieveResponse me = client.me().retrieve();\n    }\n}',
+      },
+      go: {
+        method: 'client.Me.Get',
+        example:
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tme, err := client.Me.Get(context.TODO(), sentdm.MeGetParams{})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", me.Data)\n}\n',
+      },
       ruby: {
         method: 'me.retrieve',
         example:
           'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\nme = sent.me.retrieve\n\nputs(me)',
       },
-      typescript: {
-        method: 'client.me.retrieve',
+      php: {
+        method: 'me->retrieve',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst me = await client.me.retrieve();\n\nconsole.log(me.data);",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$me = $client->me->retrieve(xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e');\n\nvar_dump($me);",
+      },
+      csharp: {
+        method: 'Me.Retrieve',
+        example:
+          'MeRetrieveParams parameters = new();\n\nvar me = await client.Me.Retrieve(parameters);\n\nConsole.WriteLine(me);',
+      },
+      http: {
+        example: 'curl https://api.sent.dm/v3/me \\\n    -H "x-api-key: $SENT_DM_API_KEY"',
       },
     },
   },

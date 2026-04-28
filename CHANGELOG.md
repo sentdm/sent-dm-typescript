@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.23.0 (2026-04-28)
+
+Full Changelog: [v0.22.2...v0.23.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.22.2...v0.23.0)
+
+### Features
+
+* support setting headers via env ([19749ce](https://github.com/sentdm/sent-dm-typescript/commit/19749ce44377ac69f5fec83f1e63c719282d90e3))
+
+
+### Chores
+
+* **internal:** codegen related update ([5c56cd1](https://github.com/sentdm/sent-dm-typescript/commit/5c56cd104043fccc70bc18739da0b1e9c29406e0))
+
 ## 0.22.2 (2026-04-26)
 
 Full Changelog: [v0.22.1...v0.22.2](https://github.com/sentdm/sent-dm-typescript/compare/v0.22.1...v0.22.2)

@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.24.0 (2026-04-29)
+
+Full Changelog: [v0.23.0...v0.24.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.23.0...v0.24.0)
+
+### Features
+
+* **api:** manual updates ([c0be0da](https://github.com/sentdm/sent-dm-typescript/commit/c0be0da06da34f9f61baadf0d382feac7bcb3fe0))
+
+
+### Chores
+
+* **format:** run eslint and prettier separately ([5d494ea](https://github.com/sentdm/sent-dm-typescript/commit/5d494ea66d9aa2211b2cf9860ba9d597e7a3c85a))
+
 ## 0.23.0 (2026-04-28)
 
 Full Changelog: [v0.22.2...v0.23.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.22.2...v0.23.0)

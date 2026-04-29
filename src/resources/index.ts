@@ -82,6 +82,7 @@ export {
   type ErrorDetail,
   type MutationRequest,
   type PaginationMeta,
+  type WebhookEventType,
   type WebhookResponse,
   type WebhookListResponse,
   type WebhookListEventTypesResponse,

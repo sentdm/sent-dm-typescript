@@ -189,7 +189,6 @@ export class Webhooks extends APIResource {
    * ```ts
    * const response = await client.webhooks.rotateSecret(
    *   'd4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8',
-   *   { body: {} },
    * );
    * ```
    */
@@ -198,9 +197,9 @@ export class Webhooks extends APIResource {
     params: WebhookRotateSecretParams,
     options?: RequestOptions,
   ): APIPromise<WebhookRotateSecretResponse> {
-    const { body, 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID } = params;
+    const { 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
     return this._client.post(path`/v3/webhooks/${id}/rotate-secret`, {
-      body: body,
+      body,
       ...options,
       headers: buildHeaders([
         {
@@ -833,9 +832,10 @@ export interface WebhookListEventsParams {
 
 export interface WebhookRotateSecretParams {
   /**
-   * Body param
+   * Body param: Sandbox flag - when true, the operation is simulated without side
+   * effects Useful for testing integrations without actual execution
    */
-  body: WebhookRotateSecretParams.Body;
+  sandbox?: boolean;
 
   /**
    * Header param: Unique key to ensure idempotent request processing. Must be 1-255
@@ -850,10 +850,6 @@ export interface WebhookRotateSecretParams {
    * calling organization.
    */
   'x-profile-id'?: string;
-}
-
-export namespace WebhookRotateSecretParams {
-  export interface Body extends WebhooksAPI.MutationRequest {}
 }
 
 export interface WebhookTestParams {

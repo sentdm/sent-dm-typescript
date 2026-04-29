@@ -125,14 +125,13 @@ export class Contacts extends APIResource {
    * ```ts
    * await client.contacts.delete(
    *   '6ba7b810-9dad-11d1-80b4-00c04fd430c8',
-   *   { body: {} },
    * );
    * ```
    */
   delete(id: string, params: ContactDeleteParams, options?: RequestOptions): APIPromise<void> {
-    const { body, 'x-profile-id': xProfileID } = params;
+    const { 'x-profile-id': xProfileID, ...body } = params;
     return this._client.delete(path`/v3/contacts/${id}`, {
-      body: body,
+      body,
       ...options,
       headers: buildHeaders([
         { Accept: '*/*', ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined) },
@@ -405,9 +404,10 @@ export interface ContactListParams {
 
 export interface ContactDeleteParams {
   /**
-   * Body param: Request to delete/dissociate a contact
+   * Body param: Sandbox flag - when true, the operation is simulated without side
+   * effects Useful for testing integrations without actual execution
    */
-  body: ContactDeleteParams.Body;
+  sandbox?: boolean;
 
   /**
    * Header param: Profile UUID to scope the request to a child profile. Only
@@ -415,13 +415,6 @@ export interface ContactDeleteParams {
    * calling organization.
    */
   'x-profile-id'?: string;
-}
-
-export namespace ContactDeleteParams {
-  /**
-   * Request to delete/dissociate a contact
-   */
-  export interface Body extends WebhooksAPI.MutationRequest {}
 }
 
 export declare namespace Contacts {

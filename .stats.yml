@@ -1,4 +1,4 @@
 configured_endpoints: 40
-openapi_spec_url: https://storage.googleapis.com/stainless-sdk-openapi-specs/sent%2Fsent-dm-c14fee8a3935f2a4600a5a0138063c1428f166277f5c924229514802edf46096.yml
-openapi_spec_hash: f011b05a0df9200426fcdc7d111d7b58
+openapi_spec_url: https://storage.googleapis.com/stainless-sdk-openapi-specs/sent%2Fsent-dm-0557ef99f8ba8f002e3f9221e6d39cc3f8a39f745db14ee944ceeca2de0ad36f.yml
+openapi_spec_hash: b80a38f5102868a8c1ae80914abbebde
 config_hash: 405ade725d72d542c60de821a127411b

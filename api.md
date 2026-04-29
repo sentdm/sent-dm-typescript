@@ -7,6 +7,7 @@ Types:
 - <code><a href="./src/resources/webhooks.ts">ErrorDetail</a></code>
 - <code><a href="./src/resources/webhooks.ts">MutationRequest</a></code>
 - <code><a href="./src/resources/webhooks.ts">PaginationMeta</a></code>
+- <code><a href="./src/resources/webhooks.ts">WebhookEventType</a></code>
 - <code><a href="./src/resources/webhooks.ts">WebhookResponse</a></code>
 - <code><a href="./src/resources/webhooks.ts">WebhookListResponse</a></code>
 - <code><a href="./src/resources/webhooks.ts">WebhookListEventTypesResponse</a></code>

@@ -190,13 +190,13 @@ export class Profiles extends APIResource {
    *
    * @example
    * ```ts
-   * await client.profiles.delete('profileId', { body: {} });
+   * await client.profiles.delete('profileId');
    * ```
    */
   delete(profileID: string, params: ProfileDeleteParams, options?: RequestOptions): APIPromise<void> {
-    const { body, 'x-profile-id': xProfileID } = params;
+    const { 'x-profile-id': xProfileID, ...body } = params;
     return this._client.delete(path`/v3/profiles/${profileID}`, {
-      body: body,
+      body,
       ...options,
       headers: buildHeaders([
         { Accept: '*/*', ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined) },
@@ -236,7 +236,11 @@ export class Profiles extends APIResource {
    * );
    * ```
    */
-  complete(profileID: string, params: ProfileCompleteParams, options?: RequestOptions): APIPromise<unknown> {
+  complete(
+    profileID: string,
+    params: ProfileCompleteParams,
+    options?: RequestOptions,
+  ): APIPromise<ProfileCompleteResponse> {
     const { 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
     return this._client.post(path`/v3/profiles/${profileID}/complete`, {
       body,
@@ -911,7 +915,50 @@ export namespace ProfileListResponse {
   }
 }
 
-export type ProfileCompleteResponse = unknown;
+/**
+ * Standard API response envelope for all v3 endpoints
+ */
+export interface ProfileCompleteResponse {
+  /**
+   * Response when a profile is already in the completed state and no further action
+   * is taken.
+   */
+  data?: ProfileCompleteResponse.Data | null;
+
+  /**
+   * Error information
+   */
+  error?: WebhooksAPI.ErrorDetail | null;
+
+  /**
+   * Request and response metadata
+   */
+  meta?: WebhooksAPI.APIMeta;
+
+  /**
+   * Indicates whether the request was successful
+   */
+  success?: boolean;
+}
+
+export namespace ProfileCompleteResponse {
+  /**
+   * Response when a profile is already in the completed state and no further action
+   * is taken.
+   */
+  export interface Data {
+    /**
+     * Human-readable message describing the result.
+     */
+    message?: string;
+
+    /**
+     * Current process status of the profile (e.g., "completed", "submitted",
+     * "in_progress").
+     */
+    status?: string;
+  }
+}
 
 export interface ProfileCreateParams {
   /**
@@ -1213,9 +1260,10 @@ export interface ProfileListParams {
 
 export interface ProfileDeleteParams {
   /**
-   * Body param: Request to delete a profile
+   * Body param: Sandbox flag - when true, the operation is simulated without side
+   * effects Useful for testing integrations without actual execution
    */
-  body: ProfileDeleteParams.Body;
+  sandbox?: boolean;
 
   /**
    * Header param: Profile UUID to scope the request to a child profile. Only
@@ -1223,13 +1271,6 @@ export interface ProfileDeleteParams {
    * calling organization.
    */
   'x-profile-id'?: string;
-}
-
-export namespace ProfileDeleteParams {
-  /**
-   * Request to delete a profile
-   */
-  export interface Body extends WebhooksAPI.MutationRequest {}
 }
 
 export interface ProfileCompleteParams {

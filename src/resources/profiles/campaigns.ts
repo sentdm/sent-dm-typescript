@@ -143,17 +143,14 @@ export class Campaigns extends APIResource {
    * ```ts
    * await client.profiles.campaigns.delete(
    *   'b2c3d4e5-f6a7-8901-bcde-f12345678901',
-   *   {
-   *     profileId: '770e8400-e29b-41d4-a716-446655440002',
-   *     body: {},
-   *   },
+   *   { profileId: '770e8400-e29b-41d4-a716-446655440002' },
    * );
    * ```
    */
   delete(campaignID: string, params: CampaignDeleteParams, options?: RequestOptions): APIPromise<void> {
-    const { profileId, body, 'x-profile-id': xProfileID } = params;
+    const { profileId, 'x-profile-id': xProfileID, ...body } = params;
     return this._client.delete(path`/v3/profiles/${profileId}/campaigns/${campaignID}`, {
-      body: body,
+      body,
       ...options,
       headers: buildHeaders([
         { Accept: '*/*', ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined) },
@@ -465,9 +462,10 @@ export interface CampaignDeleteParams {
   profileId: string;
 
   /**
-   * Body param: Request to delete a campaign from a brand
+   * Body param: Sandbox flag - when true, the operation is simulated without side
+   * effects Useful for testing integrations without actual execution
    */
-  body: CampaignDeleteParams.Body;
+  sandbox?: boolean;
 
   /**
    * Header param: Profile UUID to scope the request to a child profile. Only
@@ -475,13 +473,6 @@ export interface CampaignDeleteParams {
    * calling organization.
    */
   'x-profile-id'?: string;
-}
-
-export namespace CampaignDeleteParams {
-  /**
-   * Request to delete a campaign from a brand
-   */
-  export interface Body extends WebhooksAPI.MutationRequest {}
 }
 
 export declare namespace Campaigns {

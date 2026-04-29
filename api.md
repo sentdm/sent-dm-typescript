@@ -94,7 +94,7 @@ Methods:
 - <code title="patch /v3/profiles/{profileId}">client.profiles.<a href="./src/resources/profiles/profiles.ts">update</a>(profileID, { ...params }) -> APIResponseOfProfileDetail</code>
 - <code title="get /v3/profiles">client.profiles.<a href="./src/resources/profiles/profiles.ts">list</a>({ ...params }) -> ProfileListResponse</code>
 - <code title="delete /v3/profiles/{profileId}">client.profiles.<a href="./src/resources/profiles/profiles.ts">delete</a>(profileID, { ...params }) -> void</code>
-- <code title="post /v3/profiles/{profileId}/complete">client.profiles.<a href="./src/resources/profiles/profiles.ts">complete</a>(profileID, { ...params }) -> unknown</code>
+- <code title="post /v3/profiles/{profileId}/complete">client.profiles.<a href="./src/resources/profiles/profiles.ts">complete</a>(profileID, { ...params }) -> ProfileCompleteResponse</code>
 
 ## Campaigns
 

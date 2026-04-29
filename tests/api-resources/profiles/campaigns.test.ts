@@ -156,7 +156,6 @@ describe('resource campaigns', () => {
   test.skip('delete: only required params', async () => {
     const responsePromise = client.profiles.campaigns.delete('b2c3d4e5-f6a7-8901-bcde-f12345678901', {
       profileId: '770e8400-e29b-41d4-a716-446655440002',
-      body: {},
     });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
@@ -171,7 +170,7 @@ describe('resource campaigns', () => {
   test.skip('delete: required and optional params', async () => {
     const response = await client.profiles.campaigns.delete('b2c3d4e5-f6a7-8901-bcde-f12345678901', {
       profileId: '770e8400-e29b-41d4-a716-446655440002',
-      body: { sandbox: false },
+      sandbox: false,
       'x-profile-id': '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
     });
   });

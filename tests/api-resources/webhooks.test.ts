@@ -152,10 +152,8 @@ describe('resource webhooks', () => {
   });
 
   // Mock server tests are disabled
-  test.skip('rotateSecret: only required params', async () => {
-    const responsePromise = client.webhooks.rotateSecret('d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8', {
-      body: {},
-    });
+  test.skip('rotateSecret', async () => {
+    const responsePromise = client.webhooks.rotateSecret('d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8', {});
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -163,15 +161,6 @@ describe('resource webhooks', () => {
     const dataAndResponse = await responsePromise.withResponse();
     expect(dataAndResponse.data).toBe(response);
     expect(dataAndResponse.response).toBe(rawResponse);
-  });
-
-  // Mock server tests are disabled
-  test.skip('rotateSecret: required and optional params', async () => {
-    const response = await client.webhooks.rotateSecret('d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8', {
-      body: { sandbox: false },
-      'Idempotency-Key': 'req_abc123_retry1',
-      'x-profile-id': '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
-    });
   });
 
   // Mock server tests are disabled

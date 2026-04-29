@@ -471,55 +471,50 @@ const EMBEDDED_METHODS: MethodEntry[] = [
       'Generates a new signing secret for the specified webhook. The old secret is immediately invalidated.',
     stainlessPath: '(resource) webhooks > (method) rotate_secret',
     qualified: 'client.webhooks.rotateSecret',
-    params: [
-      'id: string;',
-      'body: { sandbox?: boolean; };',
-      'Idempotency-Key?: string;',
-      'x-profile-id?: string;',
-    ],
+    params: ['id: string;', 'sandbox?: boolean;', 'Idempotency-Key?: string;', 'x-profile-id?: string;'],
     response:
       '{ data?: { signing_secret?: string; }; error?: { code?: string; details?: object; doc_url?: string; message?: string; }; meta?: { request_id?: string; timestamp?: string; version?: string; }; success?: boolean; }',
     markdown:
-      "## rotate_secret\n\n`client.webhooks.rotateSecret(id: string, body: { sandbox?: boolean; }, Idempotency-Key?: string, x-profile-id?: string): { data?: object; error?: error_detail; meta?: api_meta; success?: boolean; }`\n\n**post** `/v3/webhooks/{id}/rotate-secret`\n\nGenerates a new signing secret for the specified webhook. The old secret is immediately invalidated.\n\n### Parameters\n\n- `id: string`\n\n- `body: { sandbox?: boolean; }`\n\n- `Idempotency-Key?: string`\n\n- `x-profile-id?: string`\n\n### Returns\n\n- `{ data?: { signing_secret?: string; }; error?: { code?: string; details?: object; doc_url?: string; message?: string; }; meta?: { request_id?: string; timestamp?: string; version?: string; }; success?: boolean; }`\n  Standard API response envelope for all v3 endpoints\n\n  - `data?: { signing_secret?: string; }`\n  - `error?: { code?: string; details?: object; doc_url?: string; message?: string; }`\n  - `meta?: { request_id?: string; timestamp?: string; version?: string; }`\n  - `success?: boolean`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nconst response = await client.webhooks.rotateSecret('d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8', { body: {} });\n\nconsole.log(response);\n```",
+      "## rotate_secret\n\n`client.webhooks.rotateSecret(id: string, sandbox?: boolean, Idempotency-Key?: string, x-profile-id?: string): { data?: object; error?: error_detail; meta?: api_meta; success?: boolean; }`\n\n**post** `/v3/webhooks/{id}/rotate-secret`\n\nGenerates a new signing secret for the specified webhook. The old secret is immediately invalidated.\n\n### Parameters\n\n- `id: string`\n\n- `sandbox?: boolean`\n  Sandbox flag - when true, the operation is simulated without side effects\nUseful for testing integrations without actual execution\n\n- `Idempotency-Key?: string`\n\n- `x-profile-id?: string`\n\n### Returns\n\n- `{ data?: { signing_secret?: string; }; error?: { code?: string; details?: object; doc_url?: string; message?: string; }; meta?: { request_id?: string; timestamp?: string; version?: string; }; success?: boolean; }`\n  Standard API response envelope for all v3 endpoints\n\n  - `data?: { signing_secret?: string; }`\n  - `error?: { code?: string; details?: object; doc_url?: string; message?: string; }`\n  - `meta?: { request_id?: string; timestamp?: string; version?: string; }`\n  - `success?: boolean`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nconst response = await client.webhooks.rotateSecret('d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8');\n\nconsole.log(response);\n```",
     perLanguage: {
       typescript: {
         method: 'client.webhooks.rotateSecret',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst response = await client.webhooks.rotateSecret('d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8', {\n  body: {},\n});\n\nconsole.log(response.data);",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst response = await client.webhooks.rotateSecret('d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8');\n\nconsole.log(response.data);",
       },
       python: {
         method: 'webhooks.rotate_secret',
         example:
-          'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\nresponse = client.webhooks.rotate_secret(\n    id="d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8",\n    body={},\n)\nprint(response.data)',
+          'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\nresponse = client.webhooks.rotate_secret(\n    id="d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8",\n)\nprint(response.data)',
       },
       java: {
         method: 'webhooks().rotateSecret',
         example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.webhooks.WebhookRotateSecretParams;\nimport dm.sent.models.webhooks.WebhookRotateSecretResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        WebhookRotateSecretResponse response = client.webhooks().rotateSecret("d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8");\n    }\n}',
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.webhooks.MutationRequest;\nimport dm.sent.models.webhooks.WebhookRotateSecretParams;\nimport dm.sent.models.webhooks.WebhookRotateSecretResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        WebhookRotateSecretParams params = WebhookRotateSecretParams.builder()\n            .id("d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8")\n            .mutationRequest(MutationRequest.builder().build())\n            .build();\n        WebhookRotateSecretResponse response = client.webhooks().rotateSecret(params);\n    }\n}',
       },
       go: {
         method: 'client.Webhooks.RotateSecret',
         example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tresponse, err := client.Webhooks.RotateSecret(\n\t\tcontext.TODO(),\n\t\t"d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8",\n\t\tsentdm.WebhookRotateSecretParams{\n\t\t\tBody: sentdm.WebhookRotateSecretParamsBody{\n\t\t\t\tMutationRequestParam: sentdm.MutationRequestParam{},\n\t\t\t},\n\t\t},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", response.Data)\n}\n',
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tresponse, err := client.Webhooks.RotateSecret(\n\t\tcontext.TODO(),\n\t\t"d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8",\n\t\tsentdm.WebhookRotateSecretParams{\n\t\t\tMutationRequest: sentdm.MutationRequestParam{},\n\t\t},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", response.Data)\n}\n',
       },
       ruby: {
         method: 'webhooks.rotate_secret',
         example:
-          'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\nresponse = sent.webhooks.rotate_secret("d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8", body: {})\n\nputs(response)',
+          'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\nresponse = sent.webhooks.rotate_secret("d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8")\n\nputs(response)',
       },
       php: {
         method: 'webhooks->rotateSecret',
         example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$response = $client->webhooks->rotateSecret(\n  'd4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8',\n  body: ['sandbox' => false],\n  idempotencyKey: 'req_abc123_retry1',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($response);",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$response = $client->webhooks->rotateSecret(\n  'd4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8',\n  sandbox: false,\n  idempotencyKey: 'req_abc123_retry1',\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($response);",
       },
       csharp: {
         method: 'Webhooks.RotateSecret',
         example:
-          'WebhookRotateSecretParams parameters = new()\n{\n    ID = "d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8",\n    Body = new() { Sandbox = false },\n};\n\nvar response = await client.Webhooks.RotateSecret(parameters);\n\nConsole.WriteLine(response);',
+          'WebhookRotateSecretParams parameters = new()\n{\n    ID = "d4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8"\n};\n\nvar response = await client.Webhooks.RotateSecret(parameters);\n\nConsole.WriteLine(response);',
       },
       http: {
         example:
-          'curl https://api.sent.dm/v3/webhooks/$ID/rotate-secret \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "sandbox": false\n        }\'',
+          "curl https://api.sent.dm/v3/webhooks/$ID/rotate-secret \\\n    -H 'Content-Type: application/json' \\\n    -H \"x-api-key: $SENT_DM_API_KEY\" \\\n    -d '{}'",
       },
     },
   },
@@ -709,44 +704,44 @@ const EMBEDDED_METHODS: MethodEntry[] = [
       "Removes a user's access to an organization or profile. Requires admin role. You cannot remove yourself or remove the last admin.",
     stainlessPath: '(resource) users > (method) remove',
     qualified: 'client.users.remove',
-    params: ['userId: string;', 'body: { sandbox?: boolean; };', 'x-profile-id?: string;'],
+    params: ['userId: string;', 'sandbox?: boolean;', 'x-profile-id?: string;'],
     markdown:
-      "## remove\n\n`client.users.remove(userId: string, body: { sandbox?: boolean; }, x-profile-id?: string): void`\n\n**delete** `/v3/users/{userId}`\n\nRemoves a user's access to an organization or profile. Requires admin role. You cannot remove yourself or remove the last admin.\n\n### Parameters\n\n- `userId: string`\n\n- `body: { sandbox?: boolean; }`\n  Request to remove a user from an organization\n\n- `x-profile-id?: string`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nawait client.users.remove('userId', { body: {} })\n```",
+      "## remove\n\n`client.users.remove(userId: string, sandbox?: boolean, x-profile-id?: string): void`\n\n**delete** `/v3/users/{userId}`\n\nRemoves a user's access to an organization or profile. Requires admin role. You cannot remove yourself or remove the last admin.\n\n### Parameters\n\n- `userId: string`\n\n- `sandbox?: boolean`\n  Sandbox flag - when true, the operation is simulated without side effects\nUseful for testing integrations without actual execution\n\n- `x-profile-id?: string`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nawait client.users.remove('userId')\n```",
     perLanguage: {
       typescript: {
         method: 'client.users.remove',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nawait client.users.remove('userId', { body: {} });",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nawait client.users.remove('userId');",
       },
       python: {
         method: 'users.remove',
         example:
-          'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\nclient.users.remove(\n    user_id="userId",\n    body={},\n)',
+          'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\nclient.users.remove(\n    user_id="userId",\n)',
       },
       java: {
         method: 'users().remove',
         example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.users.UserRemoveParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        client.users().remove("userId");\n    }\n}',
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.users.UserRemoveParams;\nimport dm.sent.models.webhooks.MutationRequest;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        UserRemoveParams params = UserRemoveParams.builder()\n            .userId("userId")\n            .mutationRequest(MutationRequest.builder().build())\n            .build();\n        client.users().remove(params);\n    }\n}',
       },
       go: {
         method: 'client.Users.Remove',
         example:
-          'package main\n\nimport (\n\t"context"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\terr := client.Users.Remove(\n\t\tcontext.TODO(),\n\t\t"userId",\n\t\tsentdm.UserRemoveParams{\n\t\t\tBody: sentdm.UserRemoveParamsBody{\n\t\t\t\tMutationRequestParam: sentdm.MutationRequestParam{},\n\t\t\t},\n\t\t},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n}\n',
+          'package main\n\nimport (\n\t"context"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\terr := client.Users.Remove(\n\t\tcontext.TODO(),\n\t\t"userId",\n\t\tsentdm.UserRemoveParams{\n\t\t\tMutationRequest: sentdm.MutationRequestParam{},\n\t\t},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n}\n',
       },
       ruby: {
         method: 'users.remove',
         example:
-          'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\nresult = sent.users.remove("userId", body: {})\n\nputs(result)',
+          'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\nresult = sent.users.remove("userId")\n\nputs(result)',
       },
       php: {
         method: 'users->remove',
         example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$result = $client->users->remove(\n  'userId',\n  body: ['sandbox' => false],\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($result);",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$result = $client->users->remove(\n  'userId', sandbox: false, xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e'\n);\n\nvar_dump($result);",
       },
       csharp: {
         method: 'Users.Remove',
         example:
-          'UserRemoveParams parameters = new()\n{\n    UserID = "userId",\n    Body = new() { Sandbox = false },\n};\n\nawait client.Users.Remove(parameters);',
+          'UserRemoveParams parameters = new() { UserID = "userId" };\n\nawait client.Users.Remove(parameters);',
       },
       http: {
         example:
@@ -1253,19 +1248,20 @@ const EMBEDDED_METHODS: MethodEntry[] = [
       'Idempotency-Key?: string;',
       'x-profile-id?: string;',
     ],
-    response: 'object',
+    response:
+      '{ data?: { message?: string; status?: string; }; error?: { code?: string; details?: object; doc_url?: string; message?: string; }; meta?: { request_id?: string; timestamp?: string; version?: string; }; success?: boolean; }',
     markdown:
-      "## complete\n\n`client.profiles.complete(profileId: string, webHookUrl: string, sandbox?: boolean, Idempotency-Key?: string, x-profile-id?: string): object`\n\n**post** `/v3/profiles/{profileId}/complete`\n\nFinal step in profile compliance workflow. Validates all prerequisites (general data, brand, campaigns), connects profile to Telnyx/WhatsApp, and sets status based on configuration. The process runs in the background and calls the provided webhook URL when finished.\n\n                Prerequisites:\n                - Profile must be completed\n                - If inheritTcrBrand=false: Profile must have existing brand\n                - If inheritTcrBrand=true: Parent must have existing brand\n                - If TCR application: Must have at least one campaign (own or inherited)\n                - If inheritTcrCampaign=false: Profile should have campaigns\n                - If inheritTcrCampaign=true: Parent must have campaigns\n\n                Status Logic:\n                - If both SMS and WhatsApp channels are missing → SUBMITTED\n                - If TCR application and not inheriting brand/campaigns → SUBMITTED\n                - If non-TCR with destination country (IsMain=true) → SUBMITTED\n                - Otherwise → COMPLETED\n\n### Parameters\n\n- `profileId: string`\n\n- `webHookUrl: string`\n  Webhook URL to call when profile completion finishes (success or failure)\n\n- `sandbox?: boolean`\n  Sandbox flag - when true, the operation is simulated without side effects\nUseful for testing integrations without actual execution\n\n- `Idempotency-Key?: string`\n\n- `x-profile-id?: string`\n\n### Returns\n\n- `object`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nconst response = await client.profiles.complete('660e8400-e29b-41d4-a716-446655440000', { webHookUrl: 'https://your-app.com/webhook/profile-complete' });\n\nconsole.log(response);\n```",
+      "## complete\n\n`client.profiles.complete(profileId: string, webHookUrl: string, sandbox?: boolean, Idempotency-Key?: string, x-profile-id?: string): { data?: object; error?: error_detail; meta?: api_meta; success?: boolean; }`\n\n**post** `/v3/profiles/{profileId}/complete`\n\nFinal step in profile compliance workflow. Validates all prerequisites (general data, brand, campaigns), connects profile to Telnyx/WhatsApp, and sets status based on configuration. The process runs in the background and calls the provided webhook URL when finished.\n\n                Prerequisites:\n                - Profile must be completed\n                - If inheritTcrBrand=false: Profile must have existing brand\n                - If inheritTcrBrand=true: Parent must have existing brand\n                - If TCR application: Must have at least one campaign (own or inherited)\n                - If inheritTcrCampaign=false: Profile should have campaigns\n                - If inheritTcrCampaign=true: Parent must have campaigns\n\n                Status Logic:\n                - If both SMS and WhatsApp channels are missing → SUBMITTED\n                - If TCR application and not inheriting brand/campaigns → SUBMITTED\n                - If non-TCR with destination country (IsMain=true) → SUBMITTED\n                - Otherwise → COMPLETED\n\n### Parameters\n\n- `profileId: string`\n\n- `webHookUrl: string`\n  Webhook URL to call when profile completion finishes (success or failure)\n\n- `sandbox?: boolean`\n  Sandbox flag - when true, the operation is simulated without side effects\nUseful for testing integrations without actual execution\n\n- `Idempotency-Key?: string`\n\n- `x-profile-id?: string`\n\n### Returns\n\n- `{ data?: { message?: string; status?: string; }; error?: { code?: string; details?: object; doc_url?: string; message?: string; }; meta?: { request_id?: string; timestamp?: string; version?: string; }; success?: boolean; }`\n  Standard API response envelope for all v3 endpoints\n\n  - `data?: { message?: string; status?: string; }`\n  - `error?: { code?: string; details?: object; doc_url?: string; message?: string; }`\n  - `meta?: { request_id?: string; timestamp?: string; version?: string; }`\n  - `success?: boolean`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nconst response = await client.profiles.complete('660e8400-e29b-41d4-a716-446655440000', { webHookUrl: 'https://your-app.com/webhook/profile-complete' });\n\nconsole.log(response);\n```",
     perLanguage: {
       typescript: {
         method: 'client.profiles.complete',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst response = await client.profiles.complete('660e8400-e29b-41d4-a716-446655440000', {\n  webHookUrl: 'https://your-app.com/webhook/profile-complete',\n});\n\nconsole.log(response);",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nconst response = await client.profiles.complete('660e8400-e29b-41d4-a716-446655440000', {\n  webHookUrl: 'https://your-app.com/webhook/profile-complete',\n});\n\nconsole.log(response.data);",
       },
       python: {
         method: 'profiles.complete',
         example:
-          'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\nresponse = client.profiles.complete(\n    profile_id="660e8400-e29b-41d4-a716-446655440000",\n    web_hook_url="https://your-app.com/webhook/profile-complete",\n)\nprint(response)',
+          'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\nresponse = client.profiles.complete(\n    profile_id="660e8400-e29b-41d4-a716-446655440000",\n    web_hook_url="https://your-app.com/webhook/profile-complete",\n)\nprint(response.data)',
       },
       java: {
         method: 'profiles().complete',
@@ -1275,7 +1271,7 @@ const EMBEDDED_METHODS: MethodEntry[] = [
       go: {
         method: 'client.Profiles.Complete',
         example:
-          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tresponse, err := client.Profiles.Complete(\n\t\tcontext.TODO(),\n\t\t"660e8400-e29b-41d4-a716-446655440000",\n\t\tsentdm.ProfileCompleteParams{\n\t\t\tWebHookURL: "https://your-app.com/webhook/profile-complete",\n\t\t},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", response)\n}\n',
+          'package main\n\nimport (\n\t"context"\n\t"fmt"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\tresponse, err := client.Profiles.Complete(\n\t\tcontext.TODO(),\n\t\t"660e8400-e29b-41d4-a716-446655440000",\n\t\tsentdm.ProfileCompleteParams{\n\t\t\tWebHookURL: "https://your-app.com/webhook/profile-complete",\n\t\t},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf("%+v\\n", response.Data)\n}\n',
       },
       ruby: {
         method: 'profiles.complete',
@@ -1437,44 +1433,44 @@ const EMBEDDED_METHODS: MethodEntry[] = [
       'Soft deletes a sender profile. The profile will be marked as deleted but data is retained. Requires admin role in the organization.',
     stainlessPath: '(resource) profiles > (method) delete',
     qualified: 'client.profiles.delete',
-    params: ['profileId: string;', 'body: { sandbox?: boolean; };', 'x-profile-id?: string;'],
+    params: ['profileId: string;', 'sandbox?: boolean;', 'x-profile-id?: string;'],
     markdown:
-      "## delete\n\n`client.profiles.delete(profileId: string, body: { sandbox?: boolean; }, x-profile-id?: string): void`\n\n**delete** `/v3/profiles/{profileId}`\n\nSoft deletes a sender profile. The profile will be marked as deleted but data is retained. Requires admin role in the organization.\n\n### Parameters\n\n- `profileId: string`\n\n- `body: { sandbox?: boolean; }`\n  Request to delete a profile\n\n- `x-profile-id?: string`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nawait client.profiles.delete('profileId', { body: {} })\n```",
+      "## delete\n\n`client.profiles.delete(profileId: string, sandbox?: boolean, x-profile-id?: string): void`\n\n**delete** `/v3/profiles/{profileId}`\n\nSoft deletes a sender profile. The profile will be marked as deleted but data is retained. Requires admin role in the organization.\n\n### Parameters\n\n- `profileId: string`\n\n- `sandbox?: boolean`\n  Sandbox flag - when true, the operation is simulated without side effects\nUseful for testing integrations without actual execution\n\n- `x-profile-id?: string`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nawait client.profiles.delete('profileId')\n```",
     perLanguage: {
       typescript: {
         method: 'client.profiles.delete',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nawait client.profiles.delete('profileId', { body: {} });",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nawait client.profiles.delete('profileId');",
       },
       python: {
         method: 'profiles.delete',
         example:
-          'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\nclient.profiles.delete(\n    profile_id="profileId",\n    body={},\n)',
+          'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\nclient.profiles.delete(\n    profile_id="profileId",\n)',
       },
       java: {
         method: 'profiles().delete',
         example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.profiles.ProfileDeleteParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        client.profiles().delete("profileId");\n    }\n}',
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.profiles.ProfileDeleteParams;\nimport dm.sent.models.webhooks.MutationRequest;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        ProfileDeleteParams params = ProfileDeleteParams.builder()\n            .profileId("profileId")\n            .mutationRequest(MutationRequest.builder().build())\n            .build();\n        client.profiles().delete(params);\n    }\n}',
       },
       go: {
         method: 'client.Profiles.Delete',
         example:
-          'package main\n\nimport (\n\t"context"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\terr := client.Profiles.Delete(\n\t\tcontext.TODO(),\n\t\t"profileId",\n\t\tsentdm.ProfileDeleteParams{\n\t\t\tBody: sentdm.ProfileDeleteParamsBody{\n\t\t\t\tMutationRequestParam: sentdm.MutationRequestParam{},\n\t\t\t},\n\t\t},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n}\n',
+          'package main\n\nimport (\n\t"context"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\terr := client.Profiles.Delete(\n\t\tcontext.TODO(),\n\t\t"profileId",\n\t\tsentdm.ProfileDeleteParams{\n\t\t\tMutationRequest: sentdm.MutationRequestParam{},\n\t\t},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n}\n',
       },
       ruby: {
         method: 'profiles.delete',
         example:
-          'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\nresult = sent.profiles.delete("profileId", body: {})\n\nputs(result)',
+          'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\nresult = sent.profiles.delete("profileId")\n\nputs(result)',
       },
       php: {
         method: 'profiles->delete',
         example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$result = $client->profiles->delete(\n  'profileId',\n  body: ['sandbox' => false],\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($result);",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$result = $client->profiles->delete(\n  'profileId',\n  sandbox: false,\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($result);",
       },
       csharp: {
         method: 'Profiles.Delete',
         example:
-          'ProfileDeleteParams parameters = new()\n{\n    ProfileID = "profileId",\n    Body = new() { Sandbox = false },\n};\n\nawait client.Profiles.Delete(parameters);',
+          'ProfileDeleteParams parameters = new() { ProfileID = "profileId" };\n\nawait client.Profiles.Delete(parameters);',
       },
       http: {
         example:
@@ -1744,49 +1740,44 @@ const EMBEDDED_METHODS: MethodEntry[] = [
       'Deletes a campaign by ID from the brand of the specified profile. The profile must belong to the authenticated organization.',
     stainlessPath: '(resource) profiles.campaigns > (method) delete',
     qualified: 'client.profiles.campaigns.delete',
-    params: [
-      'profileId: string;',
-      'campaignId: string;',
-      'body: { sandbox?: boolean; };',
-      'x-profile-id?: string;',
-    ],
+    params: ['profileId: string;', 'campaignId: string;', 'sandbox?: boolean;', 'x-profile-id?: string;'],
     markdown:
-      "## delete\n\n`client.profiles.campaigns.delete(profileId: string, campaignId: string, body: { sandbox?: boolean; }, x-profile-id?: string): void`\n\n**delete** `/v3/profiles/{profileId}/campaigns/{campaignId}`\n\nDeletes a campaign by ID from the brand of the specified profile. The profile must belong to the authenticated organization.\n\n### Parameters\n\n- `profileId: string`\n\n- `campaignId: string`\n\n- `body: { sandbox?: boolean; }`\n  Request to delete a campaign from a brand\n\n- `x-profile-id?: string`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nawait client.profiles.campaigns.delete('b2c3d4e5-f6a7-8901-bcde-f12345678901', {\n  profileId: '770e8400-e29b-41d4-a716-446655440002',\n  body: {},\n})\n```",
+      "## delete\n\n`client.profiles.campaigns.delete(profileId: string, campaignId: string, sandbox?: boolean, x-profile-id?: string): void`\n\n**delete** `/v3/profiles/{profileId}/campaigns/{campaignId}`\n\nDeletes a campaign by ID from the brand of the specified profile. The profile must belong to the authenticated organization.\n\n### Parameters\n\n- `profileId: string`\n\n- `campaignId: string`\n\n- `sandbox?: boolean`\n  Sandbox flag - when true, the operation is simulated without side effects\nUseful for testing integrations without actual execution\n\n- `x-profile-id?: string`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nawait client.profiles.campaigns.delete('b2c3d4e5-f6a7-8901-bcde-f12345678901', { profileId: '770e8400-e29b-41d4-a716-446655440002' })\n```",
     perLanguage: {
       typescript: {
         method: 'client.profiles.campaigns.delete',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nawait client.profiles.campaigns.delete('b2c3d4e5-f6a7-8901-bcde-f12345678901', {\n  profileId: '770e8400-e29b-41d4-a716-446655440002',\n  body: {},\n});",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nawait client.profiles.campaigns.delete('b2c3d4e5-f6a7-8901-bcde-f12345678901', {\n  profileId: '770e8400-e29b-41d4-a716-446655440002',\n});",
       },
       python: {
         method: 'profiles.campaigns.delete',
         example:
-          'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\nclient.profiles.campaigns.delete(\n    campaign_id="b2c3d4e5-f6a7-8901-bcde-f12345678901",\n    profile_id="770e8400-e29b-41d4-a716-446655440002",\n    body={},\n)',
+          'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\nclient.profiles.campaigns.delete(\n    campaign_id="b2c3d4e5-f6a7-8901-bcde-f12345678901",\n    profile_id="770e8400-e29b-41d4-a716-446655440002",\n)',
       },
       java: {
         method: 'profiles().campaigns().delete',
         example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.profiles.campaigns.CampaignDeleteParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        CampaignDeleteParams params = CampaignDeleteParams.builder()\n            .profileId("770e8400-e29b-41d4-a716-446655440002")\n            .campaignId("b2c3d4e5-f6a7-8901-bcde-f12345678901")\n            .build();\n        client.profiles().campaigns().delete(params);\n    }\n}',
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.profiles.campaigns.CampaignDeleteParams;\nimport dm.sent.models.webhooks.MutationRequest;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        CampaignDeleteParams params = CampaignDeleteParams.builder()\n            .profileId("770e8400-e29b-41d4-a716-446655440002")\n            .campaignId("b2c3d4e5-f6a7-8901-bcde-f12345678901")\n            .mutationRequest(MutationRequest.builder().build())\n            .build();\n        client.profiles().campaigns().delete(params);\n    }\n}',
       },
       go: {
         method: 'client.Profiles.Campaigns.Delete',
         example:
-          'package main\n\nimport (\n\t"context"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\terr := client.Profiles.Campaigns.Delete(\n\t\tcontext.TODO(),\n\t\t"b2c3d4e5-f6a7-8901-bcde-f12345678901",\n\t\tsentdm.ProfileCampaignDeleteParams{\n\t\t\tProfileID: "770e8400-e29b-41d4-a716-446655440002",\n\t\t\tBody: sentdm.ProfileCampaignDeleteParamsBody{\n\t\t\t\tMutationRequestParam: sentdm.MutationRequestParam{},\n\t\t\t},\n\t\t},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n}\n',
+          'package main\n\nimport (\n\t"context"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\terr := client.Profiles.Campaigns.Delete(\n\t\tcontext.TODO(),\n\t\t"b2c3d4e5-f6a7-8901-bcde-f12345678901",\n\t\tsentdm.ProfileCampaignDeleteParams{\n\t\t\tProfileID:       "770e8400-e29b-41d4-a716-446655440002",\n\t\t\tMutationRequest: sentdm.MutationRequestParam{},\n\t\t},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n}\n',
       },
       ruby: {
         method: 'profiles.campaigns.delete',
         example:
-          'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\nresult = sent.profiles.campaigns.delete(\n  "b2c3d4e5-f6a7-8901-bcde-f12345678901",\n  profile_id: "770e8400-e29b-41d4-a716-446655440002",\n  body: {}\n)\n\nputs(result)',
+          'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\nresult = sent.profiles.campaigns.delete(\n  "b2c3d4e5-f6a7-8901-bcde-f12345678901",\n  profile_id: "770e8400-e29b-41d4-a716-446655440002"\n)\n\nputs(result)',
       },
       php: {
         method: 'profiles->campaigns->delete',
         example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$result = $client->profiles->campaigns->delete(\n  'b2c3d4e5-f6a7-8901-bcde-f12345678901',\n  profileID: '770e8400-e29b-41d4-a716-446655440002',\n  body: ['sandbox' => false],\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($result);",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$result = $client->profiles->campaigns->delete(\n  'b2c3d4e5-f6a7-8901-bcde-f12345678901',\n  profileID: '770e8400-e29b-41d4-a716-446655440002',\n  sandbox: false,\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($result);",
       },
       csharp: {
         method: 'Profiles.Campaigns.Delete',
         example:
-          'CampaignDeleteParams parameters = new()\n{\n    ProfileID = "770e8400-e29b-41d4-a716-446655440002",\n    CampaignID = "b2c3d4e5-f6a7-8901-bcde-f12345678901",\n    Body = new() { Sandbox = false },\n};\n\nawait client.Profiles.Campaigns.Delete(parameters);',
+          'CampaignDeleteParams parameters = new()\n{\n    ProfileID = "770e8400-e29b-41d4-a716-446655440002",\n    CampaignID = "b2c3d4e5-f6a7-8901-bcde-f12345678901",\n};\n\nawait client.Profiles.Campaigns.Delete(parameters);',
       },
       http: {
         example:
@@ -2218,44 +2209,44 @@ const EMBEDDED_METHODS: MethodEntry[] = [
       'Dissociates a contact from the authenticated customer. Inherited contacts cannot be deleted.',
     stainlessPath: '(resource) contacts > (method) delete',
     qualified: 'client.contacts.delete',
-    params: ['id: string;', 'body: { sandbox?: boolean; };', 'x-profile-id?: string;'],
+    params: ['id: string;', 'sandbox?: boolean;', 'x-profile-id?: string;'],
     markdown:
-      "## delete\n\n`client.contacts.delete(id: string, body: { sandbox?: boolean; }, x-profile-id?: string): void`\n\n**delete** `/v3/contacts/{id}`\n\nDissociates a contact from the authenticated customer. Inherited contacts cannot be deleted.\n\n### Parameters\n\n- `id: string`\n\n- `body: { sandbox?: boolean; }`\n  Request to delete/dissociate a contact\n\n- `x-profile-id?: string`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nawait client.contacts.delete('6ba7b810-9dad-11d1-80b4-00c04fd430c8', { body: {} })\n```",
+      "## delete\n\n`client.contacts.delete(id: string, sandbox?: boolean, x-profile-id?: string): void`\n\n**delete** `/v3/contacts/{id}`\n\nDissociates a contact from the authenticated customer. Inherited contacts cannot be deleted.\n\n### Parameters\n\n- `id: string`\n\n- `sandbox?: boolean`\n  Sandbox flag - when true, the operation is simulated without side effects\nUseful for testing integrations without actual execution\n\n- `x-profile-id?: string`\n\n### Example\n\n```typescript\nimport Sent from '@sentdm/sentdm';\n\nconst client = new Sent();\n\nawait client.contacts.delete('6ba7b810-9dad-11d1-80b4-00c04fd430c8')\n```",
     perLanguage: {
       typescript: {
         method: 'client.contacts.delete',
         example:
-          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nawait client.contacts.delete('6ba7b810-9dad-11d1-80b4-00c04fd430c8', { body: {} });",
+          "import Sent from '@sentdm/sentdm';\n\nconst client = new Sent({\n  apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted\n});\n\nawait client.contacts.delete('6ba7b810-9dad-11d1-80b4-00c04fd430c8');",
       },
       python: {
         method: 'contacts.delete',
         example:
-          'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\nclient.contacts.delete(\n    id="6ba7b810-9dad-11d1-80b4-00c04fd430c8",\n    body={},\n)',
+          'import os\nfrom sent_dm import Sent\n\nclient = Sent(\n    api_key=os.environ.get("SENT_DM_API_KEY"),  # This is the default and can be omitted\n)\nclient.contacts.delete(\n    id="6ba7b810-9dad-11d1-80b4-00c04fd430c8",\n)',
       },
       java: {
         method: 'contacts().delete',
         example:
-          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.contacts.ContactDeleteParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        client.contacts().delete("6ba7b810-9dad-11d1-80b4-00c04fd430c8");\n    }\n}',
+          'package dm.sent.example;\n\nimport dm.sent.client.SentClient;\nimport dm.sent.client.okhttp.SentOkHttpClient;\nimport dm.sent.models.contacts.ContactDeleteParams;\nimport dm.sent.models.webhooks.MutationRequest;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        SentClient client = SentOkHttpClient.fromEnv();\n\n        ContactDeleteParams params = ContactDeleteParams.builder()\n            .id("6ba7b810-9dad-11d1-80b4-00c04fd430c8")\n            .mutationRequest(MutationRequest.builder().build())\n            .build();\n        client.contacts().delete(params);\n    }\n}',
       },
       go: {
         method: 'client.Contacts.Delete',
         example:
-          'package main\n\nimport (\n\t"context"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\terr := client.Contacts.Delete(\n\t\tcontext.TODO(),\n\t\t"6ba7b810-9dad-11d1-80b4-00c04fd430c8",\n\t\tsentdm.ContactDeleteParams{\n\t\t\tBody: sentdm.ContactDeleteParamsBody{\n\t\t\t\tMutationRequestParam: sentdm.MutationRequestParam{},\n\t\t\t},\n\t\t},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n}\n',
+          'package main\n\nimport (\n\t"context"\n\n\t"github.com/sentdm/sent-dm-go"\n\t"github.com/sentdm/sent-dm-go/option"\n)\n\nfunc main() {\n\tclient := sentdm.NewClient(\n\t\toption.WithAPIKey("My API Key"),\n\t)\n\terr := client.Contacts.Delete(\n\t\tcontext.TODO(),\n\t\t"6ba7b810-9dad-11d1-80b4-00c04fd430c8",\n\t\tsentdm.ContactDeleteParams{\n\t\t\tMutationRequest: sentdm.MutationRequestParam{},\n\t\t},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n}\n',
       },
       ruby: {
         method: 'contacts.delete',
         example:
-          'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\nresult = sent.contacts.delete("6ba7b810-9dad-11d1-80b4-00c04fd430c8", body: {})\n\nputs(result)',
+          'require "sentdm"\n\nsent = Sentdm::Client.new(api_key: "My API Key")\n\nresult = sent.contacts.delete("6ba7b810-9dad-11d1-80b4-00c04fd430c8")\n\nputs(result)',
       },
       php: {
         method: 'contacts->delete',
         example:
-          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$result = $client->contacts->delete(\n  '6ba7b810-9dad-11d1-80b4-00c04fd430c8',\n  body: ['sandbox' => false],\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($result);",
+          "<?php\n\nrequire_once dirname(__DIR__) . '/vendor/autoload.php';\n\n$client = new Client(apiKey: 'My API Key');\n\n$result = $client->contacts->delete(\n  '6ba7b810-9dad-11d1-80b4-00c04fd430c8',\n  sandbox: false,\n  xProfileID: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',\n);\n\nvar_dump($result);",
       },
       csharp: {
         method: 'Contacts.Delete',
         example:
-          'ContactDeleteParams parameters = new()\n{\n    ID = "6ba7b810-9dad-11d1-80b4-00c04fd430c8",\n    Body = new() { Sandbox = false },\n};\n\nawait client.Contacts.Delete(parameters);',
+          'ContactDeleteParams parameters = new()\n{\n    ID = "6ba7b810-9dad-11d1-80b4-00c04fd430c8"\n};\n\nawait client.Contacts.Delete(parameters);',
       },
       http: {
         example:

@@ -68,8 +68,8 @@ describe('resource users', () => {
   });
 
   // Mock server tests are disabled
-  test.skip('remove: only required params', async () => {
-    const responsePromise = client.users.remove('userId', { body: {} });
+  test.skip('remove', async () => {
+    const responsePromise = client.users.remove('userId', {});
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -77,14 +77,6 @@ describe('resource users', () => {
     const dataAndResponse = await responsePromise.withResponse();
     expect(dataAndResponse.data).toBe(response);
     expect(dataAndResponse.response).toBe(rawResponse);
-  });
-
-  // Mock server tests are disabled
-  test.skip('remove: required and optional params', async () => {
-    const response = await client.users.remove('userId', {
-      body: { sandbox: false },
-      'x-profile-id': '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
-    });
   });
 
   // Mock server tests are disabled

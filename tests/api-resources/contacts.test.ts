@@ -81,8 +81,8 @@ describe('resource contacts', () => {
   });
 
   // Mock server tests are disabled
-  test.skip('delete: only required params', async () => {
-    const responsePromise = client.contacts.delete('6ba7b810-9dad-11d1-80b4-00c04fd430c8', { body: {} });
+  test.skip('delete', async () => {
+    const responsePromise = client.contacts.delete('6ba7b810-9dad-11d1-80b4-00c04fd430c8', {});
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -90,13 +90,5 @@ describe('resource contacts', () => {
     const dataAndResponse = await responsePromise.withResponse();
     expect(dataAndResponse.data).toBe(response);
     expect(dataAndResponse.response).toBe(rawResponse);
-  });
-
-  // Mock server tests are disabled
-  test.skip('delete: required and optional params', async () => {
-    const response = await client.contacts.delete('6ba7b810-9dad-11d1-80b4-00c04fd430c8', {
-      body: { sandbox: false },
-      'x-profile-id': '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
-    });
   });
 });

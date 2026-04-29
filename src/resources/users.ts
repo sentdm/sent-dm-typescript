@@ -93,13 +93,13 @@ export class Users extends APIResource {
    *
    * @example
    * ```ts
-   * await client.users.remove('userId', { body: {} });
+   * await client.users.remove('userId');
    * ```
    */
   remove(userID: string, params: UserRemoveParams, options?: RequestOptions): APIPromise<void> {
-    const { body, 'x-profile-id': xProfileID } = params;
+    const { 'x-profile-id': xProfileID, ...body } = params;
     return this._client.delete(path`/v3/users/${userID}`, {
-      body: body,
+      body,
       ...options,
       headers: buildHeaders([
         { Accept: '*/*', ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined) },
@@ -306,9 +306,10 @@ export interface UserInviteParams {
 
 export interface UserRemoveParams {
   /**
-   * Body param: Request to remove a user from an organization
+   * Body param: Sandbox flag - when true, the operation is simulated without side
+   * effects Useful for testing integrations without actual execution
    */
-  body: UserRemoveParams.Body;
+  sandbox?: boolean;
 
   /**
    * Header param: Profile UUID to scope the request to a child profile. Only
@@ -316,13 +317,6 @@ export interface UserRemoveParams {
    * calling organization.
    */
   'x-profile-id'?: string;
-}
-
-export namespace UserRemoveParams {
-  /**
-   * Request to remove a user from an organization
-   */
-  export interface Body extends WebhooksAPI.MutationRequest {}
 }
 
 export interface UserUpdateRoleParams {

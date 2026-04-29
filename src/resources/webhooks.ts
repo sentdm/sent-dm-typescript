@@ -398,6 +398,20 @@ export namespace PaginationMeta {
   }
 }
 
+export interface WebhookEventType {
+  description?: string | null;
+
+  display_name?: string;
+
+  event_type?: string | null;
+
+  is_active?: boolean;
+
+  name?: string;
+
+  sub_types?: Array<WebhookEventType> | null;
+}
+
 export interface WebhookResponse {
   id?: string;
 
@@ -497,23 +511,7 @@ export namespace WebhookListEventTypesResponse {
    * The response data (null if error)
    */
   export interface Data {
-    event_types?: Array<Data.EventType>;
-  }
-
-  export namespace Data {
-    export interface EventType {
-      description?: string | null;
-
-      display_name?: string;
-
-      event_type?: string | null;
-
-      is_active?: boolean;
-
-      name?: string;
-
-      sub_types?: Array<unknown> | null;
-    }
+    event_types?: Array<WebhooksAPI.WebhookEventType>;
   }
 }
 
@@ -919,6 +917,7 @@ export declare namespace Webhooks {
     type ErrorDetail as ErrorDetail,
     type MutationRequest as MutationRequest,
     type PaginationMeta as PaginationMeta,
+    type WebhookEventType as WebhookEventType,
     type WebhookResponse as WebhookResponse,
     type WebhookListResponse as WebhookListResponse,
     type WebhookListEventTypesResponse as WebhookListEventTypesResponse,

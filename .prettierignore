@@ -5,3 +5,6 @@ CHANGELOG.md
 
 # don't format tsc output, will break source maps
 dist
+
+# Stainless emits this with non-prettier-compliant array expansion; auto-formatting trips CI.
+packages/mcp-server/manifest.json

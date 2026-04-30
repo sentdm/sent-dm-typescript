@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.25.1 (2026-04-30)
+
+Full Changelog: [v0.25.0...v0.25.1](https://github.com/sentdm/sent-dm-typescript/compare/v0.25.0...v0.25.1)
+
+### Chores
+
+* avoid formatting file that gets changed during releases ([e700bd5](https://github.com/sentdm/sent-dm-typescript/commit/e700bd584abbb0be90285b01e5d7f9be7fecca64))
+
 ## 0.25.0 (2026-04-29)
 
 Full Changelog: [v0.24.0...v0.25.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.24.0...v0.25.0)

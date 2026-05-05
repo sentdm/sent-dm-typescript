@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.25.2 (2026-05-05)
+
+Full Changelog: [v0.25.1...v0.25.2](https://github.com/sentdm/sent-dm-typescript/compare/v0.25.1...v0.25.2)
+
+### Documentation
+
+* clarify forwards compat behavior ([6cd32f7](https://github.com/sentdm/sent-dm-typescript/commit/6cd32f7878f118fa2d335221addeb4d28d72c428))
+
 ## 0.25.1 (2026-04-30)
 
 Full Changelog: [v0.25.0...v0.25.1](https://github.com/sentdm/sent-dm-typescript/compare/v0.25.0...v0.25.1)

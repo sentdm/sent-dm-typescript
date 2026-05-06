@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.25.3 (2026-05-06)
+
+Full Changelog: [v0.25.2...v0.25.3](https://github.com/sentdm/sent-dm-typescript/compare/v0.25.2...v0.25.3)
+
+### Documentation
+
+* update with proxy auth info ([f938c42](https://github.com/sentdm/sent-dm-typescript/commit/f938c42dc14cb62b71d96c461963b8c8f6f3e941))
+
 ## 0.25.2 (2026-05-05)
 
 Full Changelog: [v0.25.1...v0.25.2](https://github.com/sentdm/sent-dm-typescript/compare/v0.25.1...v0.25.2)

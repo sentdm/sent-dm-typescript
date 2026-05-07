@@ -111,7 +111,7 @@ const EMBEDDED_METHODS: MethodEntry[] = [
       },
       http: {
         example:
-          'curl https://api.sent.dm/v3/webhooks \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "display_name": "Order Notifications",\n          "endpoint_url": "https://example.com/webhooks/orders",\n          "event_filters": {\n            "message": [\n              "delivered",\n              "failed"\n            ]\n          },\n          "event_types": [\n            "message",\n            "templates"\n          ],\n          "retry_count": 3,\n          "timeout_seconds": 30\n        }\'',
+          'curl https://api.sent.dm/v3/webhooks \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "display_name": "Order Notifications",\n          "endpoint_url": "https://example.com/webhooks/orders",\n          "event_filters": {\n            "message": [\n              "delivered",\n              "failed"\n            ]\n          },\n          "event_types": [\n            "message",\n            "templates"\n          ],\n          "retry_count": 3,\n          "sandbox": false,\n          "timeout_seconds": 30\n        }\'',
       },
     },
   },
@@ -344,7 +344,7 @@ const EMBEDDED_METHODS: MethodEntry[] = [
       },
       http: {
         example:
-          'curl https://api.sent.dm/v3/webhooks/$ID \\\n    -X PUT \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "display_name": "Updated Order Notifications",\n          "endpoint_url": "https://example.com/webhooks/orders-v2",\n          "event_filters": {\n            "message": [\n              "delivered",\n              "failed"\n            ]\n          },\n          "event_types": [\n            "message",\n            "templates"\n          ],\n          "retry_count": 5,\n          "timeout_seconds": 60\n        }\'',
+          'curl https://api.sent.dm/v3/webhooks/$ID \\\n    -X PUT \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "display_name": "Updated Order Notifications",\n          "endpoint_url": "https://example.com/webhooks/orders-v2",\n          "event_filters": {\n            "message": [\n              "delivered",\n              "failed"\n            ]\n          },\n          "event_types": [\n            "message",\n            "templates"\n          ],\n          "retry_count": 5,\n          "sandbox": false,\n          "timeout_seconds": 60\n        }\'',
       },
     },
   },
@@ -514,7 +514,7 @@ const EMBEDDED_METHODS: MethodEntry[] = [
       },
       http: {
         example:
-          "curl https://api.sent.dm/v3/webhooks/$ID/rotate-secret \\\n    -H 'Content-Type: application/json' \\\n    -H \"x-api-key: $SENT_DM_API_KEY\" \\\n    -d '{}'",
+          'curl https://api.sent.dm/v3/webhooks/$ID/rotate-secret \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "sandbox": false\n        }\'',
       },
     },
   },
@@ -575,7 +575,7 @@ const EMBEDDED_METHODS: MethodEntry[] = [
       },
       http: {
         example:
-          'curl https://api.sent.dm/v3/webhooks/$ID/test \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "event_type": "message.sent"\n        }\'',
+          'curl https://api.sent.dm/v3/webhooks/$ID/test \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "event_type": "message.sent",\n          "sandbox": false\n        }\'',
       },
     },
   },
@@ -636,7 +636,7 @@ const EMBEDDED_METHODS: MethodEntry[] = [
       },
       http: {
         example:
-          "curl https://api.sent.dm/v3/webhooks/$ID/toggle-status \\\n    -X PATCH \\\n    -H 'Content-Type: application/json' \\\n    -H \"x-api-key: $SENT_DM_API_KEY\" \\\n    -d '{}'",
+          'curl https://api.sent.dm/v3/webhooks/$ID/toggle-status \\\n    -X PATCH \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "is_active": false,\n          "sandbox": false\n        }\'',
       },
     },
   },
@@ -807,7 +807,7 @@ const EMBEDDED_METHODS: MethodEntry[] = [
       },
       http: {
         example:
-          'curl https://api.sent.dm/v3/users/$USER_ID \\\n    -X PATCH \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "role": "billing"\n        }\'',
+          'curl https://api.sent.dm/v3/users/$USER_ID \\\n    -X PATCH \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "role": "billing",\n          "sandbox": false\n        }\'',
       },
     },
   },
@@ -925,7 +925,7 @@ const EMBEDDED_METHODS: MethodEntry[] = [
       },
       http: {
         example:
-          'curl https://api.sent.dm/v3/users \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "email": "newuser@example.com",\n          "name": "New User",\n          "role": "developer"\n        }\'',
+          'curl https://api.sent.dm/v3/users \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "email": "newuser@example.com",\n          "name": "New User",\n          "role": "developer",\n          "sandbox": false\n        }\'',
       },
     },
   },
@@ -990,7 +990,7 @@ const EMBEDDED_METHODS: MethodEntry[] = [
       },
       http: {
         example:
-          'curl https://api.sent.dm/v3/templates \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "category": "MARKETING",\n          "language": "en_US"\n        }\'',
+          'curl https://api.sent.dm/v3/templates \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "category": "MARKETING",\n          "creation_source": null,\n          "definition": {\n            "body": {\n              "multiChannel": {\n                "template": "Hello {{0:variable}}! Welcome to {{1:variable}}.",\n                "type": null,\n                "variables": [\n                  {\n                    "name": "name",\n                    "props": {\n                      "mediaType": "x",\n                      "sample": "John",\n                      "url": "x",\n                      "variableType": "text",\n                      "alt": null,\n                      "regex": null,\n                      "shortUrl": null\n                    },\n                    "type": "variable",\n                    "id": 0\n                  },\n                  {\n                    "name": "company",\n                    "props": {\n                      "mediaType": "x",\n                      "sample": "SentDM",\n                      "url": "x",\n                      "variableType": "text",\n                      "alt": null,\n                      "regex": null,\n                      "shortUrl": null\n                    },\n                    "type": "variable",\n                    "id": 1\n                  }\n                ]\n              },\n              "sms": {\n                "template": "template"\n              },\n              "whatsapp": {\n                "template": "template"\n              }\n            },\n            "authenticationConfig": {},\n            "buttons": [\n              {\n                "props": {\n                  "activeFor": 1,\n                  "countryCode": "x",\n                  "offerCode": "x",\n                  "phoneNumber": "x",\n                  "quickReplyType": "x",\n                  "text": "text",\n                  "url": "x",\n                  "urlType": "x"\n                },\n                "type": "x"\n              }\n            ],\n            "definitionVersion": "1.0",\n            "footer": {\n              "template": "template"\n            },\n            "header": {\n              "template": "template"\n            }\n          },\n          "language": "en_US",\n          "sandbox": false,\n          "submit_for_review": false\n        }\'',
       },
     },
   },
@@ -1228,7 +1228,7 @@ const EMBEDDED_METHODS: MethodEntry[] = [
       },
       http: {
         example:
-          'curl https://api.sent.dm/v3/templates/$ID \\\n    -X PUT \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "category": "MARKETING",\n          "name": "Updated Welcome Message"\n        }\'',
+          'curl https://api.sent.dm/v3/templates/$ID \\\n    -X PUT \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "category": "MARKETING",\n          "definition": {\n            "body": {}\n          },\n          "language": null,\n          "name": "Updated Welcome Message",\n          "sandbox": false,\n          "submit_for_review": false\n        }\'',
       },
     },
   },
@@ -1290,7 +1290,7 @@ const EMBEDDED_METHODS: MethodEntry[] = [
       },
       http: {
         example:
-          'curl https://api.sent.dm/v3/profiles/$PROFILE_ID/complete \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "webHookUrl": "https://your-app.com/webhook/profile-complete"\n        }\'',
+          'curl https://api.sent.dm/v3/profiles/$PROFILE_ID/complete \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "webHookUrl": "https://your-app.com/webhook/profile-complete",\n          "sandbox": false\n        }\'',
       },
     },
   },
@@ -1365,7 +1365,7 @@ const EMBEDDED_METHODS: MethodEntry[] = [
       },
       http: {
         example:
-          'curl https://api.sent.dm/v3/profiles \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "allow_contact_sharing": true,\n          "billing_model": "profile",\n          "description": "Sales department sender profile",\n          "icon": "https://example.com/sales-icon.png",\n          "inherit_contacts": true,\n          "inherit_templates": true,\n          "name": "Sales Team",\n          "short_name": "SALES",\n          "whatsapp_business_account": {\n            "access_token": "EAAxxxxxxxxxxxxxxx",\n            "waba_id": "123456789012345",\n            "phone_number_id": "987654321098765"\n          }\n        }\'',
+          'curl https://api.sent.dm/v3/profiles \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "allow_contact_sharing": true,\n          "allow_template_sharing": false,\n          "billing_contact": {\n            "email": "billing@acmecorp.com",\n            "name": "Acme Corp",\n            "address": "123 Main Street, New York, NY 10001, US",\n            "phone": "+12025551234"\n          },\n          "billing_model": "profile",\n          "brand": {\n            "compliance": {\n              "brandRelationship": "SMALL_ACCOUNT",\n              "vertical": "PROFESSIONAL",\n              "destinationCountries": [\n                {\n                  "id": "US",\n                  "isMain": false\n                }\n              ],\n              "expectedMessagingVolume": "10000",\n              "isTcrApplication": true,\n              "notes": null,\n              "phoneNumberPrefix": "+1",\n              "primaryUseCase": "Customer notifications and appointment reminders"\n            },\n            "contact": {\n              "name": "John Smith",\n              "businessName": "Acme Corp",\n              "email": "john@acmecorp.com",\n              "phone": "+12025551234",\n              "phoneCountryCode": "1",\n              "role": "CEO"\n            },\n            "business": {\n              "city": "New York",\n              "country": "US",\n              "countryOfRegistration": "US",\n              "entityType": "PRIVATE_PROFIT",\n              "legalName": "Acme Corporation LLC",\n              "postalCode": "10001",\n              "state": "NY",\n              "street": "123 Main Street",\n              "taxId": "12-3456789",\n              "taxIdType": "us_ein",\n              "url": "https://acmecorp.com"\n            }\n          },\n          "description": "Sales department sender profile",\n          "icon": "https://example.com/sales-icon.png",\n          "inherit_contacts": true,\n          "inherit_tcr_brand": false,\n          "inherit_tcr_campaign": false,\n          "inherit_templates": true,\n          "name": "Sales Team",\n          "payment_details": {\n            "card_number": "4111111111111111",\n            "cvc": "123",\n            "expiry": "09/27",\n            "zip_code": "10001"\n          },\n          "sandbox": false,\n          "short_name": "SALES",\n          "whatsapp_business_account": {\n            "access_token": "EAAxxxxxxxxxxxxxxx",\n            "waba_id": "123456789012345",\n            "phone_number_id": "987654321098765"\n          }\n        }\'',
       },
     },
   },
@@ -1609,7 +1609,7 @@ const EMBEDDED_METHODS: MethodEntry[] = [
       },
       http: {
         example:
-          'curl https://api.sent.dm/v3/profiles/$PROFILE_ID \\\n    -X PATCH \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "allow_contact_sharing": true,\n          "billing_model": "organization",\n          "description": "Updated sales department sender profile",\n          "name": "Sales Team - Updated",\n          "short_name": "SALES"\n        }\'',
+          'curl https://api.sent.dm/v3/profiles/$PROFILE_ID \\\n    -X PATCH \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "allow_contact_sharing": true,\n          "allow_number_change_during_onboarding": null,\n          "allow_template_sharing": null,\n          "billing_contact": {\n            "email": "dev@stainless.com",\n            "name": "x"\n          },\n          "billing_model": "organization",\n          "brand": {\n            "compliance": {\n              "brandRelationship": "SMALL_ACCOUNT",\n              "vertical": "PROFESSIONAL",\n              "destinationCountries": [\n                {\n                  "id": "US",\n                  "isMain": false\n                }\n              ],\n              "expectedMessagingVolume": "10000",\n              "isTcrApplication": true,\n              "notes": null,\n              "phoneNumberPrefix": "+1",\n              "primaryUseCase": "Customer notifications and appointment reminders"\n            },\n            "contact": {\n              "name": "John Smith",\n              "businessName": "Acme Corp",\n              "email": "john@acmecorp.com",\n              "phone": "+12025551234",\n              "phoneCountryCode": "1",\n              "role": "CEO"\n            },\n            "business": {\n              "city": "New York",\n              "country": "US",\n              "countryOfRegistration": "US",\n              "entityType": "PRIVATE_PROFIT",\n              "legalName": "Acme Corporation LLC",\n              "postalCode": "10001",\n              "state": "NY",\n              "street": "123 Main Street",\n              "taxId": "12-3456789",\n              "taxIdType": "us_ein",\n              "url": "https://acmecorp.com"\n            }\n          },\n          "description": "Updated sales department sender profile",\n          "icon": null,\n          "inherit_contacts": null,\n          "inherit_tcr_brand": null,\n          "inherit_tcr_campaign": null,\n          "inherit_templates": null,\n          "name": "Sales Team - Updated",\n          "payment_details": {\n            "card_number": "3216699102256101",\n            "cvc": "3216",\n            "expiry": "11/66",\n            "zip_code": "x"\n          },\n          "sandbox": false,\n          "sending_phone_number": null,\n          "sending_phone_number_profile_id": null,\n          "sending_whatsapp_number_profile_id": null,\n          "short_name": "SALES",\n          "whatsapp_phone_number": null\n        }\'',
       },
     },
   },
@@ -1671,7 +1671,7 @@ const EMBEDDED_METHODS: MethodEntry[] = [
       },
       http: {
         example:
-          'curl https://api.sent.dm/v3/profiles/$PROFILE_ID/campaigns \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "campaign": {\n            "description": "Appointment reminders and account notifications",\n            "name": "Customer Notifications",\n            "type": "App",\n            "useCases": [\n              {\n                "messagingUseCaseUs": "ACCOUNT_NOTIFICATION",\n                "sampleMessages": [\n                  "Hi {name}, your appointment is confirmed for {date} at {time}.",\n                  "Your order #{order_id} has been shipped. Track at {url}"\n                ]\n              }\n            ],\n            "helpKeywords": "HELP, INFO, SUPPORT",\n            "helpMessage": "Reply STOP to unsubscribe or contact support@acmecorp.com",\n            "messageFlow": "User signs up on website and opts in to receive SMS notifications",\n            "optinKeywords": "YES, START, SUBSCRIBE",\n            "optinMessage": "You have opted in to Acme Corp notifications. Reply STOP to opt out.",\n            "optoutKeywords": "STOP, UNSUBSCRIBE, END",\n            "optoutMessage": "You have been unsubscribed. Reply START to opt back in.",\n            "privacyPolicyLink": "https://acmecorp.com/privacy",\n            "termsAndConditionsLink": "https://acmecorp.com/terms"\n          }\n        }\'',
+          'curl https://api.sent.dm/v3/profiles/$PROFILE_ID/campaigns \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "campaign": {\n            "description": "Appointment reminders and account notifications",\n            "name": "Customer Notifications",\n            "type": "App",\n            "useCases": [\n              {\n                "messagingUseCaseUs": "ACCOUNT_NOTIFICATION",\n                "sampleMessages": [\n                  "Hi {name}, your appointment is confirmed for {date} at {time}.",\n                  "Your order #{order_id} has been shipped. Track at {url}"\n                ]\n              }\n            ],\n            "helpKeywords": "HELP, INFO, SUPPORT",\n            "helpMessage": "Reply STOP to unsubscribe or contact support@acmecorp.com",\n            "messageFlow": "User signs up on website and opts in to receive SMS notifications",\n            "optinKeywords": "YES, START, SUBSCRIBE",\n            "optinMessage": "You have opted in to Acme Corp notifications. Reply STOP to opt out.",\n            "optoutKeywords": "STOP, UNSUBSCRIBE, END",\n            "optoutMessage": "You have been unsubscribed. Reply START to opt back in.",\n            "privacyPolicyLink": "https://acmecorp.com/privacy",\n            "termsAndConditionsLink": "https://acmecorp.com/terms"\n          },\n          "sandbox": false\n        }\'',
       },
     },
   },
@@ -1844,7 +1844,7 @@ const EMBEDDED_METHODS: MethodEntry[] = [
       },
       http: {
         example:
-          'curl https://api.sent.dm/v3/profiles/$PROFILE_ID/campaigns/$CAMPAIGN_ID \\\n    -X PUT \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "campaign": {\n            "description": "Updated appointment reminders and account notifications",\n            "name": "Customer Notifications Updated",\n            "type": "App",\n            "useCases": [\n              {\n                "messagingUseCaseUs": "ACCOUNT_NOTIFICATION",\n                "sampleMessages": [\n                  "Hi {name}, your appointment is confirmed for {date} at {time}.",\n                  "Your order #{order_id} has been shipped. Track at {url}"\n                ]\n              }\n            ],\n            "helpKeywords": null,\n            "helpMessage": null,\n            "messageFlow": "User signs up on website and opts in to receive SMS notifications",\n            "optinKeywords": null,\n            "optinMessage": null,\n            "optoutKeywords": null,\n            "optoutMessage": null,\n            "privacyPolicyLink": null,\n            "termsAndConditionsLink": null\n          }\n        }\'',
+          'curl https://api.sent.dm/v3/profiles/$PROFILE_ID/campaigns/$CAMPAIGN_ID \\\n    -X PUT \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "campaign": {\n            "description": "Updated appointment reminders and account notifications",\n            "name": "Customer Notifications Updated",\n            "type": "App",\n            "useCases": [\n              {\n                "messagingUseCaseUs": "ACCOUNT_NOTIFICATION",\n                "sampleMessages": [\n                  "Hi {name}, your appointment is confirmed for {date} at {time}.",\n                  "Your order #{order_id} has been shipped. Track at {url}"\n                ]\n              }\n            ],\n            "helpKeywords": null,\n            "helpMessage": null,\n            "messageFlow": "User signs up on website and opts in to receive SMS notifications",\n            "optinKeywords": null,\n            "optinMessage": null,\n            "optoutKeywords": null,\n            "optoutMessage": null,\n            "privacyPolicyLink": null,\n            "termsAndConditionsLink": null\n          },\n          "sandbox": false\n        }\'',
       },
     },
   },
@@ -2074,7 +2074,7 @@ const EMBEDDED_METHODS: MethodEntry[] = [
       },
       http: {
         example:
-          'curl https://api.sent.dm/v3/messages \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "channel": [\n            "sms",\n            "whatsapp"\n          ],\n          "template": {\n            "id": "7ba7b820-9dad-11d1-80b4-00c04fd430c8",\n            "name": "order_confirmation",\n            "parameters": {\n              "name": "John Doe",\n              "order_id": "12345"\n            }\n          },\n          "to": [\n            "+14155551234",\n            "+14155555678"\n          ]\n        }\'',
+          'curl https://api.sent.dm/v3/messages \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "channel": [\n            "sms",\n            "whatsapp"\n          ],\n          "sandbox": false,\n          "template": {\n            "id": "7ba7b820-9dad-11d1-80b4-00c04fd430c8",\n            "name": "order_confirmation",\n            "parameters": {\n              "name": "John Doe",\n              "order_id": "12345"\n            }\n          },\n          "to": [\n            "+14155551234",\n            "+14155555678"\n          ]\n        }\'',
       },
     },
   },
@@ -2134,7 +2134,7 @@ const EMBEDDED_METHODS: MethodEntry[] = [
       },
       http: {
         example:
-          'curl https://api.sent.dm/v3/contacts \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "phone_number": "+1234567890"\n        }\'',
+          'curl https://api.sent.dm/v3/contacts \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "phone_number": "+1234567890",\n          "sandbox": false\n        }\'',
       },
     },
   },
@@ -2369,7 +2369,7 @@ const EMBEDDED_METHODS: MethodEntry[] = [
       },
       http: {
         example:
-          'curl https://api.sent.dm/v3/contacts/$ID \\\n    -X PATCH \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "default_channel": "whatsapp"\n        }\'',
+          'curl https://api.sent.dm/v3/contacts/$ID \\\n    -X PATCH \\\n    -H \'Content-Type: application/json\' \\\n    -H "x-api-key: $SENT_DM_API_KEY" \\\n    -d \'{\n          "channel_consent": {\n            "foo": "string"\n          },\n          "default_channel": "whatsapp",\n          "opt_out": false,\n          "sandbox": false\n        }\'',
       },
     },
   },

@@ -28,7 +28,7 @@ export const newMcpServer = async ({
   new McpServer(
     {
       name: 'sentdm_sentdm_api',
-      version: '0.25.3',
+      version: '0.25.4',
     },
     {
       instructions: await getInstructions({ stainlessApiKey, customInstructionsPath }),

@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.25.4 (2026-05-08)
+
+Full Changelog: [v0.25.3...v0.25.4](https://github.com/sentdm/sent-dm-typescript/compare/v0.25.3...v0.25.4)
+
+### Chores
+
+* redact api-key headers in debug logs ([9b3538e](https://github.com/sentdm/sent-dm-typescript/commit/9b3538eedefedfe5ef727f22e251c57eb69a6d01))
+
+
+### Documentation
+
+* update http mcp docs ([2b0921c](https://github.com/sentdm/sent-dm-typescript/commit/2b0921cd68d2245298636b2addb4227946d590a6))
+* update logging docs ([99cc291](https://github.com/sentdm/sent-dm-typescript/commit/99cc2912fab2b7cda2801cecaf397e76f3ec6723))
+
 ## 0.25.3 (2026-05-06)
 
 Full Changelog: [v0.25.2...v0.25.3](https://github.com/sentdm/sent-dm-typescript/compare/v0.25.2...v0.25.3)

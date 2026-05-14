@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.27.3 (2026-05-14)
+
+Full Changelog: [v0.27.2...v0.27.3](https://github.com/sentdm/sent-dm-typescript/compare/v0.27.2...v0.27.3)
+
 ## 0.27.2 (2026-05-14)
 
 Full Changelog: [v0.27.1...v0.27.2](https://github.com/sentdm/sent-dm-typescript/compare/v0.27.1...v0.27.2)

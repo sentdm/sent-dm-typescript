@@ -1,8 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../../core/resource';
-import * as CampaignsAPI from './campaigns';
-import * as WebhooksAPI from '../webhooks';
 import { APIPromise } from '../../core/api-promise';
 import { buildHeaders } from '../../internal/headers';
 import { RequestOptions } from '../../internal/request-options';
@@ -18,34 +16,33 @@ export class Campaigns extends APIResource {
    *
    * @example
    * ```ts
-   * const apiResponseOfTcrCampaignWithUseCases =
-   *   await client.profiles.campaigns.create(
-   *     '770e8400-e29b-41d4-a716-446655440002',
-   *     {
-   *       campaign: {
-   *         description:
-   *           'Appointment reminders and account notifications',
-   *         name: 'Customer Notifications',
-   *         type: 'App',
-   *         useCases: [
-   *           {
-   *             messagingUseCaseUs: 'ACCOUNT_NOTIFICATION',
-   *             sampleMessages: [
-   *               'Hi {name}, your appointment is confirmed for {date} at {time}.',
-   *               'Your order #{order_id} has been shipped. Track at {url}',
-   *             ],
-   *           },
-   *         ],
-   *       },
+   * const campaign = await client.profiles.campaigns.create(
+   *   '770e8400-e29b-41d4-a716-446655440002',
+   *   {
+   *     campaign: {
+   *       description:
+   *         'Appointment reminders and account notifications',
+   *       name: 'Customer Notifications',
+   *       type: 'App',
+   *       useCases: [
+   *         {
+   *           messagingUseCaseUs: 'ACCOUNT_NOTIFICATION',
+   *           sampleMessages: [
+   *             'Hi {name}, your appointment is confirmed for {date} at {time}.',
+   *             'Your order #{order_id} has been shipped. Track at {url}',
+   *           ],
+   *         },
+   *       ],
    *     },
-   *   );
+   *   },
+   * );
    * ```
    */
   create(
     profileID: string,
     params: CampaignCreateParams,
     options?: RequestOptions,
-  ): APIPromise<APIResponseOfTcrCampaignWithUseCases> {
+  ): APIPromise<CampaignCreateResponse> {
     const { 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
     return this._client.post(path`/v3/profiles/${profileID}/campaigns`, {
       body,
@@ -66,35 +63,34 @@ export class Campaigns extends APIResource {
    *
    * @example
    * ```ts
-   * const apiResponseOfTcrCampaignWithUseCases =
-   *   await client.profiles.campaigns.update(
-   *     'b2c3d4e5-f6a7-8901-bcde-f12345678901',
-   *     {
-   *       profileId: '770e8400-e29b-41d4-a716-446655440002',
-   *       campaign: {
-   *         description:
-   *           'Updated appointment reminders and account notifications',
-   *         name: 'Customer Notifications Updated',
-   *         type: 'App',
-   *         useCases: [
-   *           {
-   *             messagingUseCaseUs: 'ACCOUNT_NOTIFICATION',
-   *             sampleMessages: [
-   *               'Hi {name}, your appointment is confirmed for {date} at {time}.',
-   *               'Your order #{order_id} has been shipped. Track at {url}',
-   *             ],
-   *           },
-   *         ],
-   *       },
+   * const campaign = await client.profiles.campaigns.update(
+   *   'b2c3d4e5-f6a7-8901-bcde-f12345678901',
+   *   {
+   *     profileId: '770e8400-e29b-41d4-a716-446655440002',
+   *     campaign: {
+   *       description:
+   *         'Updated appointment reminders and account notifications',
+   *       name: 'Customer Notifications Updated',
+   *       type: 'App',
+   *       useCases: [
+   *         {
+   *           messagingUseCaseUs: 'ACCOUNT_NOTIFICATION',
+   *           sampleMessages: [
+   *             'Hi {name}, your appointment is confirmed for {date} at {time}.',
+   *             'Your order #{order_id} has been shipped. Track at {url}',
+   *           ],
+   *         },
+   *       ],
    *     },
-   *   );
+   *   },
+   * );
    * ```
    */
   update(
     campaignID: string,
     params: CampaignUpdateParams,
     options?: RequestOptions,
-  ): APIPromise<APIResponseOfTcrCampaignWithUseCases> {
+  ): APIPromise<CampaignUpdateResponse> {
     const { profileId, 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
     return this._client.put(path`/v3/profiles/${profileId}/campaigns/${campaignID}`, {
       body,
@@ -163,21 +159,21 @@ export class Campaigns extends APIResource {
 /**
  * Standard API response envelope for all v3 endpoints
  */
-export interface APIResponseOfTcrCampaignWithUseCases {
+export interface CampaignCreateResponse {
   /**
    * The response data (null if error)
    */
-  data?: TcrCampaignWithUseCases | null;
+  data?: CampaignCreateResponse.Data | null;
 
   /**
    * Error information
    */
-  error?: WebhooksAPI.ErrorDetail | null;
+  error?: CampaignCreateResponse.Error | null;
 
   /**
    * Request and response metadata
    */
-  meta?: WebhooksAPI.APIMeta;
+  meta?: CampaignCreateResponse.Meta;
 
   /**
    * Indicates whether the request was successful
@@ -185,181 +181,338 @@ export interface APIResponseOfTcrCampaignWithUseCases {
   success?: boolean;
 }
 
-export interface BaseDto {
+export namespace CampaignCreateResponse {
   /**
-   * Unique identifier
+   * The response data (null if error)
    */
-  id?: string;
+  export interface Data {
+    /**
+     * Unique identifier
+     */
+    id?: string;
 
-  createdAt?: string;
+    billedDate?: string | null;
 
-  updatedAt?: string | null;
-}
+    brandId?: string | null;
 
-/**
- * Campaign data for create or update operation
- */
-export interface CampaignData {
-  /**
-   * Campaign description
-   */
-  description: string;
+    cost?: number | null;
 
-  /**
-   * Campaign name
-   */
-  name: string;
+    createdAt?: string;
 
-  /**
-   * Campaign type (e.g., "KYC", "App")
-   */
-  type: string;
-
-  /**
-   * List of use cases with sample messages
-   */
-  useCases: Array<SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData>;
-
-  /**
-   * Comma-separated keywords that trigger help message (e.g., "HELP, INFO, SUPPORT")
-   */
-  helpKeywords?: string | null;
-
-  /**
-   * Message sent when user requests help
-   */
-  helpMessage?: string | null;
-
-  /**
-   * Description of how messages flow in the campaign
-   */
-  messageFlow?: string | null;
-
-  /**
-   * Comma-separated keywords that trigger opt-in (e.g., "YES, START, SUBSCRIBE")
-   */
-  optinKeywords?: string | null;
-
-  /**
-   * Message sent when user opts in
-   */
-  optinMessage?: string | null;
-
-  /**
-   * Comma-separated keywords that trigger opt-out (e.g., "STOP, UNSUBSCRIBE, END")
-   */
-  optoutKeywords?: string | null;
-
-  /**
-   * Message sent when user opts out
-   */
-  optoutMessage?: string | null;
-
-  /**
-   * URL to privacy policy
-   */
-  privacyPolicyLink?: string | null;
-
-  /**
-   * URL to terms and conditions
-   */
-  termsAndConditionsLink?: string | null;
-}
-
-export type MessagingUseCaseUs =
-  | 'MARKETING'
-  | 'ACCOUNT_NOTIFICATION'
-  | 'CUSTOMER_CARE'
-  | 'FRAUD_ALERT'
-  | 'TWO_FA'
-  | 'DELIVERY_NOTIFICATION'
-  | 'SECURITY_ALERT'
-  | 'M2M'
-  | 'MIXED'
-  | 'HIGHER_EDUCATION'
-  | 'POLLING_VOTING'
-  | 'PUBLIC_SERVICE_ANNOUNCEMENT'
-  | 'LOW_VOLUME';
-
-/**
- * Campaign use case with sample messages
- */
-export interface SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData {
-  messagingUseCaseUs: MessagingUseCaseUs;
-
-  /**
-   * Sample messages for this use case (1-5 messages, max 1024 characters each)
-   */
-  sampleMessages: Array<string>;
-}
-
-export interface TcrCampaignWithUseCases extends BaseDto {
-  billedDate?: string | null;
-
-  brandId?: string | null;
-
-  cost?: number | null;
-
-  cspId?: string | null;
-
-  customerId?: string;
-
-  description?: string;
-
-  helpKeywords?: string | null;
-
-  helpMessage?: string | null;
-
-  kycSubmissionFormId?: string | null;
-
-  messageFlow?: string | null;
-
-  name?: string;
-
-  optinKeywords?: string | null;
-
-  optinMessage?: string | null;
-
-  optoutKeywords?: string | null;
-
-  optoutMessage?: string | null;
-
-  privacyPolicyLink?: string | null;
-
-  resellerId?: string | null;
-
-  sharingStatus?: 'PENDING' | 'ACCEPTED' | 'DECLINED' | null;
-
-  status?: 'SENT_CREATED' | 'ACTIVE' | 'EXPIRED' | null;
-
-  submittedAt?: string | null;
-
-  submittedToTCR?: boolean;
-
-  tcrCampaignId?: string | null;
-
-  tcrSyncError?: string | null;
-
-  telnyxCampaignId?: string | null;
-
-  termsAndConditionsLink?: string | null;
-
-  type?: string;
-
-  upstreamCnpId?: string | null;
-
-  useCases?: Array<TcrCampaignWithUseCases.UseCase>;
-}
-
-export namespace TcrCampaignWithUseCases {
-  export interface UseCase extends CampaignsAPI.BaseDto {
-    campaignId?: string;
+    cspId?: string | null;
 
     customerId?: string;
 
-    messagingUseCaseUs?: CampaignsAPI.MessagingUseCaseUs;
+    dcaElectionsComplete?: boolean;
 
-    sampleMessages?: Array<string>;
+    dcaElectionsCompletedAt?: string | null;
+
+    description?: string;
+
+    helpKeywords?: string | null;
+
+    helpMessage?: string | null;
+
+    kycSubmissionFormId?: string | null;
+
+    messageFlow?: string | null;
+
+    name?: string;
+
+    optinKeywords?: string | null;
+
+    optinMessage?: string | null;
+
+    optoutKeywords?: string | null;
+
+    optoutMessage?: string | null;
+
+    privacyPolicyLink?: string | null;
+
+    resellerId?: string | null;
+
+    sharingStatus?: 'PENDING' | 'ACCEPTED' | 'DECLINED' | null;
+
+    status?: 'SENT_CREATED' | 'ACTIVE' | 'EXPIRED' | null;
+
+    submittedAt?: string | null;
+
+    submittedToTCR?: boolean;
+
+    tcrCampaignId?: string | null;
+
+    tcrSyncError?: string | null;
+
+    telnyxCampaignId?: string | null;
+
+    termsAndConditionsLink?: string | null;
+
+    type?: string;
+
+    updatedAt?: string | null;
+
+    upstreamCnpId?: string | null;
+
+    useCases?: Array<Data.UseCase>;
+  }
+
+  export namespace Data {
+    export interface UseCase {
+      /**
+       * Unique identifier
+       */
+      id?: string;
+
+      campaignId?: string;
+
+      createdAt?: string;
+
+      customerId?: string;
+
+      messagingUseCaseUs?:
+        | 'MARKETING'
+        | 'ACCOUNT_NOTIFICATION'
+        | 'CUSTOMER_CARE'
+        | 'FRAUD_ALERT'
+        | 'TWO_FA'
+        | 'DELIVERY_NOTIFICATION'
+        | 'SECURITY_ALERT'
+        | 'M2M'
+        | 'MIXED'
+        | 'HIGHER_EDUCATION'
+        | 'POLLING_VOTING'
+        | 'PUBLIC_SERVICE_ANNOUNCEMENT'
+        | 'LOW_VOLUME';
+
+      sampleMessages?: Array<string>;
+
+      updatedAt?: string | null;
+    }
+  }
+
+  /**
+   * Error information
+   */
+  export interface Error {
+    /**
+     * Machine-readable error code (e.g., "RESOURCE_001")
+     */
+    code?: string;
+
+    /**
+     * Additional validation error details (field-level errors)
+     */
+    details?: { [key: string]: Array<string> } | null;
+
+    /**
+     * URL to documentation about this error
+     */
+    doc_url?: string | null;
+
+    /**
+     * Human-readable error message
+     */
+    message?: string;
+  }
+
+  /**
+   * Request and response metadata
+   */
+  export interface Meta {
+    /**
+     * Unique identifier for this request (for tracing and support)
+     */
+    request_id?: string;
+
+    /**
+     * Server timestamp when the response was generated
+     */
+    timestamp?: string;
+
+    /**
+     * API version used for this request
+     */
+    version?: string;
+  }
+}
+
+/**
+ * Standard API response envelope for all v3 endpoints
+ */
+export interface CampaignUpdateResponse {
+  /**
+   * The response data (null if error)
+   */
+  data?: CampaignUpdateResponse.Data | null;
+
+  /**
+   * Error information
+   */
+  error?: CampaignUpdateResponse.Error | null;
+
+  /**
+   * Request and response metadata
+   */
+  meta?: CampaignUpdateResponse.Meta;
+
+  /**
+   * Indicates whether the request was successful
+   */
+  success?: boolean;
+}
+
+export namespace CampaignUpdateResponse {
+  /**
+   * The response data (null if error)
+   */
+  export interface Data {
+    /**
+     * Unique identifier
+     */
+    id?: string;
+
+    billedDate?: string | null;
+
+    brandId?: string | null;
+
+    cost?: number | null;
+
+    createdAt?: string;
+
+    cspId?: string | null;
+
+    customerId?: string;
+
+    dcaElectionsComplete?: boolean;
+
+    dcaElectionsCompletedAt?: string | null;
+
+    description?: string;
+
+    helpKeywords?: string | null;
+
+    helpMessage?: string | null;
+
+    kycSubmissionFormId?: string | null;
+
+    messageFlow?: string | null;
+
+    name?: string;
+
+    optinKeywords?: string | null;
+
+    optinMessage?: string | null;
+
+    optoutKeywords?: string | null;
+
+    optoutMessage?: string | null;
+
+    privacyPolicyLink?: string | null;
+
+    resellerId?: string | null;
+
+    sharingStatus?: 'PENDING' | 'ACCEPTED' | 'DECLINED' | null;
+
+    status?: 'SENT_CREATED' | 'ACTIVE' | 'EXPIRED' | null;
+
+    submittedAt?: string | null;
+
+    submittedToTCR?: boolean;
+
+    tcrCampaignId?: string | null;
+
+    tcrSyncError?: string | null;
+
+    telnyxCampaignId?: string | null;
+
+    termsAndConditionsLink?: string | null;
+
+    type?: string;
+
+    updatedAt?: string | null;
+
+    upstreamCnpId?: string | null;
+
+    useCases?: Array<Data.UseCase>;
+  }
+
+  export namespace Data {
+    export interface UseCase {
+      /**
+       * Unique identifier
+       */
+      id?: string;
+
+      campaignId?: string;
+
+      createdAt?: string;
+
+      customerId?: string;
+
+      messagingUseCaseUs?:
+        | 'MARKETING'
+        | 'ACCOUNT_NOTIFICATION'
+        | 'CUSTOMER_CARE'
+        | 'FRAUD_ALERT'
+        | 'TWO_FA'
+        | 'DELIVERY_NOTIFICATION'
+        | 'SECURITY_ALERT'
+        | 'M2M'
+        | 'MIXED'
+        | 'HIGHER_EDUCATION'
+        | 'POLLING_VOTING'
+        | 'PUBLIC_SERVICE_ANNOUNCEMENT'
+        | 'LOW_VOLUME';
+
+      sampleMessages?: Array<string>;
+
+      updatedAt?: string | null;
+    }
+  }
+
+  /**
+   * Error information
+   */
+  export interface Error {
+    /**
+     * Machine-readable error code (e.g., "RESOURCE_001")
+     */
+    code?: string;
+
+    /**
+     * Additional validation error details (field-level errors)
+     */
+    details?: { [key: string]: Array<string> } | null;
+
+    /**
+     * URL to documentation about this error
+     */
+    doc_url?: string | null;
+
+    /**
+     * Human-readable error message
+     */
+    message?: string;
+  }
+
+  /**
+   * Request and response metadata
+   */
+  export interface Meta {
+    /**
+     * Unique identifier for this request (for tracing and support)
+     */
+    request_id?: string;
+
+    /**
+     * Server timestamp when the response was generated
+     */
+    timestamp?: string;
+
+    /**
+     * API version used for this request
+     */
+    version?: string;
   }
 }
 
@@ -370,17 +523,17 @@ export interface CampaignListResponse {
   /**
    * The response data (null if error)
    */
-  data?: Array<TcrCampaignWithUseCases> | null;
+  data?: Array<CampaignListResponse.Data> | null;
 
   /**
    * Error information
    */
-  error?: WebhooksAPI.ErrorDetail | null;
+  error?: CampaignListResponse.Error | null;
 
   /**
    * Request and response metadata
    */
-  meta?: WebhooksAPI.APIMeta;
+  meta?: CampaignListResponse.Meta;
 
   /**
    * Indicates whether the request was successful
@@ -388,11 +541,163 @@ export interface CampaignListResponse {
   success?: boolean;
 }
 
+export namespace CampaignListResponse {
+  export interface Data {
+    /**
+     * Unique identifier
+     */
+    id?: string;
+
+    billedDate?: string | null;
+
+    brandId?: string | null;
+
+    cost?: number | null;
+
+    createdAt?: string;
+
+    cspId?: string | null;
+
+    customerId?: string;
+
+    dcaElectionsComplete?: boolean;
+
+    dcaElectionsCompletedAt?: string | null;
+
+    description?: string;
+
+    helpKeywords?: string | null;
+
+    helpMessage?: string | null;
+
+    kycSubmissionFormId?: string | null;
+
+    messageFlow?: string | null;
+
+    name?: string;
+
+    optinKeywords?: string | null;
+
+    optinMessage?: string | null;
+
+    optoutKeywords?: string | null;
+
+    optoutMessage?: string | null;
+
+    privacyPolicyLink?: string | null;
+
+    resellerId?: string | null;
+
+    sharingStatus?: 'PENDING' | 'ACCEPTED' | 'DECLINED' | null;
+
+    status?: 'SENT_CREATED' | 'ACTIVE' | 'EXPIRED' | null;
+
+    submittedAt?: string | null;
+
+    submittedToTCR?: boolean;
+
+    tcrCampaignId?: string | null;
+
+    tcrSyncError?: string | null;
+
+    telnyxCampaignId?: string | null;
+
+    termsAndConditionsLink?: string | null;
+
+    type?: string;
+
+    updatedAt?: string | null;
+
+    upstreamCnpId?: string | null;
+
+    useCases?: Array<Data.UseCase>;
+  }
+
+  export namespace Data {
+    export interface UseCase {
+      /**
+       * Unique identifier
+       */
+      id?: string;
+
+      campaignId?: string;
+
+      createdAt?: string;
+
+      customerId?: string;
+
+      messagingUseCaseUs?:
+        | 'MARKETING'
+        | 'ACCOUNT_NOTIFICATION'
+        | 'CUSTOMER_CARE'
+        | 'FRAUD_ALERT'
+        | 'TWO_FA'
+        | 'DELIVERY_NOTIFICATION'
+        | 'SECURITY_ALERT'
+        | 'M2M'
+        | 'MIXED'
+        | 'HIGHER_EDUCATION'
+        | 'POLLING_VOTING'
+        | 'PUBLIC_SERVICE_ANNOUNCEMENT'
+        | 'LOW_VOLUME';
+
+      sampleMessages?: Array<string>;
+
+      updatedAt?: string | null;
+    }
+  }
+
+  /**
+   * Error information
+   */
+  export interface Error {
+    /**
+     * Machine-readable error code (e.g., "RESOURCE_001")
+     */
+    code?: string;
+
+    /**
+     * Additional validation error details (field-level errors)
+     */
+    details?: { [key: string]: Array<string> } | null;
+
+    /**
+     * URL to documentation about this error
+     */
+    doc_url?: string | null;
+
+    /**
+     * Human-readable error message
+     */
+    message?: string;
+  }
+
+  /**
+   * Request and response metadata
+   */
+  export interface Meta {
+    /**
+     * Unique identifier for this request (for tracing and support)
+     */
+    request_id?: string;
+
+    /**
+     * Server timestamp when the response was generated
+     */
+    timestamp?: string;
+
+    /**
+     * API version used for this request
+     */
+    version?: string;
+  }
+}
+
 export interface CampaignCreateParams {
   /**
    * Body param: Campaign data for create or update operation
    */
-  campaign: CampaignData;
+  campaign: CampaignCreateParams.Campaign;
 
   /**
    * Body param: Sandbox flag - when true, the operation is simulated without side
@@ -413,6 +718,105 @@ export interface CampaignCreateParams {
    * calling organization.
    */
   'x-profile-id'?: string;
+}
+
+export namespace CampaignCreateParams {
+  /**
+   * Campaign data for create or update operation
+   */
+  export interface Campaign {
+    /**
+     * Campaign description
+     */
+    description: string;
+
+    /**
+     * Campaign name
+     */
+    name: string;
+
+    /**
+     * Campaign type (e.g., "KYC", "App")
+     */
+    type: string;
+
+    /**
+     * List of use cases with sample messages
+     */
+    useCases: Array<Campaign.UseCase>;
+
+    /**
+     * Comma-separated keywords that trigger help message (e.g., "HELP, INFO, SUPPORT")
+     */
+    helpKeywords?: string | null;
+
+    /**
+     * Message sent when user requests help
+     */
+    helpMessage?: string | null;
+
+    /**
+     * Description of how messages flow in the campaign
+     */
+    messageFlow?: string | null;
+
+    /**
+     * Comma-separated keywords that trigger opt-in (e.g., "YES, START, SUBSCRIBE")
+     */
+    optinKeywords?: string | null;
+
+    /**
+     * Message sent when user opts in
+     */
+    optinMessage?: string | null;
+
+    /**
+     * Comma-separated keywords that trigger opt-out (e.g., "STOP, UNSUBSCRIBE, END")
+     */
+    optoutKeywords?: string | null;
+
+    /**
+     * Message sent when user opts out
+     */
+    optoutMessage?: string | null;
+
+    /**
+     * URL to privacy policy
+     */
+    privacyPolicyLink?: string | null;
+
+    /**
+     * URL to terms and conditions
+     */
+    termsAndConditionsLink?: string | null;
+  }
+
+  export namespace Campaign {
+    /**
+     * Campaign use case with sample messages
+     */
+    export interface UseCase {
+      messagingUseCaseUs:
+        | 'MARKETING'
+        | 'ACCOUNT_NOTIFICATION'
+        | 'CUSTOMER_CARE'
+        | 'FRAUD_ALERT'
+        | 'TWO_FA'
+        | 'DELIVERY_NOTIFICATION'
+        | 'SECURITY_ALERT'
+        | 'M2M'
+        | 'MIXED'
+        | 'HIGHER_EDUCATION'
+        | 'POLLING_VOTING'
+        | 'PUBLIC_SERVICE_ANNOUNCEMENT'
+        | 'LOW_VOLUME';
+
+      /**
+       * Sample messages for this use case (1-5 messages, max 1024 characters each)
+       */
+      sampleMessages: Array<string>;
+    }
+  }
 }
 
 export interface CampaignUpdateParams {
@@ -424,7 +828,7 @@ export interface CampaignUpdateParams {
   /**
    * Body param: Campaign data for create or update operation
    */
-  campaign: CampaignData;
+  campaign: CampaignUpdateParams.Campaign;
 
   /**
    * Body param: Sandbox flag - when true, the operation is simulated without side
@@ -445,6 +849,105 @@ export interface CampaignUpdateParams {
    * calling organization.
    */
   'x-profile-id'?: string;
+}
+
+export namespace CampaignUpdateParams {
+  /**
+   * Campaign data for create or update operation
+   */
+  export interface Campaign {
+    /**
+     * Campaign description
+     */
+    description: string;
+
+    /**
+     * Campaign name
+     */
+    name: string;
+
+    /**
+     * Campaign type (e.g., "KYC", "App")
+     */
+    type: string;
+
+    /**
+     * List of use cases with sample messages
+     */
+    useCases: Array<Campaign.UseCase>;
+
+    /**
+     * Comma-separated keywords that trigger help message (e.g., "HELP, INFO, SUPPORT")
+     */
+    helpKeywords?: string | null;
+
+    /**
+     * Message sent when user requests help
+     */
+    helpMessage?: string | null;
+
+    /**
+     * Description of how messages flow in the campaign
+     */
+    messageFlow?: string | null;
+
+    /**
+     * Comma-separated keywords that trigger opt-in (e.g., "YES, START, SUBSCRIBE")
+     */
+    optinKeywords?: string | null;
+
+    /**
+     * Message sent when user opts in
+     */
+    optinMessage?: string | null;
+
+    /**
+     * Comma-separated keywords that trigger opt-out (e.g., "STOP, UNSUBSCRIBE, END")
+     */
+    optoutKeywords?: string | null;
+
+    /**
+     * Message sent when user opts out
+     */
+    optoutMessage?: string | null;
+
+    /**
+     * URL to privacy policy
+     */
+    privacyPolicyLink?: string | null;
+
+    /**
+     * URL to terms and conditions
+     */
+    termsAndConditionsLink?: string | null;
+  }
+
+  export namespace Campaign {
+    /**
+     * Campaign use case with sample messages
+     */
+    export interface UseCase {
+      messagingUseCaseUs:
+        | 'MARKETING'
+        | 'ACCOUNT_NOTIFICATION'
+        | 'CUSTOMER_CARE'
+        | 'FRAUD_ALERT'
+        | 'TWO_FA'
+        | 'DELIVERY_NOTIFICATION'
+        | 'SECURITY_ALERT'
+        | 'M2M'
+        | 'MIXED'
+        | 'HIGHER_EDUCATION'
+        | 'POLLING_VOTING'
+        | 'PUBLIC_SERVICE_ANNOUNCEMENT'
+        | 'LOW_VOLUME';
+
+      /**
+       * Sample messages for this use case (1-5 messages, max 1024 characters each)
+       */
+      sampleMessages: Array<string>;
+    }
+  }
 }
 
 export interface CampaignListParams {
@@ -477,12 +980,8 @@ export interface CampaignDeleteParams {
 
 export declare namespace Campaigns {
   export {
-    type APIResponseOfTcrCampaignWithUseCases as APIResponseOfTcrCampaignWithUseCases,
-    type BaseDto as BaseDto,
-    type CampaignData as CampaignData,
-    type MessagingUseCaseUs as MessagingUseCaseUs,
-    type SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData as SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData,
-    type TcrCampaignWithUseCases as TcrCampaignWithUseCases,
+    type CampaignCreateResponse as CampaignCreateResponse,
+    type CampaignUpdateResponse as CampaignUpdateResponse,
     type CampaignListResponse as CampaignListResponse,
     type CampaignCreateParams as CampaignCreateParams,
     type CampaignUpdateParams as CampaignUpdateParams,

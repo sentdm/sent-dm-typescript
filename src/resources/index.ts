@@ -2,8 +2,9 @@
 
 export {
   Contacts,
-  type APIResponseOfContact,
-  type ContactResponse,
+  type ContactCreateResponse,
+  type ContactRetrieveResponse,
+  type ContactUpdateResponse,
   type ContactListResponse,
   type ContactCreateParams,
   type ContactRetrieveParams,
@@ -11,7 +12,7 @@ export {
   type ContactListParams,
   type ContactDeleteParams,
 } from './contacts';
-export { Me, type ProfileSettings, type MeRetrieveResponse, type MeRetrieveParams } from './me';
+export { Me, type MeRetrieveResponse, type MeRetrieveParams } from './me';
 export {
   Messages,
   type MessageRetrieveActivitiesResponse,
@@ -24,17 +25,9 @@ export {
 export { Numbers, type NumberLookupResponse, type NumberLookupParams } from './numbers';
 export {
   Profiles,
-  type APIResponseOfProfileDetail,
-  type BillingContactInfo,
-  type BrandsBrandData,
-  type DestinationCountry,
-  type PaymentDetails,
-  type ProfileDetail,
-  type SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandBusinessInfo,
-  type SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfo,
-  type SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandContactInfo,
-  type TcrBrandRelationship,
-  type TcrVertical,
+  type ProfileCreateResponse,
+  type ProfileRetrieveResponse,
+  type ProfileUpdateResponse,
   type ProfileListResponse,
   type ProfileCompleteResponse,
   type ProfileCreateParams,
@@ -46,17 +39,9 @@ export {
 } from './profiles/profiles';
 export {
   Templates,
-  type APIResponseTemplate,
-  type SentDmServicesCommonContractsPocOsAuthenticationConfig,
-  type SentDmServicesCommonContractsPocOsTemplateBody,
-  type SentDmServicesCommonContractsPocOsTemplateButton,
-  type SentDmServicesCommonContractsPocOsTemplateButtonProps,
-  type SentDmServicesCommonContractsPocOsTemplateFooter,
-  type SentDmServicesCommonContractsPocOsTemplateHeader,
-  type Template,
-  type TemplateBodyContent,
-  type TemplateDefinition,
-  type TemplateVariable,
+  type TemplateCreateResponse,
+  type TemplateRetrieveResponse,
+  type TemplateUpdateResponse,
   type TemplateListResponse,
   type TemplateCreateParams,
   type TemplateRetrieveParams,
@@ -66,9 +51,10 @@ export {
 } from './templates';
 export {
   Users,
-  type APIResponseOfUser,
-  type UserResponse,
+  type UserRetrieveResponse,
   type UserListResponse,
+  type UserInviteResponse,
+  type UserUpdateRoleResponse,
   type UserRetrieveParams,
   type UserListParams,
   type UserInviteParams,
@@ -77,18 +63,15 @@ export {
 } from './users';
 export {
   Webhooks,
-  type APIMeta,
-  type APIResponseWebhook,
-  type ErrorDetail,
-  type MutationRequest,
-  type PaginationMeta,
-  type WebhookEventType,
-  type WebhookResponse,
+  type WebhookCreateResponse,
+  type WebhookRetrieveResponse,
+  type WebhookUpdateResponse,
   type WebhookListResponse,
   type WebhookListEventTypesResponse,
   type WebhookListEventsResponse,
   type WebhookRotateSecretResponse,
   type WebhookTestResponse,
+  type WebhookToggleStatusResponse,
   type WebhookCreateParams,
   type WebhookRetrieveParams,
   type WebhookUpdateParams,

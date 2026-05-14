@@ -1,7 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../core/resource';
-import * as WebhooksAPI from './webhooks';
 import { APIPromise } from '../core/api-promise';
 import { buildHeaders } from '../internal/headers';
 import { RequestOptions } from '../internal/request-options';
@@ -103,12 +102,12 @@ export interface MessageRetrieveActivitiesResponse {
   /**
    * Error information
    */
-  error?: WebhooksAPI.ErrorDetail | null;
+  error?: MessageRetrieveActivitiesResponse.Error | null;
 
   /**
    * Request and response metadata
    */
-  meta?: WebhooksAPI.APIMeta;
+  meta?: MessageRetrieveActivitiesResponse.Meta;
 
   /**
    * Indicates whether the request was successful
@@ -172,6 +171,51 @@ export namespace MessageRetrieveActivitiesResponse {
       timestamp?: string;
     }
   }
+
+  /**
+   * Error information
+   */
+  export interface Error {
+    /**
+     * Machine-readable error code (e.g., "RESOURCE_001")
+     */
+    code?: string;
+
+    /**
+     * Additional validation error details (field-level errors)
+     */
+    details?: { [key: string]: Array<string> } | null;
+
+    /**
+     * URL to documentation about this error
+     */
+    doc_url?: string | null;
+
+    /**
+     * Human-readable error message
+     */
+    message?: string;
+  }
+
+  /**
+   * Request and response metadata
+   */
+  export interface Meta {
+    /**
+     * Unique identifier for this request (for tracing and support)
+     */
+    request_id?: string;
+
+    /**
+     * Server timestamp when the response was generated
+     */
+    timestamp?: string;
+
+    /**
+     * API version used for this request
+     */
+    version?: string;
+  }
 }
 
 /**
@@ -186,12 +230,12 @@ export interface MessageRetrieveStatusResponse {
   /**
    * Error information
    */
-  error?: WebhooksAPI.ErrorDetail | null;
+  error?: MessageRetrieveStatusResponse.Error | null;
 
   /**
    * Request and response metadata
    */
-  meta?: WebhooksAPI.APIMeta;
+  meta?: MessageRetrieveStatusResponse.Meta;
 
   /**
    * Indicates whether the request was successful
@@ -271,11 +315,60 @@ export namespace MessageRetrieveStatusResponse {
 
     export namespace MessageBody {
       export interface Button {
+        postbackData?: string | null;
+
+        text?: string | null;
+
         type?: string;
 
         value?: string;
       }
     }
+  }
+
+  /**
+   * Error information
+   */
+  export interface Error {
+    /**
+     * Machine-readable error code (e.g., "RESOURCE_001")
+     */
+    code?: string;
+
+    /**
+     * Additional validation error details (field-level errors)
+     */
+    details?: { [key: string]: Array<string> } | null;
+
+    /**
+     * URL to documentation about this error
+     */
+    doc_url?: string | null;
+
+    /**
+     * Human-readable error message
+     */
+    message?: string;
+  }
+
+  /**
+   * Request and response metadata
+   */
+  export interface Meta {
+    /**
+     * Unique identifier for this request (for tracing and support)
+     */
+    request_id?: string;
+
+    /**
+     * Server timestamp when the response was generated
+     */
+    timestamp?: string;
+
+    /**
+     * API version used for this request
+     */
+    version?: string;
   }
 }
 
@@ -291,12 +384,12 @@ export interface MessageSendResponse {
   /**
    * Error information
    */
-  error?: WebhooksAPI.ErrorDetail | null;
+  error?: MessageSendResponse.Error | null;
 
   /**
    * Request and response metadata
    */
-  meta?: WebhooksAPI.APIMeta;
+  meta?: MessageSendResponse.Meta;
 
   /**
    * Indicates whether the request was successful
@@ -359,6 +452,51 @@ export namespace MessageSendResponse {
       to?: string;
     }
   }
+
+  /**
+   * Error information
+   */
+  export interface Error {
+    /**
+     * Machine-readable error code (e.g., "RESOURCE_001")
+     */
+    code?: string;
+
+    /**
+     * Additional validation error details (field-level errors)
+     */
+    details?: { [key: string]: Array<string> } | null;
+
+    /**
+     * URL to documentation about this error
+     */
+    doc_url?: string | null;
+
+    /**
+     * Human-readable error message
+     */
+    message?: string;
+  }
+
+  /**
+   * Request and response metadata
+   */
+  export interface Meta {
+    /**
+     * Unique identifier for this request (for tracing and support)
+     */
+    request_id?: string;
+
+    /**
+     * Server timestamp when the response was generated
+     */
+    timestamp?: string;
+
+    /**
+     * API version used for this request
+     */
+    version?: string;
+  }
 }
 
 export interface MessageRetrieveActivitiesParams {
@@ -380,8 +518,8 @@ export interface MessageRetrieveStatusParams {
 export interface MessageSendParams {
   /**
    * Body param: Channels to broadcast on, e.g. ["whatsapp", "sms"]. Each channel
-   * produces a separate message per recipient. "sent" = auto-detect, "rcs" =
-   * reserved (skipped). Defaults to ["sent"] (auto-detect) if omitted.
+   * produces a separate message per recipient. "sent" = auto-detect. Defaults to
+   * ["sent"] (auto-detect) if omitted.
    */
   channel?: Array<string> | null;
 

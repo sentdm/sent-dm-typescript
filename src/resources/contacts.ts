@@ -1,8 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../core/resource';
-import * as ContactsAPI from './contacts';
-import * as WebhooksAPI from './webhooks';
 import { APIPromise } from '../core/api-promise';
 import { buildHeaders } from '../internal/headers';
 import { RequestOptions } from '../internal/request-options';
@@ -18,10 +16,10 @@ export class Contacts extends APIResource {
    *
    * @example
    * ```ts
-   * const apiResponseOfContact = await client.contacts.create();
+   * const contact = await client.contacts.create();
    * ```
    */
-  create(params: ContactCreateParams, options?: RequestOptions): APIPromise<APIResponseOfContact> {
+  create(params: ContactCreateParams, options?: RequestOptions): APIPromise<ContactCreateResponse> {
     const { 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
     return this._client.post('/v3/contacts', {
       body,
@@ -43,7 +41,7 @@ export class Contacts extends APIResource {
    *
    * @example
    * ```ts
-   * const apiResponseOfContact = await client.contacts.retrieve(
+   * const contact = await client.contacts.retrieve(
    *   '6ba7b810-9dad-11d1-80b4-00c04fd430c8',
    * );
    * ```
@@ -52,7 +50,7 @@ export class Contacts extends APIResource {
     id: string,
     params: ContactRetrieveParams | null | undefined = {},
     options?: RequestOptions,
-  ): APIPromise<APIResponseOfContact> {
+  ): APIPromise<ContactRetrieveResponse> {
     const { 'x-profile-id': xProfileID } = params ?? {};
     return this._client.get(path`/v3/contacts/${id}`, {
       ...options,
@@ -69,7 +67,7 @@ export class Contacts extends APIResource {
    *
    * @example
    * ```ts
-   * const apiResponseOfContact = await client.contacts.update(
+   * const contact = await client.contacts.update(
    *   '6ba7b810-9dad-11d1-80b4-00c04fd430c8',
    * );
    * ```
@@ -78,7 +76,7 @@ export class Contacts extends APIResource {
     id: string,
     params: ContactUpdateParams,
     options?: RequestOptions,
-  ): APIPromise<APIResponseOfContact> {
+  ): APIPromise<ContactUpdateResponse> {
     const { 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
     return this._client.patch(path`/v3/contacts/${id}`, {
       body,
@@ -144,21 +142,21 @@ export class Contacts extends APIResource {
 /**
  * Standard API response envelope for all v3 endpoints
  */
-export interface APIResponseOfContact {
+export interface ContactCreateResponse {
   /**
    * Contact response for v3 API Uses snake_case for JSON property names
    */
-  data?: ContactResponse | null;
+  data?: ContactCreateResponse.Data | null;
 
   /**
    * Error information
    */
-  error?: WebhooksAPI.ErrorDetail | null;
+  error?: ContactCreateResponse.Error | null;
 
   /**
    * Request and response metadata
    */
-  meta?: WebhooksAPI.APIMeta;
+  meta?: ContactCreateResponse.Meta;
 
   /**
    * Indicates whether the request was successful
@@ -166,87 +164,423 @@ export interface APIResponseOfContact {
   success?: boolean;
 }
 
+export namespace ContactCreateResponse {
+  /**
+   * Contact response for v3 API Uses snake_case for JSON property names
+   */
+  export interface Data {
+    /**
+     * Unique identifier for the contact
+     */
+    id?: string;
+
+    /**
+     * Comma-separated list of available messaging channels (e.g., "sms,whatsapp")
+     */
+    available_channels?: string;
+
+    /**
+     * Country calling code (e.g., 1 for US/Canada)
+     */
+    country_code?: string;
+
+    /**
+     * When the contact was created
+     */
+    created_at?: string;
+
+    /**
+     * Default messaging channel to use (e.g., "sms" or "whatsapp")
+     */
+    default_channel?: string;
+
+    /**
+     * Phone number in E.164 format (e.g., +1234567890)
+     */
+    format_e164?: string;
+
+    /**
+     * Phone number in international format (e.g., +1 234-567-890)
+     */
+    format_international?: string;
+
+    /**
+     * Phone number in national format (e.g., (234) 567-890)
+     */
+    format_national?: string;
+
+    /**
+     * Phone number in RFC 3966 format (e.g., tel:+1-234-567-890)
+     */
+    format_rfc?: string;
+
+    /**
+     * Whether this is an inherited contact (read-only)
+     */
+    is_inherited?: boolean;
+
+    /**
+     * Whether the contact has opted out of messaging. Single source of truth — opt-out
+     * is per-contact, not per-channel.
+     */
+    opt_out?: boolean;
+
+    /**
+     * Phone number in original format
+     */
+    phone_number?: string;
+
+    /**
+     * ISO 3166-1 alpha-2 country code (e.g., US, CA, GB)
+     */
+    region_code?: string;
+
+    /**
+     * When the contact was last updated
+     */
+    updated_at?: string | null;
+  }
+
+  /**
+   * Error information
+   */
+  export interface Error {
+    /**
+     * Machine-readable error code (e.g., "RESOURCE_001")
+     */
+    code?: string;
+
+    /**
+     * Additional validation error details (field-level errors)
+     */
+    details?: { [key: string]: Array<string> } | null;
+
+    /**
+     * URL to documentation about this error
+     */
+    doc_url?: string | null;
+
+    /**
+     * Human-readable error message
+     */
+    message?: string;
+  }
+
+  /**
+   * Request and response metadata
+   */
+  export interface Meta {
+    /**
+     * Unique identifier for this request (for tracing and support)
+     */
+    request_id?: string;
+
+    /**
+     * Server timestamp when the response was generated
+     */
+    timestamp?: string;
+
+    /**
+     * API version used for this request
+     */
+    version?: string;
+  }
+}
+
 /**
- * Contact response for v3 API Uses snake_case for JSON property names
+ * Standard API response envelope for all v3 endpoints
  */
-export interface ContactResponse {
+export interface ContactRetrieveResponse {
   /**
-   * Unique identifier for the contact
+   * Contact response for v3 API Uses snake_case for JSON property names
    */
-  id?: string;
+  data?: ContactRetrieveResponse.Data | null;
 
   /**
-   * Comma-separated list of available messaging channels (e.g., "sms,whatsapp")
+   * Error information
    */
-  available_channels?: string;
+  error?: ContactRetrieveResponse.Error | null;
 
   /**
-   * Consent status by channel. Keys: "sms", "whatsapp". Values: "opted_in",
-   * "opted_out". All channels will have the same status because consent is global
-   * across channels. A STOP on any channel opts out of all channels; a START opts in
-   * to all.
+   * Request and response metadata
    */
-  channel_consent?: { [key: string]: string } | null;
+  meta?: ContactRetrieveResponse.Meta;
 
   /**
-   * Country calling code (e.g., 1 for US/Canada)
+   * Indicates whether the request was successful
    */
-  country_code?: string;
+  success?: boolean;
+}
+
+export namespace ContactRetrieveResponse {
+  /**
+   * Contact response for v3 API Uses snake_case for JSON property names
+   */
+  export interface Data {
+    /**
+     * Unique identifier for the contact
+     */
+    id?: string;
+
+    /**
+     * Comma-separated list of available messaging channels (e.g., "sms,whatsapp")
+     */
+    available_channels?: string;
+
+    /**
+     * Country calling code (e.g., 1 for US/Canada)
+     */
+    country_code?: string;
+
+    /**
+     * When the contact was created
+     */
+    created_at?: string;
+
+    /**
+     * Default messaging channel to use (e.g., "sms" or "whatsapp")
+     */
+    default_channel?: string;
+
+    /**
+     * Phone number in E.164 format (e.g., +1234567890)
+     */
+    format_e164?: string;
+
+    /**
+     * Phone number in international format (e.g., +1 234-567-890)
+     */
+    format_international?: string;
+
+    /**
+     * Phone number in national format (e.g., (234) 567-890)
+     */
+    format_national?: string;
+
+    /**
+     * Phone number in RFC 3966 format (e.g., tel:+1-234-567-890)
+     */
+    format_rfc?: string;
+
+    /**
+     * Whether this is an inherited contact (read-only)
+     */
+    is_inherited?: boolean;
+
+    /**
+     * Whether the contact has opted out of messaging. Single source of truth — opt-out
+     * is per-contact, not per-channel.
+     */
+    opt_out?: boolean;
+
+    /**
+     * Phone number in original format
+     */
+    phone_number?: string;
+
+    /**
+     * ISO 3166-1 alpha-2 country code (e.g., US, CA, GB)
+     */
+    region_code?: string;
+
+    /**
+     * When the contact was last updated
+     */
+    updated_at?: string | null;
+  }
 
   /**
-   * When the contact was created
+   * Error information
    */
-  created_at?: string;
+  export interface Error {
+    /**
+     * Machine-readable error code (e.g., "RESOURCE_001")
+     */
+    code?: string;
+
+    /**
+     * Additional validation error details (field-level errors)
+     */
+    details?: { [key: string]: Array<string> } | null;
+
+    /**
+     * URL to documentation about this error
+     */
+    doc_url?: string | null;
+
+    /**
+     * Human-readable error message
+     */
+    message?: string;
+  }
 
   /**
-   * Default messaging channel to use (e.g., "sms" or "whatsapp")
+   * Request and response metadata
    */
-  default_channel?: string;
+  export interface Meta {
+    /**
+     * Unique identifier for this request (for tracing and support)
+     */
+    request_id?: string;
+
+    /**
+     * Server timestamp when the response was generated
+     */
+    timestamp?: string;
+
+    /**
+     * API version used for this request
+     */
+    version?: string;
+  }
+}
+
+/**
+ * Standard API response envelope for all v3 endpoints
+ */
+export interface ContactUpdateResponse {
+  /**
+   * Contact response for v3 API Uses snake_case for JSON property names
+   */
+  data?: ContactUpdateResponse.Data | null;
 
   /**
-   * Phone number in E.164 format (e.g., +1234567890)
+   * Error information
    */
-  format_e164?: string;
+  error?: ContactUpdateResponse.Error | null;
 
   /**
-   * Phone number in international format (e.g., +1 234-567-890)
+   * Request and response metadata
    */
-  format_international?: string;
+  meta?: ContactUpdateResponse.Meta;
 
   /**
-   * Phone number in national format (e.g., (234) 567-890)
+   * Indicates whether the request was successful
    */
-  format_national?: string;
+  success?: boolean;
+}
+
+export namespace ContactUpdateResponse {
+  /**
+   * Contact response for v3 API Uses snake_case for JSON property names
+   */
+  export interface Data {
+    /**
+     * Unique identifier for the contact
+     */
+    id?: string;
+
+    /**
+     * Comma-separated list of available messaging channels (e.g., "sms,whatsapp")
+     */
+    available_channels?: string;
+
+    /**
+     * Country calling code (e.g., 1 for US/Canada)
+     */
+    country_code?: string;
+
+    /**
+     * When the contact was created
+     */
+    created_at?: string;
+
+    /**
+     * Default messaging channel to use (e.g., "sms" or "whatsapp")
+     */
+    default_channel?: string;
+
+    /**
+     * Phone number in E.164 format (e.g., +1234567890)
+     */
+    format_e164?: string;
+
+    /**
+     * Phone number in international format (e.g., +1 234-567-890)
+     */
+    format_international?: string;
+
+    /**
+     * Phone number in national format (e.g., (234) 567-890)
+     */
+    format_national?: string;
+
+    /**
+     * Phone number in RFC 3966 format (e.g., tel:+1-234-567-890)
+     */
+    format_rfc?: string;
+
+    /**
+     * Whether this is an inherited contact (read-only)
+     */
+    is_inherited?: boolean;
+
+    /**
+     * Whether the contact has opted out of messaging. Single source of truth — opt-out
+     * is per-contact, not per-channel.
+     */
+    opt_out?: boolean;
+
+    /**
+     * Phone number in original format
+     */
+    phone_number?: string;
+
+    /**
+     * ISO 3166-1 alpha-2 country code (e.g., US, CA, GB)
+     */
+    region_code?: string;
+
+    /**
+     * When the contact was last updated
+     */
+    updated_at?: string | null;
+  }
 
   /**
-   * Phone number in RFC 3966 format (e.g., tel:+1-234-567-890)
+   * Error information
    */
-  format_rfc?: string;
+  export interface Error {
+    /**
+     * Machine-readable error code (e.g., "RESOURCE_001")
+     */
+    code?: string;
+
+    /**
+     * Additional validation error details (field-level errors)
+     */
+    details?: { [key: string]: Array<string> } | null;
+
+    /**
+     * URL to documentation about this error
+     */
+    doc_url?: string | null;
+
+    /**
+     * Human-readable error message
+     */
+    message?: string;
+  }
 
   /**
-   * Whether this is an inherited contact (read-only)
+   * Request and response metadata
    */
-  is_inherited?: boolean;
+  export interface Meta {
+    /**
+     * Unique identifier for this request (for tracing and support)
+     */
+    request_id?: string;
 
-  /**
-   * Whether the contact has opted out of messaging
-   */
-  opt_out?: boolean;
+    /**
+     * Server timestamp when the response was generated
+     */
+    timestamp?: string;
 
-  /**
-   * Phone number in original format
-   */
-  phone_number?: string;
-
-  /**
-   * ISO 3166-1 alpha-2 country code (e.g., US, CA, GB)
-   */
-  region_code?: string;
-
-  /**
-   * When the contact was last updated
-   */
-  updated_at?: string | null;
+    /**
+     * API version used for this request
+     */
+    version?: string;
+  }
 }
 
 /**
@@ -261,12 +595,12 @@ export interface ContactListResponse {
   /**
    * Error information
    */
-  error?: WebhooksAPI.ErrorDetail | null;
+  error?: ContactListResponse.Error | null;
 
   /**
    * Request and response metadata
    */
-  meta?: WebhooksAPI.APIMeta;
+  meta?: ContactListResponse.Meta;
 
   /**
    * Indicates whether the request was successful
@@ -282,12 +616,187 @@ export namespace ContactListResponse {
     /**
      * List of contacts
      */
-    contacts?: Array<ContactsAPI.ContactResponse>;
+    contacts?: Array<Data.Contact>;
 
     /**
      * Pagination metadata for list responses
      */
-    pagination?: WebhooksAPI.PaginationMeta;
+    pagination?: Data.Pagination;
+  }
+
+  export namespace Data {
+    /**
+     * Contact response for v3 API Uses snake_case for JSON property names
+     */
+    export interface Contact {
+      /**
+       * Unique identifier for the contact
+       */
+      id?: string;
+
+      /**
+       * Comma-separated list of available messaging channels (e.g., "sms,whatsapp")
+       */
+      available_channels?: string;
+
+      /**
+       * Country calling code (e.g., 1 for US/Canada)
+       */
+      country_code?: string;
+
+      /**
+       * When the contact was created
+       */
+      created_at?: string;
+
+      /**
+       * Default messaging channel to use (e.g., "sms" or "whatsapp")
+       */
+      default_channel?: string;
+
+      /**
+       * Phone number in E.164 format (e.g., +1234567890)
+       */
+      format_e164?: string;
+
+      /**
+       * Phone number in international format (e.g., +1 234-567-890)
+       */
+      format_international?: string;
+
+      /**
+       * Phone number in national format (e.g., (234) 567-890)
+       */
+      format_national?: string;
+
+      /**
+       * Phone number in RFC 3966 format (e.g., tel:+1-234-567-890)
+       */
+      format_rfc?: string;
+
+      /**
+       * Whether this is an inherited contact (read-only)
+       */
+      is_inherited?: boolean;
+
+      /**
+       * Whether the contact has opted out of messaging. Single source of truth — opt-out
+       * is per-contact, not per-channel.
+       */
+      opt_out?: boolean;
+
+      /**
+       * Phone number in original format
+       */
+      phone_number?: string;
+
+      /**
+       * ISO 3166-1 alpha-2 country code (e.g., US, CA, GB)
+       */
+      region_code?: string;
+
+      /**
+       * When the contact was last updated
+       */
+      updated_at?: string | null;
+    }
+
+    /**
+     * Pagination metadata for list responses
+     */
+    export interface Pagination {
+      /**
+       * Cursor-based pagination pointers
+       */
+      cursors?: Pagination.Cursors | null;
+
+      /**
+       * Whether there are more pages after this one
+       */
+      has_more?: boolean;
+
+      /**
+       * Current page number (1-indexed)
+       */
+      page?: number;
+
+      /**
+       * Number of items per page
+       */
+      page_size?: number;
+
+      /**
+       * Total number of items across all pages
+       */
+      total_count?: number;
+
+      /**
+       * Total number of pages
+       */
+      total_pages?: number;
+    }
+
+    export namespace Pagination {
+      /**
+       * Cursor-based pagination pointers
+       */
+      export interface Cursors {
+        /**
+         * Cursor to fetch the next page
+         */
+        after?: string | null;
+
+        /**
+         * Cursor to fetch the previous page
+         */
+        before?: string | null;
+      }
+    }
+  }
+
+  /**
+   * Error information
+   */
+  export interface Error {
+    /**
+     * Machine-readable error code (e.g., "RESOURCE_001")
+     */
+    code?: string;
+
+    /**
+     * Additional validation error details (field-level errors)
+     */
+    details?: { [key: string]: Array<string> } | null;
+
+    /**
+     * URL to documentation about this error
+     */
+    doc_url?: string | null;
+
+    /**
+     * Human-readable error message
+     */
+    message?: string;
+  }
+
+  /**
+   * Request and response metadata
+   */
+  export interface Meta {
+    /**
+     * Unique identifier for this request (for tracing and support)
+     */
+    request_id?: string;
+
+    /**
+     * Server timestamp when the response was generated
+     */
+    timestamp?: string;
+
+    /**
+     * API version used for this request
+     */
+    version?: string;
   }
 }
 
@@ -328,22 +837,13 @@ export interface ContactRetrieveParams {
 
 export interface ContactUpdateParams {
   /**
-   * Body param: Consent status by channel. Keys: "sms", "whatsapp". Values:
-   * "opted_in", "opted_out". All entries must have the same status — mixed values
-   * (e.g., sms: opted_out + whatsapp: opted_in) are rejected with 400. The provided
-   * status is applied to ALL channels regardless of which keys are specified,
-   * because consent is global across channels. When provided, takes precedence over
-   * the opt_out field.
-   */
-  channel_consent?: { [key: string]: string } | null;
-
-  /**
    * Body param: Default messaging channel: "sms" or "whatsapp"
    */
   default_channel?: string | null;
 
   /**
-   * Body param: Whether the contact has opted out of messaging
+   * Body param: Whether the contact has opted out of messaging. Single source of
+   * truth — opt-out is per-contact, not per-channel.
    */
   opt_out?: boolean | null;
 
@@ -419,8 +919,9 @@ export interface ContactDeleteParams {
 
 export declare namespace Contacts {
   export {
-    type APIResponseOfContact as APIResponseOfContact,
-    type ContactResponse as ContactResponse,
+    type ContactCreateResponse as ContactCreateResponse,
+    type ContactRetrieveResponse as ContactRetrieveResponse,
+    type ContactUpdateResponse as ContactUpdateResponse,
     type ContactListResponse as ContactListResponse,
     type ContactCreateParams as ContactCreateParams,
     type ContactRetrieveParams as ContactRetrieveParams,

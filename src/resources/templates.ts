@@ -1,6 +1,8 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../core/resource';
+import * as TemplatesAPI from './templates';
+import * as WebhooksAPI from './webhooks';
 import { APIPromise } from '../core/api-promise';
 import { buildHeaders } from '../internal/headers';
 import { RequestOptions } from '../internal/request-options';
@@ -17,10 +19,10 @@ export class Templates extends APIResource {
    *
    * @example
    * ```ts
-   * const template = await client.templates.create();
+   * const apiResponseTemplate = await client.templates.create();
    * ```
    */
-  create(params: TemplateCreateParams, options?: RequestOptions): APIPromise<TemplateCreateResponse> {
+  create(params: TemplateCreateParams, options?: RequestOptions): APIPromise<APIResponseTemplate> {
     const { 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
     return this._client.post('/v3/templates', {
       body,
@@ -41,7 +43,7 @@ export class Templates extends APIResource {
    *
    * @example
    * ```ts
-   * const template = await client.templates.retrieve(
+   * const apiResponseTemplate = await client.templates.retrieve(
    *   '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
    * );
    * ```
@@ -50,7 +52,7 @@ export class Templates extends APIResource {
     id: string,
     params: TemplateRetrieveParams | null | undefined = {},
     options?: RequestOptions,
-  ): APIPromise<TemplateRetrieveResponse> {
+  ): APIPromise<APIResponseTemplate> {
     const { 'x-profile-id': xProfileID } = params ?? {};
     return this._client.get(path`/v3/templates/${id}`, {
       ...options,
@@ -67,7 +69,7 @@ export class Templates extends APIResource {
    *
    * @example
    * ```ts
-   * const template = await client.templates.update(
+   * const apiResponseTemplate = await client.templates.update(
    *   '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
    * );
    * ```
@@ -76,7 +78,7 @@ export class Templates extends APIResource {
     id: string,
     params: TemplateUpdateParams,
     options?: RequestOptions,
-  ): APIPromise<TemplateUpdateResponse> {
+  ): APIPromise<APIResponseTemplate> {
     const { 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
     return this._client.put(path`/v3/templates/${id}`, {
       body,
@@ -142,381 +144,283 @@ export class Templates extends APIResource {
 /**
  * Standard API response envelope for all v3 endpoints
  */
-export interface TemplateCreateResponse {
+export interface APIResponseTemplate {
   /**
    * Template response for v3 API
    */
-  data?: TemplateCreateResponse.Data | null;
+  data?: Template | null;
 
   /**
    * Error information
    */
-  error?: TemplateCreateResponse.Error | null;
+  error?: WebhooksAPI.ErrorDetail | null;
 
   /**
    * Request and response metadata
    */
-  meta?: TemplateCreateResponse.Meta;
+  meta?: WebhooksAPI.APIMeta;
 
   /**
    * Indicates whether the request was successful
    */
   success?: boolean;
-}
-
-export namespace TemplateCreateResponse {
-  /**
-   * Template response for v3 API
-   */
-  export interface Data {
-    /**
-     * Unique template identifier
-     */
-    id?: string;
-
-    /**
-     * Template category: MARKETING, UTILITY, AUTHENTICATION
-     */
-    category?: string;
-
-    /**
-     * Supported channels: sms, whatsapp
-     */
-    channels?: Array<string> | null;
-
-    /**
-     * When the template was created
-     */
-    created_at?: string;
-
-    /**
-     * Whether the template is published and active
-     */
-    is_published?: boolean;
-
-    /**
-     * Template language code (e.g., en_US)
-     */
-    language?: string;
-
-    /**
-     * Template display name
-     */
-    name?: string;
-
-    /**
-     * Template status: APPROVED, PENDING, REJECTED
-     */
-    status?: string;
-
-    /**
-     * When the template was last updated
-     */
-    updated_at?: string | null;
-
-    /**
-     * Template variables for personalization
-     */
-    variables?: Array<string> | null;
-  }
-
-  /**
-   * Error information
-   */
-  export interface Error {
-    /**
-     * Machine-readable error code (e.g., "RESOURCE_001")
-     */
-    code?: string;
-
-    /**
-     * Additional validation error details (field-level errors)
-     */
-    details?: { [key: string]: Array<string> } | null;
-
-    /**
-     * URL to documentation about this error
-     */
-    doc_url?: string | null;
-
-    /**
-     * Human-readable error message
-     */
-    message?: string;
-  }
-
-  /**
-   * Request and response metadata
-   */
-  export interface Meta {
-    /**
-     * Unique identifier for this request (for tracing and support)
-     */
-    request_id?: string;
-
-    /**
-     * Server timestamp when the response was generated
-     */
-    timestamp?: string;
-
-    /**
-     * API version used for this request
-     */
-    version?: string;
-  }
 }
 
 /**
- * Standard API response envelope for all v3 endpoints
+ * Configuration for AUTHENTICATION category templates
  */
-export interface TemplateRetrieveResponse {
+export interface SentDmServicesCommonContractsPocOsAuthenticationConfig {
   /**
-   * Template response for v3 API
+   * Whether to add the security recommendation text: "For your security, do not
+   * share this code."
    */
-  data?: TemplateRetrieveResponse.Data | null;
-
-  /**
-   * Error information
-   */
-  error?: TemplateRetrieveResponse.Error | null;
+  addSecurityRecommendation?: boolean;
 
   /**
-   * Request and response metadata
+   * Code expiration time in minutes (1-90). If set, adds footer: "This code expires
+   * in X minutes."
    */
-  meta?: TemplateRetrieveResponse.Meta;
-
-  /**
-   * Indicates whether the request was successful
-   */
-  success?: boolean;
-}
-
-export namespace TemplateRetrieveResponse {
-  /**
-   * Template response for v3 API
-   */
-  export interface Data {
-    /**
-     * Unique template identifier
-     */
-    id?: string;
-
-    /**
-     * Template category: MARKETING, UTILITY, AUTHENTICATION
-     */
-    category?: string;
-
-    /**
-     * Supported channels: sms, whatsapp
-     */
-    channels?: Array<string> | null;
-
-    /**
-     * When the template was created
-     */
-    created_at?: string;
-
-    /**
-     * Whether the template is published and active
-     */
-    is_published?: boolean;
-
-    /**
-     * Template language code (e.g., en_US)
-     */
-    language?: string;
-
-    /**
-     * Template display name
-     */
-    name?: string;
-
-    /**
-     * Template status: APPROVED, PENDING, REJECTED
-     */
-    status?: string;
-
-    /**
-     * When the template was last updated
-     */
-    updated_at?: string | null;
-
-    /**
-     * Template variables for personalization
-     */
-    variables?: Array<string> | null;
-  }
-
-  /**
-   * Error information
-   */
-  export interface Error {
-    /**
-     * Machine-readable error code (e.g., "RESOURCE_001")
-     */
-    code?: string;
-
-    /**
-     * Additional validation error details (field-level errors)
-     */
-    details?: { [key: string]: Array<string> } | null;
-
-    /**
-     * URL to documentation about this error
-     */
-    doc_url?: string | null;
-
-    /**
-     * Human-readable error message
-     */
-    message?: string;
-  }
-
-  /**
-   * Request and response metadata
-   */
-  export interface Meta {
-    /**
-     * Unique identifier for this request (for tracing and support)
-     */
-    request_id?: string;
-
-    /**
-     * Server timestamp when the response was generated
-     */
-    timestamp?: string;
-
-    /**
-     * API version used for this request
-     */
-    version?: string;
-  }
+  codeExpirationMinutes?: number | null;
 }
 
 /**
- * Standard API response envelope for all v3 endpoints
+ * Body section of a message template with channel-specific content
  */
-export interface TemplateUpdateResponse {
+export interface SentDmServicesCommonContractsPocOsTemplateBody {
   /**
-   * Template response for v3 API
+   * Content that will be used for all channels (SMS and WhatsApp) unless
+   * channel-specific content is provided
    */
-  data?: TemplateUpdateResponse.Data | null;
+  multiChannel?: TemplateBodyContent | null;
 
   /**
-   * Error information
+   * RCS-specific content that overrides multi-channel content for RCS messages
    */
-  error?: TemplateUpdateResponse.Error | null;
+  rcs?: TemplateBodyContent | null;
 
   /**
-   * Request and response metadata
+   * SMS-specific content that overrides multi-channel content for SMS messages
    */
-  meta?: TemplateUpdateResponse.Meta;
+  sms?: TemplateBodyContent | null;
 
   /**
-   * Indicates whether the request was successful
+   * WhatsApp-specific content that overrides multi-channel content for WhatsApp
+   * messages
    */
-  success?: boolean;
+  whatsapp?: TemplateBodyContent | null;
 }
 
-export namespace TemplateUpdateResponse {
+/**
+ * Interactive button in a message template
+ */
+export interface SentDmServicesCommonContractsPocOsTemplateButton {
   /**
-   * Template response for v3 API
+   * Properties specific to the button type
    */
-  export interface Data {
-    /**
-     * Unique template identifier
-     */
-    id?: string;
-
-    /**
-     * Template category: MARKETING, UTILITY, AUTHENTICATION
-     */
-    category?: string;
-
-    /**
-     * Supported channels: sms, whatsapp
-     */
-    channels?: Array<string> | null;
-
-    /**
-     * When the template was created
-     */
-    created_at?: string;
-
-    /**
-     * Whether the template is published and active
-     */
-    is_published?: boolean;
-
-    /**
-     * Template language code (e.g., en_US)
-     */
-    language?: string;
-
-    /**
-     * Template display name
-     */
-    name?: string;
-
-    /**
-     * Template status: APPROVED, PENDING, REJECTED
-     */
-    status?: string;
-
-    /**
-     * When the template was last updated
-     */
-    updated_at?: string | null;
-
-    /**
-     * Template variables for personalization
-     */
-    variables?: Array<string> | null;
-  }
+  props: SentDmServicesCommonContractsPocOsTemplateButtonProps;
 
   /**
-   * Error information
+   * The type of button (e.g., QUICK_REPLY, URL, PHONE_NUMBER, VOICE_CALL, COPY_CODE)
    */
-  export interface Error {
-    /**
-     * Machine-readable error code (e.g., "RESOURCE_001")
-     */
-    code?: string;
-
-    /**
-     * Additional validation error details (field-level errors)
-     */
-    details?: { [key: string]: Array<string> } | null;
-
-    /**
-     * URL to documentation about this error
-     */
-    doc_url?: string | null;
-
-    /**
-     * Human-readable error message
-     */
-    message?: string;
-  }
+  type: string;
 
   /**
-   * Request and response metadata
+   * The unique identifier of the button (1-based index)
    */
-  export interface Meta {
-    /**
-     * Unique identifier for this request (for tracing and support)
-     */
-    request_id?: string;
+  id?: number;
+}
 
-    /**
-     * Server timestamp when the response was generated
-     */
-    timestamp?: string;
+export interface SentDmServicesCommonContractsPocOsTemplateButtonProps {
+  activeFor: number;
 
-    /**
-     * API version used for this request
-     */
-    version?: string;
+  countryCode: string;
+
+  offerCode: string;
+
+  phoneNumber: string;
+
+  quickReplyType: string;
+
+  text: string;
+
+  url: string;
+
+  urlType: string;
+
+  autofillText?: string | null;
+
+  otpType?: string | null;
+
+  packageName?: string | null;
+
+  signatureHash?: string | null;
+}
+
+/**
+ * Footer section of a message template
+ */
+export interface SentDmServicesCommonContractsPocOsTemplateFooter {
+  /**
+   * The footer template text with optional variable placeholders
+   */
+  template: string;
+
+  /**
+   * The type of footer (typically "text")
+   */
+  type?: string | null;
+
+  /**
+   * List of variables used in the footer template
+   */
+  variables?: Array<TemplateVariable> | null;
+}
+
+/**
+ * Header section of a message template
+ */
+export interface SentDmServicesCommonContractsPocOsTemplateHeader {
+  /**
+   * The header template text with optional variable placeholders (e.g., "Welcome to
+   * {{0:variable}}")
+   */
+  template: string;
+
+  /**
+   * The type of header (e.g., "text", "image", "video", "document")
+   */
+  type?: string | null;
+
+  /**
+   * List of variables used in the header template
+   */
+  variables?: Array<TemplateVariable> | null;
+}
+
+/**
+ * Template response for v3 API
+ */
+export interface Template {
+  /**
+   * Unique template identifier
+   */
+  id?: string;
+
+  /**
+   * Template category: MARKETING, UTILITY, AUTHENTICATION
+   */
+  category?: string;
+
+  /**
+   * Supported channels: sms, whatsapp
+   */
+  channels?: Array<string> | null;
+
+  /**
+   * When the template was created
+   */
+  created_at?: string;
+
+  /**
+   * Whether the template is published and active
+   */
+  is_published?: boolean;
+
+  /**
+   * Template language code (e.g., en_US)
+   */
+  language?: string;
+
+  /**
+   * Template display name
+   */
+  name?: string;
+
+  /**
+   * Template status: APPROVED, PENDING, REJECTED
+   */
+  status?: string;
+
+  /**
+   * When the template was last updated
+   */
+  updated_at?: string | null;
+
+  /**
+   * Template variables for personalization
+   */
+  variables?: Array<string> | null;
+}
+
+export interface TemplateBodyContent {
+  template: string;
+
+  type?: string | null;
+
+  variables?: Array<TemplateVariable> | null;
+}
+
+/**
+ * Complete definition of a message template including header, body, footer, and
+ * buttons
+ */
+export interface TemplateDefinition {
+  /**
+   * Body section of a message template with channel-specific content
+   */
+  body: SentDmServicesCommonContractsPocOsTemplateBody;
+
+  /**
+   * Configuration for AUTHENTICATION category templates
+   */
+  authenticationConfig?: SentDmServicesCommonContractsPocOsAuthenticationConfig | null;
+
+  /**
+   * Optional list of interactive buttons (e.g., quick replies, URLs, phone numbers)
+   */
+  buttons?: Array<SentDmServicesCommonContractsPocOsTemplateButton> | null;
+
+  /**
+   * The version of the template definition format
+   */
+  definitionVersion?: string | null;
+
+  /**
+   * Footer section of a message template
+   */
+  footer?: SentDmServicesCommonContractsPocOsTemplateFooter | null;
+
+  /**
+   * Header section of a message template
+   */
+  header?: SentDmServicesCommonContractsPocOsTemplateHeader | null;
+}
+
+export interface TemplateVariable {
+  name: string;
+
+  props: TemplateVariable.Props;
+
+  type: string;
+
+  id?: number;
+}
+
+export namespace TemplateVariable {
+  export interface Props {
+    mediaType: string;
+
+    sample: string;
+
+    url: string;
+
+    variableType: string;
+
+    alt?: string | null;
+
+    regex?: string | null;
+
+    shortUrl?: string | null;
   }
 }
 
@@ -532,12 +436,12 @@ export interface TemplateListResponse {
   /**
    * Error information
    */
-  error?: TemplateListResponse.Error | null;
+  error?: WebhooksAPI.ErrorDetail | null;
 
   /**
    * Request and response metadata
    */
-  meta?: TemplateListResponse.Meta;
+  meta?: WebhooksAPI.APIMeta;
 
   /**
    * Indicates whether the request was successful
@@ -553,166 +457,12 @@ export namespace TemplateListResponse {
     /**
      * Pagination metadata for list responses
      */
-    pagination?: Data.Pagination;
+    pagination?: WebhooksAPI.PaginationMeta;
 
     /**
      * List of templates
      */
-    templates?: Array<Data.Template>;
-  }
-
-  export namespace Data {
-    /**
-     * Pagination metadata for list responses
-     */
-    export interface Pagination {
-      /**
-       * Cursor-based pagination pointers
-       */
-      cursors?: Pagination.Cursors | null;
-
-      /**
-       * Whether there are more pages after this one
-       */
-      has_more?: boolean;
-
-      /**
-       * Current page number (1-indexed)
-       */
-      page?: number;
-
-      /**
-       * Number of items per page
-       */
-      page_size?: number;
-
-      /**
-       * Total number of items across all pages
-       */
-      total_count?: number;
-
-      /**
-       * Total number of pages
-       */
-      total_pages?: number;
-    }
-
-    export namespace Pagination {
-      /**
-       * Cursor-based pagination pointers
-       */
-      export interface Cursors {
-        /**
-         * Cursor to fetch the next page
-         */
-        after?: string | null;
-
-        /**
-         * Cursor to fetch the previous page
-         */
-        before?: string | null;
-      }
-    }
-
-    /**
-     * Template response for v3 API
-     */
-    export interface Template {
-      /**
-       * Unique template identifier
-       */
-      id?: string;
-
-      /**
-       * Template category: MARKETING, UTILITY, AUTHENTICATION
-       */
-      category?: string;
-
-      /**
-       * Supported channels: sms, whatsapp
-       */
-      channels?: Array<string> | null;
-
-      /**
-       * When the template was created
-       */
-      created_at?: string;
-
-      /**
-       * Whether the template is published and active
-       */
-      is_published?: boolean;
-
-      /**
-       * Template language code (e.g., en_US)
-       */
-      language?: string;
-
-      /**
-       * Template display name
-       */
-      name?: string;
-
-      /**
-       * Template status: APPROVED, PENDING, REJECTED
-       */
-      status?: string;
-
-      /**
-       * When the template was last updated
-       */
-      updated_at?: string | null;
-
-      /**
-       * Template variables for personalization
-       */
-      variables?: Array<string> | null;
-    }
-  }
-
-  /**
-   * Error information
-   */
-  export interface Error {
-    /**
-     * Machine-readable error code (e.g., "RESOURCE_001")
-     */
-    code?: string;
-
-    /**
-     * Additional validation error details (field-level errors)
-     */
-    details?: { [key: string]: Array<string> } | null;
-
-    /**
-     * URL to documentation about this error
-     */
-    doc_url?: string | null;
-
-    /**
-     * Human-readable error message
-     */
-    message?: string;
-  }
-
-  /**
-   * Request and response metadata
-   */
-  export interface Meta {
-    /**
-     * Unique identifier for this request (for tracing and support)
-     */
-    request_id?: string;
-
-    /**
-     * Server timestamp when the response was generated
-     */
-    timestamp?: string;
-
-    /**
-     * API version used for this request
-     */
-    version?: string;
+    templates?: Array<TemplatesAPI.Template>;
   }
 }
 
@@ -732,7 +482,7 @@ export interface TemplateCreateParams {
    * Body param: Complete definition of a message template including header, body,
    * footer, and buttons
    */
-  definition?: TemplateCreateParams.Definition;
+  definition?: TemplateDefinition;
 
   /**
    * Body param: Template language code (e.g., en_US) (optional, auto-detected if not
@@ -767,410 +517,6 @@ export interface TemplateCreateParams {
   'x-profile-id'?: string;
 }
 
-export namespace TemplateCreateParams {
-  /**
-   * Complete definition of a message template including header, body, footer, and
-   * buttons
-   */
-  export interface Definition {
-    /**
-     * Body section of a message template with channel-specific content
-     */
-    body: Definition.Body;
-
-    /**
-     * Configuration for AUTHENTICATION category templates
-     */
-    authenticationConfig?: Definition.AuthenticationConfig | null;
-
-    /**
-     * Optional list of interactive buttons (e.g., quick replies, URLs, phone numbers)
-     */
-    buttons?: Array<Definition.Button> | null;
-
-    /**
-     * The version of the template definition format
-     */
-    definitionVersion?: string | null;
-
-    /**
-     * Footer section of a message template
-     */
-    footer?: Definition.Footer | null;
-
-    /**
-     * Header section of a message template
-     */
-    header?: Definition.Header | null;
-  }
-
-  export namespace Definition {
-    /**
-     * Body section of a message template with channel-specific content
-     */
-    export interface Body {
-      /**
-       * Content that will be used for all channels (SMS and WhatsApp) unless
-       * channel-specific content is provided
-       */
-      multiChannel?: Body.MultiChannel | null;
-
-      /**
-       * RCS-specific content that overrides multi-channel content for RCS messages
-       */
-      rcs?: Body.Rcs | null;
-
-      /**
-       * SMS-specific content that overrides multi-channel content for SMS messages
-       */
-      sms?: Body.SMS | null;
-
-      /**
-       * WhatsApp-specific content that overrides multi-channel content for WhatsApp
-       * messages
-       */
-      whatsapp?: Body.Whatsapp | null;
-    }
-
-    export namespace Body {
-      /**
-       * Content that will be used for all channels (SMS and WhatsApp) unless
-       * channel-specific content is provided
-       */
-      export interface MultiChannel {
-        template: string;
-
-        type?: string | null;
-
-        variables?: Array<MultiChannel.Variable> | null;
-      }
-
-      export namespace MultiChannel {
-        export interface Variable {
-          name: string;
-
-          props: Variable.Props;
-
-          type: string;
-
-          id?: number;
-        }
-
-        export namespace Variable {
-          export interface Props {
-            mediaType: string;
-
-            sample: string;
-
-            url: string;
-
-            variableType: string;
-
-            alt?: string | null;
-
-            regex?: string | null;
-
-            shortUrl?: string | null;
-          }
-        }
-      }
-
-      /**
-       * RCS-specific content that overrides multi-channel content for RCS messages
-       */
-      export interface Rcs {
-        template: string;
-
-        type?: string | null;
-
-        variables?: Array<Rcs.Variable> | null;
-      }
-
-      export namespace Rcs {
-        export interface Variable {
-          name: string;
-
-          props: Variable.Props;
-
-          type: string;
-
-          id?: number;
-        }
-
-        export namespace Variable {
-          export interface Props {
-            mediaType: string;
-
-            sample: string;
-
-            url: string;
-
-            variableType: string;
-
-            alt?: string | null;
-
-            regex?: string | null;
-
-            shortUrl?: string | null;
-          }
-        }
-      }
-
-      /**
-       * SMS-specific content that overrides multi-channel content for SMS messages
-       */
-      export interface SMS {
-        template: string;
-
-        type?: string | null;
-
-        variables?: Array<SMS.Variable> | null;
-      }
-
-      export namespace SMS {
-        export interface Variable {
-          name: string;
-
-          props: Variable.Props;
-
-          type: string;
-
-          id?: number;
-        }
-
-        export namespace Variable {
-          export interface Props {
-            mediaType: string;
-
-            sample: string;
-
-            url: string;
-
-            variableType: string;
-
-            alt?: string | null;
-
-            regex?: string | null;
-
-            shortUrl?: string | null;
-          }
-        }
-      }
-
-      /**
-       * WhatsApp-specific content that overrides multi-channel content for WhatsApp
-       * messages
-       */
-      export interface Whatsapp {
-        template: string;
-
-        type?: string | null;
-
-        variables?: Array<Whatsapp.Variable> | null;
-      }
-
-      export namespace Whatsapp {
-        export interface Variable {
-          name: string;
-
-          props: Variable.Props;
-
-          type: string;
-
-          id?: number;
-        }
-
-        export namespace Variable {
-          export interface Props {
-            mediaType: string;
-
-            sample: string;
-
-            url: string;
-
-            variableType: string;
-
-            alt?: string | null;
-
-            regex?: string | null;
-
-            shortUrl?: string | null;
-          }
-        }
-      }
-    }
-
-    /**
-     * Configuration for AUTHENTICATION category templates
-     */
-    export interface AuthenticationConfig {
-      /**
-       * Whether to add the security recommendation text: "For your security, do not
-       * share this code."
-       */
-      addSecurityRecommendation?: boolean;
-
-      /**
-       * Code expiration time in minutes (1-90). If set, adds footer: "This code expires
-       * in X minutes."
-       */
-      codeExpirationMinutes?: number | null;
-    }
-
-    /**
-     * Interactive button in a message template
-     */
-    export interface Button {
-      /**
-       * Properties specific to the button type
-       */
-      props: Button.Props;
-
-      /**
-       * The type of button (e.g., QUICK_REPLY, URL, PHONE_NUMBER, VOICE_CALL, COPY_CODE)
-       */
-      type: string;
-
-      /**
-       * The unique identifier of the button (1-based index)
-       */
-      id?: number;
-    }
-
-    export namespace Button {
-      /**
-       * Properties specific to the button type
-       */
-      export interface Props {
-        activeFor: number;
-
-        countryCode: string;
-
-        offerCode: string;
-
-        phoneNumber: string;
-
-        quickReplyType: string;
-
-        text: string;
-
-        url: string;
-
-        urlType: string;
-
-        autofillText?: string | null;
-
-        otpType?: string | null;
-
-        packageName?: string | null;
-
-        signatureHash?: string | null;
-      }
-    }
-
-    /**
-     * Footer section of a message template
-     */
-    export interface Footer {
-      /**
-       * The footer template text with optional variable placeholders
-       */
-      template: string;
-
-      /**
-       * The type of footer (typically "text")
-       */
-      type?: string | null;
-
-      /**
-       * List of variables used in the footer template
-       */
-      variables?: Array<Footer.Variable> | null;
-    }
-
-    export namespace Footer {
-      export interface Variable {
-        name: string;
-
-        props: Variable.Props;
-
-        type: string;
-
-        id?: number;
-      }
-
-      export namespace Variable {
-        export interface Props {
-          mediaType: string;
-
-          sample: string;
-
-          url: string;
-
-          variableType: string;
-
-          alt?: string | null;
-
-          regex?: string | null;
-
-          shortUrl?: string | null;
-        }
-      }
-    }
-
-    /**
-     * Header section of a message template
-     */
-    export interface Header {
-      /**
-       * The header template text with optional variable placeholders (e.g., "Welcome to
-       * {{0:variable}}")
-       */
-      template: string;
-
-      /**
-       * The type of header (e.g., "text", "image", "video", "document")
-       */
-      type?: string | null;
-
-      /**
-       * List of variables used in the header template
-       */
-      variables?: Array<Header.Variable> | null;
-    }
-
-    export namespace Header {
-      export interface Variable {
-        name: string;
-
-        props: Variable.Props;
-
-        type: string;
-
-        id?: number;
-      }
-
-      export namespace Variable {
-        export interface Props {
-          mediaType: string;
-
-          sample: string;
-
-          url: string;
-
-          variableType: string;
-
-          alt?: string | null;
-
-          regex?: string | null;
-
-          shortUrl?: string | null;
-        }
-      }
-    }
-  }
-}
-
 export interface TemplateRetrieveParams {
   /**
    * Profile UUID to scope the request to a child profile. Only organization API keys
@@ -1189,7 +535,7 @@ export interface TemplateUpdateParams {
    * Body param: Complete definition of a message template including header, body,
    * footer, and buttons
    */
-  definition?: TemplateUpdateParams.Definition | null;
+  definition?: TemplateDefinition | null;
 
   /**
    * Body param: Template language code (e.g., en_US)
@@ -1226,410 +572,6 @@ export interface TemplateUpdateParams {
    * calling organization.
    */
   'x-profile-id'?: string;
-}
-
-export namespace TemplateUpdateParams {
-  /**
-   * Complete definition of a message template including header, body, footer, and
-   * buttons
-   */
-  export interface Definition {
-    /**
-     * Body section of a message template with channel-specific content
-     */
-    body: Definition.Body;
-
-    /**
-     * Configuration for AUTHENTICATION category templates
-     */
-    authenticationConfig?: Definition.AuthenticationConfig | null;
-
-    /**
-     * Optional list of interactive buttons (e.g., quick replies, URLs, phone numbers)
-     */
-    buttons?: Array<Definition.Button> | null;
-
-    /**
-     * The version of the template definition format
-     */
-    definitionVersion?: string | null;
-
-    /**
-     * Footer section of a message template
-     */
-    footer?: Definition.Footer | null;
-
-    /**
-     * Header section of a message template
-     */
-    header?: Definition.Header | null;
-  }
-
-  export namespace Definition {
-    /**
-     * Body section of a message template with channel-specific content
-     */
-    export interface Body {
-      /**
-       * Content that will be used for all channels (SMS and WhatsApp) unless
-       * channel-specific content is provided
-       */
-      multiChannel?: Body.MultiChannel | null;
-
-      /**
-       * RCS-specific content that overrides multi-channel content for RCS messages
-       */
-      rcs?: Body.Rcs | null;
-
-      /**
-       * SMS-specific content that overrides multi-channel content for SMS messages
-       */
-      sms?: Body.SMS | null;
-
-      /**
-       * WhatsApp-specific content that overrides multi-channel content for WhatsApp
-       * messages
-       */
-      whatsapp?: Body.Whatsapp | null;
-    }
-
-    export namespace Body {
-      /**
-       * Content that will be used for all channels (SMS and WhatsApp) unless
-       * channel-specific content is provided
-       */
-      export interface MultiChannel {
-        template: string;
-
-        type?: string | null;
-
-        variables?: Array<MultiChannel.Variable> | null;
-      }
-
-      export namespace MultiChannel {
-        export interface Variable {
-          name: string;
-
-          props: Variable.Props;
-
-          type: string;
-
-          id?: number;
-        }
-
-        export namespace Variable {
-          export interface Props {
-            mediaType: string;
-
-            sample: string;
-
-            url: string;
-
-            variableType: string;
-
-            alt?: string | null;
-
-            regex?: string | null;
-
-            shortUrl?: string | null;
-          }
-        }
-      }
-
-      /**
-       * RCS-specific content that overrides multi-channel content for RCS messages
-       */
-      export interface Rcs {
-        template: string;
-
-        type?: string | null;
-
-        variables?: Array<Rcs.Variable> | null;
-      }
-
-      export namespace Rcs {
-        export interface Variable {
-          name: string;
-
-          props: Variable.Props;
-
-          type: string;
-
-          id?: number;
-        }
-
-        export namespace Variable {
-          export interface Props {
-            mediaType: string;
-
-            sample: string;
-
-            url: string;
-
-            variableType: string;
-
-            alt?: string | null;
-
-            regex?: string | null;
-
-            shortUrl?: string | null;
-          }
-        }
-      }
-
-      /**
-       * SMS-specific content that overrides multi-channel content for SMS messages
-       */
-      export interface SMS {
-        template: string;
-
-        type?: string | null;
-
-        variables?: Array<SMS.Variable> | null;
-      }
-
-      export namespace SMS {
-        export interface Variable {
-          name: string;
-
-          props: Variable.Props;
-
-          type: string;
-
-          id?: number;
-        }
-
-        export namespace Variable {
-          export interface Props {
-            mediaType: string;
-
-            sample: string;
-
-            url: string;
-
-            variableType: string;
-
-            alt?: string | null;
-
-            regex?: string | null;
-
-            shortUrl?: string | null;
-          }
-        }
-      }
-
-      /**
-       * WhatsApp-specific content that overrides multi-channel content for WhatsApp
-       * messages
-       */
-      export interface Whatsapp {
-        template: string;
-
-        type?: string | null;
-
-        variables?: Array<Whatsapp.Variable> | null;
-      }
-
-      export namespace Whatsapp {
-        export interface Variable {
-          name: string;
-
-          props: Variable.Props;
-
-          type: string;
-
-          id?: number;
-        }
-
-        export namespace Variable {
-          export interface Props {
-            mediaType: string;
-
-            sample: string;
-
-            url: string;
-
-            variableType: string;
-
-            alt?: string | null;
-
-            regex?: string | null;
-
-            shortUrl?: string | null;
-          }
-        }
-      }
-    }
-
-    /**
-     * Configuration for AUTHENTICATION category templates
-     */
-    export interface AuthenticationConfig {
-      /**
-       * Whether to add the security recommendation text: "For your security, do not
-       * share this code."
-       */
-      addSecurityRecommendation?: boolean;
-
-      /**
-       * Code expiration time in minutes (1-90). If set, adds footer: "This code expires
-       * in X minutes."
-       */
-      codeExpirationMinutes?: number | null;
-    }
-
-    /**
-     * Interactive button in a message template
-     */
-    export interface Button {
-      /**
-       * Properties specific to the button type
-       */
-      props: Button.Props;
-
-      /**
-       * The type of button (e.g., QUICK_REPLY, URL, PHONE_NUMBER, VOICE_CALL, COPY_CODE)
-       */
-      type: string;
-
-      /**
-       * The unique identifier of the button (1-based index)
-       */
-      id?: number;
-    }
-
-    export namespace Button {
-      /**
-       * Properties specific to the button type
-       */
-      export interface Props {
-        activeFor: number;
-
-        countryCode: string;
-
-        offerCode: string;
-
-        phoneNumber: string;
-
-        quickReplyType: string;
-
-        text: string;
-
-        url: string;
-
-        urlType: string;
-
-        autofillText?: string | null;
-
-        otpType?: string | null;
-
-        packageName?: string | null;
-
-        signatureHash?: string | null;
-      }
-    }
-
-    /**
-     * Footer section of a message template
-     */
-    export interface Footer {
-      /**
-       * The footer template text with optional variable placeholders
-       */
-      template: string;
-
-      /**
-       * The type of footer (typically "text")
-       */
-      type?: string | null;
-
-      /**
-       * List of variables used in the footer template
-       */
-      variables?: Array<Footer.Variable> | null;
-    }
-
-    export namespace Footer {
-      export interface Variable {
-        name: string;
-
-        props: Variable.Props;
-
-        type: string;
-
-        id?: number;
-      }
-
-      export namespace Variable {
-        export interface Props {
-          mediaType: string;
-
-          sample: string;
-
-          url: string;
-
-          variableType: string;
-
-          alt?: string | null;
-
-          regex?: string | null;
-
-          shortUrl?: string | null;
-        }
-      }
-    }
-
-    /**
-     * Header section of a message template
-     */
-    export interface Header {
-      /**
-       * The header template text with optional variable placeholders (e.g., "Welcome to
-       * {{0:variable}}")
-       */
-      template: string;
-
-      /**
-       * The type of header (e.g., "text", "image", "video", "document")
-       */
-      type?: string | null;
-
-      /**
-       * List of variables used in the header template
-       */
-      variables?: Array<Header.Variable> | null;
-    }
-
-    export namespace Header {
-      export interface Variable {
-        name: string;
-
-        props: Variable.Props;
-
-        type: string;
-
-        id?: number;
-      }
-
-      export namespace Variable {
-        export interface Props {
-          mediaType: string;
-
-          sample: string;
-
-          url: string;
-
-          variableType: string;
-
-          alt?: string | null;
-
-          regex?: string | null;
-
-          shortUrl?: string | null;
-        }
-      }
-    }
-  }
 }
 
 export interface TemplateListParams {
@@ -1694,9 +636,17 @@ export interface TemplateDeleteParams {
 
 export declare namespace Templates {
   export {
-    type TemplateCreateResponse as TemplateCreateResponse,
-    type TemplateRetrieveResponse as TemplateRetrieveResponse,
-    type TemplateUpdateResponse as TemplateUpdateResponse,
+    type APIResponseTemplate as APIResponseTemplate,
+    type SentDmServicesCommonContractsPocOsAuthenticationConfig as SentDmServicesCommonContractsPocOsAuthenticationConfig,
+    type SentDmServicesCommonContractsPocOsTemplateBody as SentDmServicesCommonContractsPocOsTemplateBody,
+    type SentDmServicesCommonContractsPocOsTemplateButton as SentDmServicesCommonContractsPocOsTemplateButton,
+    type SentDmServicesCommonContractsPocOsTemplateButtonProps as SentDmServicesCommonContractsPocOsTemplateButtonProps,
+    type SentDmServicesCommonContractsPocOsTemplateFooter as SentDmServicesCommonContractsPocOsTemplateFooter,
+    type SentDmServicesCommonContractsPocOsTemplateHeader as SentDmServicesCommonContractsPocOsTemplateHeader,
+    type Template as Template,
+    type TemplateBodyContent as TemplateBodyContent,
+    type TemplateDefinition as TemplateDefinition,
+    type TemplateVariable as TemplateVariable,
     type TemplateListResponse as TemplateListResponse,
     type TemplateCreateParams as TemplateCreateParams,
     type TemplateRetrieveParams as TemplateRetrieveParams,

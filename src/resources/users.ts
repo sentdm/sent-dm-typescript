@@ -1,6 +1,8 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../core/resource';
+import * as UsersAPI from './users';
+import * as WebhooksAPI from './webhooks';
 import { APIPromise } from '../core/api-promise';
 import { buildHeaders } from '../internal/headers';
 import { RequestOptions } from '../internal/request-options';
@@ -16,14 +18,16 @@ export class Users extends APIResource {
    *
    * @example
    * ```ts
-   * const user = await client.users.retrieve('userId');
+   * const apiResponseOfUser = await client.users.retrieve(
+   *   'userId',
+   * );
    * ```
    */
   retrieve(
     userID: string,
     params: UserRetrieveParams | null | undefined = {},
     options?: RequestOptions,
-  ): APIPromise<UserRetrieveResponse> {
+  ): APIPromise<APIResponseOfUser> {
     const { 'x-profile-id': xProfileID } = params ?? {};
     return this._client.get(path`/v3/users/${userID}`, {
       ...options,
@@ -65,10 +69,10 @@ export class Users extends APIResource {
    *
    * @example
    * ```ts
-   * const response = await client.users.invite();
+   * const apiResponseOfUser = await client.users.invite();
    * ```
    */
-  invite(params: UserInviteParams, options?: RequestOptions): APIPromise<UserInviteResponse> {
+  invite(params: UserInviteParams, options?: RequestOptions): APIPromise<APIResponseOfUser> {
     const { 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
     return this._client.post('/v3/users', {
       body,
@@ -110,14 +114,16 @@ export class Users extends APIResource {
    *
    * @example
    * ```ts
-   * const response = await client.users.updateRole('userId');
+   * const apiResponseOfUser = await client.users.updateRole(
+   *   'userId',
+   * );
    * ```
    */
   updateRole(
     userID: string,
     params: UserUpdateRoleParams,
     options?: RequestOptions,
-  ): APIPromise<UserUpdateRoleResponse> {
+  ): APIPromise<APIResponseOfUser> {
     const { 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
     return this._client.patch(path`/v3/users/${userID}`, {
       body,
@@ -136,21 +142,21 @@ export class Users extends APIResource {
 /**
  * Standard API response envelope for all v3 endpoints
  */
-export interface UserRetrieveResponse {
+export interface APIResponseOfUser {
   /**
    * User response for v3 API
    */
-  data?: UserRetrieveResponse.Data | null;
+  data?: UserResponse | null;
 
   /**
    * Error information
    */
-  error?: UserRetrieveResponse.Error | null;
+  error?: WebhooksAPI.ErrorDetail | null;
 
   /**
    * Request and response metadata
    */
-  meta?: UserRetrieveResponse.Meta;
+  meta?: WebhooksAPI.APIMeta;
 
   /**
    * Indicates whether the request was successful
@@ -158,101 +164,54 @@ export interface UserRetrieveResponse {
   success?: boolean;
 }
 
-export namespace UserRetrieveResponse {
+/**
+ * User response for v3 API
+ */
+export interface UserResponse {
   /**
-   * User response for v3 API
+   * User unique identifier
    */
-  export interface Data {
-    /**
-     * User unique identifier
-     */
-    id?: string;
-
-    /**
-     * When the user was added to the organization
-     */
-    created_at?: string;
-
-    /**
-     * User email address
-     */
-    email?: string;
-
-    /**
-     * When the user was invited
-     */
-    invited_at?: string | null;
-
-    /**
-     * When the user last logged in
-     */
-    last_login_at?: string | null;
-
-    /**
-     * User full name
-     */
-    name?: string;
-
-    /**
-     * User role in the organization: admin, billing, developer
-     */
-    role?: string;
-
-    /**
-     * User status: active, invited, suspended, rejected
-     */
-    status?: string;
-
-    /**
-     * When the user record was last updated
-     */
-    updated_at?: string | null;
-  }
+  id?: string;
 
   /**
-   * Error information
+   * When the user was added to the organization
    */
-  export interface Error {
-    /**
-     * Machine-readable error code (e.g., "RESOURCE_001")
-     */
-    code?: string;
-
-    /**
-     * Additional validation error details (field-level errors)
-     */
-    details?: { [key: string]: Array<string> } | null;
-
-    /**
-     * URL to documentation about this error
-     */
-    doc_url?: string | null;
-
-    /**
-     * Human-readable error message
-     */
-    message?: string;
-  }
+  created_at?: string;
 
   /**
-   * Request and response metadata
+   * User email address
    */
-  export interface Meta {
-    /**
-     * Unique identifier for this request (for tracing and support)
-     */
-    request_id?: string;
+  email?: string;
 
-    /**
-     * Server timestamp when the response was generated
-     */
-    timestamp?: string;
+  /**
+   * When the user was invited
+   */
+  invited_at?: string | null;
 
-    /**
-     * API version used for this request
-     */
-    version?: string;
-  }
+  /**
+   * When the user last logged in
+   */
+  last_login_at?: string | null;
+
+  /**
+   * User full name
+   */
+  name?: string;
+
+  /**
+   * User role in the organization: admin, billing, developer
+   */
+  role?: string;
+
+  /**
+   * User status: active, invited, suspended, rejected
+   */
+  status?: string;
+
+  /**
+   * When the user record was last updated
+   */
+  updated_at?: string | null;
 }
 
 /**
@@ -267,12 +226,12 @@ export interface UserListResponse {
   /**
    * Error information
    */
-  error?: UserListResponse.Error | null;
+  error?: WebhooksAPI.ErrorDetail | null;
 
   /**
    * Request and response metadata
    */
-  meta?: UserListResponse.Meta;
+  meta?: WebhooksAPI.APIMeta;
 
   /**
    * Indicates whether the request was successful
@@ -288,348 +247,7 @@ export namespace UserListResponse {
     /**
      * List of users in the organization
      */
-    users?: Array<Data.User>;
-  }
-
-  export namespace Data {
-    /**
-     * User response for v3 API
-     */
-    export interface User {
-      /**
-       * User unique identifier
-       */
-      id?: string;
-
-      /**
-       * When the user was added to the organization
-       */
-      created_at?: string;
-
-      /**
-       * User email address
-       */
-      email?: string;
-
-      /**
-       * When the user was invited
-       */
-      invited_at?: string | null;
-
-      /**
-       * When the user last logged in
-       */
-      last_login_at?: string | null;
-
-      /**
-       * User full name
-       */
-      name?: string;
-
-      /**
-       * User role in the organization: admin, billing, developer
-       */
-      role?: string;
-
-      /**
-       * User status: active, invited, suspended, rejected
-       */
-      status?: string;
-
-      /**
-       * When the user record was last updated
-       */
-      updated_at?: string | null;
-    }
-  }
-
-  /**
-   * Error information
-   */
-  export interface Error {
-    /**
-     * Machine-readable error code (e.g., "RESOURCE_001")
-     */
-    code?: string;
-
-    /**
-     * Additional validation error details (field-level errors)
-     */
-    details?: { [key: string]: Array<string> } | null;
-
-    /**
-     * URL to documentation about this error
-     */
-    doc_url?: string | null;
-
-    /**
-     * Human-readable error message
-     */
-    message?: string;
-  }
-
-  /**
-   * Request and response metadata
-   */
-  export interface Meta {
-    /**
-     * Unique identifier for this request (for tracing and support)
-     */
-    request_id?: string;
-
-    /**
-     * Server timestamp when the response was generated
-     */
-    timestamp?: string;
-
-    /**
-     * API version used for this request
-     */
-    version?: string;
-  }
-}
-
-/**
- * Standard API response envelope for all v3 endpoints
- */
-export interface UserInviteResponse {
-  /**
-   * User response for v3 API
-   */
-  data?: UserInviteResponse.Data | null;
-
-  /**
-   * Error information
-   */
-  error?: UserInviteResponse.Error | null;
-
-  /**
-   * Request and response metadata
-   */
-  meta?: UserInviteResponse.Meta;
-
-  /**
-   * Indicates whether the request was successful
-   */
-  success?: boolean;
-}
-
-export namespace UserInviteResponse {
-  /**
-   * User response for v3 API
-   */
-  export interface Data {
-    /**
-     * User unique identifier
-     */
-    id?: string;
-
-    /**
-     * When the user was added to the organization
-     */
-    created_at?: string;
-
-    /**
-     * User email address
-     */
-    email?: string;
-
-    /**
-     * When the user was invited
-     */
-    invited_at?: string | null;
-
-    /**
-     * When the user last logged in
-     */
-    last_login_at?: string | null;
-
-    /**
-     * User full name
-     */
-    name?: string;
-
-    /**
-     * User role in the organization: admin, billing, developer
-     */
-    role?: string;
-
-    /**
-     * User status: active, invited, suspended, rejected
-     */
-    status?: string;
-
-    /**
-     * When the user record was last updated
-     */
-    updated_at?: string | null;
-  }
-
-  /**
-   * Error information
-   */
-  export interface Error {
-    /**
-     * Machine-readable error code (e.g., "RESOURCE_001")
-     */
-    code?: string;
-
-    /**
-     * Additional validation error details (field-level errors)
-     */
-    details?: { [key: string]: Array<string> } | null;
-
-    /**
-     * URL to documentation about this error
-     */
-    doc_url?: string | null;
-
-    /**
-     * Human-readable error message
-     */
-    message?: string;
-  }
-
-  /**
-   * Request and response metadata
-   */
-  export interface Meta {
-    /**
-     * Unique identifier for this request (for tracing and support)
-     */
-    request_id?: string;
-
-    /**
-     * Server timestamp when the response was generated
-     */
-    timestamp?: string;
-
-    /**
-     * API version used for this request
-     */
-    version?: string;
-  }
-}
-
-/**
- * Standard API response envelope for all v3 endpoints
- */
-export interface UserUpdateRoleResponse {
-  /**
-   * User response for v3 API
-   */
-  data?: UserUpdateRoleResponse.Data | null;
-
-  /**
-   * Error information
-   */
-  error?: UserUpdateRoleResponse.Error | null;
-
-  /**
-   * Request and response metadata
-   */
-  meta?: UserUpdateRoleResponse.Meta;
-
-  /**
-   * Indicates whether the request was successful
-   */
-  success?: boolean;
-}
-
-export namespace UserUpdateRoleResponse {
-  /**
-   * User response for v3 API
-   */
-  export interface Data {
-    /**
-     * User unique identifier
-     */
-    id?: string;
-
-    /**
-     * When the user was added to the organization
-     */
-    created_at?: string;
-
-    /**
-     * User email address
-     */
-    email?: string;
-
-    /**
-     * When the user was invited
-     */
-    invited_at?: string | null;
-
-    /**
-     * When the user last logged in
-     */
-    last_login_at?: string | null;
-
-    /**
-     * User full name
-     */
-    name?: string;
-
-    /**
-     * User role in the organization: admin, billing, developer
-     */
-    role?: string;
-
-    /**
-     * User status: active, invited, suspended, rejected
-     */
-    status?: string;
-
-    /**
-     * When the user record was last updated
-     */
-    updated_at?: string | null;
-  }
-
-  /**
-   * Error information
-   */
-  export interface Error {
-    /**
-     * Machine-readable error code (e.g., "RESOURCE_001")
-     */
-    code?: string;
-
-    /**
-     * Additional validation error details (field-level errors)
-     */
-    details?: { [key: string]: Array<string> } | null;
-
-    /**
-     * URL to documentation about this error
-     */
-    doc_url?: string | null;
-
-    /**
-     * Human-readable error message
-     */
-    message?: string;
-  }
-
-  /**
-   * Request and response metadata
-   */
-  export interface Meta {
-    /**
-     * Unique identifier for this request (for tracing and support)
-     */
-    request_id?: string;
-
-    /**
-     * Server timestamp when the response was generated
-     */
-    timestamp?: string;
-
-    /**
-     * API version used for this request
-     */
-    version?: string;
+    users?: Array<UsersAPI.UserResponse>;
   }
 }
 
@@ -730,10 +348,9 @@ export interface UserUpdateRoleParams {
 
 export declare namespace Users {
   export {
-    type UserRetrieveResponse as UserRetrieveResponse,
+    type APIResponseOfUser as APIResponseOfUser,
+    type UserResponse as UserResponse,
     type UserListResponse as UserListResponse,
-    type UserInviteResponse as UserInviteResponse,
-    type UserUpdateRoleResponse as UserUpdateRoleResponse,
     type UserRetrieveParams as UserRetrieveParams,
     type UserListParams as UserListParams,
     type UserInviteParams as UserInviteParams,

@@ -4,10 +4,6 @@
 name: Publish NPM
 on:
   workflow_dispatch:
-    inputs:
-      path:
-        description: The path to run the release in, e.g. '.' or 'packages/mcp-server'
-        required: true
 
   release:
     types: [published]
@@ -17,7 +13,7 @@ jobs:
     name: publish
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
       id-token: write
 
     steps:
@@ -43,12 +39,3 @@ jobs:
             PATHS_RELEASED='[\".\", \"packages/mcp-server\"]'
           fi
           pnpm tsn scripts/publish-packages.ts "{ \"paths_released\": \"$PATHS_RELEASED\" }"
-        env:
-          INPUT_PATH: ${{ github.event.inputs.path }}
-
-      - name: Upload MCP Server DXT GitHub release asset
-        run: |
-          gh release upload ${{ github.event.release.tag_name }} \
-            packages/mcp-server/sentdm_sentdm_api.mcpb
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

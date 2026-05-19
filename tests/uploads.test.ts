@@ -1,7 +1,6 @@
 import fs from 'fs';
 import type { ResponseLike } from '@sentdm/sentdm/internal/to-file';
 import { toFile } from '@sentdm/sentdm/core/uploads';
-import { File } from 'node:buffer';
 
 class MyClass {
   name: string = 'foo';

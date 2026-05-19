@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.28.2 (2026-05-19)
+
+Full Changelog: [v0.28.1...v0.28.2](https://github.com/sentdm/sent-dm-typescript/compare/v0.28.1...v0.28.2)
+
+### Bug Fixes
+
+* **typescript:** upgrade tsc-multi so that it works with Node 26 ([4a57be0](https://github.com/sentdm/sent-dm-typescript/commit/4a57be087c94bc74ab6404a14b9a4b6b347b2acd))
+
+
+### Chores
+
+* **tests:** remove redundant File import ([5f4f0ea](https://github.com/sentdm/sent-dm-typescript/commit/5f4f0ea3e3bb6e25d47a254e44adbbcd85b12ffc))
+
 ## 0.28.1 (2026-05-14)
 
 Full Changelog: [v0.28.0...v0.28.1](https://github.com/sentdm/sent-dm-typescript/compare/v0.28.0...v0.28.1)

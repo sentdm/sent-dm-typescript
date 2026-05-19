@@ -247,6 +247,13 @@ export interface SentDmServicesCommonContractsPocOsTemplateButtonProps {
 
   urlType: string;
 
+  /**
+   * Variables embedded in a dynamic URL button (only when UrlType = dynamic). Count
+   * is capped by TemplateContentLimits.MaxUrlButtonVariables; the placeholder must
+   * appear at the end of Url (validated in TemplateDefinitionValidator).
+   */
+  variables: Array<TemplateVariable>;
+
   autofillText?: string | null;
 
   otpType?: string | null;

@@ -162,7 +162,8 @@ export namespace MessageRetrieveActivitiesResponse {
       price?: string | null;
 
       /**
-       * Activity status (e.g., QUEUED, PROCESSED, ROUTED, SENT, DELIVERED, FAILED)
+       * Activity status. Outbound: QUEUED, PROCESSED, ROUTED, SENT, DELIVERED, READ,
+       * FAILED. Inbound (from contact): RECEIVED (terminal).
        */
       status?: string;
 

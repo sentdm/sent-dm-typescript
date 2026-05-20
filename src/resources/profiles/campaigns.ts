@@ -304,7 +304,7 @@ export interface TcrCampaignWithUseCases extends BaseDto {
 
   customerId?: string;
 
-  dcaElectionsComplete?: boolean;
+  dcaElectionsComplete?: boolean | null;
 
   dcaElectionsCompletedAt?: string | null;
 

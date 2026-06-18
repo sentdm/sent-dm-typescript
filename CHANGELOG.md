@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.29.1 (2026-06-18)
+
+Full Changelog: [v0.29.0...v0.29.1](https://github.com/sentdm/sent-dm-typescript/compare/v0.29.0...v0.29.1)
+
+### Bug Fixes
+
+* **client:** send content-type header for requests with an omitted optional body ([5eac519](https://github.com/sentdm/sent-dm-typescript/commit/5eac519419d9fea8a8c8669c6d760da71e59b197))
+
 ## 0.29.0 (2026-05-21)
 
 Full Changelog: [v0.28.2...v0.29.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.28.2...v0.29.0)

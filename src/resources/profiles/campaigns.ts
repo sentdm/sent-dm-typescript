@@ -310,6 +310,13 @@ export interface TcrCampaignWithUseCases extends BaseDto {
 
   description?: string;
 
+  /**
+   * True when this campaign already has a billing transaction of reference type
+   * TCR_CAMPAIGN_SUBMISSION (the one-time submission fee was charged). Populated
+   * only by the campaigns-list path; defaults false on other responses.
+   */
+  hasSubmissionTransaction?: boolean;
+
   helpKeywords?: string | null;
 
   helpMessage?: string | null;

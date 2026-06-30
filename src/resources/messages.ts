@@ -400,7 +400,13 @@ export interface MessageSendParams {
    * Body param: SDK-style template reference: resolve by ID or by name, with
    * optional parameters.
    */
-  template?: MessageSendParams.Template;
+  template?: MessageSendParams.Template | null;
+
+  /**
+   * Body param: Plain-text (free-form) message body. Provide either Template or
+   * this.
+   */
+  text?: string | null;
 
   /**
    * Body param: List of recipient phone numbers in E.164 format (multi-recipient

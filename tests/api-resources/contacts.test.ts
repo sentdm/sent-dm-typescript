@@ -9,8 +9,8 @@ const client = new Sent({
 
 describe('resource contacts', () => {
   // Mock server tests are disabled
-  test.skip('create', async () => {
-    const responsePromise = client.contacts.create({});
+  test.skip('create: only required params', async () => {
+    const responsePromise = client.contacts.create({ phone_number: '+1234567890' });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -18,6 +18,16 @@ describe('resource contacts', () => {
     const dataAndResponse = await responsePromise.withResponse();
     expect(dataAndResponse.data).toBe(response);
     expect(dataAndResponse.response).toBe(rawResponse);
+  });
+
+  // Mock server tests are disabled
+  test.skip('create: required and optional params', async () => {
+    const response = await client.contacts.create({
+      phone_number: '+1234567890',
+      sandbox: false,
+      'Idempotency-Key': 'req_abc123_retry1',
+      'x-profile-id': '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
+    });
   });
 
   // Mock server tests are disabled

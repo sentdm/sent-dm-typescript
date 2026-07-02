@@ -18,7 +18,9 @@ export class Contacts extends APIResource {
    *
    * @example
    * ```ts
-   * const apiResponseOfContact = await client.contacts.create();
+   * const apiResponseOfContact = await client.contacts.create({
+   *   phone_number: '+1234567890',
+   * });
    * ```
    */
   create(params: ContactCreateParams, options?: RequestOptions): APIPromise<APIResponseOfContact> {
@@ -288,7 +290,7 @@ export interface ContactCreateParams {
   /**
    * Body param: Phone number of the contact to create
    */
-  phone_number?: string;
+  phone_number: string;
 
   /**
    * Body param: Sandbox flag - when true, the operation is simulated without side

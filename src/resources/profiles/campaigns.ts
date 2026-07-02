@@ -294,6 +294,12 @@ export interface SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsC
 }
 
 export interface TcrCampaignWithUseCases extends BaseDto {
+  description: string;
+
+  name: string;
+
+  type: string;
+
   billedDate?: string | null;
 
   brandId?: string | null;
@@ -307,8 +313,6 @@ export interface TcrCampaignWithUseCases extends BaseDto {
   dcaElectionsComplete?: boolean | null;
 
   dcaElectionsCompletedAt?: string | null;
-
-  description?: string;
 
   /**
    * True when this campaign already has a billing transaction of reference type
@@ -324,8 +328,6 @@ export interface TcrCampaignWithUseCases extends BaseDto {
   kycSubmissionFormId?: string | null;
 
   messageFlow?: string | null;
-
-  name?: string;
 
   optinKeywords?: string | null;
 
@@ -355,8 +357,6 @@ export interface TcrCampaignWithUseCases extends BaseDto {
 
   termsAndConditionsLink?: string | null;
 
-  type?: string;
-
   upstreamCnpId?: string | null;
 
   useCases?: Array<TcrCampaignWithUseCases.UseCase>;
@@ -364,13 +364,13 @@ export interface TcrCampaignWithUseCases extends BaseDto {
 
 export namespace TcrCampaignWithUseCases {
   export interface UseCase extends CampaignsAPI.BaseDto {
+    sampleMessages: Array<string>;
+
     campaignId?: string;
 
     customerId?: string;
 
     messagingUseCaseUs?: CampaignsAPI.MessagingUseCaseUs;
-
-    sampleMessages?: Array<string>;
   }
 }
 

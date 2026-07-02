@@ -249,11 +249,11 @@ export namespace MessageRetrieveStatusResponse {
      * Represents a status change event in a message's lifecycle (v3)
      */
     export interface Event {
+      status: string;
+
+      timestamp: string;
+
       description?: string | null;
-
-      status?: string;
-
-      timestamp?: string;
     }
 
     /**

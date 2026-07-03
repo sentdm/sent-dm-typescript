@@ -847,11 +847,7 @@ export interface SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBran
 }
 
 export type TcrBrandRelationship =
-  | 'BASIC_ACCOUNT'
-  | 'MEDIUM_ACCOUNT'
-  | 'LARGE_ACCOUNT'
-  | 'SMALL_ACCOUNT'
-  | 'KEY_ACCOUNT';
+  'BASIC_ACCOUNT' | 'MEDIUM_ACCOUNT' | 'LARGE_ACCOUNT' | 'SMALL_ACCOUNT' | 'KEY_ACCOUNT';
 
 export type TcrVertical =
   | 'PROFESSIONAL'

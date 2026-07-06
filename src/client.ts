@@ -253,7 +253,7 @@ export class Sent {
     };
 
     this.baseURL = options.baseURL!;
-    this.timeout = options.timeout ?? Sent.DEFAULT_TIMEOUT; /* 1 minute */
+    this.timeout = options.timeout ?? Sent.DEFAULT_TIMEOUT /* 1 minute */;
     this.logger = options.logger ?? console;
     const defaultLogLevel = 'warn';
     // Set default logLevel early so that we can log a warning in parseLogLevel.

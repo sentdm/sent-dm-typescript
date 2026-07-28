@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.32.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.31.0...v0.32.0) (2026-07-07)
+
+
+### Features
+
+* enable release-please releases and back-sync trigger ([ad1daeb](https://github.com/sentdm/sent-dm-typescript/commit/ad1daebe912b1e0dd5fe00812db7b0832972e88a))
+* initial stlc build ([9eecb1f](https://github.com/sentdm/sent-dm-typescript/commit/9eecb1fae995bc853ab58511a801373b6eb52614))
+* initial stlc build ([f31fad9](https://github.com/sentdm/sent-dm-typescript/commit/f31fad9d8b2e1a1f249f726700f04b680dc28a9d))
+* stlc SDK generation pipeline (workspace, workflows, setup action) ([7ab12bc](https://github.com/sentdm/sent-dm-typescript/commit/7ab12bc7cb0491f50ea7387752b689f41aec8d70))
+
+
+### Chores
+
+* add promote, back-sync, and trunk-lock workflows ([7e16905](https://github.com/sentdm/sent-dm-typescript/commit/7e16905e39ee196375953827f00f146aa8f8f7aa))
+* add release back-sync trigger workflow ([effcd15](https://github.com/sentdm/sent-dm-typescript/commit/effcd1553d007f826bb467186bc4271073aa8040))
+* bump @arethetypeswrong/cli to ^0.18 to fix tarball-extraction crash ([989a766](https://github.com/sentdm/sent-dm-typescript/commit/989a7669beae6eeeb4220c244264c2687de470f8))
+* format pnpm-lock.yaml ([0c35c56](https://github.com/sentdm/sent-dm-typescript/commit/0c35c56070986b04bafef6aed1ae04317c8b032d))
+
 ## 0.31.0 (2026-07-02)
 
 Full Changelog: [v0.30.0...v0.31.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.30.0...v0.31.0)

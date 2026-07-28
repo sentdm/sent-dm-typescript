@@ -100,18 +100,17 @@ Methods:
 
 Types:
 
-- <code><a href="./src/resources/profiles/campaigns.ts">APIResponseOfTcrCampaignWithUseCases</a></code>
-- <code><a href="./src/resources/profiles/campaigns.ts">BaseDto</a></code>
 - <code><a href="./src/resources/profiles/campaigns.ts">CampaignData</a></code>
 - <code><a href="./src/resources/profiles/campaigns.ts">MessagingUseCaseUs</a></code>
 - <code><a href="./src/resources/profiles/campaigns.ts">SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData</a></code>
-- <code><a href="./src/resources/profiles/campaigns.ts">TcrCampaignWithUseCases</a></code>
+- <code><a href="./src/resources/profiles/campaigns.ts">CampaignCreateResponse</a></code>
+- <code><a href="./src/resources/profiles/campaigns.ts">CampaignUpdateResponse</a></code>
 - <code><a href="./src/resources/profiles/campaigns.ts">CampaignListResponse</a></code>
 
 Methods:
 
-- <code title="post /v3/profiles/{profileId}/campaigns">client.profiles.campaigns.<a href="./src/resources/profiles/campaigns.ts">create</a>(profileID, { ...params }) -> APIResponseOfTcrCampaignWithUseCases</code>
-- <code title="put /v3/profiles/{profileId}/campaigns/{campaignId}">client.profiles.campaigns.<a href="./src/resources/profiles/campaigns.ts">update</a>(campaignID, { ...params }) -> APIResponseOfTcrCampaignWithUseCases</code>
+- <code title="post /v3/profiles/{profileId}/campaigns">client.profiles.campaigns.<a href="./src/resources/profiles/campaigns.ts">create</a>(profileID, { ...params }) -> CampaignCreateResponse</code>
+- <code title="put /v3/profiles/{profileId}/campaigns/{campaignId}">client.profiles.campaigns.<a href="./src/resources/profiles/campaigns.ts">update</a>(campaignID, { ...params }) -> CampaignUpdateResponse</code>
 - <code title="get /v3/profiles/{profileId}/campaigns">client.profiles.campaigns.<a href="./src/resources/profiles/campaigns.ts">list</a>(profileID, { ...params }) -> CampaignListResponse</code>
 - <code title="delete /v3/profiles/{profileId}/campaigns/{campaignId}">client.profiles.campaigns.<a href="./src/resources/profiles/campaigns.ts">delete</a>(campaignID, { ...params }) -> void</code>
 

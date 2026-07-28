@@ -2,12 +2,11 @@
 
 export {
   Campaigns,
-  type APIResponseOfTcrCampaignWithUseCases,
-  type BaseDto,
   type CampaignData,
   type MessagingUseCaseUs,
   type SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData,
-  type TcrCampaignWithUseCases,
+  type CampaignCreateResponse,
+  type CampaignUpdateResponse,
   type CampaignListResponse,
   type CampaignCreateParams,
   type CampaignUpdateParams,

@@ -5,18 +5,17 @@ import * as ProfilesAPI from './profiles';
 import * as WebhooksAPI from '../webhooks';
 import * as CampaignsAPI from './campaigns';
 import {
-  APIResponseOfTcrCampaignWithUseCases,
-  BaseDto,
   CampaignCreateParams,
+  CampaignCreateResponse,
   CampaignData,
   CampaignDeleteParams,
   CampaignListParams,
   CampaignListResponse,
   CampaignUpdateParams,
+  CampaignUpdateResponse,
   Campaigns,
   MessagingUseCaseUs,
   SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData,
-  TcrCampaignWithUseCases,
 } from './campaigns';
 import { APIPromise } from '../../core/api-promise';
 import { buildHeaders } from '../../internal/headers';
@@ -1328,12 +1327,11 @@ export declare namespace Profiles {
 
   export {
     Campaigns as Campaigns,
-    type APIResponseOfTcrCampaignWithUseCases as APIResponseOfTcrCampaignWithUseCases,
-    type BaseDto as BaseDto,
     type CampaignData as CampaignData,
     type MessagingUseCaseUs as MessagingUseCaseUs,
     type SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData as SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData,
-    type TcrCampaignWithUseCases as TcrCampaignWithUseCases,
+    type CampaignCreateResponse as CampaignCreateResponse,
+    type CampaignUpdateResponse as CampaignUpdateResponse,
     type CampaignListResponse as CampaignListResponse,
     type CampaignCreateParams as CampaignCreateParams,
     type CampaignUpdateParams as CampaignUpdateParams,

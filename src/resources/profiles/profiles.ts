@@ -5,18 +5,17 @@ import * as ProfilesAPI from './profiles';
 import * as WebhooksAPI from '../webhooks';
 import * as CampaignsAPI from './campaigns';
 import {
-  APIResponseOfTcrCampaignWithUseCases,
-  BaseDto,
   CampaignCreateParams,
+  CampaignCreateResponse,
   CampaignData,
   CampaignDeleteParams,
   CampaignListParams,
   CampaignListResponse,
   CampaignUpdateParams,
+  CampaignUpdateResponse,
   Campaigns,
   MessagingUseCaseUs,
   SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData,
-  TcrCampaignWithUseCases,
 } from './campaigns';
 import { APIPromise } from '../../core/api-promise';
 import { buildHeaders } from '../../internal/headers';
@@ -206,24 +205,36 @@ export class Profiles extends APIResource {
   }
 
   /**
-   * Final step in profile compliance workflow. Validates all prerequisites (general
-   * data, brand, campaigns), connects profile to Telnyx/WhatsApp, and sets status
-   * based on configuration. The process runs in the background and calls the
-   * provided webhook URL when finished.
+   * Final step in the profile compliance workflow. Validates all prerequisites (KYC,
+   * brand, campaigns, required documents), connects the profile to the SMS and
+   * WhatsApp channels, and sets its status based on configuration. Prerequisites are
+   * always validated first: if any fail the call returns 400. If they pass and the
+   * profile is already completed, the call returns 200 and does nothing. Otherwise
+   * it returns 202 and calls the provided webhook URL when background processing
+   * finishes.
    *
-   *                 Prerequisites:
-   *                 - Profile must be completed
-   *                 - If inheritTcrBrand=false: Profile must have existing brand
-   *                 - If inheritTcrBrand=true: Parent must have existing brand
-   *                 - If TCR application: Must have at least one campaign (own or inherited)
-   *                 - If inheritTcrCampaign=false: Profile should have campaigns
-   *                 - If inheritTcrCampaign=true: Parent must have campaigns
+   * Prerequisites:
    *
-   *                 Status Logic:
-   *                 - If both SMS and WhatsApp channels are missing → SUBMITTED
-   *                 - If TCR application and not inheriting brand/campaigns → SUBMITTED
-   *                 - If non-TCR with destination country (IsMain=true) → SUBMITTED
-   *                 - Otherwise → COMPLETED
+   * - Profile must have a name, short name, and description (short name max 50
+   *   characters, description max 5000)
+   * - webHookUrl must be supplied on the request
+   * - A KYC form submission is required
+   * - A brand is required, either on the profile or inherited from the parent
+   *   organization
+   * - TCR applications must have at least one campaign, own or inherited
+   * - Destination countries marked as main must have their required compliance
+   *   documents uploaded
+   *
+   * Resulting status:
+   *
+   * - If either the SMS or WhatsApp channel is unconfigured, the profile is
+   *   SUBMITTED
+   * - For a TCR application that inherits both its brand and its campaigns, the
+   *   profile is COMPLETED
+   * - For a TCR application that owns either its brand or its campaigns, the profile
+   *   is COMPLETED once both have been submitted to TCR, and SUBMITTED until then
+   * - For a non-TCR application, the profile is SUBMITTED when a main destination
+   *   country is set, and COMPLETED otherwise
    *
    * @example
    * ```ts
@@ -457,7 +468,7 @@ export interface ProfileDetail {
   sending_phone_number?: string | null;
 
   /**
-   * Reference to another profile for SMS/Telnyx configuration
+   * Reference to another profile whose SMS configuration this profile uses
    */
   sending_phone_number_profile_id?: string | null;
 
@@ -651,11 +662,6 @@ export namespace ProfileDetail {
       destination_countries?: Array<ProfilesAPI.DestinationCountry>;
 
       /**
-       * Expected daily messaging volume
-       */
-      expected_messaging_volume?: string | null;
-
-      /**
        * Whether this is a TCR (Campaign Registry) application
        */
       is_tcr_application?: boolean;
@@ -784,11 +790,6 @@ export interface SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBran
    * List of destination countries for messaging
    */
   destinationCountries?: Array<DestinationCountry> | null;
-
-  /**
-   * Expected daily messaging volume
-   */
-  expectedMessagingVolume?: string | null;
 
   /**
    * Whether this is a TCR (Campaign Registry) application
@@ -1212,8 +1213,7 @@ export interface ProfileUpdateParams {
   sending_phone_number?: string | null;
 
   /**
-   * Body param: Reference to another profile to use for SMS/Telnyx configuration
-   * (optional)
+   * Body param: Reference to another profile to use for SMS configuration (optional)
    */
   sending_phone_number_profile_id?: string | null;
 
@@ -1328,12 +1328,11 @@ export declare namespace Profiles {
 
   export {
     Campaigns as Campaigns,
-    type APIResponseOfTcrCampaignWithUseCases as APIResponseOfTcrCampaignWithUseCases,
-    type BaseDto as BaseDto,
     type CampaignData as CampaignData,
     type MessagingUseCaseUs as MessagingUseCaseUs,
     type SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData as SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData,
-    type TcrCampaignWithUseCases as TcrCampaignWithUseCases,
+    type CampaignCreateResponse as CampaignCreateResponse,
+    type CampaignUpdateResponse as CampaignUpdateResponse,
     type CampaignListResponse as CampaignListResponse,
     type CampaignCreateParams as CampaignCreateParams,
     type CampaignUpdateParams as CampaignUpdateParams,

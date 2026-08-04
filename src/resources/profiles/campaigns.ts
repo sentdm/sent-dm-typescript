@@ -226,6 +226,12 @@ export interface CampaignData {
    * URL to terms and conditions
    */
   termsAndConditionsLink?: string | null;
+
+  /**
+   * Expected messaging volume for this campaign. Numeric string (e.g. "1999",
+   * "5000"); values below 2000 bill at the low-volume tier.
+   */
+  volume?: string | null;
 }
 
 export type MessagingUseCaseUs =
@@ -260,15 +266,7 @@ export interface SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsC
  */
 export interface CampaignCreateResponse {
   /**
-   * Customer-facing campaign representation for the public v3 API. Deliberately does
-   * not inherit TcrCampaign. The service-layer type TcrCampaignWithUseCasesResponse
-   * extends the database entity, so returning it directly from a public endpoint
-   * serialized every column, including supplier-specific and internal provisioning
-   * identifiers. This DTO is an explicit allowlist: a new column on the entity is
-   * invisible to customers until it is added here on purpose. Intentionally omitted:
-   * telnyxCampaignId (supplier-specific), plus cspId, resellerId, upstreamCnpId,
-   * kycSubmissionFormId and sharingStatus (internal provisioning and CSP-to-DCA
-   * plumbing). All six remain available on the admin API.
+   * A 10DLC campaign registered for a brand.
    */
   data?: CampaignCreateResponse.Data | null;
 
@@ -290,15 +288,7 @@ export interface CampaignCreateResponse {
 
 export namespace CampaignCreateResponse {
   /**
-   * Customer-facing campaign representation for the public v3 API. Deliberately does
-   * not inherit TcrCampaign. The service-layer type TcrCampaignWithUseCasesResponse
-   * extends the database entity, so returning it directly from a public endpoint
-   * serialized every column, including supplier-specific and internal provisioning
-   * identifiers. This DTO is an explicit allowlist: a new column on the entity is
-   * invisible to customers until it is added here on purpose. Intentionally omitted:
-   * telnyxCampaignId (supplier-specific), plus cspId, resellerId, upstreamCnpId,
-   * kycSubmissionFormId and sharingStatus (internal provisioning and CSP-to-DCA
-   * plumbing). All six remain available on the admin API.
+   * A 10DLC campaign registered for a brand.
    */
   export interface Data {
     id?: string;
@@ -372,6 +362,14 @@ export namespace CampaignCreateResponse {
     updatedAt?: string | null;
 
     useCases?: Array<Data.UseCase>;
+
+    /**
+     * Expected messaging volume for this campaign — customer-supplied on
+     * create/update, and the input to both the TCR usecase classification (LOW_VOLUME
+     * vs MIXED/specific) and the campaign fee tier. Surfaced so customers can read
+     * back the value they set.
+     */
+    volume?: string | null;
   }
 
   export namespace Data {
@@ -411,15 +409,7 @@ export namespace CampaignCreateResponse {
  */
 export interface CampaignUpdateResponse {
   /**
-   * Customer-facing campaign representation for the public v3 API. Deliberately does
-   * not inherit TcrCampaign. The service-layer type TcrCampaignWithUseCasesResponse
-   * extends the database entity, so returning it directly from a public endpoint
-   * serialized every column, including supplier-specific and internal provisioning
-   * identifiers. This DTO is an explicit allowlist: a new column on the entity is
-   * invisible to customers until it is added here on purpose. Intentionally omitted:
-   * telnyxCampaignId (supplier-specific), plus cspId, resellerId, upstreamCnpId,
-   * kycSubmissionFormId and sharingStatus (internal provisioning and CSP-to-DCA
-   * plumbing). All six remain available on the admin API.
+   * A 10DLC campaign registered for a brand.
    */
   data?: CampaignUpdateResponse.Data | null;
 
@@ -441,15 +431,7 @@ export interface CampaignUpdateResponse {
 
 export namespace CampaignUpdateResponse {
   /**
-   * Customer-facing campaign representation for the public v3 API. Deliberately does
-   * not inherit TcrCampaign. The service-layer type TcrCampaignWithUseCasesResponse
-   * extends the database entity, so returning it directly from a public endpoint
-   * serialized every column, including supplier-specific and internal provisioning
-   * identifiers. This DTO is an explicit allowlist: a new column on the entity is
-   * invisible to customers until it is added here on purpose. Intentionally omitted:
-   * telnyxCampaignId (supplier-specific), plus cspId, resellerId, upstreamCnpId,
-   * kycSubmissionFormId and sharingStatus (internal provisioning and CSP-to-DCA
-   * plumbing). All six remain available on the admin API.
+   * A 10DLC campaign registered for a brand.
    */
   export interface Data {
     id?: string;
@@ -523,6 +505,14 @@ export namespace CampaignUpdateResponse {
     updatedAt?: string | null;
 
     useCases?: Array<Data.UseCase>;
+
+    /**
+     * Expected messaging volume for this campaign — customer-supplied on
+     * create/update, and the input to both the TCR usecase classification (LOW_VOLUME
+     * vs MIXED/specific) and the campaign fee tier. Surfaced so customers can read
+     * back the value they set.
+     */
+    volume?: string | null;
   }
 
   export namespace Data {
@@ -584,15 +574,7 @@ export interface CampaignListResponse {
 
 export namespace CampaignListResponse {
   /**
-   * Customer-facing campaign representation for the public v3 API. Deliberately does
-   * not inherit TcrCampaign. The service-layer type TcrCampaignWithUseCasesResponse
-   * extends the database entity, so returning it directly from a public endpoint
-   * serialized every column, including supplier-specific and internal provisioning
-   * identifiers. This DTO is an explicit allowlist: a new column on the entity is
-   * invisible to customers until it is added here on purpose. Intentionally omitted:
-   * telnyxCampaignId (supplier-specific), plus cspId, resellerId, upstreamCnpId,
-   * kycSubmissionFormId and sharingStatus (internal provisioning and CSP-to-DCA
-   * plumbing). All six remain available on the admin API.
+   * A 10DLC campaign registered for a brand.
    */
   export interface Data {
     id?: string;
@@ -666,6 +648,14 @@ export namespace CampaignListResponse {
     updatedAt?: string | null;
 
     useCases?: Array<Data.UseCase>;
+
+    /**
+     * Expected messaging volume for this campaign — customer-supplied on
+     * create/update, and the input to both the TCR usecase classification (LOW_VOLUME
+     * vs MIXED/specific) and the campaign fee tier. Surfaced so customers can read
+     * back the value they set.
+     */
+    volume?: string | null;
   }
 
   export namespace Data {

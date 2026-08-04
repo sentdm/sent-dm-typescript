@@ -323,8 +323,7 @@ export namespace MessageSendResponse {
     recipients?: Array<Data.Recipient>;
 
     /**
-     * Overall request status: "QUEUED" when the batch has been accepted and published
-     * to Kafka.
+     * Overall request status: "QUEUED" when the batch has been accepted for delivery.
      */
     status?: string;
 

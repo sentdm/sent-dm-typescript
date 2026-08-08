@@ -169,7 +169,7 @@ export interface APIResponseTemplate {
 /**
  * Configuration for AUTHENTICATION category templates
  */
-export interface SentDmServicesCommonContractsPocOsAuthenticationConfig {
+export interface AuthenticationConfig {
   /**
    * Whether to add the security recommendation text: "For your security, do not
    * share this code."
@@ -181,127 +181,6 @@ export interface SentDmServicesCommonContractsPocOsAuthenticationConfig {
    * in X minutes."
    */
   codeExpirationMinutes?: number | null;
-}
-
-/**
- * Body section of a message template with channel-specific content
- */
-export interface SentDmServicesCommonContractsPocOsTemplateBody {
-  /**
-   * Content that will be used for all channels (SMS and WhatsApp) unless
-   * channel-specific content is provided
-   */
-  multiChannel?: TemplateBodyContent | null;
-
-  /**
-   * RCS-specific content that overrides multi-channel content for RCS messages
-   */
-  rcs?: TemplateBodyContent | null;
-
-  /**
-   * SMS-specific content that overrides multi-channel content for SMS messages
-   */
-  sms?: TemplateBodyContent | null;
-
-  /**
-   * WhatsApp-specific content that overrides multi-channel content for WhatsApp
-   * messages
-   */
-  whatsapp?: TemplateBodyContent | null;
-}
-
-/**
- * Interactive button in a message template
- */
-export interface SentDmServicesCommonContractsPocOsTemplateButton {
-  /**
-   * Properties specific to the button type
-   */
-  props: SentDmServicesCommonContractsPocOsTemplateButtonProps;
-
-  /**
-   * The type of button (e.g., QUICK_REPLY, URL, PHONE_NUMBER, VOICE_CALL, COPY_CODE)
-   */
-  type: string;
-
-  /**
-   * The unique identifier of the button (1-based index)
-   */
-  id?: number;
-}
-
-export interface SentDmServicesCommonContractsPocOsTemplateButtonProps {
-  activeFor: number;
-
-  countryCode: string;
-
-  offerCode: string;
-
-  phoneNumber: string;
-
-  quickReplyType: string;
-
-  text: string;
-
-  url: string;
-
-  urlType: string;
-
-  /**
-   * Variables embedded in a dynamic URL button (only when UrlType = dynamic). Count
-   * is capped by TemplateContentLimits.MaxUrlButtonVariables; the placeholder must
-   * appear at the end of Url (validated in TemplateDefinitionValidator).
-   */
-  variables: Array<TemplateVariable>;
-
-  autofillText?: string | null;
-
-  otpType?: string | null;
-
-  packageName?: string | null;
-
-  signatureHash?: string | null;
-}
-
-/**
- * Footer section of a message template
- */
-export interface SentDmServicesCommonContractsPocOsTemplateFooter {
-  /**
-   * The footer template text with optional variable placeholders
-   */
-  template: string;
-
-  /**
-   * The type of footer (typically "text")
-   */
-  type?: string | null;
-
-  /**
-   * List of variables used in the footer template
-   */
-  variables?: Array<TemplateVariable> | null;
-}
-
-/**
- * Header section of a message template
- */
-export interface SentDmServicesCommonContractsPocOsTemplateHeader {
-  /**
-   * The header template text with optional variable placeholders (e.g., "Welcome to
-   * {{0:variable}}")
-   */
-  template: string;
-
-  /**
-   * The type of header (e.g., "text", "image", "video", "document")
-   */
-  type?: string | null;
-
-  /**
-   * List of variables used in the header template
-   */
-  variables?: Array<TemplateVariable> | null;
 }
 
 /**
@@ -359,12 +238,92 @@ export interface Template {
   variables?: Array<string> | null;
 }
 
+/**
+ * Body section of a message template with channel-specific content
+ */
+export interface TemplateBody {
+  /**
+   * Content that will be used for all channels (SMS and WhatsApp) unless
+   * channel-specific content is provided
+   */
+  multiChannel?: TemplateBodyContent | null;
+
+  /**
+   * RCS-specific content that overrides multi-channel content for RCS messages
+   */
+  rcs?: TemplateBodyContent | null;
+
+  /**
+   * SMS-specific content that overrides multi-channel content for SMS messages
+   */
+  sms?: TemplateBodyContent | null;
+
+  /**
+   * WhatsApp-specific content that overrides multi-channel content for WhatsApp
+   * messages
+   */
+  whatsapp?: TemplateBodyContent | null;
+}
+
 export interface TemplateBodyContent {
   template: string;
 
   type?: string | null;
 
   variables?: Array<TemplateVariable> | null;
+}
+
+/**
+ * Interactive button in a message template
+ */
+export interface TemplateButton {
+  /**
+   * Properties specific to the button type
+   */
+  props: TemplateButtonProps;
+
+  /**
+   * The type of button (e.g., QUICK_REPLY, URL, PHONE_NUMBER, VOICE_CALL, COPY_CODE)
+   */
+  type: string;
+
+  /**
+   * The unique identifier of the button (1-based index)
+   */
+  id?: number;
+}
+
+export interface TemplateButtonProps {
+  activeFor: number;
+
+  countryCode: string;
+
+  offerCode: string;
+
+  phoneNumber: string;
+
+  quickReplyType: string;
+
+  text: string;
+
+  url: string;
+
+  urlType: string;
+
+  /**
+   * Variables embedded in a dynamic URL button (only when UrlType = dynamic). Count
+   * is capped by TemplateContentLimits.MaxUrlButtonVariables; the placeholder must
+   * appear at the end of Url (validated in TemplateDefinitionValidator).
+   */
+  variables: Array<TemplateVariable>;
+
+  autofillText?: string | null;
+
+  otpType?: string | null;
+
+  packageName?: string | null;
+
+  signatureHash?: string | null;
 }
 
 /**
@@ -375,17 +334,17 @@ export interface TemplateDefinition {
   /**
    * Body section of a message template with channel-specific content
    */
-  body: SentDmServicesCommonContractsPocOsTemplateBody;
+  body: TemplateBody;
 
   /**
    * Configuration for AUTHENTICATION category templates
    */
-  authenticationConfig?: SentDmServicesCommonContractsPocOsAuthenticationConfig | null;
+  authenticationConfig?: AuthenticationConfig | null;
 
   /**
    * Optional list of interactive buttons (e.g., quick replies, URLs, phone numbers)
    */
-  buttons?: Array<SentDmServicesCommonContractsPocOsTemplateButton> | null;
+  buttons?: Array<TemplateButton> | null;
 
   /**
    * The version of the template definition format
@@ -395,12 +354,53 @@ export interface TemplateDefinition {
   /**
    * Footer section of a message template
    */
-  footer?: SentDmServicesCommonContractsPocOsTemplateFooter | null;
+  footer?: TemplateFooter | null;
 
   /**
    * Header section of a message template
    */
-  header?: SentDmServicesCommonContractsPocOsTemplateHeader | null;
+  header?: TemplateHeader | null;
+}
+
+/**
+ * Footer section of a message template
+ */
+export interface TemplateFooter {
+  /**
+   * The footer template text with optional variable placeholders
+   */
+  template: string;
+
+  /**
+   * The type of footer (typically "text")
+   */
+  type?: string | null;
+
+  /**
+   * List of variables used in the footer template
+   */
+  variables?: Array<TemplateVariable> | null;
+}
+
+/**
+ * Header section of a message template
+ */
+export interface TemplateHeader {
+  /**
+   * The header template text with optional variable placeholders (e.g., "Welcome to
+   * {{0:variable}}")
+   */
+  template: string;
+
+  /**
+   * The type of header (e.g., "text", "image", "video", "document")
+   */
+  type?: string | null;
+
+  /**
+   * List of variables used in the header template
+   */
+  variables?: Array<TemplateVariable> | null;
 }
 
 export interface TemplateVariable {
@@ -644,15 +644,15 @@ export interface TemplateDeleteParams {
 export declare namespace Templates {
   export {
     type APIResponseTemplate as APIResponseTemplate,
-    type SentDmServicesCommonContractsPocOsAuthenticationConfig as SentDmServicesCommonContractsPocOsAuthenticationConfig,
-    type SentDmServicesCommonContractsPocOsTemplateBody as SentDmServicesCommonContractsPocOsTemplateBody,
-    type SentDmServicesCommonContractsPocOsTemplateButton as SentDmServicesCommonContractsPocOsTemplateButton,
-    type SentDmServicesCommonContractsPocOsTemplateButtonProps as SentDmServicesCommonContractsPocOsTemplateButtonProps,
-    type SentDmServicesCommonContractsPocOsTemplateFooter as SentDmServicesCommonContractsPocOsTemplateFooter,
-    type SentDmServicesCommonContractsPocOsTemplateHeader as SentDmServicesCommonContractsPocOsTemplateHeader,
+    type AuthenticationConfig as AuthenticationConfig,
     type Template as Template,
+    type TemplateBody as TemplateBody,
     type TemplateBodyContent as TemplateBodyContent,
+    type TemplateButton as TemplateButton,
+    type TemplateButtonProps as TemplateButtonProps,
     type TemplateDefinition as TemplateDefinition,
+    type TemplateFooter as TemplateFooter,
+    type TemplateHeader as TemplateHeader,
     type TemplateVariable as TemplateVariable,
     type TemplateListResponse as TemplateListResponse,
     type TemplateCreateParams as TemplateCreateParams,

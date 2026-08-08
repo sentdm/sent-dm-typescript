@@ -5,17 +5,18 @@ import * as ProfilesAPI from './profiles';
 import * as WebhooksAPI from '../webhooks';
 import * as CampaignsAPI from './campaigns';
 import {
+  APIResponseOfBrandCampaign,
+  APIResponseOfListOfBrandCampaign,
+  BrandCampaign,
   CampaignCreateParams,
-  CampaignCreateResponse,
   CampaignData,
   CampaignDeleteParams,
   CampaignListParams,
-  CampaignListResponse,
   CampaignUpdateParams,
-  CampaignUpdateResponse,
+  CampaignUseCase,
+  CampaignUseCaseData,
   Campaigns,
   MessagingUseCaseUs,
-  SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData,
 } from './campaigns';
 import { APIPromise } from '../../core/api-promise';
 import { buildHeaders } from '../../internal/headers';
@@ -320,23 +321,149 @@ export interface BillingContactInfo {
 }
 
 /**
+ * Business details and address for brand KYC
+ */
+export interface BrandBusinessInfo {
+  /**
+   * City
+   */
+  city?: string | null;
+
+  /**
+   * Country code (e.g., US, CA)
+   */
+  country?: string | null;
+
+  /**
+   * Country where the business is registered
+   */
+  countryOfRegistration?: string | null;
+
+  entityType?: 'PRIVATE_PROFIT' | 'PUBLIC_PROFIT' | 'NON_PROFIT' | 'SOLE_PROPRIETOR' | 'GOVERNMENT' | null;
+
+  /**
+   * Legal business name
+   */
+  legalName?: string | null;
+
+  /**
+   * Postal/ZIP code
+   */
+  postalCode?: string | null;
+
+  /**
+   * State/province code
+   */
+  state?: string | null;
+
+  /**
+   * Street address
+   */
+  street?: string | null;
+
+  /**
+   * Tax ID/EIN number
+   */
+  taxId?: string | null;
+
+  /**
+   * Type of tax ID (e.g., us_ein, ca_bn)
+   */
+  taxIdType?: string | null;
+
+  /**
+   * Business website URL
+   */
+  url?: string | null;
+}
+
+/**
+ * Compliance and TCR information for brand registration
+ */
+export interface BrandComplianceInfo {
+  brandRelationship: TcrBrandRelationship;
+
+  vertical: TcrVertical;
+
+  /**
+   * List of destination countries for messaging
+   */
+  destinationCountries?: Array<DestinationCountry> | null;
+
+  /**
+   * Whether this is a TCR (Campaign Registry) application
+   */
+  isTcrApplication?: boolean | null;
+
+  /**
+   * Additional notes about the business or use case
+   */
+  notes?: string | null;
+
+  /**
+   * Phone number prefix for messaging (e.g., "+1")
+   */
+  phoneNumberPrefix?: string | null;
+
+  /**
+   * Primary messaging use case description
+   */
+  primaryUseCase?: string | null;
+}
+
+/**
+ * Contact information for brand KYC
+ */
+export interface BrandContactInfo {
+  /**
+   * Primary contact name (required)
+   */
+  name: string;
+
+  /**
+   * Business/brand name
+   */
+  businessName?: string | null;
+
+  /**
+   * Contact email address
+   */
+  email?: string | null;
+
+  /**
+   * Contact phone number in E.164 format
+   */
+  phone?: string | null;
+
+  /**
+   * Contact phone country code (e.g., "1" for US)
+   */
+  phoneCountryCode?: string | null;
+
+  /**
+   * Contact's role in the business
+   */
+  role?: string | null;
+}
+
+/**
  * Brand and KYC data grouped into contact, business, and compliance sections
  */
 export interface BrandsBrandData {
   /**
    * Compliance and TCR information for brand registration
    */
-  compliance: SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfo;
+  compliance: BrandComplianceInfo;
 
   /**
    * Contact information for brand KYC
    */
-  contact: SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandContactInfo;
+  contact: BrandContactInfo;
 
   /**
    * Business details and address for brand KYC
    */
-  business?: SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandBusinessInfo | null;
+  business?: BrandBusinessInfo | null;
 }
 
 export interface DestinationCountry {
@@ -719,132 +846,6 @@ export namespace ProfileDetail {
       role?: string | null;
     }
   }
-}
-
-/**
- * Business details and address for brand KYC
- */
-export interface SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandBusinessInfo {
-  /**
-   * City
-   */
-  city?: string | null;
-
-  /**
-   * Country code (e.g., US, CA)
-   */
-  country?: string | null;
-
-  /**
-   * Country where the business is registered
-   */
-  countryOfRegistration?: string | null;
-
-  entityType?: 'PRIVATE_PROFIT' | 'PUBLIC_PROFIT' | 'NON_PROFIT' | 'SOLE_PROPRIETOR' | 'GOVERNMENT' | null;
-
-  /**
-   * Legal business name
-   */
-  legalName?: string | null;
-
-  /**
-   * Postal/ZIP code
-   */
-  postalCode?: string | null;
-
-  /**
-   * State/province code
-   */
-  state?: string | null;
-
-  /**
-   * Street address
-   */
-  street?: string | null;
-
-  /**
-   * Tax ID/EIN number
-   */
-  taxId?: string | null;
-
-  /**
-   * Type of tax ID (e.g., us_ein, ca_bn)
-   */
-  taxIdType?: string | null;
-
-  /**
-   * Business website URL
-   */
-  url?: string | null;
-}
-
-/**
- * Compliance and TCR information for brand registration
- */
-export interface SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfo {
-  brandRelationship: TcrBrandRelationship;
-
-  vertical: TcrVertical;
-
-  /**
-   * List of destination countries for messaging
-   */
-  destinationCountries?: Array<DestinationCountry> | null;
-
-  /**
-   * Whether this is a TCR (Campaign Registry) application
-   */
-  isTcrApplication?: boolean | null;
-
-  /**
-   * Additional notes about the business or use case
-   */
-  notes?: string | null;
-
-  /**
-   * Phone number prefix for messaging (e.g., "+1")
-   */
-  phoneNumberPrefix?: string | null;
-
-  /**
-   * Primary messaging use case description
-   */
-  primaryUseCase?: string | null;
-}
-
-/**
- * Contact information for brand KYC
- */
-export interface SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandContactInfo {
-  /**
-   * Primary contact name (required)
-   */
-  name: string;
-
-  /**
-   * Business/brand name
-   */
-  businessName?: string | null;
-
-  /**
-   * Contact email address
-   */
-  email?: string | null;
-
-  /**
-   * Contact phone number in E.164 format
-   */
-  phone?: string | null;
-
-  /**
-   * Contact phone country code (e.g., "1" for US)
-   */
-  phoneCountryCode?: string | null;
-
-  /**
-   * Contact's role in the business
-   */
-  role?: string | null;
 }
 
 export type TcrBrandRelationship =
@@ -1307,13 +1308,13 @@ export declare namespace Profiles {
   export {
     type APIResponseOfProfileDetail as APIResponseOfProfileDetail,
     type BillingContactInfo as BillingContactInfo,
+    type BrandBusinessInfo as BrandBusinessInfo,
+    type BrandComplianceInfo as BrandComplianceInfo,
+    type BrandContactInfo as BrandContactInfo,
     type BrandsBrandData as BrandsBrandData,
     type DestinationCountry as DestinationCountry,
     type PaymentDetails as PaymentDetails,
     type ProfileDetail as ProfileDetail,
-    type SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandBusinessInfo as SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandBusinessInfo,
-    type SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfo as SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfo,
-    type SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandContactInfo as SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandContactInfo,
     type TcrBrandRelationship as TcrBrandRelationship,
     type TcrVertical as TcrVertical,
     type ProfileListResponse as ProfileListResponse,
@@ -1328,12 +1329,13 @@ export declare namespace Profiles {
 
   export {
     Campaigns as Campaigns,
+    type APIResponseOfBrandCampaign as APIResponseOfBrandCampaign,
+    type APIResponseOfListOfBrandCampaign as APIResponseOfListOfBrandCampaign,
+    type BrandCampaign as BrandCampaign,
     type CampaignData as CampaignData,
+    type CampaignUseCase as CampaignUseCase,
+    type CampaignUseCaseData as CampaignUseCaseData,
     type MessagingUseCaseUs as MessagingUseCaseUs,
-    type SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData as SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData,
-    type CampaignCreateResponse as CampaignCreateResponse,
-    type CampaignUpdateResponse as CampaignUpdateResponse,
-    type CampaignListResponse as CampaignListResponse,
     type CampaignCreateParams as CampaignCreateParams,
     type CampaignUpdateParams as CampaignUpdateParams,
     type CampaignListParams as CampaignListParams,

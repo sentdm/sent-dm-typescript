@@ -19,15 +19,25 @@ import * as API from './resources/index';
 import { APIPromise } from './core/api-promise';
 import {
   APIResponseOfContact,
+  APIResponseOfContactMessageSummary,
   ContactCreateParams,
   ContactDeleteParams,
   ContactListParams,
   ContactListResponse,
+  ContactMessageSummary,
   ContactResponse,
+  ContactRetrieveMessageSummaryParams,
   ContactRetrieveParams,
   ContactUpdateParams,
   Contacts,
 } from './resources/contacts';
+import {
+  APIResponseOfConversationMessagesList,
+  ConversationListMessagesParams,
+  ConversationListParams,
+  ConversationMessagesList,
+  Conversations,
+} from './resources/conversations';
 import { Me, MeRetrieveParams, MeRetrieveResponse, ProfileSettings } from './resources/me';
 import {
   MessageRetrieveActivitiesParams,
@@ -41,17 +51,17 @@ import {
 import { NumberLookupParams, NumberLookupResponse, Numbers } from './resources/numbers';
 import {
   APIResponseTemplate,
-  SentDmServicesCommonContractsPocOsAuthenticationConfig,
-  SentDmServicesCommonContractsPocOsTemplateBody,
-  SentDmServicesCommonContractsPocOsTemplateButton,
-  SentDmServicesCommonContractsPocOsTemplateButtonProps,
-  SentDmServicesCommonContractsPocOsTemplateFooter,
-  SentDmServicesCommonContractsPocOsTemplateHeader,
+  AuthenticationConfig,
   Template,
+  TemplateBody,
   TemplateBodyContent,
+  TemplateButton,
+  TemplateButtonProps,
   TemplateCreateParams,
   TemplateDefinition,
   TemplateDeleteParams,
+  TemplateFooter,
+  TemplateHeader,
   TemplateListParams,
   TemplateListResponse,
   TemplateRetrieveParams,
@@ -98,6 +108,9 @@ import {
 import {
   APIResponseOfProfileDetail,
   BillingContactInfo,
+  BrandBusinessInfo,
+  BrandComplianceInfo,
+  BrandContactInfo,
   BrandsBrandData,
   DestinationCountry,
   PaymentDetails,
@@ -111,9 +124,6 @@ import {
   ProfileRetrieveParams,
   ProfileUpdateParams,
   Profiles,
-  SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandBusinessInfo,
-  SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfo,
-  SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandContactInfo,
   TcrBrandRelationship,
   TcrVertical,
 } from './resources/profiles/profiles';
@@ -865,6 +875,7 @@ export class Sent {
    * Create, update, and manage customer contact lists
    */
   contacts: API.Contacts = new API.Contacts(this);
+  conversations: API.Conversations = new API.Conversations(this);
   /**
    * Retrieve account details
    */
@@ -878,6 +889,7 @@ Sent.Profiles = Profiles;
 Sent.Numbers = Numbers;
 Sent.Messages = Messages;
 Sent.Contacts = Contacts;
+Sent.Conversations = Conversations;
 Sent.Me = Me;
 
 export declare namespace Sent {
@@ -924,15 +936,15 @@ export declare namespace Sent {
   export {
     Templates as Templates,
     type APIResponseTemplate as APIResponseTemplate,
-    type SentDmServicesCommonContractsPocOsAuthenticationConfig as SentDmServicesCommonContractsPocOsAuthenticationConfig,
-    type SentDmServicesCommonContractsPocOsTemplateBody as SentDmServicesCommonContractsPocOsTemplateBody,
-    type SentDmServicesCommonContractsPocOsTemplateButton as SentDmServicesCommonContractsPocOsTemplateButton,
-    type SentDmServicesCommonContractsPocOsTemplateButtonProps as SentDmServicesCommonContractsPocOsTemplateButtonProps,
-    type SentDmServicesCommonContractsPocOsTemplateFooter as SentDmServicesCommonContractsPocOsTemplateFooter,
-    type SentDmServicesCommonContractsPocOsTemplateHeader as SentDmServicesCommonContractsPocOsTemplateHeader,
+    type AuthenticationConfig as AuthenticationConfig,
     type Template as Template,
+    type TemplateBody as TemplateBody,
     type TemplateBodyContent as TemplateBodyContent,
+    type TemplateButton as TemplateButton,
+    type TemplateButtonProps as TemplateButtonProps,
     type TemplateDefinition as TemplateDefinition,
+    type TemplateFooter as TemplateFooter,
+    type TemplateHeader as TemplateHeader,
     type TemplateVariable as TemplateVariable,
     type TemplateListResponse as TemplateListResponse,
     type TemplateCreateParams as TemplateCreateParams,
@@ -946,13 +958,13 @@ export declare namespace Sent {
     Profiles as Profiles,
     type APIResponseOfProfileDetail as APIResponseOfProfileDetail,
     type BillingContactInfo as BillingContactInfo,
+    type BrandBusinessInfo as BrandBusinessInfo,
+    type BrandComplianceInfo as BrandComplianceInfo,
+    type BrandContactInfo as BrandContactInfo,
     type BrandsBrandData as BrandsBrandData,
     type DestinationCountry as DestinationCountry,
     type PaymentDetails as PaymentDetails,
     type ProfileDetail as ProfileDetail,
-    type SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandBusinessInfo as SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandBusinessInfo,
-    type SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfo as SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandComplianceInfo,
-    type SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandContactInfo as SentDmServicesEndpointsCustomerApIv3ContractsRequestsBrandsBrandContactInfo,
     type TcrBrandRelationship as TcrBrandRelationship,
     type TcrVertical as TcrVertical,
     type ProfileListResponse as ProfileListResponse,
@@ -984,6 +996,8 @@ export declare namespace Sent {
   export {
     Contacts as Contacts,
     type APIResponseOfContact as APIResponseOfContact,
+    type APIResponseOfContactMessageSummary as APIResponseOfContactMessageSummary,
+    type ContactMessageSummary as ContactMessageSummary,
     type ContactResponse as ContactResponse,
     type ContactListResponse as ContactListResponse,
     type ContactCreateParams as ContactCreateParams,
@@ -991,6 +1005,15 @@ export declare namespace Sent {
     type ContactUpdateParams as ContactUpdateParams,
     type ContactListParams as ContactListParams,
     type ContactDeleteParams as ContactDeleteParams,
+    type ContactRetrieveMessageSummaryParams as ContactRetrieveMessageSummaryParams,
+  };
+
+  export {
+    Conversations as Conversations,
+    type APIResponseOfConversationMessagesList as APIResponseOfConversationMessagesList,
+    type ConversationMessagesList as ConversationMessagesList,
+    type ConversationListParams as ConversationListParams,
+    type ConversationListMessagesParams as ConversationListMessagesParams,
   };
 
   export {

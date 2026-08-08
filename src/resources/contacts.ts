@@ -141,6 +141,35 @@ export class Contacts extends APIResource {
       ]),
     });
   }
+
+  /**
+   * Returns aggregate message counts, time bounds, channels used, and per-channel
+   * success/fail scores (each as a percentage 0-100 of messages on that channel) for
+   * one of your contacts. Successful terminal states: SENT/DELIVERED/READ for
+   * outbound, RECEIVED for inbound. Fail: FAILED.
+   *
+   * @example
+   * ```ts
+   * const apiResponseOfContactMessageSummary =
+   *   await client.contacts.retrieveMessageSummary(
+   *     '6ba7b810-9dad-11d1-80b4-00c04fd430c8',
+   *   );
+   * ```
+   */
+  retrieveMessageSummary(
+    contactID: string,
+    params: ContactRetrieveMessageSummaryParams | null | undefined = {},
+    options?: RequestOptions,
+  ): APIPromise<APIResponseOfContactMessageSummary> {
+    const { 'x-profile-id': xProfileID } = params ?? {};
+    return this._client.get(path`/v3/contacts/${contactID}/message-summary`, {
+      ...options,
+      headers: buildHeaders([
+        { ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined) },
+        options?.headers,
+      ]),
+    });
+  }
 }
 
 /**
@@ -166,6 +195,62 @@ export interface APIResponseOfContact {
    * Indicates whether the request was successful
    */
   success?: boolean;
+}
+
+/**
+ * Standard API response envelope for all v3 endpoints
+ */
+export interface APIResponseOfContactMessageSummary {
+  /**
+   * The response data (null if error)
+   */
+  data?: ContactMessageSummary | null;
+
+  /**
+   * Error information
+   */
+  error?: WebhooksAPI.ErrorDetail | null;
+
+  /**
+   * Request and response metadata
+   */
+  meta?: WebhooksAPI.APIMeta;
+
+  /**
+   * Indicates whether the request was successful
+   */
+  success?: boolean;
+}
+
+export interface ContactMessageSummary {
+  channel_scores?: Array<ContactMessageSummary.ChannelScore>;
+
+  channels_used?: Array<string>;
+
+  contact_id?: string;
+
+  first_message_at?: string | null;
+
+  last_message_at?: string | null;
+
+  message_count?: number;
+}
+
+export namespace ContactMessageSummary {
+  export interface ChannelScore {
+    channel?: string;
+
+    /**
+     * Percentage (0-100) of messages on this channel that ended in FAILED.
+     */
+    fail_score?: number;
+
+    /**
+     * Percentage (0-100) of messages on this channel that reached a successful
+     * terminal state: SENT/DELIVERED/READ for outbound, RECEIVED for inbound.
+     */
+    success_score?: number;
+  }
 }
 
 /**
@@ -403,9 +488,19 @@ export interface ContactDeleteParams {
   'x-profile-id'?: string;
 }
 
+export interface ContactRetrieveMessageSummaryParams {
+  /**
+   * Profile UUID to scope the request to a child profile. Only organization API keys
+   * can use this header. The profile must belong to the calling organization.
+   */
+  'x-profile-id'?: string;
+}
+
 export declare namespace Contacts {
   export {
     type APIResponseOfContact as APIResponseOfContact,
+    type APIResponseOfContactMessageSummary as APIResponseOfContactMessageSummary,
+    type ContactMessageSummary as ContactMessageSummary,
     type ContactResponse as ContactResponse,
     type ContactListResponse as ContactListResponse,
     type ContactCreateParams as ContactCreateParams,
@@ -413,5 +508,6 @@ export declare namespace Contacts {
     type ContactUpdateParams as ContactUpdateParams,
     type ContactListParams as ContactListParams,
     type ContactDeleteParams as ContactDeleteParams,
+    type ContactRetrieveMessageSummaryParams as ContactRetrieveMessageSummaryParams,
   };
 }

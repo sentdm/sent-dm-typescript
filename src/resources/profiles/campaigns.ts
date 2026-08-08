@@ -180,7 +180,7 @@ export interface CampaignData {
   /**
    * List of use cases with sample messages
    */
-  useCases: Array<SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData>;
+  useCases: Array<CampaignUseCaseData>;
 
   /**
    * Comma-separated keywords that trigger help message (e.g., "HELP, INFO, SUPPORT")
@@ -234,6 +234,18 @@ export interface CampaignData {
   volume?: string | null;
 }
 
+/**
+ * Campaign use case with sample messages
+ */
+export interface CampaignUseCaseData {
+  messagingUseCaseUs: MessagingUseCaseUs;
+
+  /**
+   * Sample messages for this use case (1-5 messages, max 1024 characters each)
+   */
+  sampleMessages: Array<string>;
+}
+
 export type MessagingUseCaseUs =
   | 'MARKETING'
   | 'ACCOUNT_NOTIFICATION'
@@ -248,18 +260,6 @@ export type MessagingUseCaseUs =
   | 'POLLING_VOTING'
   | 'PUBLIC_SERVICE_ANNOUNCEMENT'
   | 'LOW_VOLUME';
-
-/**
- * Campaign use case with sample messages
- */
-export interface SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData {
-  messagingUseCaseUs: MessagingUseCaseUs;
-
-  /**
-   * Sample messages for this use case (1-5 messages, max 1024 characters each)
-   */
-  sampleMessages: Array<string>;
-}
 
 /**
  * Standard API response envelope for all v3 endpoints
@@ -780,8 +780,8 @@ export interface CampaignDeleteParams {
 export declare namespace Campaigns {
   export {
     type CampaignData as CampaignData,
+    type CampaignUseCaseData as CampaignUseCaseData,
     type MessagingUseCaseUs as MessagingUseCaseUs,
-    type SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData as SentDmServicesEndpointsCustomerApIv3ContractsRequestsCampaignsCampaignUseCaseData,
     type CampaignCreateResponse as CampaignCreateResponse,
     type CampaignUpdateResponse as CampaignUpdateResponse,
     type CampaignListResponse as CampaignListResponse,

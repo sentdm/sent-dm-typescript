@@ -96,7 +96,9 @@ export class Profiles extends APIResource {
    * @example
    * ```ts
    * const apiResponseOfProfileDetail =
-   *   await client.profiles.retrieve('profileId');
+   *   await client.profiles.retrieve(
+   *     '770e8400-e29b-41d4-a716-446655440002',
+   *   );
    * ```
    */
   retrieve(
@@ -137,7 +139,9 @@ export class Profiles extends APIResource {
    * @example
    * ```ts
    * const apiResponseOfProfileDetail =
-   *   await client.profiles.update('profileId');
+   *   await client.profiles.update(
+   *     '770e8400-e29b-41d4-a716-446655440002',
+   *   );
    * ```
    */
   update(
@@ -190,7 +194,9 @@ export class Profiles extends APIResource {
    *
    * @example
    * ```ts
-   * await client.profiles.delete('profileId');
+   * await client.profiles.delete(
+   *   '770e8400-e29b-41d4-a716-446655440002',
+   * );
    * ```
    */
   delete(profileID: string, params: ProfileDeleteParams, options?: RequestOptions): APIPromise<void> {

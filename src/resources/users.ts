@@ -19,7 +19,7 @@ export class Users extends APIResource {
    * @example
    * ```ts
    * const apiResponseOfUser = await client.users.retrieve(
-   *   'userId',
+   *   '880e8400-e29b-41d4-a716-446655440003',
    * );
    * ```
    */
@@ -93,7 +93,9 @@ export class Users extends APIResource {
    *
    * @example
    * ```ts
-   * await client.users.remove('userId');
+   * await client.users.remove(
+   *   'aa0e8400-e29b-41d4-a716-446655440005',
+   * );
    * ```
    */
   remove(userID: string, params: UserRemoveParams, options?: RequestOptions): APIPromise<void> {
@@ -115,7 +117,7 @@ export class Users extends APIResource {
    * @example
    * ```ts
    * const apiResponseOfUser = await client.users.updateRole(
-   *   'userId',
+   *   'aa0e8400-e29b-41d4-a716-446655440005',
    * );
    * ```
    */

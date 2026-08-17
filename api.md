@@ -5,8 +5,14 @@ Types:
 - <code><a href="./src/resources/webhooks.ts">APIMeta</a></code>
 - <code><a href="./src/resources/webhooks.ts">APIResponseWebhook</a></code>
 - <code><a href="./src/resources/webhooks.ts">ErrorDetail</a></code>
+- <code><a href="./src/resources/webhooks.ts">InboundMessageEvent</a></code>
+- <code><a href="./src/resources/webhooks.ts">InboundMessageEventPayload</a></code>
+- <code><a href="./src/resources/webhooks.ts">MessageEvent</a></code>
+- <code><a href="./src/resources/webhooks.ts">MessageEventPayload</a></code>
 - <code><a href="./src/resources/webhooks.ts">MutationRequest</a></code>
 - <code><a href="./src/resources/webhooks.ts">PaginationMeta</a></code>
+- <code><a href="./src/resources/webhooks.ts">TemplateEvent</a></code>
+- <code><a href="./src/resources/webhooks.ts">TemplateEventPayload</a></code>
 - <code><a href="./src/resources/webhooks.ts">WebhookEventType</a></code>
 - <code><a href="./src/resources/webhooks.ts">WebhookResponse</a></code>
 - <code><a href="./src/resources/webhooks.ts">WebhookListResponse</a></code>

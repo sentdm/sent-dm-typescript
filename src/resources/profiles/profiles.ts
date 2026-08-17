@@ -683,7 +683,10 @@ export namespace ProfileDetail {
     created_at?: string;
 
     /**
-     * CSP (Campaign Service Provider) ID
+     * @deprecated Deprecated and scheduled for removal. Identifies the Campaign
+     * Service Provider that registered the brand, which is Sent, so the value is the
+     * same for every brand and every account. Nothing on your side can act on it and
+     * there is no replacement. Stop reading it.
      */
     csp_id?: string | null;
 

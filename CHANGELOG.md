@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.34.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.33.0...v0.34.0) (2026-08-17)
+
+
+### Features
+
+* **api:** sync OpenAPI spec from production ([cc68e2d](https://github.com/sentdm/sent-dm-typescript/commit/cc68e2d9172f95c6035a6746eca3b60ad8a4a8c8))
+* **api:** sync OpenAPI spec from production ([0feb3c1](https://github.com/sentdm/sent-dm-typescript/commit/0feb3c117a77c21da1468523a89813b09b5ea439))
+* **api:** sync OpenAPI spec from production ([b59dbcb](https://github.com/sentdm/sent-dm-typescript/commit/b59dbcbec391b79c94eb9d560fa71c5fc2895482))
+* **sdk:** expose the delivered webhook payloads as models ([4b8d0c8](https://github.com/sentdm/sent-dm-typescript/commit/4b8d0c89f0331dbc6ff45cd4d1cd56c904fbb619))
+
+
+### Chores
+
+* add eager seal-dispatch workflow ([7cc1be5](https://github.com/sentdm/sent-dm-typescript/commit/7cc1be56e6b264e540b9450c87dc1bb529ecf673))
+
 ## [0.33.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.32.0...v0.33.0) (2026-08-08)
 
 

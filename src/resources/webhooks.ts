@@ -337,6 +337,177 @@ export interface ErrorDetail {
   message?: string;
 }
 
+/**
+ * The envelope Sent POSTs to a subscribed webhook endpoint. Every event shares
+ * this shape and varies only in Payload.
+ */
+export interface InboundMessageEvent {
+  /**
+   * The specific event within the family, for example message.delivered or
+   * message.received. Absent on events that have no subtype, so treat it as
+   * optional.
+   */
+  event?: string | null;
+
+  /**
+   * The event family, for example message or templates. Route on this first, then on
+   * event for the specific change.
+   */
+  field?: string;
+
+  /**
+   * Body of a message.received event. Delivered when a contact messages one of your
+   * numbers.
+   */
+  payload?: InboundMessageEventPayload | null;
+
+  /**
+   * When Sent emitted the event, in UTC (yyyy-MM-ddTHH:mm:ssZ). This is the emission
+   * time, not the time the underlying change happened. Use the timestamp inside the
+   * payload for the latter.
+   */
+  timestamp?: string;
+}
+
+/**
+ * Body of a message.received event. Delivered when a contact messages one of your
+ * numbers.
+ */
+export interface InboundMessageEventPayload {
+  /**
+   * The account the message belongs to.
+   */
+  account_id?: string;
+
+  /**
+   * The channel the message arrived on, for example sms or whatsapp.
+   */
+  channel?: string;
+
+  /**
+   * The contact's number in E.164 format, meaning the number the message came from.
+   */
+  inbound_number?: string;
+
+  /**
+   * The inbound message.
+   */
+  message_id?: string;
+
+  /**
+   * Your number in E.164 format, meaning the number the message was addressed to.
+   */
+  outbound_number?: string;
+
+  /**
+   * When the message was received, in UTC (yyyy-MM-ddTHH:mm:ssZ).
+   */
+  received_at?: string;
+
+  /**
+   * The message body. Sent as null when the inbound message carried no text, for
+   * example a media-only message. The field is always present, so read it and check
+   * for null rather than checking whether the key exists.
+   */
+  text?: string | null;
+
+  /**
+   * When the message was received, in UTC (yyyy-MM-ddTHH:mm:ssZ). Same value as
+   * ReceivedAt, kept for envelope consistency with outbound events.
+   */
+  updated_at?: string;
+}
+
+/**
+ * The envelope Sent POSTs to a subscribed webhook endpoint. Every event shares
+ * this shape and varies only in Payload.
+ */
+export interface MessageEvent {
+  /**
+   * The specific event within the family, for example message.delivered or
+   * message.received. Absent on events that have no subtype, so treat it as
+   * optional.
+   */
+  event?: string | null;
+
+  /**
+   * The event family, for example message or templates. Route on this first, then on
+   * event for the specific change.
+   */
+  field?: string;
+
+  /**
+   * Body of an outbound message lifecycle event. Delivered once per status change,
+   * so a single message produces several of these as it moves toward a terminal
+   * status.
+   */
+  payload?: MessageEventPayload | null;
+
+  /**
+   * When Sent emitted the event, in UTC (yyyy-MM-ddTHH:mm:ssZ). This is the emission
+   * time, not the time the underlying change happened. Use the timestamp inside the
+   * payload for the latter.
+   */
+  timestamp?: string;
+}
+
+/**
+ * Body of an outbound message lifecycle event. Delivered once per status change,
+ * so a single message produces several of these as it moves toward a terminal
+ * status.
+ */
+export interface MessageEventPayload {
+  /**
+   * The account the message belongs to.
+   */
+  account_id?: string;
+
+  /**
+   * The agent attributed to the send, when the send was attributed to one.
+   */
+  agent_id?: string | null;
+
+  /**
+   * The channel the message went out on, for example sms or whatsapp. A message that
+   * falls back to another channel reports the channel actually used.
+   */
+  channel?: string;
+
+  /**
+   * The message this event describes. Stable across every event in the message's
+   * lifecycle, so use it to correlate them.
+   */
+  message_id?: string;
+
+  /**
+   * The status the message just reached, for example SENT, DELIVERED, or FAILED.
+   * Sent means dispatched and delivered means confirmed, so treat them as distinct
+   * outcomes.
+   */
+  message_status?: string;
+
+  /**
+   * The recipient's number in E.164 format.
+   */
+  outbound_number?: string;
+
+  /**
+   * The template the message was sent from, when it was sent from one.
+   */
+  template_id?: string | null;
+
+  /**
+   * Name of the template the message was sent from. Omitted when the message wasn't
+   * template-based.
+   */
+  template_name?: string | null;
+
+  /**
+   * When the message reached MessageStatus, in UTC (yyyy-MM-ddTHH:mm:ssZ).
+   */
+  updated_at?: string;
+}
+
 export interface MutationRequest {
   /**
    * Sandbox flag - when true, the operation is simulated without side effects Useful
@@ -395,6 +566,91 @@ export namespace PaginationMeta {
      */
     before?: string | null;
   }
+}
+
+/**
+ * The envelope Sent POSTs to a subscribed webhook endpoint. Every event shares
+ * this shape and varies only in Payload.
+ */
+export interface TemplateEvent {
+  /**
+   * The specific event within the family, for example message.delivered or
+   * message.received. Absent on events that have no subtype, so treat it as
+   * optional.
+   */
+  event?: string | null;
+
+  /**
+   * The event family, for example message or templates. Route on this first, then on
+   * event for the specific change.
+   */
+  field?: string;
+
+  /**
+   * Body of a template status event. Delivered when a template's review outcome
+   * changes, so you can react without polling.
+   */
+  payload?: TemplateEventPayload | null;
+
+  /**
+   * When Sent emitted the event, in UTC (yyyy-MM-ddTHH:mm:ssZ). This is the emission
+   * time, not the time the underlying change happened. Use the timestamp inside the
+   * payload for the latter.
+   */
+  timestamp?: string;
+}
+
+/**
+ * Body of a template status event. Delivered when a template's review outcome
+ * changes, so you can react without polling.
+ */
+export interface TemplateEventPayload {
+  /**
+   * The account the template belongs to.
+   */
+  account_id?: string;
+
+  /**
+   * The template's category, for example UTILITY, MARKETING, or AUTHENTICATION.
+   */
+  category?: string;
+
+  /**
+   * The channel the template applies to.
+   */
+  channel?: string;
+
+  /**
+   * The template's language code, for example en_US.
+   */
+  language?: string;
+
+  /**
+   * Why the template reached Status, when a reason was given. Populated on a
+   * rejection.
+   */
+  reason?: string | null;
+
+  /**
+   * The review status the template just reached, for example APPROVED or REJECTED.
+   */
+  status?: string;
+
+  /**
+   * The template in Sent.
+   */
+  template_id?: string;
+
+  /**
+   * The template's display name.
+   */
+  template_name?: string;
+
+  /**
+   * The template's identifier with Meta, assigned when the template is submitted for
+   * review.
+   */
+  whatsapp_template_id?: string;
 }
 
 export interface WebhookEventType {
@@ -911,8 +1167,14 @@ export declare namespace Webhooks {
     type APIMeta as APIMeta,
     type APIResponseWebhook as APIResponseWebhook,
     type ErrorDetail as ErrorDetail,
+    type InboundMessageEvent as InboundMessageEvent,
+    type InboundMessageEventPayload as InboundMessageEventPayload,
+    type MessageEvent as MessageEvent,
+    type MessageEventPayload as MessageEventPayload,
     type MutationRequest as MutationRequest,
     type PaginationMeta as PaginationMeta,
+    type TemplateEvent as TemplateEvent,
+    type TemplateEventPayload as TemplateEventPayload,
     type WebhookEventType as WebhookEventType,
     type WebhookResponse as WebhookResponse,
     type WebhookListResponse as WebhookListResponse,

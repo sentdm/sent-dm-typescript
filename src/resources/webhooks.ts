@@ -820,7 +820,13 @@ export namespace WebhookListEventsResponse {
 
       error_message?: string | null;
 
-      event_data?: unknown;
+      /**
+       * The exact event body that was delivered, or attempted, for this record. One of
+       * the three webhook envelopes: a message status change, an inbound message, or a
+       * template status change. Read field and event to tell which, the same way your
+       * endpoint does.
+       */
+      event_data?: WebhooksAPI.MessageEvent | WebhooksAPI.InboundMessageEvent | WebhooksAPI.TemplateEvent;
 
       event_type?: string;
 

@@ -220,6 +220,10 @@ export class Profiles extends APIResource {
    * it returns 202 and calls the provided webhook URL when background processing
    * finishes.
    *
+   * Callable with the organization's API key or the profile's own key. The key's
+   * user must be an admin or owner of the profile, or of the organization it belongs
+   * to.
+   *
    * Prerequisites:
    *
    * - Profile must have a name, short name, and description (short name max 50
@@ -234,8 +238,8 @@ export class Profiles extends APIResource {
    *
    * Resulting status:
    *
-   * - If either the SMS or WhatsApp channel is unconfigured, the profile is
-   *   SUBMITTED
+   * - If the WhatsApp channel is unconfigured, the profile is SUBMITTED. An SMS
+   *   channel is required only for TCR applications
    * - For a TCR application that inherits both its brand and its campaigns, the
    *   profile is COMPLETED
    * - For a TCR application that owns either its brand or its campaigns, the profile

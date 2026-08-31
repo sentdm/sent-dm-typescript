@@ -1,14 +1,15 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../core/resource';
-import * as WebhooksAPI from './webhooks';
 import { APIPromise } from '../core/api-promise';
 import { buildHeaders } from '../internal/headers';
 import { RequestOptions } from '../internal/request-options';
 import { path } from '../internal/utils/path';
 
 /**
- * Manage and lookup phone numbers
+ * What a phone number actually is, before you send to it.
+ *
+ * A lookup returns the number's country, line type and carrier, which is what decides whether it is reachable on a channel and what it costs. Worth doing on import rather than on send: a landline in a contact list is a message that can never be delivered.
  */
 export class Numbers extends APIResource {
   /**
@@ -51,12 +52,12 @@ export interface NumberLookupResponse {
   /**
    * Error information
    */
-  error?: WebhooksAPI.ErrorDetail | null;
+  error?: NumberLookupResponse.Error | null;
 
   /**
    * Request and response metadata
    */
-  meta?: WebhooksAPI.APIMeta;
+  meta?: NumberLookupResponse.Meta;
 
   /**
    * Indicates whether the request was successful
@@ -86,6 +87,51 @@ export namespace NumberLookupResponse {
     mobile_network_code?: string | null;
 
     phone_number?: string;
+  }
+
+  /**
+   * Error information
+   */
+  export interface Error {
+    /**
+     * Machine-readable error code (e.g., "RESOURCE_001")
+     */
+    code?: string;
+
+    /**
+     * Additional validation error details (field-level errors)
+     */
+    details?: { [key: string]: Array<string> } | null;
+
+    /**
+     * URL to documentation about this error
+     */
+    doc_url?: string | null;
+
+    /**
+     * Human-readable error message
+     */
+    message?: string;
+  }
+
+  /**
+   * Request and response metadata
+   */
+  export interface Meta {
+    /**
+     * Unique identifier for this request (for tracing and support)
+     */
+    request_id?: string;
+
+    /**
+     * Server timestamp when the response was generated
+     */
+    timestamp?: string;
+
+    /**
+     * API version used for this request
+     */
+    version?: string;
   }
 }
 

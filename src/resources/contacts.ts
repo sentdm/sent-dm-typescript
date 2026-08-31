@@ -1,15 +1,17 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../core/resource';
-import * as ContactsAPI from './contacts';
-import * as WebhooksAPI from './webhooks';
 import { APIPromise } from '../core/api-promise';
 import { buildHeaders } from '../internal/headers';
 import { RequestOptions } from '../internal/request-options';
 import { path } from '../internal/utils/path';
 
 /**
- * Create, update, and manage customer contact lists
+ * The people you message, and their channel identities.
+ *
+ * A contact holds one identity per channel — a phone number, a WhatsApp number — so routing can choose between them for the same person. Opt-out is recorded against the contact and honoured on every send, whichever channel it came through.
+ *
+ * `GET /v3/contacts/{id}/message-summary` is the per-contact view of what you have sent and what happened to it.
  */
 export class Contacts extends APIResource {
   /**
@@ -18,12 +20,12 @@ export class Contacts extends APIResource {
    *
    * @example
    * ```ts
-   * const apiResponseOfContact = await client.contacts.create({
+   * const contact = await client.contacts.create({
    *   phone_number: '+1234567890',
    * });
    * ```
    */
-  create(params: ContactCreateParams, options?: RequestOptions): APIPromise<APIResponseOfContact> {
+  create(params: ContactCreateParams, options?: RequestOptions): APIPromise<ContactCreateResponse> {
     const { 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
     return this._client.post('/v3/contacts', {
       body,
@@ -45,7 +47,7 @@ export class Contacts extends APIResource {
    *
    * @example
    * ```ts
-   * const apiResponseOfContact = await client.contacts.retrieve(
+   * const contact = await client.contacts.retrieve(
    *   '6ba7b810-9dad-11d1-80b4-00c04fd430c8',
    * );
    * ```
@@ -54,7 +56,7 @@ export class Contacts extends APIResource {
     id: string,
     params: ContactRetrieveParams | null | undefined = {},
     options?: RequestOptions,
-  ): APIPromise<APIResponseOfContact> {
+  ): APIPromise<ContactRetrieveResponse> {
     const { 'x-profile-id': xProfileID } = params ?? {};
     return this._client.get(path`/v3/contacts/${id}`, {
       ...options,
@@ -66,12 +68,11 @@ export class Contacts extends APIResource {
   }
 
   /**
-   * Updates a contact's default channel and/or opt-out status. Inherited contacts
-   * cannot be updated.
+   * Updates a contact's default channel and/or opt-out status.
    *
    * @example
    * ```ts
-   * const apiResponseOfContact = await client.contacts.update(
+   * const contact = await client.contacts.update(
    *   '6ba7b810-9dad-11d1-80b4-00c04fd430c8',
    * );
    * ```
@@ -80,7 +81,7 @@ export class Contacts extends APIResource {
     id: string,
     params: ContactUpdateParams,
     options?: RequestOptions,
-  ): APIPromise<APIResponseOfContact> {
+  ): APIPromise<ContactUpdateResponse> {
     const { 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
     return this._client.patch(path`/v3/contacts/${id}`, {
       body,
@@ -120,15 +121,18 @@ export class Contacts extends APIResource {
   }
 
   /**
-   * Dissociates a contact from the authenticated customer. Inherited contacts cannot
-   * be deleted.
+   * **Deprecated.** Use `PATCH /v3/contacts/{id}` with `{"opt_out": true}` instead,
+   * and expect this to be removed in a future release. It still behaves exactly as
+   * before, so nothing needs to change today.
    *
-   * @example
-   * ```ts
-   * await client.contacts.delete(
-   *   '6ba7b810-9dad-11d1-80b4-00c04fd430c8',
-   * );
-   * ```
+   * Opting a contact out stops every send to them, which is what deleting one was
+   * mostly used for — and it keeps the record of who they were and that they asked.
+   * A delete discards the consent history along with the contact, which is the part
+   * you need if anyone ever asks why you stopped, or why you started again.
+   *
+   * Dissociates a contact from the authenticated customer.
+   *
+   * @deprecated
    */
   delete(id: string, params: ContactDeleteParams, options?: RequestOptions): APIPromise<void> {
     const { 'x-profile-id': xProfileID, ...body } = params;
@@ -150,7 +154,7 @@ export class Contacts extends APIResource {
    *
    * @example
    * ```ts
-   * const apiResponseOfContactMessageSummary =
+   * const response =
    *   await client.contacts.retrieveMessageSummary(
    *     '6ba7b810-9dad-11d1-80b4-00c04fd430c8',
    *   );
@@ -160,7 +164,7 @@ export class Contacts extends APIResource {
     contactID: string,
     params: ContactRetrieveMessageSummaryParams | null | undefined = {},
     options?: RequestOptions,
-  ): APIPromise<APIResponseOfContactMessageSummary> {
+  ): APIPromise<ContactRetrieveMessageSummaryResponse> {
     const { 'x-profile-id': xProfileID } = params ?? {};
     return this._client.get(path`/v3/contacts/${contactID}/message-summary`, {
       ...options,
@@ -175,46 +179,177 @@ export class Contacts extends APIResource {
 /**
  * Standard API response envelope for all v3 endpoints
  */
-export interface APIResponseOfContact {
+export interface ContactCreateResponse {
   /**
    * Contact response for v3 API Uses snake_case for JSON property names
    */
-  data?: ContactResponse | null;
+  data?: ContactCreateResponse.Data | null;
 
   /**
    * Error information
    */
-  error?: WebhooksAPI.ErrorDetail | null;
+  error?: ContactCreateResponse.Error | null;
 
   /**
    * Request and response metadata
    */
-  meta?: WebhooksAPI.APIMeta;
+  meta?: ContactCreateResponse.Meta;
 
   /**
    * Indicates whether the request was successful
    */
   success?: boolean;
+}
+
+export namespace ContactCreateResponse {
+  /**
+   * Contact response for v3 API Uses snake_case for JSON property names
+   */
+  export interface Data {
+    /**
+     * Unique identifier for the contact
+     */
+    id?: string;
+
+    /**
+     * Comma-separated list of available messaging channels (e.g., "sms,whatsapp")
+     */
+    available_channels?: string;
+
+    /**
+     * Country calling code (e.g., 1 for US/Canada)
+     */
+    country_code?: string;
+
+    /**
+     * When the contact was created
+     */
+    created_at?: string;
+
+    /**
+     * Which customer owns this — the key's own, or the profile named in x-profile-id.
+     * Says whose resource this is, which the resource's own id does not.
+     */
+    customer_id?: string;
+
+    /**
+     * Default messaging channel to use (e.g., "sms" or "whatsapp")
+     */
+    default_channel?: string;
+
+    /**
+     * Phone number in E.164 format (e.g., +1234567890)
+     */
+    format_e164?: string;
+
+    /**
+     * Phone number in international format (e.g., +1 234-567-890)
+     */
+    format_international?: string;
+
+    /**
+     * Phone number in national format (e.g., (234) 567-890)
+     */
+    format_national?: string;
+
+    /**
+     * Phone number in RFC 3966 format (e.g., tel:+1-234-567-890)
+     */
+    format_rfc?: string;
+
+    /**
+     * @deprecated Always false. Contacts are no longer shared or inherited between
+     * sender profiles — a profile sees only the contacts it owns. Retained so existing
+     * v3 clients reading is_inherited keep deserializing; it carries no information.
+     */
+    is_inherited?: boolean;
+
+    /**
+     * Whether the contact has opted out of messaging. Single source of truth — opt-out
+     * is per-contact, not per-channel.
+     */
+    opt_out?: boolean;
+
+    /**
+     * Phone number in original format
+     */
+    phone_number?: string;
+
+    /**
+     * ISO 3166-1 alpha-2 country code (e.g., US, CA, GB)
+     */
+    region_code?: string;
+
+    /**
+     * When the contact was last updated
+     */
+    updated_at?: string | null;
+  }
+
+  /**
+   * Error information
+   */
+  export interface Error {
+    /**
+     * Machine-readable error code (e.g., "RESOURCE_001")
+     */
+    code?: string;
+
+    /**
+     * Additional validation error details (field-level errors)
+     */
+    details?: { [key: string]: Array<string> } | null;
+
+    /**
+     * URL to documentation about this error
+     */
+    doc_url?: string | null;
+
+    /**
+     * Human-readable error message
+     */
+    message?: string;
+  }
+
+  /**
+   * Request and response metadata
+   */
+  export interface Meta {
+    /**
+     * Unique identifier for this request (for tracing and support)
+     */
+    request_id?: string;
+
+    /**
+     * Server timestamp when the response was generated
+     */
+    timestamp?: string;
+
+    /**
+     * API version used for this request
+     */
+    version?: string;
+  }
 }
 
 /**
  * Standard API response envelope for all v3 endpoints
  */
-export interface APIResponseOfContactMessageSummary {
+export interface ContactRetrieveResponse {
   /**
-   * The response data (null if error)
+   * Contact response for v3 API Uses snake_case for JSON property names
    */
-  data?: ContactMessageSummary | null;
+  data?: ContactRetrieveResponse.Data | null;
 
   /**
    * Error information
    */
-  error?: WebhooksAPI.ErrorDetail | null;
+  error?: ContactRetrieveResponse.Error | null;
 
   /**
    * Request and response metadata
    */
-  meta?: WebhooksAPI.APIMeta;
+  meta?: ContactRetrieveResponse.Meta;
 
   /**
    * Indicates whether the request was successful
@@ -222,111 +357,291 @@ export interface APIResponseOfContactMessageSummary {
   success?: boolean;
 }
 
-export interface ContactMessageSummary {
-  channel_scores?: Array<ContactMessageSummary.ChannelScore>;
-
-  channels_used?: Array<string>;
-
-  contact_id?: string;
-
-  first_message_at?: string | null;
-
-  last_message_at?: string | null;
-
-  message_count?: number;
-}
-
-export namespace ContactMessageSummary {
-  export interface ChannelScore {
-    channel?: string;
+export namespace ContactRetrieveResponse {
+  /**
+   * Contact response for v3 API Uses snake_case for JSON property names
+   */
+  export interface Data {
+    /**
+     * Unique identifier for the contact
+     */
+    id?: string;
 
     /**
-     * Percentage (0-100) of messages on this channel that ended in FAILED.
+     * Comma-separated list of available messaging channels (e.g., "sms,whatsapp")
      */
-    fail_score?: number;
+    available_channels?: string;
 
     /**
-     * Percentage (0-100) of messages on this channel that reached a successful
-     * terminal state: SENT/DELIVERED/READ for outbound, RECEIVED for inbound.
+     * Country calling code (e.g., 1 for US/Canada)
      */
-    success_score?: number;
+    country_code?: string;
+
+    /**
+     * When the contact was created
+     */
+    created_at?: string;
+
+    /**
+     * Which customer owns this — the key's own, or the profile named in x-profile-id.
+     * Says whose resource this is, which the resource's own id does not.
+     */
+    customer_id?: string;
+
+    /**
+     * Default messaging channel to use (e.g., "sms" or "whatsapp")
+     */
+    default_channel?: string;
+
+    /**
+     * Phone number in E.164 format (e.g., +1234567890)
+     */
+    format_e164?: string;
+
+    /**
+     * Phone number in international format (e.g., +1 234-567-890)
+     */
+    format_international?: string;
+
+    /**
+     * Phone number in national format (e.g., (234) 567-890)
+     */
+    format_national?: string;
+
+    /**
+     * Phone number in RFC 3966 format (e.g., tel:+1-234-567-890)
+     */
+    format_rfc?: string;
+
+    /**
+     * @deprecated Always false. Contacts are no longer shared or inherited between
+     * sender profiles — a profile sees only the contacts it owns. Retained so existing
+     * v3 clients reading is_inherited keep deserializing; it carries no information.
+     */
+    is_inherited?: boolean;
+
+    /**
+     * Whether the contact has opted out of messaging. Single source of truth — opt-out
+     * is per-contact, not per-channel.
+     */
+    opt_out?: boolean;
+
+    /**
+     * Phone number in original format
+     */
+    phone_number?: string;
+
+    /**
+     * ISO 3166-1 alpha-2 country code (e.g., US, CA, GB)
+     */
+    region_code?: string;
+
+    /**
+     * When the contact was last updated
+     */
+    updated_at?: string | null;
+  }
+
+  /**
+   * Error information
+   */
+  export interface Error {
+    /**
+     * Machine-readable error code (e.g., "RESOURCE_001")
+     */
+    code?: string;
+
+    /**
+     * Additional validation error details (field-level errors)
+     */
+    details?: { [key: string]: Array<string> } | null;
+
+    /**
+     * URL to documentation about this error
+     */
+    doc_url?: string | null;
+
+    /**
+     * Human-readable error message
+     */
+    message?: string;
+  }
+
+  /**
+   * Request and response metadata
+   */
+  export interface Meta {
+    /**
+     * Unique identifier for this request (for tracing and support)
+     */
+    request_id?: string;
+
+    /**
+     * Server timestamp when the response was generated
+     */
+    timestamp?: string;
+
+    /**
+     * API version used for this request
+     */
+    version?: string;
   }
 }
 
 /**
- * Contact response for v3 API Uses snake_case for JSON property names
+ * Standard API response envelope for all v3 endpoints
  */
-export interface ContactResponse {
+export interface ContactUpdateResponse {
   /**
-   * Unique identifier for the contact
+   * Contact response for v3 API Uses snake_case for JSON property names
    */
-  id?: string;
+  data?: ContactUpdateResponse.Data | null;
 
   /**
-   * Comma-separated list of available messaging channels (e.g., "sms,whatsapp")
+   * Error information
    */
-  available_channels?: string;
+  error?: ContactUpdateResponse.Error | null;
 
   /**
-   * Country calling code (e.g., 1 for US/Canada)
+   * Request and response metadata
    */
-  country_code?: string;
+  meta?: ContactUpdateResponse.Meta;
 
   /**
-   * When the contact was created
+   * Indicates whether the request was successful
    */
-  created_at?: string;
+  success?: boolean;
+}
+
+export namespace ContactUpdateResponse {
+  /**
+   * Contact response for v3 API Uses snake_case for JSON property names
+   */
+  export interface Data {
+    /**
+     * Unique identifier for the contact
+     */
+    id?: string;
+
+    /**
+     * Comma-separated list of available messaging channels (e.g., "sms,whatsapp")
+     */
+    available_channels?: string;
+
+    /**
+     * Country calling code (e.g., 1 for US/Canada)
+     */
+    country_code?: string;
+
+    /**
+     * When the contact was created
+     */
+    created_at?: string;
+
+    /**
+     * Which customer owns this — the key's own, or the profile named in x-profile-id.
+     * Says whose resource this is, which the resource's own id does not.
+     */
+    customer_id?: string;
+
+    /**
+     * Default messaging channel to use (e.g., "sms" or "whatsapp")
+     */
+    default_channel?: string;
+
+    /**
+     * Phone number in E.164 format (e.g., +1234567890)
+     */
+    format_e164?: string;
+
+    /**
+     * Phone number in international format (e.g., +1 234-567-890)
+     */
+    format_international?: string;
+
+    /**
+     * Phone number in national format (e.g., (234) 567-890)
+     */
+    format_national?: string;
+
+    /**
+     * Phone number in RFC 3966 format (e.g., tel:+1-234-567-890)
+     */
+    format_rfc?: string;
+
+    /**
+     * @deprecated Always false. Contacts are no longer shared or inherited between
+     * sender profiles — a profile sees only the contacts it owns. Retained so existing
+     * v3 clients reading is_inherited keep deserializing; it carries no information.
+     */
+    is_inherited?: boolean;
+
+    /**
+     * Whether the contact has opted out of messaging. Single source of truth — opt-out
+     * is per-contact, not per-channel.
+     */
+    opt_out?: boolean;
+
+    /**
+     * Phone number in original format
+     */
+    phone_number?: string;
+
+    /**
+     * ISO 3166-1 alpha-2 country code (e.g., US, CA, GB)
+     */
+    region_code?: string;
+
+    /**
+     * When the contact was last updated
+     */
+    updated_at?: string | null;
+  }
 
   /**
-   * Default messaging channel to use (e.g., "sms" or "whatsapp")
+   * Error information
    */
-  default_channel?: string;
+  export interface Error {
+    /**
+     * Machine-readable error code (e.g., "RESOURCE_001")
+     */
+    code?: string;
+
+    /**
+     * Additional validation error details (field-level errors)
+     */
+    details?: { [key: string]: Array<string> } | null;
+
+    /**
+     * URL to documentation about this error
+     */
+    doc_url?: string | null;
+
+    /**
+     * Human-readable error message
+     */
+    message?: string;
+  }
 
   /**
-   * Phone number in E.164 format (e.g., +1234567890)
+   * Request and response metadata
    */
-  format_e164?: string;
+  export interface Meta {
+    /**
+     * Unique identifier for this request (for tracing and support)
+     */
+    request_id?: string;
 
-  /**
-   * Phone number in international format (e.g., +1 234-567-890)
-   */
-  format_international?: string;
+    /**
+     * Server timestamp when the response was generated
+     */
+    timestamp?: string;
 
-  /**
-   * Phone number in national format (e.g., (234) 567-890)
-   */
-  format_national?: string;
-
-  /**
-   * Phone number in RFC 3966 format (e.g., tel:+1-234-567-890)
-   */
-  format_rfc?: string;
-
-  /**
-   * Whether this is an inherited contact (read-only)
-   */
-  is_inherited?: boolean;
-
-  /**
-   * Whether the contact has opted out of messaging. Single source of truth — opt-out
-   * is per-contact, not per-channel.
-   */
-  opt_out?: boolean;
-
-  /**
-   * Phone number in original format
-   */
-  phone_number?: string;
-
-  /**
-   * ISO 3166-1 alpha-2 country code (e.g., US, CA, GB)
-   */
-  region_code?: string;
-
-  /**
-   * When the contact was last updated
-   */
-  updated_at?: string | null;
+    /**
+     * API version used for this request
+     */
+    version?: string;
+  }
 }
 
 /**
@@ -334,19 +649,19 @@ export interface ContactResponse {
  */
 export interface ContactListResponse {
   /**
-   * Paginated list of contacts response
+   * A paginated list of contacts.
    */
   data?: ContactListResponse.Data | null;
 
   /**
    * Error information
    */
-  error?: WebhooksAPI.ErrorDetail | null;
+  error?: ContactListResponse.Error | null;
 
   /**
    * Request and response metadata
    */
-  meta?: WebhooksAPI.APIMeta;
+  meta?: ContactListResponse.Meta;
 
   /**
    * Indicates whether the request was successful
@@ -356,18 +671,307 @@ export interface ContactListResponse {
 
 export namespace ContactListResponse {
   /**
-   * Paginated list of contacts response
+   * A paginated list of contacts.
    */
   export interface Data {
     /**
-     * List of contacts
+     * The contacts on this page.
      */
-    contacts?: Array<ContactsAPI.ContactResponse>;
+    contacts?: Array<Data.Contact>;
 
     /**
      * Pagination metadata for list responses
      */
-    pagination?: WebhooksAPI.PaginationMeta;
+    pagination?: Data.Pagination;
+  }
+
+  export namespace Data {
+    /**
+     * Contact response for v3 API Uses snake_case for JSON property names
+     */
+    export interface Contact {
+      /**
+       * Unique identifier for the contact
+       */
+      id?: string;
+
+      /**
+       * Comma-separated list of available messaging channels (e.g., "sms,whatsapp")
+       */
+      available_channels?: string;
+
+      /**
+       * Country calling code (e.g., 1 for US/Canada)
+       */
+      country_code?: string;
+
+      /**
+       * When the contact was created
+       */
+      created_at?: string;
+
+      /**
+       * Which customer owns this — the key's own, or the profile named in x-profile-id.
+       * Says whose resource this is, which the resource's own id does not.
+       */
+      customer_id?: string;
+
+      /**
+       * Default messaging channel to use (e.g., "sms" or "whatsapp")
+       */
+      default_channel?: string;
+
+      /**
+       * Phone number in E.164 format (e.g., +1234567890)
+       */
+      format_e164?: string;
+
+      /**
+       * Phone number in international format (e.g., +1 234-567-890)
+       */
+      format_international?: string;
+
+      /**
+       * Phone number in national format (e.g., (234) 567-890)
+       */
+      format_national?: string;
+
+      /**
+       * Phone number in RFC 3966 format (e.g., tel:+1-234-567-890)
+       */
+      format_rfc?: string;
+
+      /**
+       * @deprecated Always false. Contacts are no longer shared or inherited between
+       * sender profiles — a profile sees only the contacts it owns. Retained so existing
+       * v3 clients reading is_inherited keep deserializing; it carries no information.
+       */
+      is_inherited?: boolean;
+
+      /**
+       * Whether the contact has opted out of messaging. Single source of truth — opt-out
+       * is per-contact, not per-channel.
+       */
+      opt_out?: boolean;
+
+      /**
+       * Phone number in original format
+       */
+      phone_number?: string;
+
+      /**
+       * ISO 3166-1 alpha-2 country code (e.g., US, CA, GB)
+       */
+      region_code?: string;
+
+      /**
+       * When the contact was last updated
+       */
+      updated_at?: string | null;
+    }
+
+    /**
+     * Pagination metadata for list responses
+     */
+    export interface Pagination {
+      /**
+       * @deprecated Cursor-based pagination. Never populated — see Cursors.
+       */
+      cursors?: Pagination.Cursors | null;
+
+      /**
+       * Whether there are more pages after this one
+       */
+      has_more?: boolean;
+
+      /**
+       * Current page number (1-indexed)
+       */
+      page?: number;
+
+      /**
+       * Number of items per page
+       */
+      page_size?: number;
+
+      /**
+       * Total number of items across all pages
+       */
+      total_count?: number;
+
+      /**
+       * Total number of pages
+       */
+      total_pages?: number;
+    }
+
+    export namespace Pagination {
+      /**
+       * @deprecated Cursor-based pagination. Never populated — see Cursors.
+       */
+      export interface Cursors {
+        /**
+         * Cursor to fetch the next page.
+         */
+        after?: string | null;
+
+        /**
+         * Cursor to fetch the previous page.
+         */
+        before?: string | null;
+      }
+    }
+  }
+
+  /**
+   * Error information
+   */
+  export interface Error {
+    /**
+     * Machine-readable error code (e.g., "RESOURCE_001")
+     */
+    code?: string;
+
+    /**
+     * Additional validation error details (field-level errors)
+     */
+    details?: { [key: string]: Array<string> } | null;
+
+    /**
+     * URL to documentation about this error
+     */
+    doc_url?: string | null;
+
+    /**
+     * Human-readable error message
+     */
+    message?: string;
+  }
+
+  /**
+   * Request and response metadata
+   */
+  export interface Meta {
+    /**
+     * Unique identifier for this request (for tracing and support)
+     */
+    request_id?: string;
+
+    /**
+     * Server timestamp when the response was generated
+     */
+    timestamp?: string;
+
+    /**
+     * API version used for this request
+     */
+    version?: string;
+  }
+}
+
+/**
+ * Standard API response envelope for all v3 endpoints
+ */
+export interface ContactRetrieveMessageSummaryResponse {
+  /**
+   * The response data (null if error)
+   */
+  data?: ContactRetrieveMessageSummaryResponse.Data | null;
+
+  /**
+   * Error information
+   */
+  error?: ContactRetrieveMessageSummaryResponse.Error | null;
+
+  /**
+   * Request and response metadata
+   */
+  meta?: ContactRetrieveMessageSummaryResponse.Meta;
+
+  /**
+   * Indicates whether the request was successful
+   */
+  success?: boolean;
+}
+
+export namespace ContactRetrieveMessageSummaryResponse {
+  /**
+   * The response data (null if error)
+   */
+  export interface Data {
+    channel_scores?: Array<Data.ChannelScore>;
+
+    channels_used?: Array<string>;
+
+    contact_id?: string;
+
+    first_message_at?: string | null;
+
+    last_message_at?: string | null;
+
+    message_count?: number;
+  }
+
+  export namespace Data {
+    export interface ChannelScore {
+      channel?: string;
+
+      /**
+       * Percentage (0-100) of messages on this channel that ended in FAILED.
+       */
+      fail_score?: number;
+
+      /**
+       * Percentage (0-100) of messages on this channel that reached a successful
+       * terminal state: SENT/DELIVERED/READ for outbound, RECEIVED for inbound.
+       */
+      success_score?: number;
+    }
+  }
+
+  /**
+   * Error information
+   */
+  export interface Error {
+    /**
+     * Machine-readable error code (e.g., "RESOURCE_001")
+     */
+    code?: string;
+
+    /**
+     * Additional validation error details (field-level errors)
+     */
+    details?: { [key: string]: Array<string> } | null;
+
+    /**
+     * URL to documentation about this error
+     */
+    doc_url?: string | null;
+
+    /**
+     * Human-readable error message
+     */
+    message?: string;
+  }
+
+  /**
+   * Request and response metadata
+   */
+  export interface Meta {
+    /**
+     * Unique identifier for this request (for tracing and support)
+     */
+    request_id?: string;
+
+    /**
+     * Server timestamp when the response was generated
+     */
+    timestamp?: string;
+
+    /**
+     * API version used for this request
+     */
+    version?: string;
   }
 }
 
@@ -498,11 +1102,11 @@ export interface ContactRetrieveMessageSummaryParams {
 
 export declare namespace Contacts {
   export {
-    type APIResponseOfContact as APIResponseOfContact,
-    type APIResponseOfContactMessageSummary as APIResponseOfContactMessageSummary,
-    type ContactMessageSummary as ContactMessageSummary,
-    type ContactResponse as ContactResponse,
+    type ContactCreateResponse as ContactCreateResponse,
+    type ContactRetrieveResponse as ContactRetrieveResponse,
+    type ContactUpdateResponse as ContactUpdateResponse,
     type ContactListResponse as ContactListResponse,
+    type ContactRetrieveMessageSummaryResponse as ContactRetrieveMessageSummaryResponse,
     type ContactCreateParams as ContactCreateParams,
     type ContactRetrieveParams as ContactRetrieveParams,
     type ContactUpdateParams as ContactUpdateParams,

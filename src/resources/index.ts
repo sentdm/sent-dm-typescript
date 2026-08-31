@@ -2,11 +2,11 @@
 
 export {
   Contacts,
-  type APIResponseOfContact,
-  type APIResponseOfContactMessageSummary,
-  type ContactMessageSummary,
-  type ContactResponse,
+  type ContactCreateResponse,
+  type ContactRetrieveResponse,
+  type ContactUpdateResponse,
   type ContactListResponse,
+  type ContactRetrieveMessageSummaryResponse,
   type ContactCreateParams,
   type ContactRetrieveParams,
   type ContactUpdateParams,
@@ -16,12 +16,12 @@ export {
 } from './contacts';
 export {
   Conversations,
-  type APIResponseOfConversationMessagesList,
-  type ConversationMessagesList,
+  type ConversationListResponse,
+  type ConversationListMessagesResponse,
   type ConversationListParams,
   type ConversationListMessagesParams,
 } from './conversations';
-export { Me, type ProfileSettings, type MeRetrieveResponse, type MeRetrieveParams } from './me';
+export { Me, type MeRetrieveResponse, type MeRetrieveParams } from './me';
 export {
   Messages,
   type MessageRetrieveActivitiesResponse,
@@ -34,17 +34,12 @@ export {
 export { Numbers, type NumberLookupResponse, type NumberLookupParams } from './numbers';
 export {
   Profiles,
-  type APIResponseOfProfileDetail,
-  type BillingContactInfo,
-  type BrandBusinessInfo,
-  type BrandComplianceInfo,
-  type BrandContactInfo,
-  type BrandsBrandData,
   type DestinationCountry,
-  type PaymentDetails,
-  type ProfileDetail,
   type TcrBrandRelationship,
   type TcrVertical,
+  type ProfileCreateResponse,
+  type ProfileRetrieveResponse,
+  type ProfileUpdateResponse,
   type ProfileListResponse,
   type ProfileCompleteResponse,
   type ProfileCreateParams,
@@ -56,9 +51,7 @@ export {
 } from './profiles/profiles';
 export {
   Templates,
-  type APIResponseTemplate,
   type AuthenticationConfig,
-  type Template,
   type TemplateBody,
   type TemplateBodyContent,
   type TemplateButton,
@@ -67,6 +60,9 @@ export {
   type TemplateFooter,
   type TemplateHeader,
   type TemplateVariable,
+  type TemplateCreateResponse,
+  type TemplateRetrieveResponse,
+  type TemplateUpdateResponse,
   type TemplateListResponse,
   type TemplateCreateParams,
   type TemplateRetrieveParams,
@@ -76,9 +72,10 @@ export {
 } from './templates';
 export {
   Users,
-  type APIResponseOfUser,
-  type UserResponse,
+  type UserRetrieveResponse,
   type UserListResponse,
+  type UserInviteResponse,
+  type UserUpdateRoleResponse,
   type UserRetrieveParams,
   type UserListParams,
   type UserInviteParams,
@@ -87,24 +84,21 @@ export {
 } from './users';
 export {
   Webhooks,
-  type APIMeta,
-  type APIResponseWebhook,
-  type ErrorDetail,
   type InboundMessageEvent,
   type InboundMessageEventPayload,
   type MessageEvent,
   type MessageEventPayload,
-  type MutationRequest,
-  type PaginationMeta,
   type TemplateEvent,
   type TemplateEventPayload,
-  type WebhookEventType,
-  type WebhookResponse,
+  type WebhookCreateResponse,
+  type WebhookRetrieveResponse,
+  type WebhookUpdateResponse,
   type WebhookListResponse,
   type WebhookListEventTypesResponse,
   type WebhookListEventsResponse,
   type WebhookRotateSecretResponse,
   type WebhookTestResponse,
+  type WebhookToggleStatusResponse,
   type WebhookCreateParams,
   type WebhookRetrieveParams,
   type WebhookUpdateParams,

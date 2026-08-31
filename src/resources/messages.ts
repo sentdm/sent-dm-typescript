@@ -1,14 +1,17 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../core/resource';
-import * as WebhooksAPI from './webhooks';
 import { APIPromise } from '../core/api-promise';
 import { buildHeaders } from '../internal/headers';
 import { RequestOptions } from '../internal/request-options';
 import { path } from '../internal/utils/path';
 
 /**
- * Send and track SMS and WhatsApp messages
+ * Send a message and follow what happened to it.
+ *
+ * One endpoint sends on any channel: pass `channel: "sent"` and we pick between SMS, WhatsApp and RCS per recipient using your routing rules, or name a channel to pin it. A send is accepted asynchronously — `POST /v3/messages` returns an id, and delivery is reported through `GET /v3/messages/{id}`, its activities, or a webhook.
+ *
+ * **A message needs a sender.** What you can send, where, and at what cost is decided by the markets under **Channels** — so a recipient in a country you hold no sender for is refused here rather than queued.
  */
 export class Messages extends APIResource {
   /**
@@ -108,12 +111,12 @@ export interface MessageRetrieveActivitiesResponse {
   /**
    * Error information
    */
-  error?: WebhooksAPI.ErrorDetail | null;
+  error?: MessageRetrieveActivitiesResponse.Error | null;
 
   /**
    * Request and response metadata
    */
-  meta?: WebhooksAPI.APIMeta;
+  meta?: MessageRetrieveActivitiesResponse.Meta;
 
   /**
    * Indicates whether the request was successful
@@ -135,6 +138,11 @@ export namespace MessageRetrieveActivitiesResponse {
      * The message ID these activities belong to
      */
     message_id?: string;
+
+    /**
+     * Pagination metadata for list responses
+     */
+    pagination?: Data.Pagination;
   }
 
   export namespace Data {
@@ -177,6 +185,103 @@ export namespace MessageRetrieveActivitiesResponse {
        */
       timestamp?: string;
     }
+
+    /**
+     * Pagination metadata for list responses
+     */
+    export interface Pagination {
+      /**
+       * @deprecated Cursor-based pagination. Never populated — see Cursors.
+       */
+      cursors?: Pagination.Cursors | null;
+
+      /**
+       * Whether there are more pages after this one
+       */
+      has_more?: boolean;
+
+      /**
+       * Current page number (1-indexed)
+       */
+      page?: number;
+
+      /**
+       * Number of items per page
+       */
+      page_size?: number;
+
+      /**
+       * Total number of items across all pages
+       */
+      total_count?: number;
+
+      /**
+       * Total number of pages
+       */
+      total_pages?: number;
+    }
+
+    export namespace Pagination {
+      /**
+       * @deprecated Cursor-based pagination. Never populated — see Cursors.
+       */
+      export interface Cursors {
+        /**
+         * Cursor to fetch the next page.
+         */
+        after?: string | null;
+
+        /**
+         * Cursor to fetch the previous page.
+         */
+        before?: string | null;
+      }
+    }
+  }
+
+  /**
+   * Error information
+   */
+  export interface Error {
+    /**
+     * Machine-readable error code (e.g., "RESOURCE_001")
+     */
+    code?: string;
+
+    /**
+     * Additional validation error details (field-level errors)
+     */
+    details?: { [key: string]: Array<string> } | null;
+
+    /**
+     * URL to documentation about this error
+     */
+    doc_url?: string | null;
+
+    /**
+     * Human-readable error message
+     */
+    message?: string;
+  }
+
+  /**
+   * Request and response metadata
+   */
+  export interface Meta {
+    /**
+     * Unique identifier for this request (for tracing and support)
+     */
+    request_id?: string;
+
+    /**
+     * Server timestamp when the response was generated
+     */
+    timestamp?: string;
+
+    /**
+     * API version used for this request
+     */
+    version?: string;
   }
 }
 
@@ -192,12 +297,12 @@ export interface MessageRetrieveStatusResponse {
   /**
    * Error information
    */
-  error?: WebhooksAPI.ErrorDetail | null;
+  error?: MessageRetrieveStatusResponse.Error | null;
 
   /**
    * Request and response metadata
    */
-  meta?: WebhooksAPI.APIMeta;
+  meta?: MessageRetrieveStatusResponse.Meta;
 
   /**
    * Indicates whether the request was successful
@@ -287,6 +392,51 @@ export namespace MessageRetrieveStatusResponse {
       }
     }
   }
+
+  /**
+   * Error information
+   */
+  export interface Error {
+    /**
+     * Machine-readable error code (e.g., "RESOURCE_001")
+     */
+    code?: string;
+
+    /**
+     * Additional validation error details (field-level errors)
+     */
+    details?: { [key: string]: Array<string> } | null;
+
+    /**
+     * URL to documentation about this error
+     */
+    doc_url?: string | null;
+
+    /**
+     * Human-readable error message
+     */
+    message?: string;
+  }
+
+  /**
+   * Request and response metadata
+   */
+  export interface Meta {
+    /**
+     * Unique identifier for this request (for tracing and support)
+     */
+    request_id?: string;
+
+    /**
+     * Server timestamp when the response was generated
+     */
+    timestamp?: string;
+
+    /**
+     * API version used for this request
+     */
+    version?: string;
+  }
 }
 
 /**
@@ -294,19 +444,28 @@ export namespace MessageRetrieveStatusResponse {
  */
 export interface MessageSendResponse {
   /**
-   * Response for the multi-recipient send message endpoint
+   * The result of a multi-recipient send.
+   *
+   * Declared here rather than in the service layer. POST /v3/messages used to
+   * publish MessageSendResult — a type in Common.Services.Messaging.Contracts — so
+   * the public contract was whatever the send service happened to return, and
+   * changing that service for an internal reason changed the API. The service keeps
+   * its result; this is what a caller sees, and the mapping between them is a
+   * decision the endpoint makes.
+   *
+   * The wire is unchanged by the move: same names, same values.
    */
   data?: MessageSendResponse.Data | null;
 
   /**
    * Error information
    */
-  error?: WebhooksAPI.ErrorDetail | null;
+  error?: MessageSendResponse.Error | null;
 
   /**
    * Request and response metadata
    */
-  meta?: WebhooksAPI.APIMeta;
+  meta?: MessageSendResponse.Meta;
 
   /**
    * Indicates whether the request was successful
@@ -316,57 +475,101 @@ export interface MessageSendResponse {
 
 export namespace MessageSendResponse {
   /**
-   * Response for the multi-recipient send message endpoint
+   * The result of a multi-recipient send.
+   *
+   * Declared here rather than in the service layer. POST /v3/messages used to
+   * publish MessageSendResult — a type in Common.Services.Messaging.Contracts — so
+   * the public contract was whatever the send service happened to return, and
+   * changing that service for an internal reason changed the API. The service keeps
+   * its result; this is what a caller sees, and the mapping between them is a
+   * decision the endpoint makes.
+   *
+   * The wire is unchanged by the move: same names, same values.
    */
   export interface Data {
-    /**
-     * Per-recipient message results
-     */
     recipients?: Array<Data.Recipient>;
 
     /**
-     * Overall request status: "QUEUED" when the batch has been accepted for delivery.
+     * Overall status — QUEUED once the batch is accepted for delivery.
      */
     status?: string;
 
-    /**
-     * Template ID that was used
-     */
     template_id?: string;
 
-    /**
-     * Template display name
-     */
     template_name?: string;
   }
 
   export namespace Data {
     /**
-     * Per-recipient result in the send message response
+     * What one recipient of a send got, as the API reports it.
      */
     export interface Recipient {
       /**
-       * Resolved template body text for this recipient's channel, or null for
-       * auto-detect
+       * Resolved template body for this recipient's channel, or null when the channel is
+       * auto-detected.
        */
       body?: string | null;
 
       /**
-       * Channel this message will be sent on (e.g. "sms", "whatsapp"), or null for
-       * auto-detect
+       * Channel this message will be sent on — sms, whatsapp — or null to auto-detect.
        */
       channel?: string | null;
 
       /**
-       * Unique message identifier for tracking this recipient's message
+       * Identifier for tracking this recipient's message.
        */
       message_id?: string;
 
       /**
-       * Phone number in E.164 format
+       * Phone number in E.164 format.
        */
       to?: string;
     }
+  }
+
+  /**
+   * Error information
+   */
+  export interface Error {
+    /**
+     * Machine-readable error code (e.g., "RESOURCE_001")
+     */
+    code?: string;
+
+    /**
+     * Additional validation error details (field-level errors)
+     */
+    details?: { [key: string]: Array<string> } | null;
+
+    /**
+     * URL to documentation about this error
+     */
+    doc_url?: string | null;
+
+    /**
+     * Human-readable error message
+     */
+    message?: string;
+  }
+
+  /**
+   * Request and response metadata
+   */
+  export interface Meta {
+    /**
+     * Unique identifier for this request (for tracing and support)
+     */
+    request_id?: string;
+
+    /**
+     * Server timestamp when the response was generated
+     */
+    timestamp?: string;
+
+    /**
+     * API version used for this request
+     */
+    version?: string;
   }
 }
 

@@ -18,27 +18,27 @@ import * as Uploads from './core/uploads';
 import * as API from './resources/index';
 import { APIPromise } from './core/api-promise';
 import {
-  APIResponseOfContact,
-  APIResponseOfContactMessageSummary,
   ContactCreateParams,
+  ContactCreateResponse,
   ContactDeleteParams,
   ContactListParams,
   ContactListResponse,
-  ContactMessageSummary,
-  ContactResponse,
   ContactRetrieveMessageSummaryParams,
+  ContactRetrieveMessageSummaryResponse,
   ContactRetrieveParams,
+  ContactRetrieveResponse,
   ContactUpdateParams,
+  ContactUpdateResponse,
   Contacts,
 } from './resources/contacts';
 import {
-  APIResponseOfConversationMessagesList,
   ConversationListMessagesParams,
+  ConversationListMessagesResponse,
   ConversationListParams,
-  ConversationMessagesList,
+  ConversationListResponse,
   Conversations,
 } from './resources/conversations';
-import { Me, MeRetrieveParams, MeRetrieveResponse, ProfileSettings } from './resources/me';
+import { Me, MeRetrieveParams, MeRetrieveResponse } from './resources/me';
 import {
   MessageRetrieveActivitiesParams,
   MessageRetrieveActivitiesResponse,
@@ -50,14 +50,13 @@ import {
 } from './resources/messages';
 import { NumberLookupParams, NumberLookupResponse, Numbers } from './resources/numbers';
 import {
-  APIResponseTemplate,
   AuthenticationConfig,
-  Template,
   TemplateBody,
   TemplateBodyContent,
   TemplateButton,
   TemplateButtonProps,
   TemplateCreateParams,
+  TemplateCreateResponse,
   TemplateDefinition,
   TemplateDeleteParams,
   TemplateFooter,
@@ -65,70 +64,65 @@ import {
   TemplateListParams,
   TemplateListResponse,
   TemplateRetrieveParams,
+  TemplateRetrieveResponse,
   TemplateUpdateParams,
+  TemplateUpdateResponse,
   TemplateVariable,
   Templates,
 } from './resources/templates';
 import {
-  APIResponseOfUser,
   UserInviteParams,
+  UserInviteResponse,
   UserListParams,
   UserListResponse,
   UserRemoveParams,
-  UserResponse,
   UserRetrieveParams,
+  UserRetrieveResponse,
   UserUpdateRoleParams,
+  UserUpdateRoleResponse,
   Users,
 } from './resources/users';
 import {
-  APIMeta,
-  APIResponseWebhook,
-  ErrorDetail,
   InboundMessageEvent,
   InboundMessageEventPayload,
   MessageEvent,
   MessageEventPayload,
-  MutationRequest,
-  PaginationMeta,
   TemplateEvent,
   TemplateEventPayload,
   WebhookCreateParams,
+  WebhookCreateResponse,
   WebhookDeleteParams,
-  WebhookEventType,
   WebhookListEventTypesParams,
   WebhookListEventTypesResponse,
   WebhookListEventsParams,
   WebhookListEventsResponse,
   WebhookListParams,
   WebhookListResponse,
-  WebhookResponse,
   WebhookRetrieveParams,
+  WebhookRetrieveResponse,
   WebhookRotateSecretParams,
   WebhookRotateSecretResponse,
   WebhookTestParams,
   WebhookTestResponse,
   WebhookToggleStatusParams,
+  WebhookToggleStatusResponse,
   WebhookUpdateParams,
+  WebhookUpdateResponse,
   Webhooks,
 } from './resources/webhooks';
 import {
-  APIResponseOfProfileDetail,
-  BillingContactInfo,
-  BrandBusinessInfo,
-  BrandComplianceInfo,
-  BrandContactInfo,
-  BrandsBrandData,
   DestinationCountry,
-  PaymentDetails,
   ProfileCompleteParams,
   ProfileCompleteResponse,
   ProfileCreateParams,
+  ProfileCreateResponse,
   ProfileDeleteParams,
-  ProfileDetail,
   ProfileListParams,
   ProfileListResponse,
   ProfileRetrieveParams,
+  ProfileRetrieveResponse,
   ProfileUpdateParams,
+  ProfileUpdateResponse,
   Profiles,
   TcrBrandRelationship,
   TcrVertical,
@@ -854,36 +848,67 @@ export class Sent {
   static toFile = Uploads.toFile;
 
   /**
-   * Configure webhook endpoints for real-time event delivery
+   * Delivery reports and inbound messages, pushed to you.
+   *
+   * Subscribe an endpoint to the event types you care about — `GET /v3/webhooks/event-types` lists them — and we POST each one as it happens, retrying on failure. Polling `GET /v3/messages/{id}` works and does not scale.
+   *
+   * **Verify the signature.** Every delivery is signed with your endpoint's secret; an unverified endpoint is one anybody can post to. `rotate-secret` replaces it, `test` sends a specimen event, and `GET /v3/webhooks/{id}/events` shows what we tried to deliver and what your endpoint answered — which is the first place to look when something appears to be missing.
    */
   webhooks: API.Webhooks = new API.Webhooks(this);
   /**
-   * Invite, update, and manage organization users and roles
+   * The people who can sign in to your organization, and what each may do.
+   *
+   * Users are dashboard access and nothing else — they do not send, and removing one does not affect traffic. An API key is not a user: it belongs to the organization or to a sender profile, so revoking a person's access leaves your integration running.
    */
   users: API.Users = new API.Users(this);
   /**
-   * Manage message templates with variable substitution
+   * Reusable message bodies with named variables.
+   *
+   * A template is substituted at send time from the values you pass, so the copy lives here rather than in your application. WhatsApp templates additionally need Meta's approval before they can be sent, and a template's channel status reports where that stands — an approved SMS template and an unapproved WhatsApp one are the same template in two states.
    */
   templates: API.Templates = new API.Templates(this);
   /**
-   * Manage organization profiles
+   * **Deprecated — use Sender Profiles.**
+   *
+   * The original profile resource, kept because it has live callers. It still works, and its replacement is `/v3/sender-profiles`, which takes the identity and the campaign in one call instead of across three.
+   *
+   * New integrations should not start here.
    */
   profiles: API.Profiles = new API.Profiles(this);
   /**
-   * Manage and lookup phone numbers
+   * What a phone number actually is, before you send to it.
+   *
+   * A lookup returns the number's country, line type and carrier, which is what decides whether it is reachable on a channel and what it costs. Worth doing on import rather than on send: a landline in a contact list is a message that can never be delivered.
    */
   numbers: API.Numbers = new API.Numbers(this);
   /**
-   * Send and track SMS and WhatsApp messages
+   * Send a message and follow what happened to it.
+   *
+   * One endpoint sends on any channel: pass `channel: "sent"` and we pick between SMS, WhatsApp and RCS per recipient using your routing rules, or name a channel to pin it. A send is accepted asynchronously — `POST /v3/messages` returns an id, and delivery is reported through `GET /v3/messages/{id}`, its activities, or a webhook.
+   *
+   * **A message needs a sender.** What you can send, where, and at what cost is decided by the markets under **Channels** — so a recipient in a country you hold no sender for is refused here rather than queued.
    */
   messages: API.Messages = new API.Messages(this);
   /**
-   * Create, update, and manage customer contact lists
+   * The people you message, and their channel identities.
+   *
+   * A contact holds one identity per channel — a phone number, a WhatsApp number — so routing can choose between them for the same person. Opt-out is recorded against the contact and honoured on every send, whichever channel it came through.
+   *
+   * `GET /v3/contacts/{id}/message-summary` is the per-contact view of what you have sent and what happened to it.
    */
   contacts: API.Contacts = new API.Contacts(this);
+  /**
+   * Inbound and outbound messages, grouped by the person they are with.
+   *
+   * A conversation is the thread for one contact across every channel — a reply by SMS and one by WhatsApp belong to the same conversation, because they are the same person talking to you.
+   *
+   * Read-only. Sending is **Messages**; a reply arrives here and through your webhooks.
+   */
   conversations: API.Conversations = new API.Conversations(this);
   /**
-   * Retrieve account details
+   * Who the current key is.
+   *
+   * `GET /v3/me` answers with the account the key authenticates as, which is the quickest way to tell a live key from a test one, an organization key from a sender profile's, and to confirm `x-profile-id` resolved to the profile you meant.
    */
   me: API.Me = new API.Me(this);
 }
@@ -903,24 +928,21 @@ export declare namespace Sent {
 
   export {
     Webhooks as Webhooks,
-    type APIMeta as APIMeta,
-    type APIResponseWebhook as APIResponseWebhook,
-    type ErrorDetail as ErrorDetail,
     type InboundMessageEvent as InboundMessageEvent,
     type InboundMessageEventPayload as InboundMessageEventPayload,
     type MessageEvent as MessageEvent,
     type MessageEventPayload as MessageEventPayload,
-    type MutationRequest as MutationRequest,
-    type PaginationMeta as PaginationMeta,
     type TemplateEvent as TemplateEvent,
     type TemplateEventPayload as TemplateEventPayload,
-    type WebhookEventType as WebhookEventType,
-    type WebhookResponse as WebhookResponse,
+    type WebhookCreateResponse as WebhookCreateResponse,
+    type WebhookRetrieveResponse as WebhookRetrieveResponse,
+    type WebhookUpdateResponse as WebhookUpdateResponse,
     type WebhookListResponse as WebhookListResponse,
     type WebhookListEventTypesResponse as WebhookListEventTypesResponse,
     type WebhookListEventsResponse as WebhookListEventsResponse,
     type WebhookRotateSecretResponse as WebhookRotateSecretResponse,
     type WebhookTestResponse as WebhookTestResponse,
+    type WebhookToggleStatusResponse as WebhookToggleStatusResponse,
     type WebhookCreateParams as WebhookCreateParams,
     type WebhookRetrieveParams as WebhookRetrieveParams,
     type WebhookUpdateParams as WebhookUpdateParams,
@@ -935,9 +957,10 @@ export declare namespace Sent {
 
   export {
     Users as Users,
-    type APIResponseOfUser as APIResponseOfUser,
-    type UserResponse as UserResponse,
+    type UserRetrieveResponse as UserRetrieveResponse,
     type UserListResponse as UserListResponse,
+    type UserInviteResponse as UserInviteResponse,
+    type UserUpdateRoleResponse as UserUpdateRoleResponse,
     type UserRetrieveParams as UserRetrieveParams,
     type UserListParams as UserListParams,
     type UserInviteParams as UserInviteParams,
@@ -947,9 +970,7 @@ export declare namespace Sent {
 
   export {
     Templates as Templates,
-    type APIResponseTemplate as APIResponseTemplate,
     type AuthenticationConfig as AuthenticationConfig,
-    type Template as Template,
     type TemplateBody as TemplateBody,
     type TemplateBodyContent as TemplateBodyContent,
     type TemplateButton as TemplateButton,
@@ -958,6 +979,9 @@ export declare namespace Sent {
     type TemplateFooter as TemplateFooter,
     type TemplateHeader as TemplateHeader,
     type TemplateVariable as TemplateVariable,
+    type TemplateCreateResponse as TemplateCreateResponse,
+    type TemplateRetrieveResponse as TemplateRetrieveResponse,
+    type TemplateUpdateResponse as TemplateUpdateResponse,
     type TemplateListResponse as TemplateListResponse,
     type TemplateCreateParams as TemplateCreateParams,
     type TemplateRetrieveParams as TemplateRetrieveParams,
@@ -968,17 +992,12 @@ export declare namespace Sent {
 
   export {
     Profiles as Profiles,
-    type APIResponseOfProfileDetail as APIResponseOfProfileDetail,
-    type BillingContactInfo as BillingContactInfo,
-    type BrandBusinessInfo as BrandBusinessInfo,
-    type BrandComplianceInfo as BrandComplianceInfo,
-    type BrandContactInfo as BrandContactInfo,
-    type BrandsBrandData as BrandsBrandData,
     type DestinationCountry as DestinationCountry,
-    type PaymentDetails as PaymentDetails,
-    type ProfileDetail as ProfileDetail,
     type TcrBrandRelationship as TcrBrandRelationship,
     type TcrVertical as TcrVertical,
+    type ProfileCreateResponse as ProfileCreateResponse,
+    type ProfileRetrieveResponse as ProfileRetrieveResponse,
+    type ProfileUpdateResponse as ProfileUpdateResponse,
     type ProfileListResponse as ProfileListResponse,
     type ProfileCompleteResponse as ProfileCompleteResponse,
     type ProfileCreateParams as ProfileCreateParams,
@@ -1007,11 +1026,11 @@ export declare namespace Sent {
 
   export {
     Contacts as Contacts,
-    type APIResponseOfContact as APIResponseOfContact,
-    type APIResponseOfContactMessageSummary as APIResponseOfContactMessageSummary,
-    type ContactMessageSummary as ContactMessageSummary,
-    type ContactResponse as ContactResponse,
+    type ContactCreateResponse as ContactCreateResponse,
+    type ContactRetrieveResponse as ContactRetrieveResponse,
+    type ContactUpdateResponse as ContactUpdateResponse,
     type ContactListResponse as ContactListResponse,
+    type ContactRetrieveMessageSummaryResponse as ContactRetrieveMessageSummaryResponse,
     type ContactCreateParams as ContactCreateParams,
     type ContactRetrieveParams as ContactRetrieveParams,
     type ContactUpdateParams as ContactUpdateParams,
@@ -1022,15 +1041,14 @@ export declare namespace Sent {
 
   export {
     Conversations as Conversations,
-    type APIResponseOfConversationMessagesList as APIResponseOfConversationMessagesList,
-    type ConversationMessagesList as ConversationMessagesList,
+    type ConversationListResponse as ConversationListResponse,
+    type ConversationListMessagesResponse as ConversationListMessagesResponse,
     type ConversationListParams as ConversationListParams,
     type ConversationListMessagesParams as ConversationListMessagesParams,
   };
 
   export {
     Me as Me,
-    type ProfileSettings as ProfileSettings,
     type MeRetrieveResponse as MeRetrieveResponse,
     type MeRetrieveParams as MeRetrieveParams,
   };

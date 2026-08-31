@@ -2,19 +2,15 @@
 
 import { APIResource } from '../../core/resource';
 import * as ProfilesAPI from './profiles';
-import * as WebhooksAPI from '../webhooks';
 import * as CampaignsAPI from './campaigns';
 import {
-  APIResponseOfBrandCampaign,
-  APIResponseOfListOfBrandCampaign,
-  BrandCampaign,
   CampaignCreateParams,
-  CampaignData,
+  CampaignCreateResponse,
   CampaignDeleteParams,
   CampaignListParams,
+  CampaignListResponse,
   CampaignUpdateParams,
-  CampaignUseCase,
-  CampaignUseCaseData,
+  CampaignUpdateResponse,
   Campaigns,
   MessagingUseCaseUs,
 } from './campaigns';
@@ -24,35 +20,37 @@ import { RequestOptions } from '../../internal/request-options';
 import { path } from '../../internal/utils/path';
 
 /**
- * Manage organization profiles
+ * **Deprecated — use Sender Profiles.**
+ *
+ * The original profile resource, kept because it has live callers. It still works, and its replacement is `/v3/sender-profiles`, which takes the identity and the campaign in one call instead of across three.
+ *
+ * New integrations should not start here.
  */
 export class Profiles extends APIResource {
   campaigns: CampaignsAPI.Campaigns = new CampaignsAPI.Campaigns(this._client);
 
   /**
+   * **Deprecated.** This endpoint is replaced by `/v3/sender-profiles` and will be
+   * removed in a future release. It still behaves exactly as before, so nothing
+   * needs to change today — but new integrations should use `/v3/sender-profiles`,
+   * which models a profile's markets, compliance, brand, campaigns and billing
+   * explicitly.
+   *
    * Creates a new sender profile within an organization. Profiles represent
    * different brands, departments, or use cases, each with their own messaging
    * configuration and settings. Requires admin role in the organization.
    *
    * ## WhatsApp Business Account
    *
-   * Every profile must be linked to a WhatsApp Business Account. There are two ways
-   * to do this:
+   * Every profile owns its own WhatsApp Business Account — accounts are never shared
+   * between profiles or inherited from the organization. Provide a
+   * `whatsapp_business_account` object with `waba_id`, `phone_number_id`, and
+   * `access_token`. Obtain these from Meta Business Manager by creating a System
+   * User with `whatsapp_business_messaging` and `whatsapp_business_management`
+   * permissions.
    *
-   * **1. Inherit from organization (default)** — Omit the
-   * `whatsapp_business_account` field. The profile will share the organization's
-   * WhatsApp Business Account, which must have been set up via WhatsApp Embedded
-   * Signup. This is the recommended path for most use cases.
-   *
-   * **2. Direct credentials** — Provide a `whatsapp_business_account` object with
-   * `waba_id`, `phone_number_id`, and `access_token`. Use this when the profile
-   * needs its own independent WhatsApp Business Account. Obtain these from Meta
-   * Business Manager by creating a System User with `whatsapp_business_messaging`
-   * and `whatsapp_business_management` permissions.
-   *
-   * If the `whatsapp_business_account` field is omitted and the organization has no
-   * WhatsApp Business Account configured, the request will be rejected with
-   * HTTP 422.
+   * Omit the field and the profile is created without WhatsApp, staying incomplete
+   * until it has an account of its own.
    *
    * ## Brand
    *
@@ -67,13 +65,9 @@ export class Profiles extends APIResource {
    * and are forwarded directly to the payment processor. Providing `payment_details`
    * when `billing_model` is `"organization"` is not allowed.
    *
-   * @example
-   * ```ts
-   * const apiResponseOfProfileDetail =
-   *   await client.profiles.create();
-   * ```
+   * @deprecated
    */
-  create(params: ProfileCreateParams, options?: RequestOptions): APIPromise<APIResponseOfProfileDetail> {
+  create(params: ProfileCreateParams, options?: RequestOptions): APIPromise<ProfileCreateResponse> {
     const { 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
     return this._client.post('/v3/profiles', {
       body,
@@ -89,23 +83,23 @@ export class Profiles extends APIResource {
   }
 
   /**
+   * **Deprecated.** This endpoint is replaced by `/v3/sender-profiles` and will be
+   * removed in a future release. It still behaves exactly as before, so nothing
+   * needs to change today — but new integrations should use `/v3/sender-profiles`,
+   * which models a profile's markets, compliance, brand, campaigns and billing
+   * explicitly.
+   *
    * Retrieves detailed information about a specific sender profile within an
    * organization, including brand and KYC information if a brand has been
    * configured.
    *
-   * @example
-   * ```ts
-   * const apiResponseOfProfileDetail =
-   *   await client.profiles.retrieve(
-   *     '770e8400-e29b-41d4-a716-446655440002',
-   *   );
-   * ```
+   * @deprecated
    */
   retrieve(
     profileID: string,
     params: ProfileRetrieveParams | null | undefined = {},
     options?: RequestOptions,
-  ): APIPromise<APIResponseOfProfileDetail> {
+  ): APIPromise<ProfileRetrieveResponse> {
     const { 'x-profile-id': xProfileID } = params ?? {};
     return this._client.get(path`/v3/profiles/${profileID}`, {
       ...options,
@@ -117,6 +111,12 @@ export class Profiles extends APIResource {
   }
 
   /**
+   * **Deprecated.** This endpoint is replaced by `/v3/sender-profiles` and will be
+   * removed in a future release. It still behaves exactly as before, so nothing
+   * needs to change today — but new integrations should use `/v3/sender-profiles`,
+   * which models a profile's markets, compliance, brand, campaigns and billing
+   * explicitly.
+   *
    * Updates a profile's configuration and settings. Requires admin role in the
    * organization. Only provided fields will be updated (partial update).
    *
@@ -136,19 +136,27 @@ export class Profiles extends APIResource {
    * and are forwarded directly to the payment processor. Providing `payment_details`
    * when `billing_model` is `"organization"` is not allowed.
    *
-   * @example
-   * ```ts
-   * const apiResponseOfProfileDetail =
-   *   await client.profiles.update(
-   *     '770e8400-e29b-41d4-a716-446655440002',
-   *   );
-   * ```
+   * ## Deprecated fields
+   *
+   * `sending_phone_number_profile_id` and `sending_whatsapp_number_profile_id` are
+   * **accepted and ignored**. Sender borrowing is gone: a profile cannot send from
+   * another profile's number, because two profiles behind one sender makes an
+   * inbound reply and a delivery receipt ambiguous about whose they are.
+   *
+   * Sending either **changes nothing and still returns `200`** — they are kept on
+   * the contract so an existing integration keeps working. Reads carry both keys too
+   * and always answer `null`, which is how you can confirm the value did not take.
+   *
+   * Give the profile a sender of its own instead — `POST /v3/channels/sms` or
+   * `POST /v3/channels/whatsapp`, sent with the `x-profile-id` header naming it.
+   *
+   * @deprecated
    */
   update(
     profileID: string,
     params: ProfileUpdateParams,
     options?: RequestOptions,
-  ): APIPromise<APIResponseOfProfileDetail> {
+  ): APIPromise<ProfileUpdateResponse> {
     const { 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
     return this._client.patch(path`/v3/profiles/${profileID}`, {
       body,
@@ -164,15 +172,18 @@ export class Profiles extends APIResource {
   }
 
   /**
+   * **Deprecated.** This endpoint is replaced by `/v3/sender-profiles` and will be
+   * removed in a future release. It still behaves exactly as before, so nothing
+   * needs to change today — but new integrations should use `/v3/sender-profiles`,
+   * which models a profile's markets, compliance, brand, campaigns and billing
+   * explicitly.
+   *
    * Retrieves all sender profiles within an organization, including brand
    * information for each profile. Profiles represent different brands, departments,
    * or use cases within an organization, each with their own messaging
    * configuration.
    *
-   * @example
-   * ```ts
-   * const profiles = await client.profiles.list();
-   * ```
+   * @deprecated
    */
   list(
     params: ProfileListParams | null | undefined = {},
@@ -189,15 +200,19 @@ export class Profiles extends APIResource {
   }
 
   /**
-   * Soft deletes a sender profile. The profile will be marked as deleted but data is
-   * retained. Requires admin role in the organization.
+   * **Deprecated.** This endpoint is replaced by `/v3/sender-profiles` and will be
+   * removed in a future release. It still behaves exactly as before, so nothing
+   * needs to change today — but new integrations should use `/v3/sender-profiles`,
+   * which models a profile's markets, compliance, brand, campaigns and billing
+   * explicitly.
    *
-   * @example
-   * ```ts
-   * await client.profiles.delete(
-   *   '770e8400-e29b-41d4-a716-446655440002',
-   * );
-   * ```
+   * Soft deletes a sender profile. The profile will be marked as deleted but data is
+   * retained. Anything it still held is released first: phone numbers return to our
+   * inventory and can go to whoever asks next, its own WhatsApp account is
+   * deregistered, and its routing rules stop being used. Requires admin role in the
+   * organization.
+   *
+   * @deprecated
    */
   delete(profileID: string, params: ProfileDeleteParams, options?: RequestOptions): APIPromise<void> {
     const { 'x-profile-id': xProfileID, ...body } = params;
@@ -212,15 +227,27 @@ export class Profiles extends APIResource {
   }
 
   /**
+   * **Deprecated.** This endpoint is replaced by `/v3/sender-profiles` and will be
+   * removed in a future release. It still behaves exactly as before, so nothing
+   * needs to change today — but new integrations should use `/v3/sender-profiles`,
+   * which models a profile's markets, compliance, brand, campaigns and billing
+   * explicitly.
+   *
    * Final step in the profile compliance workflow. Validates all prerequisites (KYC,
    * brand, campaigns, required documents), connects the profile to the SMS and
-   * WhatsApp channels, and sets its status based on configuration. Prerequisites are
-   * always validated first: if any fail the call returns 400. If they pass and the
-   * profile is already completed, the call returns 200 and does nothing. Otherwise
-   * it returns 202 and calls the provided webhook URL when background processing
-   * finishes.
+   * WhatsApp channels, and marks it onboarded. Prerequisites are always validated
+   * first: if any fail the call returns 400 naming every unmet one, and nothing is
+   * started. If they pass and the profile is already onboarded, the call returns 200
+   * and does nothing. Otherwise it returns 202 and calls the provided webhook URL
+   * when background processing finishes.
    *
-   * Prerequisites:
+   * Callable with the organization's API key or the profile's own key. The key's
+   * user must be an admin or owner of the profile, or of the organization it belongs
+   * to.
+   *
+   * Prerequisites (all but the last are checked before the already-onboarded
+   * short-circuit, matching the previous contract; the last is checked after it, so
+   * a profile that is already onboarded is never rejected by it):
    *
    * - Profile must have a name, short name, and description (short name max 50
    *   characters, description max 5000)
@@ -231,28 +258,20 @@ export class Profiles extends APIResource {
    * - TCR applications must have at least one campaign, own or inherited
    * - Destination countries marked as main must have their required compliance
    *   documents uploaded
+   * - TCR applications must state whether they inherit the organization's TCR brand
+   *   and campaign
    *
-   * Resulting status:
+   * Outcome:
    *
-   * - If either the SMS or WhatsApp channel is unconfigured, the profile is
-   *   SUBMITTED
-   * - For a TCR application that inherits both its brand and its campaigns, the
-   *   profile is COMPLETED
-   * - For a TCR application that owns either its brand or its campaigns, the profile
-   *   is COMPLETED once both have been submitted to TCR, and SUBMITTED until then
-   * - For a non-TCR application, the profile is SUBMITTED when a main destination
-   *   country is set, and COMPLETED otherwise
+   * - Once the prerequisites pass and background processing succeeds, the profile's
+   *   conversionFlowStatus becomes ONBOARDED and its public status reads `approved`
+   * - A profile with no WhatsApp channel, or one still awaiting TCR registration or
+   *   country documents, is onboarded like any other. Those are answered by the
+   *   brand and campaign records, not by a status on the profile
+   * - If background processing fails, the profile keeps the status it already had
+   *   and the webhook reports the reason
    *
-   * @example
-   * ```ts
-   * const response = await client.profiles.complete(
-   *   '660e8400-e29b-41d4-a716-446655440000',
-   *   {
-   *     webHookUrl:
-   *       'https://your-app.com/webhook/profile-complete',
-   *   },
-   * );
-   * ```
+   * @deprecated
    */
   complete(
     profileID: string,
@@ -274,587 +293,10 @@ export class Profiles extends APIResource {
   }
 }
 
-/**
- * Standard API response envelope for all v3 endpoints
- */
-export interface APIResponseOfProfileDetail {
-  /**
-   * Detailed profile response for v3 API
-   */
-  data?: ProfileDetail | null;
-
-  /**
-   * Error information
-   */
-  error?: WebhooksAPI.ErrorDetail | null;
-
-  /**
-   * Request and response metadata
-   */
-  meta?: WebhooksAPI.APIMeta;
-
-  /**
-   * Indicates whether the request was successful
-   */
-  success?: boolean;
-}
-
-/**
- * Billing contact information for a profile. Required when billing_model is
- * "profile" or "profile_and_organization".
- */
-export interface BillingContactInfo {
-  /**
-   * Email address where invoices will be sent (required)
-   */
-  email: string;
-
-  /**
-   * Full name of the billing contact or company (required)
-   */
-  name: string;
-
-  /**
-   * Billing address (optional). Free-form text including street, city, state, postal
-   * code, and country.
-   */
-  address?: string | null;
-
-  /**
-   * Phone number for the billing contact (optional)
-   */
-  phone?: string | null;
-}
-
-/**
- * Business details and address for brand KYC
- */
-export interface BrandBusinessInfo {
-  /**
-   * City
-   */
-  city?: string | null;
-
-  /**
-   * Country code (e.g., US, CA)
-   */
-  country?: string | null;
-
-  /**
-   * Country where the business is registered
-   */
-  countryOfRegistration?: string | null;
-
-  entityType?: 'PRIVATE_PROFIT' | 'PUBLIC_PROFIT' | 'NON_PROFIT' | 'SOLE_PROPRIETOR' | 'GOVERNMENT' | null;
-
-  /**
-   * Legal business name
-   */
-  legalName?: string | null;
-
-  /**
-   * Postal/ZIP code
-   */
-  postalCode?: string | null;
-
-  /**
-   * State/province code
-   */
-  state?: string | null;
-
-  /**
-   * Street address
-   */
-  street?: string | null;
-
-  /**
-   * Tax ID/EIN number
-   */
-  taxId?: string | null;
-
-  /**
-   * Type of tax ID (e.g., us_ein, ca_bn)
-   */
-  taxIdType?: string | null;
-
-  /**
-   * Business website URL
-   */
-  url?: string | null;
-}
-
-/**
- * Compliance and TCR information for brand registration
- */
-export interface BrandComplianceInfo {
-  brandRelationship: TcrBrandRelationship;
-
-  vertical: TcrVertical;
-
-  /**
-   * List of destination countries for messaging
-   */
-  destinationCountries?: Array<DestinationCountry> | null;
-
-  /**
-   * Whether this is a TCR (Campaign Registry) application
-   */
-  isTcrApplication?: boolean | null;
-
-  /**
-   * Additional notes about the business or use case
-   */
-  notes?: string | null;
-
-  /**
-   * Phone number prefix for messaging (e.g., "+1")
-   */
-  phoneNumberPrefix?: string | null;
-
-  /**
-   * Primary messaging use case description
-   */
-  primaryUseCase?: string | null;
-}
-
-/**
- * Contact information for brand KYC
- */
-export interface BrandContactInfo {
-  /**
-   * Primary contact name (required)
-   */
-  name: string;
-
-  /**
-   * Business/brand name
-   */
-  businessName?: string | null;
-
-  /**
-   * Contact email address
-   */
-  email?: string | null;
-
-  /**
-   * Contact phone number in E.164 format
-   */
-  phone?: string | null;
-
-  /**
-   * Contact phone country code (e.g., "1" for US)
-   */
-  phoneCountryCode?: string | null;
-
-  /**
-   * Contact's role in the business
-   */
-  role?: string | null;
-}
-
-/**
- * Brand and KYC data grouped into contact, business, and compliance sections
- */
-export interface BrandsBrandData {
-  /**
-   * Compliance and TCR information for brand registration
-   */
-  compliance: BrandComplianceInfo;
-
-  /**
-   * Contact information for brand KYC
-   */
-  contact: BrandContactInfo;
-
-  /**
-   * Business details and address for brand KYC
-   */
-  business?: BrandBusinessInfo | null;
-}
-
 export interface DestinationCountry {
   id?: string;
 
   isMain?: boolean;
-}
-
-/**
- * Payment card details for a profile. Accepted when billing_model is "profile" or
- * "profile_and_organization". These details are not stored on our servers and will
- * be forwarded to the payment processor.
- */
-export interface PaymentDetails {
-  /**
-   * Card number (digits only, 13–19 characters)
-   */
-  card_number: string;
-
-  /**
-   * Card security code (3–4 digits)
-   */
-  cvc: string;
-
-  /**
-   * Card expiry date in MM/YY format (e.g. "09/27")
-   */
-  expiry: string;
-
-  /**
-   * Billing ZIP / postal code associated with the card
-   */
-  zip_code: string;
-}
-
-/**
- * Detailed profile response for v3 API
- */
-export interface ProfileDetail {
-  /**
-   * Profile unique identifier
-   */
-  id?: string;
-
-  /**
-   * Whether contacts are shared across profiles in the organization
-   */
-  allow_contact_sharing?: boolean;
-
-  /**
-   * Whether number changes are allowed during onboarding
-   */
-  allow_number_change_during_onboarding?: boolean | null;
-
-  /**
-   * Whether templates are shared across profiles in the organization
-   */
-  allow_template_sharing?: boolean;
-
-  /**
-   * Billing contact info returned in profile responses
-   */
-  billing_contact?: ProfileDetail.BillingContact | null;
-
-  /**
-   * Billing model: profile, organization, or profile_and_organization
-   */
-  billing_model?: string;
-
-  /**
-   * Brand response with nested contact, business, and compliance sections — mirrors
-   * the request structure.
-   */
-  brand?: ProfileDetail.Brand | null;
-
-  /**
-   * When the profile was created
-   */
-  created_at?: string;
-
-  /**
-   * Profile description
-   */
-  description?: string | null;
-
-  /**
-   * Profile email (inherited from organization)
-   */
-  email?: string | null;
-
-  /**
-   * Profile icon URL
-   */
-  icon?: string | null;
-
-  /**
-   * Whether this profile inherits contacts from the organization
-   */
-  inherit_contacts?: boolean;
-
-  /**
-   * Whether this profile inherits TCR brand from the organization
-   */
-  inherit_tcr_brand?: boolean;
-
-  /**
-   * Whether this profile inherits TCR campaign from the organization
-   */
-  inherit_tcr_campaign?: boolean;
-
-  /**
-   * Whether this profile inherits templates from the organization
-   */
-  inherit_templates?: boolean;
-
-  /**
-   * Profile name
-   */
-  name?: string;
-
-  /**
-   * Parent organization ID
-   */
-  organization_id?: string | null;
-
-  /**
-   * Direct SMS phone number
-   */
-  sending_phone_number?: string | null;
-
-  /**
-   * Reference to another profile whose SMS configuration this profile uses
-   */
-  sending_phone_number_profile_id?: string | null;
-
-  /**
-   * Reference to another profile for WhatsApp configuration
-   */
-  sending_whatsapp_number_profile_id?: string | null;
-
-  /**
-   * Profile short name/abbreviation. 3–11 characters: letters, numbers, and spaces
-   * only, with at least one letter.
-   */
-  short_name?: string | null;
-
-  /**
-   * Profile setup status: incomplete, pending_review, approved, rejected
-   */
-  status?: string;
-
-  /**
-   * When the profile was last updated
-   */
-  updated_at?: string | null;
-
-  /**
-   * WhatsApp Business Account ID associated with this profile. Present whether the
-   * WABA is inherited from the organization or configured directly.
-   */
-  waba_id?: string | null;
-
-  /**
-   * Direct WhatsApp phone number
-   */
-  whatsapp_phone_number?: string | null;
-}
-
-export namespace ProfileDetail {
-  /**
-   * Billing contact info returned in profile responses
-   */
-  export interface BillingContact {
-    address?: string | null;
-
-    email?: string | null;
-
-    name?: string | null;
-
-    phone?: string | null;
-  }
-
-  /**
-   * Brand response with nested contact, business, and compliance sections — mirrors
-   * the request structure.
-   */
-  export interface Brand {
-    /**
-     * Unique identifier for the brand
-     */
-    id?: string;
-
-    /**
-     * Business details and address information
-     */
-    business?: Brand.Business | null;
-
-    /**
-     * Compliance and TCR-related information
-     */
-    compliance?: Brand.Compliance | null;
-
-    /**
-     * Contact information for the brand
-     */
-    contact?: Brand.Contact | null;
-
-    /**
-     * When the brand was created
-     */
-    created_at?: string;
-
-    /**
-     * @deprecated Deprecated and scheduled for removal. Identifies the Campaign
-     * Service Provider that registered the brand, which is Sent, so the value is the
-     * same for every brand and every account. Nothing on your side can act on it and
-     * there is no replacement. Stop reading it.
-     */
-    csp_id?: string | null;
-
-    identity_status?: 'SELF_DECLARED' | 'UNVERIFIED' | 'VERIFIED' | 'VETTED_VERIFIED' | null;
-
-    /**
-     * Whether this brand is inherited from the parent organization
-     */
-    is_inherited?: boolean;
-
-    status?: 'ACTIVE' | 'INACTIVE' | 'SUSPENDED' | null;
-
-    /**
-     * When the brand was submitted to TCR
-     */
-    submitted_at?: string | null;
-
-    /**
-     * Whether this brand has been submitted to TCR
-     */
-    submitted_to_tcr?: boolean;
-
-    /**
-     * TCR brand ID (populated after TCR submission)
-     */
-    tcr_brand_id?: string | null;
-
-    /**
-     * Universal EIN from TCR
-     */
-    universal_ein?: string | null;
-
-    /**
-     * When the brand was last updated
-     */
-    updated_at?: string | null;
-  }
-
-  export namespace Brand {
-    /**
-     * Business details and address information
-     */
-    export interface Business {
-      /**
-       * City
-       */
-      city?: string | null;
-
-      /**
-       * Country code (e.g., US, CA)
-       */
-      country?: string | null;
-
-      /**
-       * Country where the business is registered
-       */
-      country_of_registration?: string | null;
-
-      /**
-       * Business entity type
-       */
-      entity_type?: string | null;
-
-      /**
-       * Legal business name
-       */
-      legal_name?: string | null;
-
-      /**
-       * Postal/ZIP code
-       */
-      postal_code?: string | null;
-
-      /**
-       * State/province code
-       */
-      state?: string | null;
-
-      /**
-       * Street address
-       */
-      street?: string | null;
-
-      /**
-       * Tax ID/EIN number
-       */
-      tax_id?: string | null;
-
-      /**
-       * Type of tax ID (e.g., us_ein, ca_bn)
-       */
-      tax_id_type?: string | null;
-
-      /**
-       * Business website URL
-       */
-      url?: string | null;
-    }
-
-    /**
-     * Compliance and TCR-related information
-     */
-    export interface Compliance {
-      brand_relationship?: ProfilesAPI.TcrBrandRelationship | null;
-
-      /**
-       * List of destination countries for messaging
-       */
-      destination_countries?: Array<ProfilesAPI.DestinationCountry>;
-
-      /**
-       * Whether this is a TCR (Campaign Registry) application
-       */
-      is_tcr_application?: boolean;
-
-      /**
-       * Additional notes about the business or use case
-       */
-      notes?: string | null;
-
-      /**
-       * Phone number prefix for messaging (e.g., "+1")
-       */
-      phone_number_prefix?: string | null;
-
-      /**
-       * Primary messaging use case description
-       */
-      primary_use_case?: string | null;
-
-      vertical?: ProfilesAPI.TcrVertical | null;
-    }
-
-    /**
-     * Contact information for the brand
-     */
-    export interface Contact {
-      /**
-       * Business/brand name
-       */
-      business_name?: string | null;
-
-      /**
-       * Contact email address
-       */
-      email?: string | null;
-
-      /**
-       * Primary contact name
-       */
-      name?: string;
-
-      /**
-       * Contact phone number in E.164 format
-       */
-      phone?: string | null;
-
-      /**
-       * Contact phone country code (e.g., "1" for US)
-       */
-      phone_country_code?: string | null;
-
-      /**
-       * Contact's role in the business
-       */
-      role?: string | null;
-    }
-  }
 }
 
 export type TcrBrandRelationship =
@@ -892,21 +334,1383 @@ export type TcrVertical =
 /**
  * Standard API response envelope for all v3 endpoints
  */
+export interface ProfileCreateResponse {
+  /**
+   * Detailed profile response for v3 API
+   */
+  data?: ProfileCreateResponse.Data | null;
+
+  /**
+   * Error information
+   */
+  error?: ProfileCreateResponse.Error | null;
+
+  /**
+   * Request and response metadata
+   */
+  meta?: ProfileCreateResponse.Meta;
+
+  /**
+   * Indicates whether the request was successful
+   */
+  success?: boolean;
+}
+
+export namespace ProfileCreateResponse {
+  /**
+   * Detailed profile response for v3 API
+   */
+  export interface Data {
+    /**
+     * Profile unique identifier
+     */
+    id?: string;
+
+    /**
+     * @deprecated Always false. A profile no longer shares contacts with sibling
+     * profiles — it sees only what it owns. Retained so existing v3 clients reading
+     * allow_contact_sharing keep deserializing; it carries no information.
+     */
+    allow_contact_sharing?: boolean | null;
+
+    /**
+     * Whether number changes are allowed during onboarding
+     */
+    allow_number_change_during_onboarding?: boolean | null;
+
+    /**
+     * @deprecated Always false. A profile no longer shares templates with sibling
+     * profiles. Retained so existing v3 clients reading allow_template_sharing keep
+     * deserializing; it carries no information.
+     */
+    allow_template_sharing?: boolean | null;
+
+    /**
+     * Billing contact info returned in profile responses
+     */
+    billing_contact?: Data.BillingContact | null;
+
+    /**
+     * Billing model: profile, organization, or profile_and_organization
+     */
+    billing_model?: string;
+
+    /**
+     * Brand response with nested contact, business, and compliance sections — mirrors
+     * the request structure.
+     */
+    brand?: Data.Brand | null;
+
+    /**
+     * When the profile was created
+     */
+    created_at?: string;
+
+    /**
+     * Profile description
+     */
+    description?: string | null;
+
+    /**
+     * Profile email (inherited from organization)
+     */
+    email?: string | null;
+
+    /**
+     * Profile icon URL
+     */
+    icon?: string | null;
+
+    /**
+     * @deprecated Always false. A profile no longer inherits its organization's
+     * contacts. Retained so existing v3 clients reading inherit_contacts keep
+     * deserializing; it carries no information.
+     */
+    inherit_contacts?: boolean | null;
+
+    /**
+     * Whether this profile inherits TCR brand from the organization
+     */
+    inherit_tcr_brand?: boolean;
+
+    /**
+     * Whether this profile inherits TCR campaign from the organization
+     */
+    inherit_tcr_campaign?: boolean;
+
+    /**
+     * @deprecated Always false. A profile no longer inherits its organization's
+     * templates. Retained so existing v3 clients reading inherit_templates keep
+     * deserializing; it carries no information.
+     */
+    inherit_templates?: boolean | null;
+
+    /**
+     * Profile name
+     */
+    name?: string;
+
+    /**
+     * Parent organization ID
+     */
+    organization_id?: string | null;
+
+    /**
+     * Direct SMS phone number
+     */
+    sending_phone_number?: string | null;
+
+    /**
+     * @deprecated Deprecated. Always null. Sender borrowing is gone: a profile no
+     * longer points at another profile for its SMS sender, and every profile owns the
+     * sender it sends from.
+     *
+     * Kept on the wire, and never populated, because those are two different promises.
+     * Removing the key changes the response's shape — a generated client loses the
+     * property and stops compiling on the next regenerate, for a value that is now
+     * null for every profile in existence. Keeping it null costs a key and breaks
+     * nobody, and null is the honest answer rather than a placeholder: there is no
+     * borrowing left to report.
+     *
+     * Nothing could populate it. Migration 260813161500 dropped the column and copied
+     * each borrower its own channel-provider row; its Down() says outright that the
+     * borrower-to-lender pairing is not recoverable. The only surviving trace is a
+     * notes string on the copied row.
+     */
+    sending_phone_number_profile_id?: string | null;
+
+    /**
+     * @deprecated
+     */
+    sending_whatsapp_number_profile_id?: string | null;
+
+    /**
+     * Profile short name/abbreviation. 3–11 characters: letters, numbers, and spaces
+     * only, with at least one letter.
+     */
+    short_name?: string | null;
+
+    /**
+     * Profile setup status: incomplete, pending_review, approved, rejected
+     */
+    status?: string;
+
+    /**
+     * When the profile was last updated
+     */
+    updated_at?: string | null;
+
+    /**
+     * WhatsApp Business Account ID associated with this profile. Present whether the
+     * WABA is inherited from the organization or configured directly.
+     */
+    waba_id?: string | null;
+
+    /**
+     * Direct WhatsApp phone number
+     */
+    whatsapp_phone_number?: string | null;
+  }
+
+  export namespace Data {
+    /**
+     * Billing contact info returned in profile responses
+     */
+    export interface BillingContact {
+      address?: string | null;
+
+      email?: string | null;
+
+      name?: string | null;
+
+      phone?: string | null;
+    }
+
+    /**
+     * Brand response with nested contact, business, and compliance sections — mirrors
+     * the request structure.
+     */
+    export interface Brand {
+      /**
+       * Unique identifier for the brand
+       */
+      id?: string;
+
+      /**
+       * Business details and address information
+       */
+      business?: Brand.Business | null;
+
+      /**
+       * Compliance and TCR-related information
+       */
+      compliance?: Brand.Compliance | null;
+
+      /**
+       * Contact information for the brand
+       */
+      contact?: Brand.Contact | null;
+
+      /**
+       * When the brand was created
+       */
+      created_at?: string;
+
+      /**
+       * @deprecated Deprecated and scheduled for removal. Identifies the Campaign
+       * Service Provider that registered the brand, which is Sent, so the value is the
+       * same for every brand and every account. Nothing on your side can act on it and
+       * there is no replacement. Stop reading it.
+       */
+      csp_id?: string | null;
+
+      identity_status?: 'SELF_DECLARED' | 'UNVERIFIED' | 'VERIFIED' | 'VETTED_VERIFIED' | null;
+
+      /**
+       * Whether this brand is inherited from the parent organization
+       */
+      is_inherited?: boolean;
+
+      status?: 'ACTIVE' | 'INACTIVE' | 'SUSPENDED' | null;
+
+      /**
+       * When the brand was submitted to TCR
+       */
+      submitted_at?: string | null;
+
+      /**
+       * Whether this brand has been submitted to TCR
+       */
+      submitted_to_tcr?: boolean;
+
+      /**
+       * TCR brand ID (populated after TCR submission)
+       */
+      tcr_brand_id?: string | null;
+
+      /**
+       * Universal EIN from TCR
+       */
+      universal_ein?: string | null;
+
+      /**
+       * When the brand was last updated
+       */
+      updated_at?: string | null;
+    }
+
+    export namespace Brand {
+      /**
+       * Business details and address information
+       */
+      export interface Business {
+        /**
+         * City
+         */
+        city?: string | null;
+
+        /**
+         * Country code (e.g., US, CA)
+         */
+        country?: string | null;
+
+        /**
+         * Country where the business is registered
+         */
+        country_of_registration?: string | null;
+
+        /**
+         * Business entity type
+         */
+        entity_type?: string | null;
+
+        /**
+         * Legal business name
+         */
+        legal_name?: string | null;
+
+        /**
+         * Postal/ZIP code
+         */
+        postal_code?: string | null;
+
+        /**
+         * State/province code
+         */
+        state?: string | null;
+
+        /**
+         * Street address
+         */
+        street?: string | null;
+
+        /**
+         * Tax ID/EIN number
+         */
+        tax_id?: string | null;
+
+        /**
+         * Type of tax ID (e.g., us_ein, ca_bn)
+         */
+        tax_id_type?: string | null;
+
+        /**
+         * Business website URL
+         */
+        url?: string | null;
+      }
+
+      /**
+       * Compliance and TCR-related information
+       */
+      export interface Compliance {
+        brand_relationship?: ProfilesAPI.TcrBrandRelationship | null;
+
+        /**
+         * List of destination countries for messaging
+         */
+        destination_countries?: Array<ProfilesAPI.DestinationCountry>;
+
+        /**
+         * Whether this is a TCR (Campaign Registry) application
+         */
+        is_tcr_application?: boolean;
+
+        /**
+         * Additional notes about the business or use case
+         */
+        notes?: string | null;
+
+        /**
+         * Phone number prefix for messaging (e.g., "+1")
+         */
+        phone_number_prefix?: string | null;
+
+        /**
+         * @deprecated Always null. The brand's free-text primary use case is no longer
+         * stored: it reached neither TCR nor any decision, and its column is dropped with
+         * no backfill, because the values were prose and the typed equivalent is the
+         * campaign's MessagingUseCaseUS.
+         *
+         * Retained so existing v3 clients reading primary_use_case keep deserializing.
+         * Unlike the profile sharing flags, which can answer false truthfully, there is no
+         * value to report here — the field is present and empty rather than present and
+         * wrong.
+         */
+        primary_use_case?: string | null;
+
+        vertical?: ProfilesAPI.TcrVertical | null;
+      }
+
+      /**
+       * Contact information for the brand
+       */
+      export interface Contact {
+        /**
+         * Business/brand name
+         */
+        business_name?: string | null;
+
+        /**
+         * Contact email address
+         */
+        email?: string | null;
+
+        /**
+         * Primary contact name
+         */
+        name?: string;
+
+        /**
+         * Contact phone number in E.164 format
+         */
+        phone?: string | null;
+
+        /**
+         * Contact phone country code (e.g., "1" for US)
+         */
+        phone_country_code?: string | null;
+
+        /**
+         * Contact's role in the business
+         */
+        role?: string | null;
+      }
+    }
+  }
+
+  /**
+   * Error information
+   */
+  export interface Error {
+    /**
+     * Machine-readable error code (e.g., "RESOURCE_001")
+     */
+    code?: string;
+
+    /**
+     * Additional validation error details (field-level errors)
+     */
+    details?: { [key: string]: Array<string> } | null;
+
+    /**
+     * URL to documentation about this error
+     */
+    doc_url?: string | null;
+
+    /**
+     * Human-readable error message
+     */
+    message?: string;
+  }
+
+  /**
+   * Request and response metadata
+   */
+  export interface Meta {
+    /**
+     * Unique identifier for this request (for tracing and support)
+     */
+    request_id?: string;
+
+    /**
+     * Server timestamp when the response was generated
+     */
+    timestamp?: string;
+
+    /**
+     * API version used for this request
+     */
+    version?: string;
+  }
+}
+
+/**
+ * Standard API response envelope for all v3 endpoints
+ */
+export interface ProfileRetrieveResponse {
+  /**
+   * Detailed profile response for v3 API
+   */
+  data?: ProfileRetrieveResponse.Data | null;
+
+  /**
+   * Error information
+   */
+  error?: ProfileRetrieveResponse.Error | null;
+
+  /**
+   * Request and response metadata
+   */
+  meta?: ProfileRetrieveResponse.Meta;
+
+  /**
+   * Indicates whether the request was successful
+   */
+  success?: boolean;
+}
+
+export namespace ProfileRetrieveResponse {
+  /**
+   * Detailed profile response for v3 API
+   */
+  export interface Data {
+    /**
+     * Profile unique identifier
+     */
+    id?: string;
+
+    /**
+     * @deprecated Always false. A profile no longer shares contacts with sibling
+     * profiles — it sees only what it owns. Retained so existing v3 clients reading
+     * allow_contact_sharing keep deserializing; it carries no information.
+     */
+    allow_contact_sharing?: boolean | null;
+
+    /**
+     * Whether number changes are allowed during onboarding
+     */
+    allow_number_change_during_onboarding?: boolean | null;
+
+    /**
+     * @deprecated Always false. A profile no longer shares templates with sibling
+     * profiles. Retained so existing v3 clients reading allow_template_sharing keep
+     * deserializing; it carries no information.
+     */
+    allow_template_sharing?: boolean | null;
+
+    /**
+     * Billing contact info returned in profile responses
+     */
+    billing_contact?: Data.BillingContact | null;
+
+    /**
+     * Billing model: profile, organization, or profile_and_organization
+     */
+    billing_model?: string;
+
+    /**
+     * Brand response with nested contact, business, and compliance sections — mirrors
+     * the request structure.
+     */
+    brand?: Data.Brand | null;
+
+    /**
+     * When the profile was created
+     */
+    created_at?: string;
+
+    /**
+     * Profile description
+     */
+    description?: string | null;
+
+    /**
+     * Profile email (inherited from organization)
+     */
+    email?: string | null;
+
+    /**
+     * Profile icon URL
+     */
+    icon?: string | null;
+
+    /**
+     * @deprecated Always false. A profile no longer inherits its organization's
+     * contacts. Retained so existing v3 clients reading inherit_contacts keep
+     * deserializing; it carries no information.
+     */
+    inherit_contacts?: boolean | null;
+
+    /**
+     * Whether this profile inherits TCR brand from the organization
+     */
+    inherit_tcr_brand?: boolean;
+
+    /**
+     * Whether this profile inherits TCR campaign from the organization
+     */
+    inherit_tcr_campaign?: boolean;
+
+    /**
+     * @deprecated Always false. A profile no longer inherits its organization's
+     * templates. Retained so existing v3 clients reading inherit_templates keep
+     * deserializing; it carries no information.
+     */
+    inherit_templates?: boolean | null;
+
+    /**
+     * Profile name
+     */
+    name?: string;
+
+    /**
+     * Parent organization ID
+     */
+    organization_id?: string | null;
+
+    /**
+     * Direct SMS phone number
+     */
+    sending_phone_number?: string | null;
+
+    /**
+     * @deprecated Deprecated. Always null. Sender borrowing is gone: a profile no
+     * longer points at another profile for its SMS sender, and every profile owns the
+     * sender it sends from.
+     *
+     * Kept on the wire, and never populated, because those are two different promises.
+     * Removing the key changes the response's shape — a generated client loses the
+     * property and stops compiling on the next regenerate, for a value that is now
+     * null for every profile in existence. Keeping it null costs a key and breaks
+     * nobody, and null is the honest answer rather than a placeholder: there is no
+     * borrowing left to report.
+     *
+     * Nothing could populate it. Migration 260813161500 dropped the column and copied
+     * each borrower its own channel-provider row; its Down() says outright that the
+     * borrower-to-lender pairing is not recoverable. The only surviving trace is a
+     * notes string on the copied row.
+     */
+    sending_phone_number_profile_id?: string | null;
+
+    /**
+     * @deprecated
+     */
+    sending_whatsapp_number_profile_id?: string | null;
+
+    /**
+     * Profile short name/abbreviation. 3–11 characters: letters, numbers, and spaces
+     * only, with at least one letter.
+     */
+    short_name?: string | null;
+
+    /**
+     * Profile setup status: incomplete, pending_review, approved, rejected
+     */
+    status?: string;
+
+    /**
+     * When the profile was last updated
+     */
+    updated_at?: string | null;
+
+    /**
+     * WhatsApp Business Account ID associated with this profile. Present whether the
+     * WABA is inherited from the organization or configured directly.
+     */
+    waba_id?: string | null;
+
+    /**
+     * Direct WhatsApp phone number
+     */
+    whatsapp_phone_number?: string | null;
+  }
+
+  export namespace Data {
+    /**
+     * Billing contact info returned in profile responses
+     */
+    export interface BillingContact {
+      address?: string | null;
+
+      email?: string | null;
+
+      name?: string | null;
+
+      phone?: string | null;
+    }
+
+    /**
+     * Brand response with nested contact, business, and compliance sections — mirrors
+     * the request structure.
+     */
+    export interface Brand {
+      /**
+       * Unique identifier for the brand
+       */
+      id?: string;
+
+      /**
+       * Business details and address information
+       */
+      business?: Brand.Business | null;
+
+      /**
+       * Compliance and TCR-related information
+       */
+      compliance?: Brand.Compliance | null;
+
+      /**
+       * Contact information for the brand
+       */
+      contact?: Brand.Contact | null;
+
+      /**
+       * When the brand was created
+       */
+      created_at?: string;
+
+      /**
+       * @deprecated Deprecated and scheduled for removal. Identifies the Campaign
+       * Service Provider that registered the brand, which is Sent, so the value is the
+       * same for every brand and every account. Nothing on your side can act on it and
+       * there is no replacement. Stop reading it.
+       */
+      csp_id?: string | null;
+
+      identity_status?: 'SELF_DECLARED' | 'UNVERIFIED' | 'VERIFIED' | 'VETTED_VERIFIED' | null;
+
+      /**
+       * Whether this brand is inherited from the parent organization
+       */
+      is_inherited?: boolean;
+
+      status?: 'ACTIVE' | 'INACTIVE' | 'SUSPENDED' | null;
+
+      /**
+       * When the brand was submitted to TCR
+       */
+      submitted_at?: string | null;
+
+      /**
+       * Whether this brand has been submitted to TCR
+       */
+      submitted_to_tcr?: boolean;
+
+      /**
+       * TCR brand ID (populated after TCR submission)
+       */
+      tcr_brand_id?: string | null;
+
+      /**
+       * Universal EIN from TCR
+       */
+      universal_ein?: string | null;
+
+      /**
+       * When the brand was last updated
+       */
+      updated_at?: string | null;
+    }
+
+    export namespace Brand {
+      /**
+       * Business details and address information
+       */
+      export interface Business {
+        /**
+         * City
+         */
+        city?: string | null;
+
+        /**
+         * Country code (e.g., US, CA)
+         */
+        country?: string | null;
+
+        /**
+         * Country where the business is registered
+         */
+        country_of_registration?: string | null;
+
+        /**
+         * Business entity type
+         */
+        entity_type?: string | null;
+
+        /**
+         * Legal business name
+         */
+        legal_name?: string | null;
+
+        /**
+         * Postal/ZIP code
+         */
+        postal_code?: string | null;
+
+        /**
+         * State/province code
+         */
+        state?: string | null;
+
+        /**
+         * Street address
+         */
+        street?: string | null;
+
+        /**
+         * Tax ID/EIN number
+         */
+        tax_id?: string | null;
+
+        /**
+         * Type of tax ID (e.g., us_ein, ca_bn)
+         */
+        tax_id_type?: string | null;
+
+        /**
+         * Business website URL
+         */
+        url?: string | null;
+      }
+
+      /**
+       * Compliance and TCR-related information
+       */
+      export interface Compliance {
+        brand_relationship?: ProfilesAPI.TcrBrandRelationship | null;
+
+        /**
+         * List of destination countries for messaging
+         */
+        destination_countries?: Array<ProfilesAPI.DestinationCountry>;
+
+        /**
+         * Whether this is a TCR (Campaign Registry) application
+         */
+        is_tcr_application?: boolean;
+
+        /**
+         * Additional notes about the business or use case
+         */
+        notes?: string | null;
+
+        /**
+         * Phone number prefix for messaging (e.g., "+1")
+         */
+        phone_number_prefix?: string | null;
+
+        /**
+         * @deprecated Always null. The brand's free-text primary use case is no longer
+         * stored: it reached neither TCR nor any decision, and its column is dropped with
+         * no backfill, because the values were prose and the typed equivalent is the
+         * campaign's MessagingUseCaseUS.
+         *
+         * Retained so existing v3 clients reading primary_use_case keep deserializing.
+         * Unlike the profile sharing flags, which can answer false truthfully, there is no
+         * value to report here — the field is present and empty rather than present and
+         * wrong.
+         */
+        primary_use_case?: string | null;
+
+        vertical?: ProfilesAPI.TcrVertical | null;
+      }
+
+      /**
+       * Contact information for the brand
+       */
+      export interface Contact {
+        /**
+         * Business/brand name
+         */
+        business_name?: string | null;
+
+        /**
+         * Contact email address
+         */
+        email?: string | null;
+
+        /**
+         * Primary contact name
+         */
+        name?: string;
+
+        /**
+         * Contact phone number in E.164 format
+         */
+        phone?: string | null;
+
+        /**
+         * Contact phone country code (e.g., "1" for US)
+         */
+        phone_country_code?: string | null;
+
+        /**
+         * Contact's role in the business
+         */
+        role?: string | null;
+      }
+    }
+  }
+
+  /**
+   * Error information
+   */
+  export interface Error {
+    /**
+     * Machine-readable error code (e.g., "RESOURCE_001")
+     */
+    code?: string;
+
+    /**
+     * Additional validation error details (field-level errors)
+     */
+    details?: { [key: string]: Array<string> } | null;
+
+    /**
+     * URL to documentation about this error
+     */
+    doc_url?: string | null;
+
+    /**
+     * Human-readable error message
+     */
+    message?: string;
+  }
+
+  /**
+   * Request and response metadata
+   */
+  export interface Meta {
+    /**
+     * Unique identifier for this request (for tracing and support)
+     */
+    request_id?: string;
+
+    /**
+     * Server timestamp when the response was generated
+     */
+    timestamp?: string;
+
+    /**
+     * API version used for this request
+     */
+    version?: string;
+  }
+}
+
+/**
+ * Standard API response envelope for all v3 endpoints
+ */
+export interface ProfileUpdateResponse {
+  /**
+   * Detailed profile response for v3 API
+   */
+  data?: ProfileUpdateResponse.Data | null;
+
+  /**
+   * Error information
+   */
+  error?: ProfileUpdateResponse.Error | null;
+
+  /**
+   * Request and response metadata
+   */
+  meta?: ProfileUpdateResponse.Meta;
+
+  /**
+   * Indicates whether the request was successful
+   */
+  success?: boolean;
+}
+
+export namespace ProfileUpdateResponse {
+  /**
+   * Detailed profile response for v3 API
+   */
+  export interface Data {
+    /**
+     * Profile unique identifier
+     */
+    id?: string;
+
+    /**
+     * @deprecated Always false. A profile no longer shares contacts with sibling
+     * profiles — it sees only what it owns. Retained so existing v3 clients reading
+     * allow_contact_sharing keep deserializing; it carries no information.
+     */
+    allow_contact_sharing?: boolean | null;
+
+    /**
+     * Whether number changes are allowed during onboarding
+     */
+    allow_number_change_during_onboarding?: boolean | null;
+
+    /**
+     * @deprecated Always false. A profile no longer shares templates with sibling
+     * profiles. Retained so existing v3 clients reading allow_template_sharing keep
+     * deserializing; it carries no information.
+     */
+    allow_template_sharing?: boolean | null;
+
+    /**
+     * Billing contact info returned in profile responses
+     */
+    billing_contact?: Data.BillingContact | null;
+
+    /**
+     * Billing model: profile, organization, or profile_and_organization
+     */
+    billing_model?: string;
+
+    /**
+     * Brand response with nested contact, business, and compliance sections — mirrors
+     * the request structure.
+     */
+    brand?: Data.Brand | null;
+
+    /**
+     * When the profile was created
+     */
+    created_at?: string;
+
+    /**
+     * Profile description
+     */
+    description?: string | null;
+
+    /**
+     * Profile email (inherited from organization)
+     */
+    email?: string | null;
+
+    /**
+     * Profile icon URL
+     */
+    icon?: string | null;
+
+    /**
+     * @deprecated Always false. A profile no longer inherits its organization's
+     * contacts. Retained so existing v3 clients reading inherit_contacts keep
+     * deserializing; it carries no information.
+     */
+    inherit_contacts?: boolean | null;
+
+    /**
+     * Whether this profile inherits TCR brand from the organization
+     */
+    inherit_tcr_brand?: boolean;
+
+    /**
+     * Whether this profile inherits TCR campaign from the organization
+     */
+    inherit_tcr_campaign?: boolean;
+
+    /**
+     * @deprecated Always false. A profile no longer inherits its organization's
+     * templates. Retained so existing v3 clients reading inherit_templates keep
+     * deserializing; it carries no information.
+     */
+    inherit_templates?: boolean | null;
+
+    /**
+     * Profile name
+     */
+    name?: string;
+
+    /**
+     * Parent organization ID
+     */
+    organization_id?: string | null;
+
+    /**
+     * Direct SMS phone number
+     */
+    sending_phone_number?: string | null;
+
+    /**
+     * @deprecated Deprecated. Always null. Sender borrowing is gone: a profile no
+     * longer points at another profile for its SMS sender, and every profile owns the
+     * sender it sends from.
+     *
+     * Kept on the wire, and never populated, because those are two different promises.
+     * Removing the key changes the response's shape — a generated client loses the
+     * property and stops compiling on the next regenerate, for a value that is now
+     * null for every profile in existence. Keeping it null costs a key and breaks
+     * nobody, and null is the honest answer rather than a placeholder: there is no
+     * borrowing left to report.
+     *
+     * Nothing could populate it. Migration 260813161500 dropped the column and copied
+     * each borrower its own channel-provider row; its Down() says outright that the
+     * borrower-to-lender pairing is not recoverable. The only surviving trace is a
+     * notes string on the copied row.
+     */
+    sending_phone_number_profile_id?: string | null;
+
+    /**
+     * @deprecated
+     */
+    sending_whatsapp_number_profile_id?: string | null;
+
+    /**
+     * Profile short name/abbreviation. 3–11 characters: letters, numbers, and spaces
+     * only, with at least one letter.
+     */
+    short_name?: string | null;
+
+    /**
+     * Profile setup status: incomplete, pending_review, approved, rejected
+     */
+    status?: string;
+
+    /**
+     * When the profile was last updated
+     */
+    updated_at?: string | null;
+
+    /**
+     * WhatsApp Business Account ID associated with this profile. Present whether the
+     * WABA is inherited from the organization or configured directly.
+     */
+    waba_id?: string | null;
+
+    /**
+     * Direct WhatsApp phone number
+     */
+    whatsapp_phone_number?: string | null;
+  }
+
+  export namespace Data {
+    /**
+     * Billing contact info returned in profile responses
+     */
+    export interface BillingContact {
+      address?: string | null;
+
+      email?: string | null;
+
+      name?: string | null;
+
+      phone?: string | null;
+    }
+
+    /**
+     * Brand response with nested contact, business, and compliance sections — mirrors
+     * the request structure.
+     */
+    export interface Brand {
+      /**
+       * Unique identifier for the brand
+       */
+      id?: string;
+
+      /**
+       * Business details and address information
+       */
+      business?: Brand.Business | null;
+
+      /**
+       * Compliance and TCR-related information
+       */
+      compliance?: Brand.Compliance | null;
+
+      /**
+       * Contact information for the brand
+       */
+      contact?: Brand.Contact | null;
+
+      /**
+       * When the brand was created
+       */
+      created_at?: string;
+
+      /**
+       * @deprecated Deprecated and scheduled for removal. Identifies the Campaign
+       * Service Provider that registered the brand, which is Sent, so the value is the
+       * same for every brand and every account. Nothing on your side can act on it and
+       * there is no replacement. Stop reading it.
+       */
+      csp_id?: string | null;
+
+      identity_status?: 'SELF_DECLARED' | 'UNVERIFIED' | 'VERIFIED' | 'VETTED_VERIFIED' | null;
+
+      /**
+       * Whether this brand is inherited from the parent organization
+       */
+      is_inherited?: boolean;
+
+      status?: 'ACTIVE' | 'INACTIVE' | 'SUSPENDED' | null;
+
+      /**
+       * When the brand was submitted to TCR
+       */
+      submitted_at?: string | null;
+
+      /**
+       * Whether this brand has been submitted to TCR
+       */
+      submitted_to_tcr?: boolean;
+
+      /**
+       * TCR brand ID (populated after TCR submission)
+       */
+      tcr_brand_id?: string | null;
+
+      /**
+       * Universal EIN from TCR
+       */
+      universal_ein?: string | null;
+
+      /**
+       * When the brand was last updated
+       */
+      updated_at?: string | null;
+    }
+
+    export namespace Brand {
+      /**
+       * Business details and address information
+       */
+      export interface Business {
+        /**
+         * City
+         */
+        city?: string | null;
+
+        /**
+         * Country code (e.g., US, CA)
+         */
+        country?: string | null;
+
+        /**
+         * Country where the business is registered
+         */
+        country_of_registration?: string | null;
+
+        /**
+         * Business entity type
+         */
+        entity_type?: string | null;
+
+        /**
+         * Legal business name
+         */
+        legal_name?: string | null;
+
+        /**
+         * Postal/ZIP code
+         */
+        postal_code?: string | null;
+
+        /**
+         * State/province code
+         */
+        state?: string | null;
+
+        /**
+         * Street address
+         */
+        street?: string | null;
+
+        /**
+         * Tax ID/EIN number
+         */
+        tax_id?: string | null;
+
+        /**
+         * Type of tax ID (e.g., us_ein, ca_bn)
+         */
+        tax_id_type?: string | null;
+
+        /**
+         * Business website URL
+         */
+        url?: string | null;
+      }
+
+      /**
+       * Compliance and TCR-related information
+       */
+      export interface Compliance {
+        brand_relationship?: ProfilesAPI.TcrBrandRelationship | null;
+
+        /**
+         * List of destination countries for messaging
+         */
+        destination_countries?: Array<ProfilesAPI.DestinationCountry>;
+
+        /**
+         * Whether this is a TCR (Campaign Registry) application
+         */
+        is_tcr_application?: boolean;
+
+        /**
+         * Additional notes about the business or use case
+         */
+        notes?: string | null;
+
+        /**
+         * Phone number prefix for messaging (e.g., "+1")
+         */
+        phone_number_prefix?: string | null;
+
+        /**
+         * @deprecated Always null. The brand's free-text primary use case is no longer
+         * stored: it reached neither TCR nor any decision, and its column is dropped with
+         * no backfill, because the values were prose and the typed equivalent is the
+         * campaign's MessagingUseCaseUS.
+         *
+         * Retained so existing v3 clients reading primary_use_case keep deserializing.
+         * Unlike the profile sharing flags, which can answer false truthfully, there is no
+         * value to report here — the field is present and empty rather than present and
+         * wrong.
+         */
+        primary_use_case?: string | null;
+
+        vertical?: ProfilesAPI.TcrVertical | null;
+      }
+
+      /**
+       * Contact information for the brand
+       */
+      export interface Contact {
+        /**
+         * Business/brand name
+         */
+        business_name?: string | null;
+
+        /**
+         * Contact email address
+         */
+        email?: string | null;
+
+        /**
+         * Primary contact name
+         */
+        name?: string;
+
+        /**
+         * Contact phone number in E.164 format
+         */
+        phone?: string | null;
+
+        /**
+         * Contact phone country code (e.g., "1" for US)
+         */
+        phone_country_code?: string | null;
+
+        /**
+         * Contact's role in the business
+         */
+        role?: string | null;
+      }
+    }
+  }
+
+  /**
+   * Error information
+   */
+  export interface Error {
+    /**
+     * Machine-readable error code (e.g., "RESOURCE_001")
+     */
+    code?: string;
+
+    /**
+     * Additional validation error details (field-level errors)
+     */
+    details?: { [key: string]: Array<string> } | null;
+
+    /**
+     * URL to documentation about this error
+     */
+    doc_url?: string | null;
+
+    /**
+     * Human-readable error message
+     */
+    message?: string;
+  }
+
+  /**
+   * Request and response metadata
+   */
+  export interface Meta {
+    /**
+     * Unique identifier for this request (for tracing and support)
+     */
+    request_id?: string;
+
+    /**
+     * Server timestamp when the response was generated
+     */
+    timestamp?: string;
+
+    /**
+     * API version used for this request
+     */
+    version?: string;
+  }
+}
+
+/**
+ * Standard API response envelope for all v3 endpoints
+ */
 export interface ProfileListResponse {
   /**
-   * List of profiles response
+   * The profiles in the organization.
    */
   data?: ProfileListResponse.Data | null;
 
   /**
    * Error information
    */
-  error?: WebhooksAPI.ErrorDetail | null;
+  error?: ProfileListResponse.Error | null;
 
   /**
    * Request and response metadata
    */
-  meta?: WebhooksAPI.APIMeta;
+  meta?: ProfileListResponse.Meta;
 
   /**
    * Indicates whether the request was successful
@@ -916,13 +1720,499 @@ export interface ProfileListResponse {
 
 export namespace ProfileListResponse {
   /**
-   * List of profiles response
+   * The profiles in the organization.
    */
   export interface Data {
     /**
-     * List of profiles in the organization
+     * Pagination metadata for list responses
      */
-    profiles?: Array<ProfilesAPI.ProfileDetail>;
+    pagination?: Data.Pagination;
+
+    /**
+     * The profiles on this page.
+     */
+    profiles?: Array<Data.Profile>;
+  }
+
+  export namespace Data {
+    /**
+     * Pagination metadata for list responses
+     */
+    export interface Pagination {
+      /**
+       * @deprecated Cursor-based pagination. Never populated — see Cursors.
+       */
+      cursors?: Pagination.Cursors | null;
+
+      /**
+       * Whether there are more pages after this one
+       */
+      has_more?: boolean;
+
+      /**
+       * Current page number (1-indexed)
+       */
+      page?: number;
+
+      /**
+       * Number of items per page
+       */
+      page_size?: number;
+
+      /**
+       * Total number of items across all pages
+       */
+      total_count?: number;
+
+      /**
+       * Total number of pages
+       */
+      total_pages?: number;
+    }
+
+    export namespace Pagination {
+      /**
+       * @deprecated Cursor-based pagination. Never populated — see Cursors.
+       */
+      export interface Cursors {
+        /**
+         * Cursor to fetch the next page.
+         */
+        after?: string | null;
+
+        /**
+         * Cursor to fetch the previous page.
+         */
+        before?: string | null;
+      }
+    }
+
+    /**
+     * Detailed profile response for v3 API
+     */
+    export interface Profile {
+      /**
+       * Profile unique identifier
+       */
+      id?: string;
+
+      /**
+       * @deprecated Always false. A profile no longer shares contacts with sibling
+       * profiles — it sees only what it owns. Retained so existing v3 clients reading
+       * allow_contact_sharing keep deserializing; it carries no information.
+       */
+      allow_contact_sharing?: boolean | null;
+
+      /**
+       * Whether number changes are allowed during onboarding
+       */
+      allow_number_change_during_onboarding?: boolean | null;
+
+      /**
+       * @deprecated Always false. A profile no longer shares templates with sibling
+       * profiles. Retained so existing v3 clients reading allow_template_sharing keep
+       * deserializing; it carries no information.
+       */
+      allow_template_sharing?: boolean | null;
+
+      /**
+       * Billing contact info returned in profile responses
+       */
+      billing_contact?: Profile.BillingContact | null;
+
+      /**
+       * Billing model: profile, organization, or profile_and_organization
+       */
+      billing_model?: string;
+
+      /**
+       * Brand response with nested contact, business, and compliance sections — mirrors
+       * the request structure.
+       */
+      brand?: Profile.Brand | null;
+
+      /**
+       * When the profile was created
+       */
+      created_at?: string;
+
+      /**
+       * Profile description
+       */
+      description?: string | null;
+
+      /**
+       * Profile email (inherited from organization)
+       */
+      email?: string | null;
+
+      /**
+       * Profile icon URL
+       */
+      icon?: string | null;
+
+      /**
+       * @deprecated Always false. A profile no longer inherits its organization's
+       * contacts. Retained so existing v3 clients reading inherit_contacts keep
+       * deserializing; it carries no information.
+       */
+      inherit_contacts?: boolean | null;
+
+      /**
+       * Whether this profile inherits TCR brand from the organization
+       */
+      inherit_tcr_brand?: boolean;
+
+      /**
+       * Whether this profile inherits TCR campaign from the organization
+       */
+      inherit_tcr_campaign?: boolean;
+
+      /**
+       * @deprecated Always false. A profile no longer inherits its organization's
+       * templates. Retained so existing v3 clients reading inherit_templates keep
+       * deserializing; it carries no information.
+       */
+      inherit_templates?: boolean | null;
+
+      /**
+       * Profile name
+       */
+      name?: string;
+
+      /**
+       * Parent organization ID
+       */
+      organization_id?: string | null;
+
+      /**
+       * Direct SMS phone number
+       */
+      sending_phone_number?: string | null;
+
+      /**
+       * @deprecated Deprecated. Always null. Sender borrowing is gone: a profile no
+       * longer points at another profile for its SMS sender, and every profile owns the
+       * sender it sends from.
+       *
+       * Kept on the wire, and never populated, because those are two different promises.
+       * Removing the key changes the response's shape — a generated client loses the
+       * property and stops compiling on the next regenerate, for a value that is now
+       * null for every profile in existence. Keeping it null costs a key and breaks
+       * nobody, and null is the honest answer rather than a placeholder: there is no
+       * borrowing left to report.
+       *
+       * Nothing could populate it. Migration 260813161500 dropped the column and copied
+       * each borrower its own channel-provider row; its Down() says outright that the
+       * borrower-to-lender pairing is not recoverable. The only surviving trace is a
+       * notes string on the copied row.
+       */
+      sending_phone_number_profile_id?: string | null;
+
+      /**
+       * @deprecated
+       */
+      sending_whatsapp_number_profile_id?: string | null;
+
+      /**
+       * Profile short name/abbreviation. 3–11 characters: letters, numbers, and spaces
+       * only, with at least one letter.
+       */
+      short_name?: string | null;
+
+      /**
+       * Profile setup status: incomplete, pending_review, approved, rejected
+       */
+      status?: string;
+
+      /**
+       * When the profile was last updated
+       */
+      updated_at?: string | null;
+
+      /**
+       * WhatsApp Business Account ID associated with this profile. Present whether the
+       * WABA is inherited from the organization or configured directly.
+       */
+      waba_id?: string | null;
+
+      /**
+       * Direct WhatsApp phone number
+       */
+      whatsapp_phone_number?: string | null;
+    }
+
+    export namespace Profile {
+      /**
+       * Billing contact info returned in profile responses
+       */
+      export interface BillingContact {
+        address?: string | null;
+
+        email?: string | null;
+
+        name?: string | null;
+
+        phone?: string | null;
+      }
+
+      /**
+       * Brand response with nested contact, business, and compliance sections — mirrors
+       * the request structure.
+       */
+      export interface Brand {
+        /**
+         * Unique identifier for the brand
+         */
+        id?: string;
+
+        /**
+         * Business details and address information
+         */
+        business?: Brand.Business | null;
+
+        /**
+         * Compliance and TCR-related information
+         */
+        compliance?: Brand.Compliance | null;
+
+        /**
+         * Contact information for the brand
+         */
+        contact?: Brand.Contact | null;
+
+        /**
+         * When the brand was created
+         */
+        created_at?: string;
+
+        /**
+         * @deprecated Deprecated and scheduled for removal. Identifies the Campaign
+         * Service Provider that registered the brand, which is Sent, so the value is the
+         * same for every brand and every account. Nothing on your side can act on it and
+         * there is no replacement. Stop reading it.
+         */
+        csp_id?: string | null;
+
+        identity_status?: 'SELF_DECLARED' | 'UNVERIFIED' | 'VERIFIED' | 'VETTED_VERIFIED' | null;
+
+        /**
+         * Whether this brand is inherited from the parent organization
+         */
+        is_inherited?: boolean;
+
+        status?: 'ACTIVE' | 'INACTIVE' | 'SUSPENDED' | null;
+
+        /**
+         * When the brand was submitted to TCR
+         */
+        submitted_at?: string | null;
+
+        /**
+         * Whether this brand has been submitted to TCR
+         */
+        submitted_to_tcr?: boolean;
+
+        /**
+         * TCR brand ID (populated after TCR submission)
+         */
+        tcr_brand_id?: string | null;
+
+        /**
+         * Universal EIN from TCR
+         */
+        universal_ein?: string | null;
+
+        /**
+         * When the brand was last updated
+         */
+        updated_at?: string | null;
+      }
+
+      export namespace Brand {
+        /**
+         * Business details and address information
+         */
+        export interface Business {
+          /**
+           * City
+           */
+          city?: string | null;
+
+          /**
+           * Country code (e.g., US, CA)
+           */
+          country?: string | null;
+
+          /**
+           * Country where the business is registered
+           */
+          country_of_registration?: string | null;
+
+          /**
+           * Business entity type
+           */
+          entity_type?: string | null;
+
+          /**
+           * Legal business name
+           */
+          legal_name?: string | null;
+
+          /**
+           * Postal/ZIP code
+           */
+          postal_code?: string | null;
+
+          /**
+           * State/province code
+           */
+          state?: string | null;
+
+          /**
+           * Street address
+           */
+          street?: string | null;
+
+          /**
+           * Tax ID/EIN number
+           */
+          tax_id?: string | null;
+
+          /**
+           * Type of tax ID (e.g., us_ein, ca_bn)
+           */
+          tax_id_type?: string | null;
+
+          /**
+           * Business website URL
+           */
+          url?: string | null;
+        }
+
+        /**
+         * Compliance and TCR-related information
+         */
+        export interface Compliance {
+          brand_relationship?: ProfilesAPI.TcrBrandRelationship | null;
+
+          /**
+           * List of destination countries for messaging
+           */
+          destination_countries?: Array<ProfilesAPI.DestinationCountry>;
+
+          /**
+           * Whether this is a TCR (Campaign Registry) application
+           */
+          is_tcr_application?: boolean;
+
+          /**
+           * Additional notes about the business or use case
+           */
+          notes?: string | null;
+
+          /**
+           * Phone number prefix for messaging (e.g., "+1")
+           */
+          phone_number_prefix?: string | null;
+
+          /**
+           * @deprecated Always null. The brand's free-text primary use case is no longer
+           * stored: it reached neither TCR nor any decision, and its column is dropped with
+           * no backfill, because the values were prose and the typed equivalent is the
+           * campaign's MessagingUseCaseUS.
+           *
+           * Retained so existing v3 clients reading primary_use_case keep deserializing.
+           * Unlike the profile sharing flags, which can answer false truthfully, there is no
+           * value to report here — the field is present and empty rather than present and
+           * wrong.
+           */
+          primary_use_case?: string | null;
+
+          vertical?: ProfilesAPI.TcrVertical | null;
+        }
+
+        /**
+         * Contact information for the brand
+         */
+        export interface Contact {
+          /**
+           * Business/brand name
+           */
+          business_name?: string | null;
+
+          /**
+           * Contact email address
+           */
+          email?: string | null;
+
+          /**
+           * Primary contact name
+           */
+          name?: string;
+
+          /**
+           * Contact phone number in E.164 format
+           */
+          phone?: string | null;
+
+          /**
+           * Contact phone country code (e.g., "1" for US)
+           */
+          phone_country_code?: string | null;
+
+          /**
+           * Contact's role in the business
+           */
+          role?: string | null;
+        }
+      }
+    }
+  }
+
+  /**
+   * Error information
+   */
+  export interface Error {
+    /**
+     * Machine-readable error code (e.g., "RESOURCE_001")
+     */
+    code?: string;
+
+    /**
+     * Additional validation error details (field-level errors)
+     */
+    details?: { [key: string]: Array<string> } | null;
+
+    /**
+     * URL to documentation about this error
+     */
+    doc_url?: string | null;
+
+    /**
+     * Human-readable error message
+     */
+    message?: string;
+  }
+
+  /**
+   * Request and response metadata
+   */
+  export interface Meta {
+    /**
+     * Unique identifier for this request (for tracing and support)
+     */
+    request_id?: string;
+
+    /**
+     * Server timestamp when the response was generated
+     */
+    timestamp?: string;
+
+    /**
+     * API version used for this request
+     */
+    version?: string;
   }
 }
 
@@ -939,12 +2229,12 @@ export interface ProfileCompleteResponse {
   /**
    * Error information
    */
-  error?: WebhooksAPI.ErrorDetail | null;
+  error?: ProfileCompleteResponse.Error | null;
 
   /**
    * Request and response metadata
    */
-  meta?: WebhooksAPI.APIMeta;
+  meta?: ProfileCompleteResponse.Meta;
 
   /**
    * Indicates whether the request was successful
@@ -969,24 +2259,84 @@ export namespace ProfileCompleteResponse {
      */
     status?: string;
   }
+
+  /**
+   * Error information
+   */
+  export interface Error {
+    /**
+     * Machine-readable error code (e.g., "RESOURCE_001")
+     */
+    code?: string;
+
+    /**
+     * Additional validation error details (field-level errors)
+     */
+    details?: { [key: string]: Array<string> } | null;
+
+    /**
+     * URL to documentation about this error
+     */
+    doc_url?: string | null;
+
+    /**
+     * Human-readable error message
+     */
+    message?: string;
+  }
+
+  /**
+   * Request and response metadata
+   */
+  export interface Meta {
+    /**
+     * Unique identifier for this request (for tracing and support)
+     */
+    request_id?: string;
+
+    /**
+     * Server timestamp when the response was generated
+     */
+    timestamp?: string;
+
+    /**
+     * API version used for this request
+     */
+    version?: string;
+  }
 }
 
 export interface ProfileCreateParams {
   /**
-   * Body param: Whether contacts are shared across profiles (default: false)
+   * @deprecated Body param: Deprecated. Accepted and ignored. Contact and template
+   * sharing between sender profiles is gone — a profile sees only what it owns, and
+   * the organization still sees all of its profiles' contacts and templates through
+   * read-time widening. The four columns behind these flags were dropped by
+   * M260720120000.
+   *
+   * Bound rather than dropped so the properties survive on the wire and in a
+   * generated client: an SDK that assigns them keeps compiling, which is the
+   * compatibility this exists for. Deliberately not refused either — a 400 would
+   * break an integration that is otherwise working, and the capability they ask for
+   * is gone either way. Same rule as SendingPhoneNumberProfileId.
+   *
+   * The read is what makes this survivable: every profile reports all four as false,
+   * so a caller that checks its own write can see it did not take. Requests carrying
+   * one are logged, so we can tell when nobody sends them any more and the fields
+   * can go for real.
    */
-  allow_contact_sharing?: boolean;
+  allow_contact_sharing?: boolean | null;
 
   /**
-   * Body param: Whether templates are shared across profiles (default: false)
+   * @deprecated Body param
    */
-  allow_template_sharing?: boolean;
+  allow_template_sharing?: boolean | null;
 
   /**
    * Body param: Billing contact information for a profile. Required when
    * billing_model is "profile" or "profile_and_organization".
    */
-  billing_contact?: BillingContactInfo | null;
+  billing_contact?: ProfileCreateParams.BillingContact | null;
 
   /**
    * Body param: Billing model: profile, organization, or profile_and_organization
@@ -1004,7 +2354,7 @@ export interface ProfileCreateParams {
    * Body param: Brand and KYC data grouped into contact, business, and compliance
    * sections
    */
-  brand?: BrandsBrandData | null;
+  brand?: ProfileCreateParams.Brand | null;
 
   /**
    * Body param: Profile description (optional)
@@ -1017,26 +2367,24 @@ export interface ProfileCreateParams {
   icon?: string | null;
 
   /**
-   * Body param: Whether this profile inherits contacts from organization (default:
-   * true)
+   * @deprecated Body param
    */
   inherit_contacts?: boolean | null;
 
   /**
    * Body param: Whether this profile inherits TCR brand from organization (default:
-   * true)
+   * false)
    */
   inherit_tcr_brand?: boolean | null;
 
   /**
    * Body param: Whether this profile inherits TCR campaign from organization
-   * (default: true)
+   * (default: false)
    */
   inherit_tcr_campaign?: boolean | null;
 
   /**
-   * Body param: Whether this profile inherits templates from organization (default:
-   * true)
+   * @deprecated Body param
    */
   inherit_templates?: boolean | null;
 
@@ -1046,11 +2394,11 @@ export interface ProfileCreateParams {
   name?: string;
 
   /**
-   * Body param: Payment card details for a profile. Accepted when billing_model is
-   * "profile" or "profile_and_organization". These details are not stored on our
-   * servers and will be forwarded to the payment processor.
+   * Body param: Payment card details for this profile (optional). Accepted when
+   * billing_model is "profile" or "profile_and_organization". Not persisted on our
+   * servers — forwarded to the payment processor.
    */
-  payment_details?: PaymentDetails | null;
+  payment_details?: ProfileCreateParams.PaymentDetails | null;
 
   /**
    * Body param: Sandbox flag - when true, the operation is simulated without side
@@ -1091,6 +2439,209 @@ export interface ProfileCreateParams {
 
 export namespace ProfileCreateParams {
   /**
+   * Billing contact information for a profile. Required when billing_model is
+   * "profile" or "profile_and_organization".
+   */
+  export interface BillingContact {
+    /**
+     * Email address where invoices will be sent (required)
+     */
+    email: string;
+
+    /**
+     * Full name of the billing contact or company (required)
+     */
+    name: string;
+
+    /**
+     * Billing address (optional). Free-form text including street, city, state, postal
+     * code, and country.
+     */
+    address?: string | null;
+
+    /**
+     * Phone number for the billing contact (optional)
+     */
+    phone?: string | null;
+  }
+
+  /**
+   * Brand and KYC data grouped into contact, business, and compliance sections
+   */
+  export interface Brand {
+    /**
+     * Compliance and TCR information for brand registration
+     */
+    compliance: Brand.Compliance;
+
+    /**
+     * Contact information for brand KYC
+     */
+    contact: Brand.Contact;
+
+    /**
+     * Business details and address for brand KYC
+     */
+    business?: Brand.Business | null;
+  }
+
+  export namespace Brand {
+    /**
+     * Compliance and TCR information for brand registration
+     */
+    export interface Compliance {
+      brandRelationship: ProfilesAPI.TcrBrandRelationship;
+
+      vertical: ProfilesAPI.TcrVertical;
+
+      /**
+       * List of destination countries for messaging
+       */
+      destinationCountries?: Array<ProfilesAPI.DestinationCountry> | null;
+
+      /**
+       * Whether this is a TCR (Campaign Registry) application
+       */
+      isTcrApplication?: boolean | null;
+
+      /**
+       * Additional notes about the business or use case
+       */
+      notes?: string | null;
+
+      /**
+       * Phone number prefix for messaging (e.g., "+1")
+       */
+      phoneNumberPrefix?: string | null;
+    }
+
+    /**
+     * Contact information for brand KYC
+     */
+    export interface Contact {
+      /**
+       * Primary contact name (required)
+       */
+      name: string;
+
+      /**
+       * Business/brand name
+       */
+      businessName?: string | null;
+
+      /**
+       * Contact email address
+       */
+      email?: string | null;
+
+      /**
+       * Contact phone number in E.164 format
+       */
+      phone?: string | null;
+
+      /**
+       * Contact phone country code (e.g., "1" for US)
+       */
+      phoneCountryCode?: string | null;
+
+      /**
+       * Contact's role in the business
+       */
+      role?: string | null;
+    }
+
+    /**
+     * Business details and address for brand KYC
+     */
+    export interface Business {
+      /**
+       * City
+       */
+      city?: string | null;
+
+      /**
+       * Country code (e.g., US, CA)
+       */
+      country?: string | null;
+
+      /**
+       * Country where the business is registered
+       */
+      countryOfRegistration?: string | null;
+
+      entityType?:
+        | 'PRIVATE_PROFIT'
+        | 'PUBLIC_PROFIT'
+        | 'NON_PROFIT'
+        | 'SOLE_PROPRIETOR'
+        | 'GOVERNMENT'
+        | null;
+
+      /**
+       * Legal business name
+       */
+      legalName?: string | null;
+
+      /**
+       * Postal/ZIP code
+       */
+      postalCode?: string | null;
+
+      /**
+       * State/province code
+       */
+      state?: string | null;
+
+      /**
+       * Street address
+       */
+      street?: string | null;
+
+      /**
+       * Tax ID/EIN number
+       */
+      taxId?: string | null;
+
+      /**
+       * Type of tax ID (e.g., us_ein, ca_bn)
+       */
+      taxIdType?: string | null;
+
+      /**
+       * Business website URL
+       */
+      url?: string | null;
+    }
+  }
+
+  /**
+   * Payment card details for this profile (optional). Accepted when billing_model is
+   * "profile" or "profile_and_organization". Not persisted on our servers —
+   * forwarded to the payment processor.
+   */
+  export interface PaymentDetails {
+    /**
+     * Card number (digits only, 13–19 characters)
+     */
+    card_number: string;
+
+    /**
+     * Card security code (3–4 digits)
+     */
+    cvc: string;
+
+    /**
+     * Card expiry date in MM/YY format (e.g. "09/27")
+     */
+    expiry: string;
+
+    /**
+     * Billing ZIP / postal code associated with the card
+     */
+    zip_code: string;
+  }
+
+  /**
    * Direct WhatsApp Business Account credentials for a profile. Use this when the
    * profile should have its own WhatsApp Business Account instead of inheriting from
    * the organization. Credentials must be obtained from Meta Business Manager by
@@ -1130,7 +2681,17 @@ export interface ProfileRetrieveParams {
 
 export interface ProfileUpdateParams {
   /**
-   * Body param: Whether contacts are shared across profiles (optional)
+   * @deprecated Body param: Deprecated. Accepted and ignored. Contact and template
+   * sharing between sender profiles is gone — a profile sees only what it owns, and
+   * the organization still sees all of its profiles' contacts and templates through
+   * read-time widening. The four columns behind these flags were dropped by
+   * M260720120000.
+   *
+   * Retired the same way as SendingPhoneNumberProfileId, and for the same reason:
+   * the properties stay bound so an SDK that assigns them keeps compiling, and a 400
+   * would break a working integration over a capability that is gone regardless.
+   * Every profile reports all four as false, so a caller that checks its own write
+   * can see it did not take.
    */
   allow_contact_sharing?: boolean | null;
 
@@ -1140,7 +2701,7 @@ export interface ProfileUpdateParams {
   allow_number_change_during_onboarding?: boolean | null;
 
   /**
-   * Body param: Whether templates are shared across profiles (optional)
+   * @deprecated Body param
    */
   allow_template_sharing?: boolean | null;
 
@@ -1148,7 +2709,7 @@ export interface ProfileUpdateParams {
    * Body param: Billing contact information for a profile. Required when
    * billing_model is "profile" or "profile_and_organization".
    */
-  billing_contact?: BillingContactInfo | null;
+  billing_contact?: ProfileUpdateParams.BillingContact | null;
 
   /**
    * Body param: Billing model: profile, organization, or profile_and_organization
@@ -1166,7 +2727,7 @@ export interface ProfileUpdateParams {
    * Body param: Brand and KYC data grouped into contact, business, and compliance
    * sections
    */
-  brand?: BrandsBrandData | null;
+  brand?: ProfileUpdateParams.Brand | null;
 
   /**
    * Body param: Profile description (optional)
@@ -1179,7 +2740,7 @@ export interface ProfileUpdateParams {
   icon?: string | null;
 
   /**
-   * Body param: Whether this profile inherits contacts from organization (optional)
+   * @deprecated Body param
    */
   inherit_contacts?: boolean | null;
 
@@ -1195,7 +2756,7 @@ export interface ProfileUpdateParams {
   inherit_tcr_campaign?: boolean | null;
 
   /**
-   * Body param: Whether this profile inherits templates from organization (optional)
+   * @deprecated Body param
    */
   inherit_templates?: boolean | null;
 
@@ -1205,11 +2766,11 @@ export interface ProfileUpdateParams {
   name?: string | null;
 
   /**
-   * Body param: Payment card details for a profile. Accepted when billing_model is
-   * "profile" or "profile_and_organization". These details are not stored on our
-   * servers and will be forwarded to the payment processor.
+   * Body param: Payment card details for this profile (optional). Accepted when
+   * billing_model is "profile" or "profile_and_organization". Not persisted on our
+   * servers — forwarded to the payment processor.
    */
-  payment_details?: PaymentDetails | null;
+  payment_details?: ProfileUpdateParams.PaymentDetails | null;
 
   /**
    * Body param: Sandbox flag - when true, the operation is simulated without side
@@ -1223,13 +2784,30 @@ export interface ProfileUpdateParams {
   sending_phone_number?: string | null;
 
   /**
-   * Body param: Reference to another profile to use for SMS configuration (optional)
+   * @deprecated Body param: Deprecated. Accepted and ignored. Sender borrowing is
+   * gone: a profile cannot send from another profile's SMS number. Supplying this
+   * changes nothing and the request still succeeds.
+   *
+   * Bound rather than dropped so the property survives on the wire and in a
+   * generated client — an SDK that assigns it keeps compiling, which is the
+   * compatibility this exists for. It is deliberately not refused: a 400 here would
+   * break an integration that is otherwise working, and the capability it asks for
+   * is gone either way.
+   *
+   * The trade-off, stated plainly. A caller asking for borrowing is told it
+   * succeeded when nothing happened. What makes that survivable is the read:
+   * sending_phone_number_profile_id comes back null on every profile, so a caller
+   * that checks its own write can see it did not take. Every request that carries
+   * one is logged, so we can tell when nobody is sending it any more and the field
+   * can go for real.
+   *
+   * Give the profile a sender of its own instead: POST /v3/channels/sms with the
+   * x-profile-id header naming it.
    */
   sending_phone_number_profile_id?: string | null;
 
   /**
-   * Body param: Reference to another profile to use for WhatsApp configuration
-   * (optional)
+   * @deprecated Body param
    */
   sending_whatsapp_number_profile_id?: string | null;
 
@@ -1258,6 +2836,211 @@ export interface ProfileUpdateParams {
    * calling organization.
    */
   'x-profile-id'?: string;
+}
+
+export namespace ProfileUpdateParams {
+  /**
+   * Billing contact information for a profile. Required when billing_model is
+   * "profile" or "profile_and_organization".
+   */
+  export interface BillingContact {
+    /**
+     * Email address where invoices will be sent (required)
+     */
+    email: string;
+
+    /**
+     * Full name of the billing contact or company (required)
+     */
+    name: string;
+
+    /**
+     * Billing address (optional). Free-form text including street, city, state, postal
+     * code, and country.
+     */
+    address?: string | null;
+
+    /**
+     * Phone number for the billing contact (optional)
+     */
+    phone?: string | null;
+  }
+
+  /**
+   * Brand and KYC data grouped into contact, business, and compliance sections
+   */
+  export interface Brand {
+    /**
+     * Compliance and TCR information for brand registration
+     */
+    compliance: Brand.Compliance;
+
+    /**
+     * Contact information for brand KYC
+     */
+    contact: Brand.Contact;
+
+    /**
+     * Business details and address for brand KYC
+     */
+    business?: Brand.Business | null;
+  }
+
+  export namespace Brand {
+    /**
+     * Compliance and TCR information for brand registration
+     */
+    export interface Compliance {
+      brandRelationship: ProfilesAPI.TcrBrandRelationship;
+
+      vertical: ProfilesAPI.TcrVertical;
+
+      /**
+       * List of destination countries for messaging
+       */
+      destinationCountries?: Array<ProfilesAPI.DestinationCountry> | null;
+
+      /**
+       * Whether this is a TCR (Campaign Registry) application
+       */
+      isTcrApplication?: boolean | null;
+
+      /**
+       * Additional notes about the business or use case
+       */
+      notes?: string | null;
+
+      /**
+       * Phone number prefix for messaging (e.g., "+1")
+       */
+      phoneNumberPrefix?: string | null;
+    }
+
+    /**
+     * Contact information for brand KYC
+     */
+    export interface Contact {
+      /**
+       * Primary contact name (required)
+       */
+      name: string;
+
+      /**
+       * Business/brand name
+       */
+      businessName?: string | null;
+
+      /**
+       * Contact email address
+       */
+      email?: string | null;
+
+      /**
+       * Contact phone number in E.164 format
+       */
+      phone?: string | null;
+
+      /**
+       * Contact phone country code (e.g., "1" for US)
+       */
+      phoneCountryCode?: string | null;
+
+      /**
+       * Contact's role in the business
+       */
+      role?: string | null;
+    }
+
+    /**
+     * Business details and address for brand KYC
+     */
+    export interface Business {
+      /**
+       * City
+       */
+      city?: string | null;
+
+      /**
+       * Country code (e.g., US, CA)
+       */
+      country?: string | null;
+
+      /**
+       * Country where the business is registered
+       */
+      countryOfRegistration?: string | null;
+
+      entityType?:
+        | 'PRIVATE_PROFIT'
+        | 'PUBLIC_PROFIT'
+        | 'NON_PROFIT'
+        | 'SOLE_PROPRIETOR'
+        | 'GOVERNMENT'
+        | null;
+
+      /**
+       * Legal business name
+       */
+      legalName?: string | null;
+
+      /**
+       * Postal/ZIP code
+       */
+      postalCode?: string | null;
+
+      /**
+       * State/province code
+       */
+      state?: string | null;
+
+      /**
+       * Street address
+       */
+      street?: string | null;
+
+      /**
+       * Tax ID/EIN number
+       */
+      taxId?: string | null;
+
+      /**
+       * Type of tax ID (e.g., us_ein, ca_bn)
+       */
+      taxIdType?: string | null;
+
+      /**
+       * Business website URL
+       */
+      url?: string | null;
+    }
+  }
+
+  /**
+   * Payment card details for this profile (optional). Accepted when billing_model is
+   * "profile" or "profile_and_organization". Not persisted on our servers —
+   * forwarded to the payment processor.
+   */
+  export interface PaymentDetails {
+    /**
+     * Card number (digits only, 13–19 characters)
+     */
+    card_number: string;
+
+    /**
+     * Card security code (3–4 digits)
+     */
+    cvc: string;
+
+    /**
+     * Card expiry date in MM/YY format (e.g. "09/27")
+     */
+    expiry: string;
+
+    /**
+     * Billing ZIP / postal code associated with the card
+     */
+    zip_code: string;
+  }
 }
 
 export interface ProfileListParams {
@@ -1315,17 +3098,12 @@ Profiles.Campaigns = Campaigns;
 
 export declare namespace Profiles {
   export {
-    type APIResponseOfProfileDetail as APIResponseOfProfileDetail,
-    type BillingContactInfo as BillingContactInfo,
-    type BrandBusinessInfo as BrandBusinessInfo,
-    type BrandComplianceInfo as BrandComplianceInfo,
-    type BrandContactInfo as BrandContactInfo,
-    type BrandsBrandData as BrandsBrandData,
     type DestinationCountry as DestinationCountry,
-    type PaymentDetails as PaymentDetails,
-    type ProfileDetail as ProfileDetail,
     type TcrBrandRelationship as TcrBrandRelationship,
     type TcrVertical as TcrVertical,
+    type ProfileCreateResponse as ProfileCreateResponse,
+    type ProfileRetrieveResponse as ProfileRetrieveResponse,
+    type ProfileUpdateResponse as ProfileUpdateResponse,
     type ProfileListResponse as ProfileListResponse,
     type ProfileCompleteResponse as ProfileCompleteResponse,
     type ProfileCreateParams as ProfileCreateParams,
@@ -1338,13 +3116,10 @@ export declare namespace Profiles {
 
   export {
     Campaigns as Campaigns,
-    type APIResponseOfBrandCampaign as APIResponseOfBrandCampaign,
-    type APIResponseOfListOfBrandCampaign as APIResponseOfListOfBrandCampaign,
-    type BrandCampaign as BrandCampaign,
-    type CampaignData as CampaignData,
-    type CampaignUseCase as CampaignUseCase,
-    type CampaignUseCaseData as CampaignUseCaseData,
     type MessagingUseCaseUs as MessagingUseCaseUs,
+    type CampaignCreateResponse as CampaignCreateResponse,
+    type CampaignUpdateResponse as CampaignUpdateResponse,
+    type CampaignListResponse as CampaignListResponse,
     type CampaignCreateParams as CampaignCreateParams,
     type CampaignUpdateParams as CampaignUpdateParams,
     type CampaignListParams as CampaignListParams,

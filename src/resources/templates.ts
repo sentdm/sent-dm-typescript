@@ -1,15 +1,15 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../core/resource';
-import * as TemplatesAPI from './templates';
-import * as WebhooksAPI from './webhooks';
 import { APIPromise } from '../core/api-promise';
 import { buildHeaders } from '../internal/headers';
 import { RequestOptions } from '../internal/request-options';
 import { path } from '../internal/utils/path';
 
 /**
- * Manage message templates with variable substitution
+ * Reusable message bodies with named variables.
+ *
+ * A template is substituted at send time from the values you pass, so the copy lives here rather than in your application. WhatsApp templates additionally need Meta's approval before they can be sent, and a template's channel status reports where that stands — an approved SMS template and an unapproved WhatsApp one are the same template in two states.
  */
 export class Templates extends APIResource {
   /**
@@ -19,10 +19,10 @@ export class Templates extends APIResource {
    *
    * @example
    * ```ts
-   * const apiResponseTemplate = await client.templates.create();
+   * const template = await client.templates.create();
    * ```
    */
-  create(params: TemplateCreateParams, options?: RequestOptions): APIPromise<APIResponseTemplate> {
+  create(params: TemplateCreateParams, options?: RequestOptions): APIPromise<TemplateCreateResponse> {
     const { 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
     return this._client.post('/v3/templates', {
       body,
@@ -43,7 +43,7 @@ export class Templates extends APIResource {
    *
    * @example
    * ```ts
-   * const apiResponseTemplate = await client.templates.retrieve(
+   * const template = await client.templates.retrieve(
    *   '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
    * );
    * ```
@@ -52,7 +52,7 @@ export class Templates extends APIResource {
     id: string,
     params: TemplateRetrieveParams | null | undefined = {},
     options?: RequestOptions,
-  ): APIPromise<APIResponseTemplate> {
+  ): APIPromise<TemplateRetrieveResponse> {
     const { 'x-profile-id': xProfileID } = params ?? {};
     return this._client.get(path`/v3/templates/${id}`, {
       ...options,
@@ -69,7 +69,7 @@ export class Templates extends APIResource {
    *
    * @example
    * ```ts
-   * const apiResponseTemplate = await client.templates.update(
+   * const template = await client.templates.update(
    *   '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
    * );
    * ```
@@ -78,7 +78,7 @@ export class Templates extends APIResource {
     id: string,
     params: TemplateUpdateParams,
     options?: RequestOptions,
-  ): APIPromise<APIResponseTemplate> {
+  ): APIPromise<TemplateUpdateResponse> {
     const { 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
     return this._client.put(path`/v3/templates/${id}`, {
       body,
@@ -142,31 +142,6 @@ export class Templates extends APIResource {
 }
 
 /**
- * Standard API response envelope for all v3 endpoints
- */
-export interface APIResponseTemplate {
-  /**
-   * Template response for v3 API
-   */
-  data?: Template | null;
-
-  /**
-   * Error information
-   */
-  error?: WebhooksAPI.ErrorDetail | null;
-
-  /**
-   * Request and response metadata
-   */
-  meta?: WebhooksAPI.APIMeta;
-
-  /**
-   * Indicates whether the request was successful
-   */
-  success?: boolean;
-}
-
-/**
  * Configuration for AUTHENTICATION category templates
  */
 export interface AuthenticationConfig {
@@ -181,61 +156,6 @@ export interface AuthenticationConfig {
    * in X minutes."
    */
   codeExpirationMinutes?: number | null;
-}
-
-/**
- * Template response for v3 API
- */
-export interface Template {
-  /**
-   * Unique template identifier
-   */
-  id?: string;
-
-  /**
-   * Template category: MARKETING, UTILITY, AUTHENTICATION
-   */
-  category?: string;
-
-  /**
-   * Supported channels: sms, whatsapp
-   */
-  channels?: Array<string> | null;
-
-  /**
-   * When the template was created
-   */
-  created_at?: string;
-
-  /**
-   * Whether the template is published and active
-   */
-  is_published?: boolean;
-
-  /**
-   * Template language code (e.g., en_US)
-   */
-  language?: string;
-
-  /**
-   * Template display name
-   */
-  name?: string;
-
-  /**
-   * Template status: APPROVED, PENDING, REJECTED
-   */
-  status?: string;
-
-  /**
-   * When the template was last updated
-   */
-  updated_at?: string | null;
-
-  /**
-   * Template variables for personalization
-   */
-  variables?: Array<string> | null;
 }
 
 /**
@@ -434,21 +354,420 @@ export namespace TemplateVariable {
 /**
  * Standard API response envelope for all v3 endpoints
  */
+export interface TemplateCreateResponse {
+  /**
+   * Template response for v3 API
+   */
+  data?: TemplateCreateResponse.Data | null;
+
+  /**
+   * Error information
+   */
+  error?: TemplateCreateResponse.Error | null;
+
+  /**
+   * Request and response metadata
+   */
+  meta?: TemplateCreateResponse.Meta;
+
+  /**
+   * Indicates whether the request was successful
+   */
+  success?: boolean;
+}
+
+export namespace TemplateCreateResponse {
+  /**
+   * Template response for v3 API
+   */
+  export interface Data {
+    /**
+     * Which customer owns this — the key's own, or the profile named in x-profile-id.
+     * Says whose resource this is, which the resource's own id does not.
+     */
+    customer_id: string;
+
+    /**
+     * Unique template identifier
+     */
+    id?: string;
+
+    /**
+     * Template category: MARKETING, UTILITY, AUTHENTICATION
+     */
+    category?: string;
+
+    /**
+     * Supported channels: sms, whatsapp
+     */
+    channels?: Array<string> | null;
+
+    /**
+     * When the template was created
+     */
+    created_at?: string;
+
+    /**
+     * Whether the template is published and active
+     */
+    is_published?: boolean;
+
+    /**
+     * Template language code (e.g., en_US)
+     */
+    language?: string;
+
+    /**
+     * Template display name
+     */
+    name?: string;
+
+    /**
+     * Template status: APPROVED, PENDING, REJECTED
+     */
+    status?: string;
+
+    /**
+     * When the template was last updated
+     */
+    updated_at?: string | null;
+
+    /**
+     * Template variables for personalization
+     */
+    variables?: Array<string> | null;
+  }
+
+  /**
+   * Error information
+   */
+  export interface Error {
+    /**
+     * Machine-readable error code (e.g., "RESOURCE_001")
+     */
+    code?: string;
+
+    /**
+     * Additional validation error details (field-level errors)
+     */
+    details?: { [key: string]: Array<string> } | null;
+
+    /**
+     * URL to documentation about this error
+     */
+    doc_url?: string | null;
+
+    /**
+     * Human-readable error message
+     */
+    message?: string;
+  }
+
+  /**
+   * Request and response metadata
+   */
+  export interface Meta {
+    /**
+     * Unique identifier for this request (for tracing and support)
+     */
+    request_id?: string;
+
+    /**
+     * Server timestamp when the response was generated
+     */
+    timestamp?: string;
+
+    /**
+     * API version used for this request
+     */
+    version?: string;
+  }
+}
+
+/**
+ * Standard API response envelope for all v3 endpoints
+ */
+export interface TemplateRetrieveResponse {
+  /**
+   * Template response for v3 API
+   */
+  data?: TemplateRetrieveResponse.Data | null;
+
+  /**
+   * Error information
+   */
+  error?: TemplateRetrieveResponse.Error | null;
+
+  /**
+   * Request and response metadata
+   */
+  meta?: TemplateRetrieveResponse.Meta;
+
+  /**
+   * Indicates whether the request was successful
+   */
+  success?: boolean;
+}
+
+export namespace TemplateRetrieveResponse {
+  /**
+   * Template response for v3 API
+   */
+  export interface Data {
+    /**
+     * Which customer owns this — the key's own, or the profile named in x-profile-id.
+     * Says whose resource this is, which the resource's own id does not.
+     */
+    customer_id: string;
+
+    /**
+     * Unique template identifier
+     */
+    id?: string;
+
+    /**
+     * Template category: MARKETING, UTILITY, AUTHENTICATION
+     */
+    category?: string;
+
+    /**
+     * Supported channels: sms, whatsapp
+     */
+    channels?: Array<string> | null;
+
+    /**
+     * When the template was created
+     */
+    created_at?: string;
+
+    /**
+     * Whether the template is published and active
+     */
+    is_published?: boolean;
+
+    /**
+     * Template language code (e.g., en_US)
+     */
+    language?: string;
+
+    /**
+     * Template display name
+     */
+    name?: string;
+
+    /**
+     * Template status: APPROVED, PENDING, REJECTED
+     */
+    status?: string;
+
+    /**
+     * When the template was last updated
+     */
+    updated_at?: string | null;
+
+    /**
+     * Template variables for personalization
+     */
+    variables?: Array<string> | null;
+  }
+
+  /**
+   * Error information
+   */
+  export interface Error {
+    /**
+     * Machine-readable error code (e.g., "RESOURCE_001")
+     */
+    code?: string;
+
+    /**
+     * Additional validation error details (field-level errors)
+     */
+    details?: { [key: string]: Array<string> } | null;
+
+    /**
+     * URL to documentation about this error
+     */
+    doc_url?: string | null;
+
+    /**
+     * Human-readable error message
+     */
+    message?: string;
+  }
+
+  /**
+   * Request and response metadata
+   */
+  export interface Meta {
+    /**
+     * Unique identifier for this request (for tracing and support)
+     */
+    request_id?: string;
+
+    /**
+     * Server timestamp when the response was generated
+     */
+    timestamp?: string;
+
+    /**
+     * API version used for this request
+     */
+    version?: string;
+  }
+}
+
+/**
+ * Standard API response envelope for all v3 endpoints
+ */
+export interface TemplateUpdateResponse {
+  /**
+   * Template response for v3 API
+   */
+  data?: TemplateUpdateResponse.Data | null;
+
+  /**
+   * Error information
+   */
+  error?: TemplateUpdateResponse.Error | null;
+
+  /**
+   * Request and response metadata
+   */
+  meta?: TemplateUpdateResponse.Meta;
+
+  /**
+   * Indicates whether the request was successful
+   */
+  success?: boolean;
+}
+
+export namespace TemplateUpdateResponse {
+  /**
+   * Template response for v3 API
+   */
+  export interface Data {
+    /**
+     * Which customer owns this — the key's own, or the profile named in x-profile-id.
+     * Says whose resource this is, which the resource's own id does not.
+     */
+    customer_id: string;
+
+    /**
+     * Unique template identifier
+     */
+    id?: string;
+
+    /**
+     * Template category: MARKETING, UTILITY, AUTHENTICATION
+     */
+    category?: string;
+
+    /**
+     * Supported channels: sms, whatsapp
+     */
+    channels?: Array<string> | null;
+
+    /**
+     * When the template was created
+     */
+    created_at?: string;
+
+    /**
+     * Whether the template is published and active
+     */
+    is_published?: boolean;
+
+    /**
+     * Template language code (e.g., en_US)
+     */
+    language?: string;
+
+    /**
+     * Template display name
+     */
+    name?: string;
+
+    /**
+     * Template status: APPROVED, PENDING, REJECTED
+     */
+    status?: string;
+
+    /**
+     * When the template was last updated
+     */
+    updated_at?: string | null;
+
+    /**
+     * Template variables for personalization
+     */
+    variables?: Array<string> | null;
+  }
+
+  /**
+   * Error information
+   */
+  export interface Error {
+    /**
+     * Machine-readable error code (e.g., "RESOURCE_001")
+     */
+    code?: string;
+
+    /**
+     * Additional validation error details (field-level errors)
+     */
+    details?: { [key: string]: Array<string> } | null;
+
+    /**
+     * URL to documentation about this error
+     */
+    doc_url?: string | null;
+
+    /**
+     * Human-readable error message
+     */
+    message?: string;
+  }
+
+  /**
+   * Request and response metadata
+   */
+  export interface Meta {
+    /**
+     * Unique identifier for this request (for tracing and support)
+     */
+    request_id?: string;
+
+    /**
+     * Server timestamp when the response was generated
+     */
+    timestamp?: string;
+
+    /**
+     * API version used for this request
+     */
+    version?: string;
+  }
+}
+
+/**
+ * Standard API response envelope for all v3 endpoints
+ */
 export interface TemplateListResponse {
   /**
-   * Paginated list of templates
+   * A paginated list of templates.
    */
   data?: TemplateListResponse.Data | null;
 
   /**
    * Error information
    */
-  error?: WebhooksAPI.ErrorDetail | null;
+  error?: TemplateListResponse.Error | null;
 
   /**
    * Request and response metadata
    */
-  meta?: WebhooksAPI.APIMeta;
+  meta?: TemplateListResponse.Meta;
 
   /**
    * Indicates whether the request was successful
@@ -458,18 +777,178 @@ export interface TemplateListResponse {
 
 export namespace TemplateListResponse {
   /**
-   * Paginated list of templates
+   * A paginated list of templates.
    */
   export interface Data {
     /**
      * Pagination metadata for list responses
      */
-    pagination?: WebhooksAPI.PaginationMeta;
+    pagination?: Data.Pagination;
 
     /**
-     * List of templates
+     * The templates on this page.
      */
-    templates?: Array<TemplatesAPI.Template>;
+    templates?: Array<Data.Template>;
+  }
+
+  export namespace Data {
+    /**
+     * Pagination metadata for list responses
+     */
+    export interface Pagination {
+      /**
+       * @deprecated Cursor-based pagination. Never populated — see Cursors.
+       */
+      cursors?: Pagination.Cursors | null;
+
+      /**
+       * Whether there are more pages after this one
+       */
+      has_more?: boolean;
+
+      /**
+       * Current page number (1-indexed)
+       */
+      page?: number;
+
+      /**
+       * Number of items per page
+       */
+      page_size?: number;
+
+      /**
+       * Total number of items across all pages
+       */
+      total_count?: number;
+
+      /**
+       * Total number of pages
+       */
+      total_pages?: number;
+    }
+
+    export namespace Pagination {
+      /**
+       * @deprecated Cursor-based pagination. Never populated — see Cursors.
+       */
+      export interface Cursors {
+        /**
+         * Cursor to fetch the next page.
+         */
+        after?: string | null;
+
+        /**
+         * Cursor to fetch the previous page.
+         */
+        before?: string | null;
+      }
+    }
+
+    /**
+     * Template response for v3 API
+     */
+    export interface Template {
+      /**
+       * Which customer owns this — the key's own, or the profile named in x-profile-id.
+       * Says whose resource this is, which the resource's own id does not.
+       */
+      customer_id: string;
+
+      /**
+       * Unique template identifier
+       */
+      id?: string;
+
+      /**
+       * Template category: MARKETING, UTILITY, AUTHENTICATION
+       */
+      category?: string;
+
+      /**
+       * Supported channels: sms, whatsapp
+       */
+      channels?: Array<string> | null;
+
+      /**
+       * When the template was created
+       */
+      created_at?: string;
+
+      /**
+       * Whether the template is published and active
+       */
+      is_published?: boolean;
+
+      /**
+       * Template language code (e.g., en_US)
+       */
+      language?: string;
+
+      /**
+       * Template display name
+       */
+      name?: string;
+
+      /**
+       * Template status: APPROVED, PENDING, REJECTED
+       */
+      status?: string;
+
+      /**
+       * When the template was last updated
+       */
+      updated_at?: string | null;
+
+      /**
+       * Template variables for personalization
+       */
+      variables?: Array<string> | null;
+    }
+  }
+
+  /**
+   * Error information
+   */
+  export interface Error {
+    /**
+     * Machine-readable error code (e.g., "RESOURCE_001")
+     */
+    code?: string;
+
+    /**
+     * Additional validation error details (field-level errors)
+     */
+    details?: { [key: string]: Array<string> } | null;
+
+    /**
+     * URL to documentation about this error
+     */
+    doc_url?: string | null;
+
+    /**
+     * Human-readable error message
+     */
+    message?: string;
+  }
+
+  /**
+   * Request and response metadata
+   */
+  export interface Meta {
+    /**
+     * Unique identifier for this request (for tracing and support)
+     */
+    request_id?: string;
+
+    /**
+     * Server timestamp when the response was generated
+     */
+    timestamp?: string;
+
+    /**
+     * API version used for this request
+     */
+    version?: string;
   }
 }
 
@@ -598,7 +1077,11 @@ export interface TemplateListParams {
   category?: string | null;
 
   /**
-   * Query param: Optional filter by welcome playground flag
+   * Query param: Accepted and ignored. It used to filter on the welcome-playground
+   * marker inside a template's LOB details; that filter is gone and nothing reads
+   * this value, so sending it neither narrows nor widens the result. Retained only
+   * so a client still passing is_welcome_playground keeps binding instead of the
+   * request shape changing under it.
    */
   is_welcome_playground?: boolean | null;
 
@@ -643,9 +1126,7 @@ export interface TemplateDeleteParams {
 
 export declare namespace Templates {
   export {
-    type APIResponseTemplate as APIResponseTemplate,
     type AuthenticationConfig as AuthenticationConfig,
-    type Template as Template,
     type TemplateBody as TemplateBody,
     type TemplateBodyContent as TemplateBodyContent,
     type TemplateButton as TemplateButton,
@@ -654,6 +1135,9 @@ export declare namespace Templates {
     type TemplateFooter as TemplateFooter,
     type TemplateHeader as TemplateHeader,
     type TemplateVariable as TemplateVariable,
+    type TemplateCreateResponse as TemplateCreateResponse,
+    type TemplateRetrieveResponse as TemplateRetrieveResponse,
+    type TemplateUpdateResponse as TemplateUpdateResponse,
     type TemplateListResponse as TemplateListResponse,
     type TemplateCreateParams as TemplateCreateParams,
     type TemplateRetrieveParams as TemplateRetrieveParams,

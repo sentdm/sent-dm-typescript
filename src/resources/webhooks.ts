@@ -312,6 +312,16 @@ export interface InboundMessageEvent {
  */
 export interface InboundMessageEventPayload {
   /**
+   * The contact's number in E.164 format, meaning the number the message came from.
+   */
+  inbound_number: string;
+
+  /**
+   * When the message was received, in UTC (yyyy-MM-ddTHH:mm:ssZ).
+   */
+  received_at: string;
+
+  /**
    * The account the message belongs to.
    */
   account_id?: string;
@@ -322,11 +332,6 @@ export interface InboundMessageEventPayload {
   channel?: string;
 
   /**
-   * The contact's number in E.164 format, meaning the number the message came from.
-   */
-  inbound_number?: string;
-
-  /**
    * The inbound message.
    */
   message_id?: string;
@@ -335,11 +340,6 @@ export interface InboundMessageEventPayload {
    * Your number in E.164 format, meaning the number the message was addressed to.
    */
   outbound_number?: string;
-
-  /**
-   * When the message was received, in UTC (yyyy-MM-ddTHH:mm:ssZ).
-   */
-  received_at?: string;
 
   /**
    * The message body. Sent as null when the inbound message carried no text, for
@@ -395,6 +395,13 @@ export interface MessageEvent {
  */
 export interface MessageEventPayload {
   /**
+   * The status the message just reached, for example SENT, DELIVERED, or FAILED.
+   * Sent means dispatched and delivered means confirmed, so treat them as distinct
+   * outcomes.
+   */
+  message_status: string;
+
+  /**
    * The account the message belongs to.
    */
   account_id?: string;
@@ -415,13 +422,6 @@ export interface MessageEventPayload {
    * lifecycle, so use it to correlate them.
    */
   message_id?: string;
-
-  /**
-   * The status the message just reached, for example SENT, DELIVERED, or FAILED.
-   * Sent means dispatched and delivered means confirmed, so treat them as distinct
-   * outcomes.
-   */
-  message_status?: string;
 
   /**
    * The recipient's number in E.164 format.
@@ -483,6 +483,17 @@ export interface TemplateEvent {
  */
 export interface TemplateEventPayload {
   /**
+   * The review status the template just reached, for example APPROVED or REJECTED.
+   */
+  status: string;
+
+  /**
+   * The template's identifier with Meta, assigned when the template is submitted for
+   * review.
+   */
+  whatsapp_template_id: string;
+
+  /**
    * The account the template belongs to.
    */
   account_id?: string;
@@ -509,11 +520,6 @@ export interface TemplateEventPayload {
   reason?: string | null;
 
   /**
-   * The review status the template just reached, for example APPROVED or REJECTED.
-   */
-  status?: string;
-
-  /**
    * The template in Sent.
    */
   template_id?: string;
@@ -522,12 +528,6 @@ export interface TemplateEventPayload {
    * The template's display name.
    */
   template_name?: string;
-
-  /**
-   * The template's identifier with Meta, assigned when the template is submitted for
-   * review.
-   */
-  whatsapp_template_id?: string;
 }
 
 /**

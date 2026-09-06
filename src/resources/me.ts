@@ -27,6 +27,17 @@ export class Me extends APIResource {
    * **Channels:** The `channels` object always includes `sms`, `whatsapp`, and
    * `rcs`. Each channel has a `configured` boolean. Configured channels expose
    * additional details such as `phone_number`.
+   *
+   * **Sending number:** `sending_phone_number` is the account's US SMS sender. It is
+   * intentionally the same value as `channels.sms.phone_number` — the two are kept
+   * in step, and it is published under both names because `sending_phone_number` is
+   * what this value is called on `GET /v3/profiles`. Read either. One difference:
+   * `sending_phone_number` is always present, including as `null`, while
+   * `channels.sms.phone_number` is omitted when there is no sender.
+   *
+   * `sending_phone_number_profile_id` names the account that holds that number in
+   * inventory — normally this account, and a different one where a number is shared.
+   * Both are `null` when the account has no US SMS sender.
    */
   retrieve(
     params: MeRetrieveParams | null | undefined = {},
@@ -123,6 +134,30 @@ export namespace MeRetrieveResponse {
      * types)
      */
     profiles?: Array<Data.Profile>;
+
+    /**
+     * The SMS sender this account sends from in the United States, in E.164 form. Null
+     * when the account has no US SMS sender.
+     *
+     * The same value as channels.sms.phone_number, published under both names on
+     * purpose: sending_phone_number is what this value is already called on GET
+     * /v3/profiles, so the same key answers the same question whichever of the two
+     * endpoints you ask. Neither name is preferred over the other and neither is
+     * deprecated.
+     *
+     * The same value, not the same presence: this key is always written, including as
+     * null, whereas channels.sms.phone_number is left out entirely when there is no
+     * sender.
+     */
+    sending_phone_number?: string | null;
+
+    /**
+     * The account that holds sending_phone_number in number inventory: normally this
+     * account itself, and a different account when the number is held elsewhere. Null
+     * when there is no US sender, or when the sender is not a number drawn from
+     * inventory — an alphanumeric sender ID or a short code.
+     */
+    sending_phone_number_profile_id?: string | null;
 
     /**
      * Profile configuration settings

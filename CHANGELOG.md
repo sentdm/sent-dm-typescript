@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.36.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.35.0...v0.36.0) (2026-09-06)
+
+
+### Features
+
+* **api:** sync OpenAPI spec from production ([5b37cdb](https://github.com/sentdm/sent-dm-typescript/commit/5b37cdb5105b1c855de20eb0e00203601a8300ed))
+
 ## [0.35.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.34.0...v0.35.0) (2026-08-31)
 
 

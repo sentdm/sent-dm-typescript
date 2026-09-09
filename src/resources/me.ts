@@ -1,6 +1,8 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../core/resource';
+import * as MeAPI from './me';
+import * as WebhooksAPI from './webhooks';
 import { APIPromise } from '../core/api-promise';
 import { buildHeaders } from '../internal/headers';
 import { RequestOptions } from '../internal/request-options';
@@ -55,6 +57,54 @@ export class Me extends APIResource {
 }
 
 /**
+ * Profile configuration settings
+ */
+export interface ProfileSettings {
+  /**
+   * @deprecated Always false. A profile no longer shares contacts with sibling
+   * profiles — it sees only what it owns. Retained so existing v3 clients reading
+   * allow_contact_sharing keep deserializing; it carries no information.
+   */
+  allow_contact_sharing?: boolean | null;
+
+  /**
+   * @deprecated Always false. A profile no longer shares templates with sibling
+   * profiles. Retained so existing v3 clients reading allow_template_sharing keep
+   * deserializing; it carries no information.
+   */
+  allow_template_sharing?: boolean | null;
+
+  /**
+   * Billing model: profile, organization, or profile_and_organization
+   */
+  billing_model?: string | null;
+
+  /**
+   * @deprecated Always false. A profile no longer inherits its organization's
+   * contacts. Retained so existing v3 clients reading inherit_contacts keep
+   * deserializing; it carries no information.
+   */
+  inherit_contacts?: boolean | null;
+
+  /**
+   * Whether this profile inherits TCR brand from the organization
+   */
+  inherit_tcr_brand?: boolean | null;
+
+  /**
+   * Whether this profile inherits TCR campaign from the organization
+   */
+  inherit_tcr_campaign?: boolean | null;
+
+  /**
+   * @deprecated Always false. A profile no longer inherits its organization's
+   * templates. Retained so existing v3 clients reading inherit_templates keep
+   * deserializing; it carries no information.
+   */
+  inherit_templates?: boolean | null;
+}
+
+/**
  * Standard API response envelope for all v3 endpoints
  */
 export interface MeRetrieveResponse {
@@ -68,12 +118,12 @@ export interface MeRetrieveResponse {
   /**
    * Error information
    */
-  error?: MeRetrieveResponse.Error | null;
+  error?: WebhooksAPI.ErrorDetail | null;
 
   /**
    * Request and response metadata
    */
-  meta?: MeRetrieveResponse.Meta;
+  meta?: WebhooksAPI.APIMeta;
 
   /**
    * Indicates whether the request was successful
@@ -162,7 +212,7 @@ export namespace MeRetrieveResponse {
     /**
      * Profile configuration settings
      */
-    settings?: Data.Settings | null;
+    settings?: MeAPI.ProfileSettings | null;
 
     /**
      * Short name / abbreviation (only for profile type)
@@ -296,7 +346,7 @@ export namespace MeRetrieveResponse {
       /**
        * Profile configuration settings
        */
-      settings?: Profile.Settings;
+      settings?: MeAPI.ProfileSettings;
 
       /**
        * Profile short name (abbreviation)
@@ -308,149 +358,6 @@ export namespace MeRetrieveResponse {
        */
       status?: string | null;
     }
-
-    export namespace Profile {
-      /**
-       * Profile configuration settings
-       */
-      export interface Settings {
-        /**
-         * @deprecated Always false. A profile no longer shares contacts with sibling
-         * profiles — it sees only what it owns. Retained so existing v3 clients reading
-         * allow_contact_sharing keep deserializing; it carries no information.
-         */
-        allow_contact_sharing?: boolean | null;
-
-        /**
-         * @deprecated Always false. A profile no longer shares templates with sibling
-         * profiles. Retained so existing v3 clients reading allow_template_sharing keep
-         * deserializing; it carries no information.
-         */
-        allow_template_sharing?: boolean | null;
-
-        /**
-         * Billing model: profile, organization, or profile_and_organization
-         */
-        billing_model?: string | null;
-
-        /**
-         * @deprecated Always false. A profile no longer inherits its organization's
-         * contacts. Retained so existing v3 clients reading inherit_contacts keep
-         * deserializing; it carries no information.
-         */
-        inherit_contacts?: boolean | null;
-
-        /**
-         * Whether this profile inherits TCR brand from the organization
-         */
-        inherit_tcr_brand?: boolean | null;
-
-        /**
-         * Whether this profile inherits TCR campaign from the organization
-         */
-        inherit_tcr_campaign?: boolean | null;
-
-        /**
-         * @deprecated Always false. A profile no longer inherits its organization's
-         * templates. Retained so existing v3 clients reading inherit_templates keep
-         * deserializing; it carries no information.
-         */
-        inherit_templates?: boolean | null;
-      }
-    }
-
-    /**
-     * Profile configuration settings
-     */
-    export interface Settings {
-      /**
-       * @deprecated Always false. A profile no longer shares contacts with sibling
-       * profiles — it sees only what it owns. Retained so existing v3 clients reading
-       * allow_contact_sharing keep deserializing; it carries no information.
-       */
-      allow_contact_sharing?: boolean | null;
-
-      /**
-       * @deprecated Always false. A profile no longer shares templates with sibling
-       * profiles. Retained so existing v3 clients reading allow_template_sharing keep
-       * deserializing; it carries no information.
-       */
-      allow_template_sharing?: boolean | null;
-
-      /**
-       * Billing model: profile, organization, or profile_and_organization
-       */
-      billing_model?: string | null;
-
-      /**
-       * @deprecated Always false. A profile no longer inherits its organization's
-       * contacts. Retained so existing v3 clients reading inherit_contacts keep
-       * deserializing; it carries no information.
-       */
-      inherit_contacts?: boolean | null;
-
-      /**
-       * Whether this profile inherits TCR brand from the organization
-       */
-      inherit_tcr_brand?: boolean | null;
-
-      /**
-       * Whether this profile inherits TCR campaign from the organization
-       */
-      inherit_tcr_campaign?: boolean | null;
-
-      /**
-       * @deprecated Always false. A profile no longer inherits its organization's
-       * templates. Retained so existing v3 clients reading inherit_templates keep
-       * deserializing; it carries no information.
-       */
-      inherit_templates?: boolean | null;
-    }
-  }
-
-  /**
-   * Error information
-   */
-  export interface Error {
-    /**
-     * Machine-readable error code (e.g., "RESOURCE_001")
-     */
-    code?: string;
-
-    /**
-     * Additional validation error details (field-level errors)
-     */
-    details?: { [key: string]: Array<string> } | null;
-
-    /**
-     * URL to documentation about this error
-     */
-    doc_url?: string | null;
-
-    /**
-     * Human-readable error message
-     */
-    message?: string;
-  }
-
-  /**
-   * Request and response metadata
-   */
-  export interface Meta {
-    /**
-     * Unique identifier for this request (for tracing and support)
-     */
-    request_id?: string;
-
-    /**
-     * Server timestamp when the response was generated
-     */
-    timestamp?: string;
-
-    /**
-     * API version used for this request
-     */
-    version?: string;
   }
 }
 
@@ -463,5 +370,9 @@ export interface MeRetrieveParams {
 }
 
 export declare namespace Me {
-  export { type MeRetrieveResponse as MeRetrieveResponse, type MeRetrieveParams as MeRetrieveParams };
+  export {
+    type ProfileSettings as ProfileSettings,
+    type MeRetrieveResponse as MeRetrieveResponse,
+    type MeRetrieveParams as MeRetrieveParams,
+  };
 }

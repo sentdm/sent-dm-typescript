@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.37.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.36.0...v0.37.0) (2026-09-09)
+
+
+### Features
+
+* **api:** repoint dangling model refs at current v3 schema names ([4d60ce7](https://github.com/sentdm/sent-dm-typescript/commit/4d60ce71a7579d11fcb7d53745672ed5651db4a9))
+
 ## [0.36.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.35.0...v0.36.0) (2026-09-06)
 
 

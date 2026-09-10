@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.38.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.37.0...v0.38.0) (2026-09-10)
+
+
+### Features
+
+* **api:** configure page_number pagination for the v3 list endpoints ([f64f386](https://github.com/sentdm/sent-dm-typescript/commit/f64f38619cd88c7b984524a5da2a58f5276cfa75))
+
 ## [0.37.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.36.0...v0.37.0) (2026-09-09)
 
 

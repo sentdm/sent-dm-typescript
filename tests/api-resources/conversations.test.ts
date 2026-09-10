@@ -9,8 +9,8 @@ const client = new Sent({
 
 describe('resource conversations', () => {
   // Mock server tests are disabled
-  test.skip('list: only required params', async () => {
-    const responsePromise = client.conversations.list({ page: 0, page_size: 0 });
+  test.skip('list', async () => {
+    const responsePromise = client.conversations.list();
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -21,20 +21,23 @@ describe('resource conversations', () => {
   });
 
   // Mock server tests are disabled
-  test.skip('list: required and optional params', async () => {
-    const response = await client.conversations.list({
-      page: 0,
-      page_size: 0,
-      'x-profile-id': '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
-    });
+  test.skip('list: request options and params are passed correctly', async () => {
+    // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
+    await expect(
+      client.conversations.list(
+        {
+          page: 0,
+          page_size: 0,
+          'x-profile-id': '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
+        },
+        { path: '/_stainless_unknown_path' },
+      ),
+    ).rejects.toThrow(Sent.NotFoundError);
   });
 
   // Mock server tests are disabled
-  test.skip('listMessages: only required params', async () => {
-    const responsePromise = client.conversations.listMessages('08fab313-c9e2-502c-975e-08b0356c432e', {
-      page: 0,
-      page_size: 0,
-    });
+  test.skip('listMessages', async () => {
+    const responsePromise = client.conversations.listMessages('08fab313-c9e2-502c-975e-08b0356c432e');
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -45,11 +48,18 @@ describe('resource conversations', () => {
   });
 
   // Mock server tests are disabled
-  test.skip('listMessages: required and optional params', async () => {
-    const response = await client.conversations.listMessages('08fab313-c9e2-502c-975e-08b0356c432e', {
-      page: 0,
-      page_size: 0,
-      'x-profile-id': '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
-    });
+  test.skip('listMessages: request options and params are passed correctly', async () => {
+    // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
+    await expect(
+      client.conversations.listMessages(
+        '08fab313-c9e2-502c-975e-08b0356c432e',
+        {
+          page: 0,
+          page_size: 0,
+          'x-profile-id': '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
+        },
+        { path: '/_stainless_unknown_path' },
+      ),
+    ).rejects.toThrow(Sent.NotFoundError);
   });
 });

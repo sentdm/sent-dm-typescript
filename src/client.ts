@@ -14,6 +14,20 @@ import * as Opts from './internal/request-options';
 import { stringifyQuery } from './internal/utils/query';
 import { VERSION } from './version';
 import * as Errors from './core/error';
+import * as Pagination from './core/pagination';
+import {
+  AbstractPage,
+  type ContactsPageParams,
+  ContactsPageResponse,
+  type ConversationsPageParams,
+  ConversationsPageResponse,
+  type TemplatesPageParams,
+  TemplatesPageResponse,
+  type WebhookEventsPageParams,
+  WebhookEventsPageResponse,
+  type WebhooksPageParams,
+  WebhooksPageResponse,
+} from './core/pagination';
 import * as Uploads from './core/uploads';
 import * as API from './resources/index';
 import { APIPromise } from './core/api-promise';
@@ -23,9 +37,9 @@ import {
   ContactCreateParams,
   ContactDeleteParams,
   ContactListParams,
-  ContactListResponse,
   ContactMessageSummary,
   ContactResponse,
+  ContactResponsesContactsPage,
   ContactRetrieveMessageSummaryParams,
   ContactRetrieveParams,
   ContactUpdateParams,
@@ -36,6 +50,7 @@ import {
   ConversationListMessagesParams,
   ConversationListParams,
   ConversationMessagesList,
+  ConversationMessagesListMessagesConversationsPage,
   Conversations,
 } from './resources/conversations';
 import { Me, MeRetrieveParams, MeRetrieveResponse, ProfileSettings } from './resources/me';
@@ -63,11 +78,11 @@ import {
   TemplateFooter,
   TemplateHeader,
   TemplateListParams,
-  TemplateListResponse,
   TemplateRetrieveParams,
   TemplateUpdateParams,
   TemplateVariable,
   Templates,
+  TemplatesTemplatesPage,
 } from './resources/templates';
 import {
   APIResponseOfUser,
@@ -99,9 +114,10 @@ import {
   WebhookListEventTypesResponse,
   WebhookListEventsParams,
   WebhookListEventsResponse,
+  WebhookListEventsResponsesWebhookEventsPage,
   WebhookListParams,
-  WebhookListResponse,
   WebhookResponse,
+  WebhookResponsesWebhooksPage,
   WebhookRetrieveParams,
   WebhookRotateSecretParams,
   WebhookRotateSecretResponse,
@@ -598,6 +614,30 @@ export class Sent {
     return { response, options, controller, requestLogID, retryOfRequestLogID, startTime };
   }
 
+  getAPIList<Item, PageClass extends Pagination.AbstractPage<Item> = Pagination.AbstractPage<Item>>(
+    path: string,
+    Page: new (...args: any[]) => PageClass,
+    opts?: PromiseOrValue<RequestOptions>,
+  ): Pagination.PagePromise<PageClass, Item> {
+    return this.requestAPIList(
+      Page,
+      opts && 'then' in opts ?
+        opts.then((opts) => ({ method: 'get', path, ...opts }))
+      : { method: 'get', path, ...opts },
+    );
+  }
+
+  requestAPIList<
+    Item = unknown,
+    PageClass extends Pagination.AbstractPage<Item> = Pagination.AbstractPage<Item>,
+  >(
+    Page: new (...args: ConstructorParameters<typeof Pagination.AbstractPage>) => PageClass,
+    options: PromiseOrValue<FinalRequestOptions>,
+  ): Pagination.PagePromise<PageClass, Item> {
+    const request = this.makeRequest(options, null, undefined);
+    return new Pagination.PagePromise<PageClass, Item>(this as any as Sent, request, Page);
+  }
+
   async fetchWithTimeout(
     url: RequestInfo,
     init: RequestInit | undefined,
@@ -932,6 +972,30 @@ Sent.Me = Me;
 export declare namespace Sent {
   export type RequestOptions = Opts.RequestOptions;
 
+  export import ContactsPage = Pagination.ContactsPage;
+  export { type ContactsPageParams as ContactsPageParams, type ContactsPageResponse as ContactsPageResponse };
+
+  export import ConversationsPage = Pagination.ConversationsPage;
+  export {
+    type ConversationsPageParams as ConversationsPageParams,
+    type ConversationsPageResponse as ConversationsPageResponse,
+  };
+
+  export import TemplatesPage = Pagination.TemplatesPage;
+  export {
+    type TemplatesPageParams as TemplatesPageParams,
+    type TemplatesPageResponse as TemplatesPageResponse,
+  };
+
+  export import WebhooksPage = Pagination.WebhooksPage;
+  export { type WebhooksPageParams as WebhooksPageParams, type WebhooksPageResponse as WebhooksPageResponse };
+
+  export import WebhookEventsPage = Pagination.WebhookEventsPage;
+  export {
+    type WebhookEventsPageParams as WebhookEventsPageParams,
+    type WebhookEventsPageResponse as WebhookEventsPageResponse,
+  };
+
   export {
     Webhooks as Webhooks,
     type APIMeta as APIMeta,
@@ -947,11 +1011,12 @@ export declare namespace Sent {
     type TemplateEventPayload as TemplateEventPayload,
     type WebhookEventType as WebhookEventType,
     type WebhookResponse as WebhookResponse,
-    type WebhookListResponse as WebhookListResponse,
     type WebhookListEventTypesResponse as WebhookListEventTypesResponse,
     type WebhookListEventsResponse as WebhookListEventsResponse,
     type WebhookRotateSecretResponse as WebhookRotateSecretResponse,
     type WebhookTestResponse as WebhookTestResponse,
+    type WebhookResponsesWebhooksPage as WebhookResponsesWebhooksPage,
+    type WebhookListEventsResponsesWebhookEventsPage as WebhookListEventsResponsesWebhookEventsPage,
     type WebhookCreateParams as WebhookCreateParams,
     type WebhookRetrieveParams as WebhookRetrieveParams,
     type WebhookUpdateParams as WebhookUpdateParams,
@@ -989,7 +1054,7 @@ export declare namespace Sent {
     type TemplateFooter as TemplateFooter,
     type TemplateHeader as TemplateHeader,
     type TemplateVariable as TemplateVariable,
-    type TemplateListResponse as TemplateListResponse,
+    type TemplatesTemplatesPage as TemplatesTemplatesPage,
     type TemplateCreateParams as TemplateCreateParams,
     type TemplateRetrieveParams as TemplateRetrieveParams,
     type TemplateUpdateParams as TemplateUpdateParams,
@@ -1042,7 +1107,7 @@ export declare namespace Sent {
     type APIResponseOfContactMessageSummary as APIResponseOfContactMessageSummary,
     type ContactMessageSummary as ContactMessageSummary,
     type ContactResponse as ContactResponse,
-    type ContactListResponse as ContactListResponse,
+    type ContactResponsesContactsPage as ContactResponsesContactsPage,
     type ContactCreateParams as ContactCreateParams,
     type ContactRetrieveParams as ContactRetrieveParams,
     type ContactUpdateParams as ContactUpdateParams,
@@ -1055,6 +1120,7 @@ export declare namespace Sent {
     Conversations as Conversations,
     type APIResponseOfConversationMessagesList as APIResponseOfConversationMessagesList,
     type ConversationMessagesList as ConversationMessagesList,
+    type ConversationMessagesListMessagesConversationsPage as ConversationMessagesListMessagesConversationsPage,
     type ConversationListParams as ConversationListParams,
     type ConversationListMessagesParams as ConversationListMessagesParams,
   };

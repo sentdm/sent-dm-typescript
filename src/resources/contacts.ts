@@ -1,9 +1,9 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../core/resource';
-import * as ContactsAPI from './contacts';
 import * as WebhooksAPI from './webhooks';
 import { APIPromise } from '../core/api-promise';
+import { ContactsPage, type ContactsPageParams, PagePromise } from '../core/pagination';
 import { buildHeaders } from '../internal/headers';
 import { RequestOptions } from '../internal/request-options';
 import { path } from '../internal/utils/path';
@@ -104,15 +104,18 @@ export class Contacts extends APIResource {
    *
    * @example
    * ```ts
-   * const contacts = await client.contacts.list({
-   *   page: 0,
-   *   page_size: 0,
-   * });
+   * // Automatically fetches more pages as needed.
+   * for await (const contactResponse of client.contacts.list()) {
+   *   // ...
+   * }
    * ```
    */
-  list(params: ContactListParams, options?: RequestOptions): APIPromise<ContactListResponse> {
-    const { 'x-profile-id': xProfileID, ...query } = params;
-    return this._client.get('/v3/contacts', {
+  list(
+    params: ContactListParams | null | undefined = {},
+    options?: RequestOptions,
+  ): PagePromise<ContactResponsesContactsPage, ContactResponse> {
+    const { 'x-profile-id': xProfileID, ...query } = params ?? {};
+    return this._client.getAPIList('/v3/contacts', ContactsPage<ContactResponse>, {
       query,
       ...options,
       headers: buildHeaders([
@@ -177,6 +180,8 @@ export class Contacts extends APIResource {
     });
   }
 }
+
+export type ContactResponsesContactsPage = ContactsPage<ContactResponse>;
 
 /**
  * Standard API response envelope for all v3 endpoints
@@ -343,48 +348,6 @@ export interface ContactResponse {
   updated_at?: string | null;
 }
 
-/**
- * Standard API response envelope for all v3 endpoints
- */
-export interface ContactListResponse {
-  /**
-   * A paginated list of contacts.
-   */
-  data?: ContactListResponse.Data | null;
-
-  /**
-   * Error information
-   */
-  error?: WebhooksAPI.ErrorDetail | null;
-
-  /**
-   * Request and response metadata
-   */
-  meta?: WebhooksAPI.APIMeta;
-
-  /**
-   * Indicates whether the request was successful
-   */
-  success?: boolean;
-}
-
-export namespace ContactListResponse {
-  /**
-   * A paginated list of contacts.
-   */
-  export interface Data {
-    /**
-     * The contacts on this page.
-     */
-    contacts?: Array<ContactsAPI.ContactResponse>;
-
-    /**
-     * Pagination metadata for list responses
-     */
-    pagination?: WebhooksAPI.PaginationMeta;
-  }
-}
-
 export interface ContactCreateParams {
   /**
    * Body param: Phone number of the contact to create
@@ -453,17 +416,7 @@ export interface ContactUpdateParams {
   'x-profile-id'?: string;
 }
 
-export interface ContactListParams {
-  /**
-   * Query param: Page number (1-indexed)
-   */
-  page: number;
-
-  /**
-   * Query param: Number of items per page
-   */
-  page_size: number;
-
+export interface ContactListParams extends ContactsPageParams {
   /**
    * Query param: Optional channel filter (sms, whatsapp)
    */
@@ -516,7 +469,7 @@ export declare namespace Contacts {
     type APIResponseOfContactMessageSummary as APIResponseOfContactMessageSummary,
     type ContactMessageSummary as ContactMessageSummary,
     type ContactResponse as ContactResponse,
-    type ContactListResponse as ContactListResponse,
+    type ContactResponsesContactsPage as ContactResponsesContactsPage,
     type ContactCreateParams as ContactCreateParams,
     type ContactRetrieveParams as ContactRetrieveParams,
     type ContactUpdateParams as ContactUpdateParams,

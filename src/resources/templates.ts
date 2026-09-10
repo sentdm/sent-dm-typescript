@@ -1,9 +1,9 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../core/resource';
-import * as TemplatesAPI from './templates';
 import * as WebhooksAPI from './webhooks';
 import { APIPromise } from '../core/api-promise';
+import { PagePromise, TemplatesPage, type TemplatesPageParams } from '../core/pagination';
 import { buildHeaders } from '../internal/headers';
 import { RequestOptions } from '../internal/request-options';
 import { path } from '../internal/utils/path';
@@ -101,15 +101,18 @@ export class Templates extends APIResource {
    *
    * @example
    * ```ts
-   * const templates = await client.templates.list({
-   *   page: 0,
-   *   page_size: 0,
-   * });
+   * // Automatically fetches more pages as needed.
+   * for await (const template of client.templates.list()) {
+   *   // ...
+   * }
    * ```
    */
-  list(params: TemplateListParams, options?: RequestOptions): APIPromise<TemplateListResponse> {
-    const { 'x-profile-id': xProfileID, ...query } = params;
-    return this._client.get('/v3/templates', {
+  list(
+    params: TemplateListParams | null | undefined = {},
+    options?: RequestOptions,
+  ): PagePromise<TemplatesTemplatesPage, Template> {
+    const { 'x-profile-id': xProfileID, ...query } = params ?? {};
+    return this._client.getAPIList('/v3/templates', TemplatesPage<Template>, {
       query,
       ...options,
       headers: buildHeaders([
@@ -142,6 +145,8 @@ export class Templates extends APIResource {
     });
   }
 }
+
+export type TemplatesTemplatesPage = TemplatesPage<Template>;
 
 /**
  * Standard API response envelope for all v3 endpoints
@@ -439,48 +444,6 @@ export namespace TemplateVariable {
   }
 }
 
-/**
- * Standard API response envelope for all v3 endpoints
- */
-export interface TemplateListResponse {
-  /**
-   * A paginated list of templates.
-   */
-  data?: TemplateListResponse.Data | null;
-
-  /**
-   * Error information
-   */
-  error?: WebhooksAPI.ErrorDetail | null;
-
-  /**
-   * Request and response metadata
-   */
-  meta?: WebhooksAPI.APIMeta;
-
-  /**
-   * Indicates whether the request was successful
-   */
-  success?: boolean;
-}
-
-export namespace TemplateListResponse {
-  /**
-   * A paginated list of templates.
-   */
-  export interface Data {
-    /**
-     * Pagination metadata for list responses
-     */
-    pagination?: WebhooksAPI.PaginationMeta;
-
-    /**
-     * The templates on this page.
-     */
-    templates?: Array<TemplatesAPI.Template>;
-  }
-}
-
 export interface TemplateCreateParams {
   /**
    * Body param: Template category: MARKETING, UTILITY, AUTHENTICATION (optional,
@@ -589,17 +552,7 @@ export interface TemplateUpdateParams {
   'x-profile-id'?: string;
 }
 
-export interface TemplateListParams {
-  /**
-   * Query param: Page number (1-indexed)
-   */
-  page: number;
-
-  /**
-   * Query param: Number of items per page
-   */
-  page_size: number;
-
+export interface TemplateListParams extends TemplatesPageParams {
   /**
    * Query param: Optional category filter: MARKETING, UTILITY, AUTHENTICATION
    */
@@ -666,7 +619,7 @@ export declare namespace Templates {
     type TemplateFooter as TemplateFooter,
     type TemplateHeader as TemplateHeader,
     type TemplateVariable as TemplateVariable,
-    type TemplateListResponse as TemplateListResponse,
+    type TemplatesTemplatesPage as TemplatesTemplatesPage,
     type TemplateCreateParams as TemplateCreateParams,
     type TemplateRetrieveParams as TemplateRetrieveParams,
     type TemplateUpdateParams as TemplateUpdateParams,

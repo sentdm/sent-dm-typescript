@@ -2,7 +2,7 @@
 
 import { APIResource } from '../core/resource';
 import * as WebhooksAPI from './webhooks';
-import { APIPromise } from '../core/api-promise';
+import { ConversationsPage, type ConversationsPageParams, PagePromise } from '../core/pagination';
 import { buildHeaders } from '../internal/headers';
 import { RequestOptions } from '../internal/request-options';
 import { path } from '../internal/utils/path';
@@ -21,19 +21,18 @@ export class Conversations extends APIResource {
    *
    * @example
    * ```ts
-   * const apiResponseOfConversationMessagesList =
-   *   await client.conversations.list({
-   *     page: 0,
-   *     page_size: 0,
-   *   });
+   * // Automatically fetches more pages as needed.
+   * for await (const conversation of client.conversations.list()) {
+   *   // ...
+   * }
    * ```
    */
   list(
-    params: ConversationListParams,
+    params: ConversationListParams | null | undefined = {},
     options?: RequestOptions,
-  ): APIPromise<APIResponseOfConversationMessagesList> {
-    const { 'x-profile-id': xProfileID, ...query } = params;
-    return this._client.get('/v3/conversations', {
+  ): PagePromise<ConversationMessagesListMessagesConversationsPage, ConversationMessagesList.Message> {
+    const { 'x-profile-id': xProfileID, ...query } = params ?? {};
+    return this._client.getAPIList('/v3/conversations', ConversationsPage<ConversationMessagesList.Message>, {
       query,
       ...options,
       headers: buildHeaders([
@@ -49,29 +48,37 @@ export class Conversations extends APIResource {
    *
    * @example
    * ```ts
-   * const apiResponseOfConversationMessagesList =
-   *   await client.conversations.listMessages(
-   *     '08fab313-c9e2-502c-975e-08b0356c432e',
-   *     { page: 0, page_size: 0 },
-   *   );
+   * // Automatically fetches more pages as needed.
+   * for await (const conversation of client.conversations.listMessages(
+   *   '08fab313-c9e2-502c-975e-08b0356c432e',
+   * )) {
+   *   // ...
+   * }
    * ```
    */
   listMessages(
     id: string,
-    params: ConversationListMessagesParams,
+    params: ConversationListMessagesParams | null | undefined = {},
     options?: RequestOptions,
-  ): APIPromise<APIResponseOfConversationMessagesList> {
-    const { 'x-profile-id': xProfileID, ...query } = params;
-    return this._client.get(path`/v3/conversations/${id}`, {
-      query,
-      ...options,
-      headers: buildHeaders([
-        { ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined) },
-        options?.headers,
-      ]),
-    });
+  ): PagePromise<ConversationMessagesListMessagesConversationsPage, ConversationMessagesList.Message> {
+    const { 'x-profile-id': xProfileID, ...query } = params ?? {};
+    return this._client.getAPIList(
+      path`/v3/conversations/${id}`,
+      ConversationsPage<ConversationMessagesList.Message>,
+      {
+        query,
+        ...options,
+        headers: buildHeaders([
+          { ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined) },
+          options?.headers,
+        ]),
+      },
+    );
   }
 }
+
+export type ConversationMessagesListMessagesConversationsPage =
+  ConversationsPage<ConversationMessagesList.Message>;
 
 /**
  * Standard API response envelope for all v3 endpoints
@@ -197,17 +204,7 @@ export namespace ConversationMessagesList {
   }
 }
 
-export interface ConversationListParams {
-  /**
-   * Query param
-   */
-  page: number;
-
-  /**
-   * Query param
-   */
-  page_size: number;
-
+export interface ConversationListParams extends ConversationsPageParams {
   /**
    * Header param: Profile UUID to scope the request to a child profile. Only
    * organization API keys can use this header. The profile must belong to the
@@ -216,17 +213,7 @@ export interface ConversationListParams {
   'x-profile-id'?: string;
 }
 
-export interface ConversationListMessagesParams {
-  /**
-   * Query param
-   */
-  page: number;
-
-  /**
-   * Query param
-   */
-  page_size: number;
-
+export interface ConversationListMessagesParams extends ConversationsPageParams {
   /**
    * Header param: Profile UUID to scope the request to a child profile. Only
    * organization API keys can use this header. The profile must belong to the
@@ -239,6 +226,7 @@ export declare namespace Conversations {
   export {
     type APIResponseOfConversationMessagesList as APIResponseOfConversationMessagesList,
     type ConversationMessagesList as ConversationMessagesList,
+    type ConversationMessagesListMessagesConversationsPage as ConversationMessagesListMessagesConversationsPage,
     type ConversationListParams as ConversationListParams,
     type ConversationListMessagesParams as ConversationListMessagesParams,
   };

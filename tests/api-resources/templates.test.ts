@@ -57,8 +57,8 @@ describe('resource templates', () => {
   });
 
   // Mock server tests are disabled
-  test.skip('list: only required params', async () => {
-    const responsePromise = client.templates.list({ page: 0, page_size: 0 });
+  test.skip('list', async () => {
+    const responsePromise = client.templates.list();
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -69,16 +69,22 @@ describe('resource templates', () => {
   });
 
   // Mock server tests are disabled
-  test.skip('list: required and optional params', async () => {
-    const response = await client.templates.list({
-      page: 0,
-      page_size: 0,
-      category: 'category',
-      is_welcome_playground: true,
-      search: 'search',
-      status: 'status',
-      'x-profile-id': '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
-    });
+  test.skip('list: request options and params are passed correctly', async () => {
+    // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
+    await expect(
+      client.templates.list(
+        {
+          category: 'category',
+          is_welcome_playground: true,
+          page: 0,
+          page_size: 0,
+          search: 'search',
+          status: 'status',
+          'x-profile-id': '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
+        },
+        { path: '/_stainless_unknown_path' },
+      ),
+    ).rejects.toThrow(Sent.NotFoundError);
   });
 
   // Mock server tests are disabled

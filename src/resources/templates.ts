@@ -102,16 +102,16 @@ export class Templates extends APIResource {
    * @example
    * ```ts
    * // Automatically fetches more pages as needed.
-   * for await (const template of client.templates.list({
-   *   page: 0,
-   *   page_size: 0,
-   * })) {
+   * for await (const template of client.templates.list()) {
    *   // ...
    * }
    * ```
    */
-  list(params: TemplateListParams, options?: RequestOptions): PagePromise<TemplatesTemplatesPage, Template> {
-    const { 'x-profile-id': xProfileID, ...query } = params;
+  list(
+    params: TemplateListParams | null | undefined = {},
+    options?: RequestOptions,
+  ): PagePromise<TemplatesTemplatesPage, Template> {
+    const { 'x-profile-id': xProfileID, ...query } = params ?? {};
     return this._client.getAPIList('/v3/templates', TemplatesPage<Template>, {
       query,
       ...options,

@@ -174,7 +174,7 @@ You can use the `for await … of` syntax to iterate through items across all pa
 async function fetchAllWebhookResponses(params) {
   const allWebhookResponses = [];
   // Automatically fetches more pages as needed.
-  for await (const webhookResponse of client.webhooks.list({ page: 0, page_size: 0 })) {
+  for await (const webhookResponse of client.webhooks.list()) {
     allWebhookResponses.push(webhookResponse);
   }
   return allWebhookResponses;
@@ -184,7 +184,7 @@ async function fetchAllWebhookResponses(params) {
 Alternatively, you can request a single page at a time:
 
 ```ts
-let page = await client.webhooks.list({ page: 0, page_size: 0 });
+let page = await client.webhooks.list();
 for (const webhookResponse of page.data?.webhooks) {
   console.log(webhookResponse);
 }

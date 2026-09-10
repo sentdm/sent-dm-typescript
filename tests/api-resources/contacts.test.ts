@@ -67,8 +67,8 @@ describe('resource contacts', () => {
   });
 
   // Mock server tests are disabled
-  test.skip('list: only required params', async () => {
-    const responsePromise = client.contacts.list({ page: 0, page_size: 0 });
+  test.skip('list', async () => {
+    const responsePromise = client.contacts.list();
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -79,15 +79,21 @@ describe('resource contacts', () => {
   });
 
   // Mock server tests are disabled
-  test.skip('list: required and optional params', async () => {
-    const response = await client.contacts.list({
-      page: 0,
-      page_size: 0,
-      channel: 'channel',
-      phone: 'phone',
-      search: 'search',
-      'x-profile-id': '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
-    });
+  test.skip('list: request options and params are passed correctly', async () => {
+    // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
+    await expect(
+      client.contacts.list(
+        {
+          channel: 'channel',
+          page: 0,
+          page_size: 0,
+          phone: 'phone',
+          search: 'search',
+          'x-profile-id': '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
+        },
+        { path: '/_stainless_unknown_path' },
+      ),
+    ).rejects.toThrow(Sent.NotFoundError);
   });
 
   // Mock server tests are disabled

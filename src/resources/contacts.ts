@@ -105,19 +105,16 @@ export class Contacts extends APIResource {
    * @example
    * ```ts
    * // Automatically fetches more pages as needed.
-   * for await (const contactResponse of client.contacts.list({
-   *   page: 0,
-   *   page_size: 0,
-   * })) {
+   * for await (const contactResponse of client.contacts.list()) {
    *   // ...
    * }
    * ```
    */
   list(
-    params: ContactListParams,
+    params: ContactListParams | null | undefined = {},
     options?: RequestOptions,
   ): PagePromise<ContactResponsesContactsPage, ContactResponse> {
-    const { 'x-profile-id': xProfileID, ...query } = params;
+    const { 'x-profile-id': xProfileID, ...query } = params ?? {};
     return this._client.getAPIList('/v3/contacts', ContactsPage<ContactResponse>, {
       query,
       ...options,

@@ -22,19 +22,16 @@ export class Conversations extends APIResource {
    * @example
    * ```ts
    * // Automatically fetches more pages as needed.
-   * for await (const conversation of client.conversations.list({
-   *   page: 0,
-   *   page_size: 0,
-   * })) {
+   * for await (const conversation of client.conversations.list()) {
    *   // ...
    * }
    * ```
    */
   list(
-    params: ConversationListParams,
+    params: ConversationListParams | null | undefined = {},
     options?: RequestOptions,
   ): PagePromise<ConversationMessagesListMessagesConversationsPage, ConversationMessagesList.Message> {
-    const { 'x-profile-id': xProfileID, ...query } = params;
+    const { 'x-profile-id': xProfileID, ...query } = params ?? {};
     return this._client.getAPIList('/v3/conversations', ConversationsPage<ConversationMessagesList.Message>, {
       query,
       ...options,
@@ -54,7 +51,6 @@ export class Conversations extends APIResource {
    * // Automatically fetches more pages as needed.
    * for await (const conversation of client.conversations.listMessages(
    *   '08fab313-c9e2-502c-975e-08b0356c432e',
-   *   { page: 0, page_size: 0 },
    * )) {
    *   // ...
    * }
@@ -62,10 +58,10 @@ export class Conversations extends APIResource {
    */
   listMessages(
     id: string,
-    params: ConversationListMessagesParams,
+    params: ConversationListMessagesParams | null | undefined = {},
     options?: RequestOptions,
   ): PagePromise<ConversationMessagesListMessagesConversationsPage, ConversationMessagesList.Message> {
-    const { 'x-profile-id': xProfileID, ...query } = params;
+    const { 'x-profile-id': xProfileID, ...query } = params ?? {};
     return this._client.getAPIList(
       path`/v3/conversations/${id}`,
       ConversationsPage<ConversationMessagesList.Message>,

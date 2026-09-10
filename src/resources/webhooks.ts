@@ -101,19 +101,16 @@ export class Webhooks extends APIResource {
    * @example
    * ```ts
    * // Automatically fetches more pages as needed.
-   * for await (const webhookResponse of client.webhooks.list({
-   *   page: 0,
-   *   page_size: 0,
-   * })) {
+   * for await (const webhookResponse of client.webhooks.list()) {
    *   // ...
    * }
    * ```
    */
   list(
-    params: WebhookListParams,
+    params: WebhookListParams | null | undefined = {},
     options?: RequestOptions,
   ): PagePromise<WebhookResponsesWebhooksPage, WebhookResponse> {
-    const { 'x-profile-id': xProfileID, ...query } = params;
+    const { 'x-profile-id': xProfileID, ...query } = params ?? {};
     return this._client.getAPIList('/v3/webhooks', WebhooksPage<WebhookResponse>, {
       query,
       ...options,
@@ -179,7 +176,6 @@ export class Webhooks extends APIResource {
    * // Automatically fetches more pages as needed.
    * for await (const webhookListEventsResponse of client.webhooks.listEvents(
    *   'd4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8',
-   *   { page: 0, page_size: 0 },
    * )) {
    *   // ...
    * }
@@ -187,10 +183,10 @@ export class Webhooks extends APIResource {
    */
   listEvents(
     id: string,
-    params: WebhookListEventsParams,
+    params: WebhookListEventsParams | null | undefined = {},
     options?: RequestOptions,
   ): PagePromise<WebhookListEventsResponsesWebhookEventsPage, WebhookListEventsResponse> {
-    const { 'x-profile-id': xProfileID, ...query } = params;
+    const { 'x-profile-id': xProfileID, ...query } = params ?? {};
     return this._client.getAPIList(
       path`/v3/webhooks/${id}/events`,
       WebhookEventsPage<WebhookListEventsResponse>,

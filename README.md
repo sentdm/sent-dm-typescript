@@ -165,6 +165,37 @@ On timeout, an `APIConnectionTimeoutError` is thrown.
 
 Note that requests which time out will be [retried twice by default](#retries).
 
+## Auto-pagination
+
+List methods in the Sent API are paginated.
+You can use the `for await … of` syntax to iterate through items across all pages:
+
+```ts
+async function fetchAllWebhookResponses(params) {
+  const allWebhookResponses = [];
+  // Automatically fetches more pages as needed.
+  for await (const webhookResponse of client.webhooks.list()) {
+    allWebhookResponses.push(webhookResponse);
+  }
+  return allWebhookResponses;
+}
+```
+
+Alternatively, you can request a single page at a time:
+
+```ts
+let page = await client.webhooks.list();
+for (const webhookResponse of page.data?.webhooks) {
+  console.log(webhookResponse);
+}
+
+// Convenience methods are provided for manually paginating:
+while (page.hasNextPage()) {
+  page = await page.getNextPage();
+  // ...
+}
+```
+
 ## Advanced Usage
 
 ### Accessing raw Response data (e.g., headers)

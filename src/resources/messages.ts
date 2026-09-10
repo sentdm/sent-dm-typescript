@@ -1,6 +1,7 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../core/resource';
+import * as WebhooksAPI from './webhooks';
 import { APIPromise } from '../core/api-promise';
 import { buildHeaders } from '../internal/headers';
 import { RequestOptions } from '../internal/request-options';
@@ -111,12 +112,12 @@ export interface MessageRetrieveActivitiesResponse {
   /**
    * Error information
    */
-  error?: MessageRetrieveActivitiesResponse.Error | null;
+  error?: WebhooksAPI.ErrorDetail | null;
 
   /**
    * Request and response metadata
    */
-  meta?: MessageRetrieveActivitiesResponse.Meta;
+  meta?: WebhooksAPI.APIMeta;
 
   /**
    * Indicates whether the request was successful
@@ -142,7 +143,7 @@ export namespace MessageRetrieveActivitiesResponse {
     /**
      * Pagination metadata for list responses
      */
-    pagination?: Data.Pagination;
+    pagination?: WebhooksAPI.PaginationMeta;
   }
 
   export namespace Data {
@@ -185,103 +186,6 @@ export namespace MessageRetrieveActivitiesResponse {
        */
       timestamp?: string;
     }
-
-    /**
-     * Pagination metadata for list responses
-     */
-    export interface Pagination {
-      /**
-       * @deprecated Cursor-based pagination. Never populated — see Cursors.
-       */
-      cursors?: Pagination.Cursors | null;
-
-      /**
-       * Whether there are more pages after this one
-       */
-      has_more?: boolean;
-
-      /**
-       * Current page number (1-indexed)
-       */
-      page?: number;
-
-      /**
-       * Number of items per page
-       */
-      page_size?: number;
-
-      /**
-       * Total number of items across all pages
-       */
-      total_count?: number;
-
-      /**
-       * Total number of pages
-       */
-      total_pages?: number;
-    }
-
-    export namespace Pagination {
-      /**
-       * @deprecated Cursor-based pagination. Never populated — see Cursors.
-       */
-      export interface Cursors {
-        /**
-         * Cursor to fetch the next page.
-         */
-        after?: string | null;
-
-        /**
-         * Cursor to fetch the previous page.
-         */
-        before?: string | null;
-      }
-    }
-  }
-
-  /**
-   * Error information
-   */
-  export interface Error {
-    /**
-     * Machine-readable error code (e.g., "RESOURCE_001")
-     */
-    code?: string;
-
-    /**
-     * Additional validation error details (field-level errors)
-     */
-    details?: { [key: string]: Array<string> } | null;
-
-    /**
-     * URL to documentation about this error
-     */
-    doc_url?: string | null;
-
-    /**
-     * Human-readable error message
-     */
-    message?: string;
-  }
-
-  /**
-   * Request and response metadata
-   */
-  export interface Meta {
-    /**
-     * Unique identifier for this request (for tracing and support)
-     */
-    request_id?: string;
-
-    /**
-     * Server timestamp when the response was generated
-     */
-    timestamp?: string;
-
-    /**
-     * API version used for this request
-     */
-    version?: string;
   }
 }
 
@@ -297,12 +201,12 @@ export interface MessageRetrieveStatusResponse {
   /**
    * Error information
    */
-  error?: MessageRetrieveStatusResponse.Error | null;
+  error?: WebhooksAPI.ErrorDetail | null;
 
   /**
    * Request and response metadata
    */
-  meta?: MessageRetrieveStatusResponse.Meta;
+  meta?: WebhooksAPI.APIMeta;
 
   /**
    * Indicates whether the request was successful
@@ -392,51 +296,6 @@ export namespace MessageRetrieveStatusResponse {
       }
     }
   }
-
-  /**
-   * Error information
-   */
-  export interface Error {
-    /**
-     * Machine-readable error code (e.g., "RESOURCE_001")
-     */
-    code?: string;
-
-    /**
-     * Additional validation error details (field-level errors)
-     */
-    details?: { [key: string]: Array<string> } | null;
-
-    /**
-     * URL to documentation about this error
-     */
-    doc_url?: string | null;
-
-    /**
-     * Human-readable error message
-     */
-    message?: string;
-  }
-
-  /**
-   * Request and response metadata
-   */
-  export interface Meta {
-    /**
-     * Unique identifier for this request (for tracing and support)
-     */
-    request_id?: string;
-
-    /**
-     * Server timestamp when the response was generated
-     */
-    timestamp?: string;
-
-    /**
-     * API version used for this request
-     */
-    version?: string;
-  }
 }
 
 /**
@@ -460,12 +319,12 @@ export interface MessageSendResponse {
   /**
    * Error information
    */
-  error?: MessageSendResponse.Error | null;
+  error?: WebhooksAPI.ErrorDetail | null;
 
   /**
    * Request and response metadata
    */
-  meta?: MessageSendResponse.Meta;
+  meta?: WebhooksAPI.APIMeta;
 
   /**
    * Indicates whether the request was successful
@@ -525,51 +384,6 @@ export namespace MessageSendResponse {
        */
       to?: string;
     }
-  }
-
-  /**
-   * Error information
-   */
-  export interface Error {
-    /**
-     * Machine-readable error code (e.g., "RESOURCE_001")
-     */
-    code?: string;
-
-    /**
-     * Additional validation error details (field-level errors)
-     */
-    details?: { [key: string]: Array<string> } | null;
-
-    /**
-     * URL to documentation about this error
-     */
-    doc_url?: string | null;
-
-    /**
-     * Human-readable error message
-     */
-    message?: string;
-  }
-
-  /**
-   * Request and response metadata
-   */
-  export interface Meta {
-    /**
-     * Unique identifier for this request (for tracing and support)
-     */
-    request_id?: string;
-
-    /**
-     * Server timestamp when the response was generated
-     */
-    timestamp?: string;
-
-    /**
-     * API version used for this request
-     */
-    version?: string;
   }
 }
 

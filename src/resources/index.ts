@@ -6,13 +6,13 @@ export {
   type APIResponseOfContactMessageSummary,
   type ContactMessageSummary,
   type ContactResponse,
-  type ContactListResponse,
   type ContactCreateParams,
   type ContactRetrieveParams,
   type ContactUpdateParams,
   type ContactListParams,
   type ContactDeleteParams,
   type ContactRetrieveMessageSummaryParams,
+  type ContactResponsesContactsPage,
 } from './contacts';
 export {
   Conversations,
@@ -20,6 +20,7 @@ export {
   type ConversationMessagesList,
   type ConversationListParams,
   type ConversationListMessagesParams,
+  type ConversationMessagesListMessagesConversationsPage,
 } from './conversations';
 export { Me, type ProfileSettings, type MeRetrieveResponse, type MeRetrieveParams } from './me';
 export {
@@ -67,12 +68,12 @@ export {
   type TemplateFooter,
   type TemplateHeader,
   type TemplateVariable,
-  type TemplateListResponse,
   type TemplateCreateParams,
   type TemplateRetrieveParams,
   type TemplateUpdateParams,
   type TemplateListParams,
   type TemplateDeleteParams,
+  type TemplatesTemplatesPage,
 } from './templates';
 export {
   Users,
@@ -100,7 +101,6 @@ export {
   type TemplateEventPayload,
   type WebhookEventType,
   type WebhookResponse,
-  type WebhookListResponse,
   type WebhookListEventTypesResponse,
   type WebhookListEventsResponse,
   type WebhookRotateSecretResponse,
@@ -115,4 +115,6 @@ export {
   type WebhookRotateSecretParams,
   type WebhookTestParams,
   type WebhookToggleStatusParams,
+  type WebhookResponsesWebhooksPage,
+  type WebhookListEventsResponsesWebhookEventsPage,
 } from './webhooks';

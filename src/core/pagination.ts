@@ -121,10 +121,6 @@ export namespace ContactsPageResponse {
   export namespace Data {
     export interface Pagination {
       has_more?: boolean;
-
-      page?: number;
-
-      total_pages?: number;
     }
   }
 }
@@ -162,11 +158,8 @@ export class ContactsPage<Item> extends AbstractPage<Item> implements ContactsPa
   }
 
   nextPageRequestOptions(): PageRequestOptions | null {
-    const currentPage = this.data?.pagination?.page ?? 1;
-
-    if (this.data.pagination?.total_pages != null && currentPage >= this.data.pagination?.total_pages) {
-      return null;
-    }
+    const query = this.options.query as ContactsPageParams;
+    const currentPage = query?.page ?? 1;
 
     return {
       ...this.options,
@@ -192,10 +185,6 @@ export namespace ConversationsPageResponse {
   export namespace Data {
     export interface Pagination {
       has_more?: boolean;
-
-      page?: number;
-
-      total_pages?: number;
     }
   }
 }
@@ -233,11 +222,8 @@ export class ConversationsPage<Item> extends AbstractPage<Item> implements Conve
   }
 
   nextPageRequestOptions(): PageRequestOptions | null {
-    const currentPage = this.data?.pagination?.page ?? 1;
-
-    if (this.data.pagination?.total_pages != null && currentPage >= this.data.pagination?.total_pages) {
-      return null;
-    }
+    const query = this.options.query as ConversationsPageParams;
+    const currentPage = query?.page ?? 1;
 
     return {
       ...this.options,
@@ -263,10 +249,6 @@ export namespace TemplatesPageResponse {
   export namespace Data {
     export interface Pagination {
       has_more?: boolean;
-
-      page?: number;
-
-      total_pages?: number;
     }
   }
 }
@@ -304,11 +286,8 @@ export class TemplatesPage<Item> extends AbstractPage<Item> implements Templates
   }
 
   nextPageRequestOptions(): PageRequestOptions | null {
-    const currentPage = this.data?.pagination?.page ?? 1;
-
-    if (this.data.pagination?.total_pages != null && currentPage >= this.data.pagination?.total_pages) {
-      return null;
-    }
+    const query = this.options.query as TemplatesPageParams;
+    const currentPage = query?.page ?? 1;
 
     return {
       ...this.options,
@@ -334,10 +313,6 @@ export namespace WebhooksPageResponse {
   export namespace Data {
     export interface Pagination {
       has_more?: boolean;
-
-      page?: number;
-
-      total_pages?: number;
     }
   }
 }
@@ -375,11 +350,8 @@ export class WebhooksPage<Item> extends AbstractPage<Item> implements WebhooksPa
   }
 
   nextPageRequestOptions(): PageRequestOptions | null {
-    const currentPage = this.data?.pagination?.page ?? 1;
-
-    if (this.data.pagination?.total_pages != null && currentPage >= this.data.pagination?.total_pages) {
-      return null;
-    }
+    const query = this.options.query as WebhooksPageParams;
+    const currentPage = query?.page ?? 1;
 
     return {
       ...this.options,
@@ -405,10 +377,6 @@ export namespace WebhookEventsPageResponse {
   export namespace Data {
     export interface Pagination {
       has_more?: boolean;
-
-      page?: number;
-
-      total_pages?: number;
     }
   }
 }
@@ -446,11 +414,8 @@ export class WebhookEventsPage<Item> extends AbstractPage<Item> implements Webho
   }
 
   nextPageRequestOptions(): PageRequestOptions | null {
-    const currentPage = this.data?.pagination?.page ?? 1;
-
-    if (this.data.pagination?.total_pages != null && currentPage >= this.data.pagination?.total_pages) {
-      return null;
-    }
+    const query = this.options.query as WebhookEventsPageParams;
+    const currentPage = query?.page ?? 1;
 
     return {
       ...this.options,

@@ -3,6 +3,13 @@
 import { APIResource } from '../core/resource';
 import * as WebhooksAPI from './webhooks';
 import { APIPromise } from '../core/api-promise';
+import {
+  PagePromise,
+  WebhookEventsPage,
+  type WebhookEventsPageParams,
+  WebhooksPage,
+  type WebhooksPageParams,
+} from '../core/pagination';
 import { buildHeaders } from '../internal/headers';
 import { RequestOptions } from '../internal/request-options';
 import { path } from '../internal/utils/path';
@@ -93,15 +100,18 @@ export class Webhooks extends APIResource {
    *
    * @example
    * ```ts
-   * const webhooks = await client.webhooks.list({
-   *   page: 0,
-   *   page_size: 0,
-   * });
+   * // Automatically fetches more pages as needed.
+   * for await (const webhookResponse of client.webhooks.list()) {
+   *   // ...
+   * }
    * ```
    */
-  list(params: WebhookListParams, options?: RequestOptions): APIPromise<WebhookListResponse> {
-    const { 'x-profile-id': xProfileID, ...query } = params;
-    return this._client.get('/v3/webhooks', {
+  list(
+    params: WebhookListParams | null | undefined = {},
+    options?: RequestOptions,
+  ): PagePromise<WebhookResponsesWebhooksPage, WebhookResponse> {
+    const { 'x-profile-id': xProfileID, ...query } = params ?? {};
+    return this._client.getAPIList('/v3/webhooks', WebhooksPage<WebhookResponse>, {
       query,
       ...options,
       headers: buildHeaders([
@@ -163,26 +173,32 @@ export class Webhooks extends APIResource {
    *
    * @example
    * ```ts
-   * const response = await client.webhooks.listEvents(
+   * // Automatically fetches more pages as needed.
+   * for await (const webhookListEventsResponse of client.webhooks.listEvents(
    *   'd4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8',
-   *   { page: 0, page_size: 0 },
-   * );
+   * )) {
+   *   // ...
+   * }
    * ```
    */
   listEvents(
     id: string,
-    params: WebhookListEventsParams,
+    params: WebhookListEventsParams | null | undefined = {},
     options?: RequestOptions,
-  ): APIPromise<WebhookListEventsResponse> {
-    const { 'x-profile-id': xProfileID, ...query } = params;
-    return this._client.get(path`/v3/webhooks/${id}/events`, {
-      query,
-      ...options,
-      headers: buildHeaders([
-        { ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined) },
-        options?.headers,
-      ]),
-    });
+  ): PagePromise<WebhookListEventsResponsesWebhookEventsPage, WebhookListEventsResponse> {
+    const { 'x-profile-id': xProfileID, ...query } = params ?? {};
+    return this._client.getAPIList(
+      path`/v3/webhooks/${id}/events`,
+      WebhookEventsPage<WebhookListEventsResponse>,
+      {
+        query,
+        ...options,
+        headers: buildHeaders([
+          { ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined) },
+          options?.headers,
+        ]),
+      },
+    );
   }
 
   /**
@@ -270,6 +286,10 @@ export class Webhooks extends APIResource {
     });
   }
 }
+
+export type WebhookResponsesWebhooksPage = WebhooksPage<WebhookResponse>;
+
+export type WebhookListEventsResponsesWebhookEventsPage = WebhookEventsPage<WebhookListEventsResponse>;
 
 /**
  * Request and response metadata
@@ -710,48 +730,6 @@ export interface WebhookResponse {
 /**
  * Standard API response envelope for all v3 endpoints
  */
-export interface WebhookListResponse {
-  /**
-   * A paginated list of webhooks.
-   */
-  data?: WebhookListResponse.Data | null;
-
-  /**
-   * Error information
-   */
-  error?: ErrorDetail | null;
-
-  /**
-   * Request and response metadata
-   */
-  meta?: APIMeta;
-
-  /**
-   * Indicates whether the request was successful
-   */
-  success?: boolean;
-}
-
-export namespace WebhookListResponse {
-  /**
-   * A paginated list of webhooks.
-   */
-  export interface Data {
-    /**
-     * Pagination metadata for list responses
-     */
-    pagination?: WebhooksAPI.PaginationMeta;
-
-    /**
-     * The webhooks on this page.
-     */
-    webhooks?: Array<WebhooksAPI.WebhookResponse>;
-  }
-}
-
-/**
- * Standard API response envelope for all v3 endpoints
- */
 export interface WebhookListEventTypesResponse {
   /**
    * The webhook event types a customer can subscribe to.
@@ -791,78 +769,34 @@ export namespace WebhookListEventTypesResponse {
   }
 }
 
-/**
- * Standard API response envelope for all v3 endpoints
- */
 export interface WebhookListEventsResponse {
-  /**
-   * A paginated list of webhook delivery records.
-   */
-  data?: WebhookListEventsResponse.Data | null;
+  id?: string;
+
+  created_at?: string;
+
+  delivery_attempts?: number;
+
+  delivery_status?: string;
+
+  error_message?: string | null;
 
   /**
-   * Error information
+   * The exact event body that was delivered, or attempted, for this record. One of
+   * the three webhook envelopes: a message status change, an inbound message, or a
+   * template status change. Read field and event to tell which, the same way your
+   * endpoint does.
    */
-  error?: ErrorDetail | null;
+  event_data?: MessageEvent | InboundMessageEvent | TemplateEvent;
 
-  /**
-   * Request and response metadata
-   */
-  meta?: APIMeta;
+  event_type?: string;
 
-  /**
-   * Indicates whether the request was successful
-   */
-  success?: boolean;
-}
+  http_status_code?: number | null;
 
-export namespace WebhookListEventsResponse {
-  /**
-   * A paginated list of webhook delivery records.
-   */
-  export interface Data {
-    /**
-     * The events on this page.
-     */
-    events?: Array<Data.Event>;
+  processing_completed_at?: string | null;
 
-    /**
-     * Pagination metadata for list responses
-     */
-    pagination?: WebhooksAPI.PaginationMeta;
-  }
+  processing_started_at?: string | null;
 
-  export namespace Data {
-    export interface Event {
-      id?: string;
-
-      created_at?: string;
-
-      delivery_attempts?: number;
-
-      delivery_status?: string;
-
-      error_message?: string | null;
-
-      /**
-       * The exact event body that was delivered, or attempted, for this record. One of
-       * the three webhook envelopes: a message status change, an inbound message, or a
-       * template status change. Read field and event to tell which, the same way your
-       * endpoint does.
-       */
-      event_data?: WebhooksAPI.MessageEvent | WebhooksAPI.InboundMessageEvent | WebhooksAPI.TemplateEvent;
-
-      event_type?: string;
-
-      http_status_code?: number | null;
-
-      processing_completed_at?: string | null;
-
-      processing_started_at?: string | null;
-
-      response_body?: string | null;
-    }
-  }
+  response_body?: string | null;
 }
 
 /**
@@ -1047,17 +981,7 @@ export interface WebhookUpdateParams {
   'x-profile-id'?: string;
 }
 
-export interface WebhookListParams {
-  /**
-   * Query param
-   */
-  page: number;
-
-  /**
-   * Query param
-   */
-  page_size: number;
-
+export interface WebhookListParams extends WebhooksPageParams {
   /**
    * Query param
    */
@@ -1092,17 +1016,7 @@ export interface WebhookListEventTypesParams {
   'x-profile-id'?: string;
 }
 
-export interface WebhookListEventsParams {
-  /**
-   * Query param
-   */
-  page: number;
-
-  /**
-   * Query param
-   */
-  page_size: number;
-
+export interface WebhookListEventsParams extends WebhookEventsPageParams {
   /**
    * Query param
    */
@@ -1207,11 +1121,12 @@ export declare namespace Webhooks {
     type TemplateEventPayload as TemplateEventPayload,
     type WebhookEventType as WebhookEventType,
     type WebhookResponse as WebhookResponse,
-    type WebhookListResponse as WebhookListResponse,
     type WebhookListEventTypesResponse as WebhookListEventTypesResponse,
     type WebhookListEventsResponse as WebhookListEventsResponse,
     type WebhookRotateSecretResponse as WebhookRotateSecretResponse,
     type WebhookTestResponse as WebhookTestResponse,
+    type WebhookResponsesWebhooksPage as WebhookResponsesWebhooksPage,
+    type WebhookListEventsResponsesWebhookEventsPage as WebhookListEventsResponsesWebhookEventsPage,
     type WebhookCreateParams as WebhookCreateParams,
     type WebhookRetrieveParams as WebhookRetrieveParams,
     type WebhookUpdateParams as WebhookUpdateParams,

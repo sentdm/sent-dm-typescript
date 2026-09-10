@@ -15,7 +15,6 @@ Types:
 - <code><a href="./src/resources/webhooks.ts">TemplateEventPayload</a></code>
 - <code><a href="./src/resources/webhooks.ts">WebhookEventType</a></code>
 - <code><a href="./src/resources/webhooks.ts">WebhookResponse</a></code>
-- <code><a href="./src/resources/webhooks.ts">WebhookListResponse</a></code>
 - <code><a href="./src/resources/webhooks.ts">WebhookListEventTypesResponse</a></code>
 - <code><a href="./src/resources/webhooks.ts">WebhookListEventsResponse</a></code>
 - <code><a href="./src/resources/webhooks.ts">WebhookRotateSecretResponse</a></code>
@@ -26,10 +25,10 @@ Methods:
 - <code title="post /v3/webhooks">client.webhooks.<a href="./src/resources/webhooks.ts">create</a>({ ...params }) -> APIResponseWebhook</code>
 - <code title="get /v3/webhooks/{id}">client.webhooks.<a href="./src/resources/webhooks.ts">retrieve</a>(id, { ...params }) -> APIResponseWebhook</code>
 - <code title="put /v3/webhooks/{id}">client.webhooks.<a href="./src/resources/webhooks.ts">update</a>(id, { ...params }) -> APIResponseWebhook</code>
-- <code title="get /v3/webhooks">client.webhooks.<a href="./src/resources/webhooks.ts">list</a>({ ...params }) -> WebhookListResponse</code>
+- <code title="get /v3/webhooks">client.webhooks.<a href="./src/resources/webhooks.ts">list</a>({ ...params }) -> WebhookResponsesWebhooksPage</code>
 - <code title="delete /v3/webhooks/{id}">client.webhooks.<a href="./src/resources/webhooks.ts">delete</a>(id, { ...params }) -> void</code>
 - <code title="get /v3/webhooks/event-types">client.webhooks.<a href="./src/resources/webhooks.ts">listEventTypes</a>({ ...params }) -> WebhookListEventTypesResponse</code>
-- <code title="get /v3/webhooks/{id}/events">client.webhooks.<a href="./src/resources/webhooks.ts">listEvents</a>(id, { ...params }) -> WebhookListEventsResponse</code>
+- <code title="get /v3/webhooks/{id}/events">client.webhooks.<a href="./src/resources/webhooks.ts">listEvents</a>(id, { ...params }) -> WebhookListEventsResponsesWebhookEventsPage</code>
 - <code title="post /v3/webhooks/{id}/rotate-secret">client.webhooks.<a href="./src/resources/webhooks.ts">rotateSecret</a>(id, { ...params }) -> WebhookRotateSecretResponse</code>
 - <code title="post /v3/webhooks/{id}/test">client.webhooks.<a href="./src/resources/webhooks.ts">test</a>(id, { ...params }) -> WebhookTestResponse</code>
 - <code title="patch /v3/webhooks/{id}/toggle-status">client.webhooks.<a href="./src/resources/webhooks.ts">toggleStatus</a>(id, { ...params }) -> APIResponseWebhook</code>
@@ -65,14 +64,13 @@ Types:
 - <code><a href="./src/resources/templates.ts">TemplateFooter</a></code>
 - <code><a href="./src/resources/templates.ts">TemplateHeader</a></code>
 - <code><a href="./src/resources/templates.ts">TemplateVariable</a></code>
-- <code><a href="./src/resources/templates.ts">TemplateListResponse</a></code>
 
 Methods:
 
 - <code title="post /v3/templates">client.templates.<a href="./src/resources/templates.ts">create</a>({ ...params }) -> APIResponseTemplate</code>
 - <code title="get /v3/templates/{id}">client.templates.<a href="./src/resources/templates.ts">retrieve</a>(id, { ...params }) -> APIResponseTemplate</code>
 - <code title="put /v3/templates/{id}">client.templates.<a href="./src/resources/templates.ts">update</a>(id, { ...params }) -> APIResponseTemplate</code>
-- <code title="get /v3/templates">client.templates.<a href="./src/resources/templates.ts">list</a>({ ...params }) -> TemplateListResponse</code>
+- <code title="get /v3/templates">client.templates.<a href="./src/resources/templates.ts">list</a>({ ...params }) -> TemplatesTemplatesPage</code>
 - <code title="delete /v3/templates/{id}">client.templates.<a href="./src/resources/templates.ts">delete</a>(id, { ...params }) -> void</code>
 
 # Profiles
@@ -153,14 +151,13 @@ Types:
 - <code><a href="./src/resources/contacts.ts">APIResponseOfContactMessageSummary</a></code>
 - <code><a href="./src/resources/contacts.ts">ContactMessageSummary</a></code>
 - <code><a href="./src/resources/contacts.ts">ContactResponse</a></code>
-- <code><a href="./src/resources/contacts.ts">ContactListResponse</a></code>
 
 Methods:
 
 - <code title="post /v3/contacts">client.contacts.<a href="./src/resources/contacts.ts">create</a>({ ...params }) -> APIResponseOfContact</code>
 - <code title="get /v3/contacts/{id}">client.contacts.<a href="./src/resources/contacts.ts">retrieve</a>(id, { ...params }) -> APIResponseOfContact</code>
 - <code title="patch /v3/contacts/{id}">client.contacts.<a href="./src/resources/contacts.ts">update</a>(id, { ...params }) -> APIResponseOfContact</code>
-- <code title="get /v3/contacts">client.contacts.<a href="./src/resources/contacts.ts">list</a>({ ...params }) -> ContactListResponse</code>
+- <code title="get /v3/contacts">client.contacts.<a href="./src/resources/contacts.ts">list</a>({ ...params }) -> ContactResponsesContactsPage</code>
 - <code title="delete /v3/contacts/{id}">client.contacts.<a href="./src/resources/contacts.ts">delete</a>(id, { ...params }) -> void</code>
 - <code title="get /v3/contacts/{contactId}/message-summary">client.contacts.<a href="./src/resources/contacts.ts">retrieveMessageSummary</a>(contactID, { ...params }) -> APIResponseOfContactMessageSummary</code>
 
@@ -173,8 +170,8 @@ Types:
 
 Methods:
 
-- <code title="get /v3/conversations">client.conversations.<a href="./src/resources/conversations.ts">list</a>({ ...params }) -> APIResponseOfConversationMessagesList</code>
-- <code title="get /v3/conversations/{id}">client.conversations.<a href="./src/resources/conversations.ts">listMessages</a>(id, { ...params }) -> APIResponseOfConversationMessagesList</code>
+- <code title="get /v3/conversations">client.conversations.<a href="./src/resources/conversations.ts">list</a>({ ...params }) -> ConversationMessagesListMessagesConversationsPage</code>
+- <code title="get /v3/conversations/{id}">client.conversations.<a href="./src/resources/conversations.ts">listMessages</a>(id, { ...params }) -> ConversationMessagesListMessagesConversationsPage</code>
 
 # Me
 

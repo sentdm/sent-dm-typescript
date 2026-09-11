@@ -3,6 +3,13 @@
 import { APIResource } from '../core/resource';
 import * as WebhooksAPI from './webhooks';
 import { APIPromise } from '../core/api-promise';
+import {
+  PagePromise,
+  WebhookEventsPage,
+  type WebhookEventsPageParams,
+  WebhooksPage,
+  type WebhooksPageParams,
+} from '../core/pagination';
 import { buildHeaders } from '../internal/headers';
 import { RequestOptions } from '../internal/request-options';
 import { path } from '../internal/utils/path';
@@ -20,10 +27,10 @@ export class Webhooks extends APIResource {
    *
    * @example
    * ```ts
-   * const webhook = await client.webhooks.create();
+   * const apiResponseWebhook = await client.webhooks.create();
    * ```
    */
-  create(params: WebhookCreateParams, options?: RequestOptions): APIPromise<WebhookCreateResponse> {
+  create(params: WebhookCreateParams, options?: RequestOptions): APIPromise<APIResponseWebhook> {
     const { 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
     return this._client.post('/v3/webhooks', {
       body,
@@ -43,7 +50,7 @@ export class Webhooks extends APIResource {
    *
    * @example
    * ```ts
-   * const webhook = await client.webhooks.retrieve(
+   * const apiResponseWebhook = await client.webhooks.retrieve(
    *   'd4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8',
    * );
    * ```
@@ -52,7 +59,7 @@ export class Webhooks extends APIResource {
     id: string,
     params: WebhookRetrieveParams | null | undefined = {},
     options?: RequestOptions,
-  ): APIPromise<WebhookRetrieveResponse> {
+  ): APIPromise<APIResponseWebhook> {
     const { 'x-profile-id': xProfileID } = params ?? {};
     return this._client.get(path`/v3/webhooks/${id}`, {
       ...options,
@@ -68,16 +75,12 @@ export class Webhooks extends APIResource {
    *
    * @example
    * ```ts
-   * const webhook = await client.webhooks.update(
+   * const apiResponseWebhook = await client.webhooks.update(
    *   'd4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8',
    * );
    * ```
    */
-  update(
-    id: string,
-    params: WebhookUpdateParams,
-    options?: RequestOptions,
-  ): APIPromise<WebhookUpdateResponse> {
+  update(id: string, params: WebhookUpdateParams, options?: RequestOptions): APIPromise<APIResponseWebhook> {
     const { 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
     return this._client.put(path`/v3/webhooks/${id}`, {
       body,
@@ -97,15 +100,18 @@ export class Webhooks extends APIResource {
    *
    * @example
    * ```ts
-   * const webhooks = await client.webhooks.list({
-   *   page: 0,
-   *   page_size: 0,
-   * });
+   * // Automatically fetches more pages as needed.
+   * for await (const webhookResponse of client.webhooks.list()) {
+   *   // ...
+   * }
    * ```
    */
-  list(params: WebhookListParams, options?: RequestOptions): APIPromise<WebhookListResponse> {
-    const { 'x-profile-id': xProfileID, ...query } = params;
-    return this._client.get('/v3/webhooks', {
+  list(
+    params: WebhookListParams | null | undefined = {},
+    options?: RequestOptions,
+  ): PagePromise<WebhookResponsesWebhooksPage, WebhookResponse> {
+    const { 'x-profile-id': xProfileID, ...query } = params ?? {};
+    return this._client.getAPIList('/v3/webhooks', WebhooksPage<WebhookResponse>, {
       query,
       ...options,
       headers: buildHeaders([
@@ -167,26 +173,32 @@ export class Webhooks extends APIResource {
    *
    * @example
    * ```ts
-   * const response = await client.webhooks.listEvents(
+   * // Automatically fetches more pages as needed.
+   * for await (const webhookListEventsResponse of client.webhooks.listEvents(
    *   'd4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8',
-   *   { page: 0, page_size: 0 },
-   * );
+   * )) {
+   *   // ...
+   * }
    * ```
    */
   listEvents(
     id: string,
-    params: WebhookListEventsParams,
+    params: WebhookListEventsParams | null | undefined = {},
     options?: RequestOptions,
-  ): APIPromise<WebhookListEventsResponse> {
-    const { 'x-profile-id': xProfileID, ...query } = params;
-    return this._client.get(path`/v3/webhooks/${id}/events`, {
-      query,
-      ...options,
-      headers: buildHeaders([
-        { ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined) },
-        options?.headers,
-      ]),
-    });
+  ): PagePromise<WebhookListEventsResponsesWebhookEventsPage, WebhookListEventsResponse> {
+    const { 'x-profile-id': xProfileID, ...query } = params ?? {};
+    return this._client.getAPIList(
+      path`/v3/webhooks/${id}/events`,
+      WebhookEventsPage<WebhookListEventsResponse>,
+      {
+        query,
+        ...options,
+        headers: buildHeaders([
+          { ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined) },
+          options?.headers,
+        ]),
+      },
+    );
   }
 
   /**
@@ -249,16 +261,17 @@ export class Webhooks extends APIResource {
    *
    * @example
    * ```ts
-   * const response = await client.webhooks.toggleStatus(
-   *   'd4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8',
-   * );
+   * const apiResponseWebhook =
+   *   await client.webhooks.toggleStatus(
+   *     'd4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8',
+   *   );
    * ```
    */
   toggleStatus(
     id: string,
     params: WebhookToggleStatusParams,
     options?: RequestOptions,
-  ): APIPromise<WebhookToggleStatusResponse> {
+  ): APIPromise<APIResponseWebhook> {
     const { 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
     return this._client.patch(path`/v3/webhooks/${id}/toggle-status`, {
       body,
@@ -272,6 +285,80 @@ export class Webhooks extends APIResource {
       ]),
     });
   }
+}
+
+export type WebhookResponsesWebhooksPage = WebhooksPage<WebhookResponse>;
+
+export type WebhookListEventsResponsesWebhookEventsPage = WebhookEventsPage<WebhookListEventsResponse>;
+
+/**
+ * Request and response metadata
+ */
+export interface APIMeta {
+  /**
+   * Unique identifier for this request (for tracing and support)
+   */
+  request_id?: string;
+
+  /**
+   * Server timestamp when the response was generated
+   */
+  timestamp?: string;
+
+  /**
+   * API version used for this request
+   */
+  version?: string;
+}
+
+/**
+ * Standard API response envelope for all v3 endpoints
+ */
+export interface APIResponseWebhook {
+  /**
+   * The response data (null if error)
+   */
+  data?: WebhookResponse | null;
+
+  /**
+   * Error information
+   */
+  error?: ErrorDetail | null;
+
+  /**
+   * Request and response metadata
+   */
+  meta?: APIMeta;
+
+  /**
+   * Indicates whether the request was successful
+   */
+  success?: boolean;
+}
+
+/**
+ * Error information
+ */
+export interface ErrorDetail {
+  /**
+   * Machine-readable error code (e.g., "RESOURCE_001")
+   */
+  code?: string;
+
+  /**
+   * Additional validation error details (field-level errors)
+   */
+  details?: { [key: string]: Array<string> } | null;
+
+  /**
+   * URL to documentation about this error
+   */
+  doc_url?: string | null;
+
+  /**
+   * Human-readable error message
+   */
+  message?: string;
 }
 
 /**
@@ -445,6 +532,66 @@ export interface MessageEventPayload {
   updated_at?: string;
 }
 
+export interface MutationRequest {
+  /**
+   * Sandbox flag - when true, the operation is simulated without side effects Useful
+   * for testing integrations without actual execution
+   */
+  sandbox?: boolean;
+}
+
+/**
+ * Pagination metadata for list responses
+ */
+export interface PaginationMeta {
+  /**
+   * @deprecated Cursor-based pagination. Never populated — see Cursors.
+   */
+  cursors?: PaginationMeta.Cursors | null;
+
+  /**
+   * Whether there are more pages after this one
+   */
+  has_more?: boolean;
+
+  /**
+   * Current page number (1-indexed)
+   */
+  page?: number;
+
+  /**
+   * Number of items per page
+   */
+  page_size?: number;
+
+  /**
+   * Total number of items across all pages
+   */
+  total_count?: number;
+
+  /**
+   * Total number of pages
+   */
+  total_pages?: number;
+}
+
+export namespace PaginationMeta {
+  /**
+   * @deprecated Cursor-based pagination. Never populated — see Cursors.
+   */
+  export interface Cursors {
+    /**
+     * Cursor to fetch the next page.
+     */
+    after?: string | null;
+
+    /**
+     * Cursor to fetch the previous page.
+     */
+    before?: string | null;
+  }
+}
+
 /**
  * The envelope Sent POSTs to a subscribed webhook endpoint. Every event shares
  * this shape and varies only in Payload.
@@ -530,514 +677,54 @@ export interface TemplateEventPayload {
   template_name?: string;
 }
 
-/**
- * Standard API response envelope for all v3 endpoints
- */
-export interface WebhookCreateResponse {
-  /**
-   * The response data (null if error)
-   */
-  data?: WebhookCreateResponse.Data | null;
+export interface WebhookEventType {
+  description?: string | null;
 
-  /**
-   * Error information
-   */
-  error?: WebhookCreateResponse.Error | null;
+  display_name?: string;
 
-  /**
-   * Request and response metadata
-   */
-  meta?: WebhookCreateResponse.Meta;
+  event_type?: string | null;
 
-  /**
-   * Indicates whether the request was successful
-   */
-  success?: boolean;
+  is_active?: boolean;
+
+  name?: string;
+
+  sub_types?: Array<WebhookEventType> | null;
 }
 
-export namespace WebhookCreateResponse {
-  /**
-   * The response data (null if error)
-   */
-  export interface Data {
-    id?: string;
+export interface WebhookResponse {
+  id?: string;
 
-    consecutive_failures?: number;
+  consecutive_failures?: number;
 
-    created_at?: string;
-
-    /**
-     * Which customer owns this — the key's own, or the profile named in x-profile-id.
-     * Says whose resource this is, which the resource's own id does not.
-     */
-    customer_id?: string;
-
-    display_name?: string;
-
-    endpoint_url?: string;
-
-    event_filters?: { [key: string]: Array<string> } | null;
-
-    event_types?: Array<string>;
-
-    is_active?: boolean;
-
-    last_delivery_attempt_at?: string | null;
-
-    last_successful_delivery_at?: string | null;
-
-    retry_count?: number;
-
-    signing_secret?: string | null;
-
-    timeout_seconds?: number;
-
-    updated_at?: string | null;
-  }
+  created_at?: string;
 
   /**
-   * Error information
+   * Which customer owns this — the key's own, or the profile named in x-profile-id.
+   * Says whose resource this is, which the resource's own id does not.
    */
-  export interface Error {
-    /**
-     * Machine-readable error code (e.g., "RESOURCE_001")
-     */
-    code?: string;
+  customer_id?: string;
 
-    /**
-     * Additional validation error details (field-level errors)
-     */
-    details?: { [key: string]: Array<string> } | null;
+  display_name?: string;
 
-    /**
-     * URL to documentation about this error
-     */
-    doc_url?: string | null;
+  endpoint_url?: string;
 
-    /**
-     * Human-readable error message
-     */
-    message?: string;
-  }
+  event_filters?: { [key: string]: Array<string> } | null;
 
-  /**
-   * Request and response metadata
-   */
-  export interface Meta {
-    /**
-     * Unique identifier for this request (for tracing and support)
-     */
-    request_id?: string;
+  event_types?: Array<string>;
 
-    /**
-     * Server timestamp when the response was generated
-     */
-    timestamp?: string;
+  is_active?: boolean;
 
-    /**
-     * API version used for this request
-     */
-    version?: string;
-  }
-}
+  last_delivery_attempt_at?: string | null;
 
-/**
- * Standard API response envelope for all v3 endpoints
- */
-export interface WebhookRetrieveResponse {
-  /**
-   * The response data (null if error)
-   */
-  data?: WebhookRetrieveResponse.Data | null;
+  last_successful_delivery_at?: string | null;
 
-  /**
-   * Error information
-   */
-  error?: WebhookRetrieveResponse.Error | null;
+  retry_count?: number;
 
-  /**
-   * Request and response metadata
-   */
-  meta?: WebhookRetrieveResponse.Meta;
+  signing_secret?: string | null;
 
-  /**
-   * Indicates whether the request was successful
-   */
-  success?: boolean;
-}
+  timeout_seconds?: number;
 
-export namespace WebhookRetrieveResponse {
-  /**
-   * The response data (null if error)
-   */
-  export interface Data {
-    id?: string;
-
-    consecutive_failures?: number;
-
-    created_at?: string;
-
-    /**
-     * Which customer owns this — the key's own, or the profile named in x-profile-id.
-     * Says whose resource this is, which the resource's own id does not.
-     */
-    customer_id?: string;
-
-    display_name?: string;
-
-    endpoint_url?: string;
-
-    event_filters?: { [key: string]: Array<string> } | null;
-
-    event_types?: Array<string>;
-
-    is_active?: boolean;
-
-    last_delivery_attempt_at?: string | null;
-
-    last_successful_delivery_at?: string | null;
-
-    retry_count?: number;
-
-    signing_secret?: string | null;
-
-    timeout_seconds?: number;
-
-    updated_at?: string | null;
-  }
-
-  /**
-   * Error information
-   */
-  export interface Error {
-    /**
-     * Machine-readable error code (e.g., "RESOURCE_001")
-     */
-    code?: string;
-
-    /**
-     * Additional validation error details (field-level errors)
-     */
-    details?: { [key: string]: Array<string> } | null;
-
-    /**
-     * URL to documentation about this error
-     */
-    doc_url?: string | null;
-
-    /**
-     * Human-readable error message
-     */
-    message?: string;
-  }
-
-  /**
-   * Request and response metadata
-   */
-  export interface Meta {
-    /**
-     * Unique identifier for this request (for tracing and support)
-     */
-    request_id?: string;
-
-    /**
-     * Server timestamp when the response was generated
-     */
-    timestamp?: string;
-
-    /**
-     * API version used for this request
-     */
-    version?: string;
-  }
-}
-
-/**
- * Standard API response envelope for all v3 endpoints
- */
-export interface WebhookUpdateResponse {
-  /**
-   * The response data (null if error)
-   */
-  data?: WebhookUpdateResponse.Data | null;
-
-  /**
-   * Error information
-   */
-  error?: WebhookUpdateResponse.Error | null;
-
-  /**
-   * Request and response metadata
-   */
-  meta?: WebhookUpdateResponse.Meta;
-
-  /**
-   * Indicates whether the request was successful
-   */
-  success?: boolean;
-}
-
-export namespace WebhookUpdateResponse {
-  /**
-   * The response data (null if error)
-   */
-  export interface Data {
-    id?: string;
-
-    consecutive_failures?: number;
-
-    created_at?: string;
-
-    /**
-     * Which customer owns this — the key's own, or the profile named in x-profile-id.
-     * Says whose resource this is, which the resource's own id does not.
-     */
-    customer_id?: string;
-
-    display_name?: string;
-
-    endpoint_url?: string;
-
-    event_filters?: { [key: string]: Array<string> } | null;
-
-    event_types?: Array<string>;
-
-    is_active?: boolean;
-
-    last_delivery_attempt_at?: string | null;
-
-    last_successful_delivery_at?: string | null;
-
-    retry_count?: number;
-
-    signing_secret?: string | null;
-
-    timeout_seconds?: number;
-
-    updated_at?: string | null;
-  }
-
-  /**
-   * Error information
-   */
-  export interface Error {
-    /**
-     * Machine-readable error code (e.g., "RESOURCE_001")
-     */
-    code?: string;
-
-    /**
-     * Additional validation error details (field-level errors)
-     */
-    details?: { [key: string]: Array<string> } | null;
-
-    /**
-     * URL to documentation about this error
-     */
-    doc_url?: string | null;
-
-    /**
-     * Human-readable error message
-     */
-    message?: string;
-  }
-
-  /**
-   * Request and response metadata
-   */
-  export interface Meta {
-    /**
-     * Unique identifier for this request (for tracing and support)
-     */
-    request_id?: string;
-
-    /**
-     * Server timestamp when the response was generated
-     */
-    timestamp?: string;
-
-    /**
-     * API version used for this request
-     */
-    version?: string;
-  }
-}
-
-/**
- * Standard API response envelope for all v3 endpoints
- */
-export interface WebhookListResponse {
-  /**
-   * A paginated list of webhooks.
-   */
-  data?: WebhookListResponse.Data | null;
-
-  /**
-   * Error information
-   */
-  error?: WebhookListResponse.Error | null;
-
-  /**
-   * Request and response metadata
-   */
-  meta?: WebhookListResponse.Meta;
-
-  /**
-   * Indicates whether the request was successful
-   */
-  success?: boolean;
-}
-
-export namespace WebhookListResponse {
-  /**
-   * A paginated list of webhooks.
-   */
-  export interface Data {
-    /**
-     * Pagination metadata for list responses
-     */
-    pagination?: Data.Pagination;
-
-    /**
-     * The webhooks on this page.
-     */
-    webhooks?: Array<Data.Webhook>;
-  }
-
-  export namespace Data {
-    /**
-     * Pagination metadata for list responses
-     */
-    export interface Pagination {
-      /**
-       * @deprecated Cursor-based pagination. Never populated — see Cursors.
-       */
-      cursors?: Pagination.Cursors | null;
-
-      /**
-       * Whether there are more pages after this one
-       */
-      has_more?: boolean;
-
-      /**
-       * Current page number (1-indexed)
-       */
-      page?: number;
-
-      /**
-       * Number of items per page
-       */
-      page_size?: number;
-
-      /**
-       * Total number of items across all pages
-       */
-      total_count?: number;
-
-      /**
-       * Total number of pages
-       */
-      total_pages?: number;
-    }
-
-    export namespace Pagination {
-      /**
-       * @deprecated Cursor-based pagination. Never populated — see Cursors.
-       */
-      export interface Cursors {
-        /**
-         * Cursor to fetch the next page.
-         */
-        after?: string | null;
-
-        /**
-         * Cursor to fetch the previous page.
-         */
-        before?: string | null;
-      }
-    }
-
-    export interface Webhook {
-      id?: string;
-
-      consecutive_failures?: number;
-
-      created_at?: string;
-
-      /**
-       * Which customer owns this — the key's own, or the profile named in x-profile-id.
-       * Says whose resource this is, which the resource's own id does not.
-       */
-      customer_id?: string;
-
-      display_name?: string;
-
-      endpoint_url?: string;
-
-      event_filters?: { [key: string]: Array<string> } | null;
-
-      event_types?: Array<string>;
-
-      is_active?: boolean;
-
-      last_delivery_attempt_at?: string | null;
-
-      last_successful_delivery_at?: string | null;
-
-      retry_count?: number;
-
-      signing_secret?: string | null;
-
-      timeout_seconds?: number;
-
-      updated_at?: string | null;
-    }
-  }
-
-  /**
-   * Error information
-   */
-  export interface Error {
-    /**
-     * Machine-readable error code (e.g., "RESOURCE_001")
-     */
-    code?: string;
-
-    /**
-     * Additional validation error details (field-level errors)
-     */
-    details?: { [key: string]: Array<string> } | null;
-
-    /**
-     * URL to documentation about this error
-     */
-    doc_url?: string | null;
-
-    /**
-     * Human-readable error message
-     */
-    message?: string;
-  }
-
-  /**
-   * Request and response metadata
-   */
-  export interface Meta {
-    /**
-     * Unique identifier for this request (for tracing and support)
-     */
-    request_id?: string;
-
-    /**
-     * Server timestamp when the response was generated
-     */
-    timestamp?: string;
-
-    /**
-     * API version used for this request
-     */
-    version?: string;
-  }
+  updated_at?: string | null;
 }
 
 /**
@@ -1052,12 +739,12 @@ export interface WebhookListEventTypesResponse {
   /**
    * Error information
    */
-  error?: WebhookListEventTypesResponse.Error | null;
+  error?: ErrorDetail | null;
 
   /**
    * Request and response metadata
    */
-  meta?: WebhookListEventTypesResponse.Meta;
+  meta?: APIMeta;
 
   /**
    * Indicates whether the request was successful
@@ -1073,297 +760,43 @@ export namespace WebhookListEventTypesResponse {
     /**
      * The event_types on this page.
      */
-    event_types?: Array<Data.EventType>;
+    event_types?: Array<WebhooksAPI.WebhookEventType>;
 
     /**
      * Pagination metadata for list responses
      */
-    pagination?: Data.Pagination;
-  }
-
-  export namespace Data {
-    export interface EventType {
-      description?: string | null;
-
-      display_name?: string;
-
-      event_type?: string | null;
-
-      is_active?: boolean;
-
-      name?: string;
-
-      sub_types?: Array<unknown> | null;
-    }
-
-    /**
-     * Pagination metadata for list responses
-     */
-    export interface Pagination {
-      /**
-       * @deprecated Cursor-based pagination. Never populated — see Cursors.
-       */
-      cursors?: Pagination.Cursors | null;
-
-      /**
-       * Whether there are more pages after this one
-       */
-      has_more?: boolean;
-
-      /**
-       * Current page number (1-indexed)
-       */
-      page?: number;
-
-      /**
-       * Number of items per page
-       */
-      page_size?: number;
-
-      /**
-       * Total number of items across all pages
-       */
-      total_count?: number;
-
-      /**
-       * Total number of pages
-       */
-      total_pages?: number;
-    }
-
-    export namespace Pagination {
-      /**
-       * @deprecated Cursor-based pagination. Never populated — see Cursors.
-       */
-      export interface Cursors {
-        /**
-         * Cursor to fetch the next page.
-         */
-        after?: string | null;
-
-        /**
-         * Cursor to fetch the previous page.
-         */
-        before?: string | null;
-      }
-    }
-  }
-
-  /**
-   * Error information
-   */
-  export interface Error {
-    /**
-     * Machine-readable error code (e.g., "RESOURCE_001")
-     */
-    code?: string;
-
-    /**
-     * Additional validation error details (field-level errors)
-     */
-    details?: { [key: string]: Array<string> } | null;
-
-    /**
-     * URL to documentation about this error
-     */
-    doc_url?: string | null;
-
-    /**
-     * Human-readable error message
-     */
-    message?: string;
-  }
-
-  /**
-   * Request and response metadata
-   */
-  export interface Meta {
-    /**
-     * Unique identifier for this request (for tracing and support)
-     */
-    request_id?: string;
-
-    /**
-     * Server timestamp when the response was generated
-     */
-    timestamp?: string;
-
-    /**
-     * API version used for this request
-     */
-    version?: string;
+    pagination?: WebhooksAPI.PaginationMeta;
   }
 }
 
-/**
- * Standard API response envelope for all v3 endpoints
- */
 export interface WebhookListEventsResponse {
-  /**
-   * A paginated list of webhook delivery records.
-   */
-  data?: WebhookListEventsResponse.Data | null;
+  id?: string;
+
+  created_at?: string;
+
+  delivery_attempts?: number;
+
+  delivery_status?: string;
+
+  error_message?: string | null;
 
   /**
-   * Error information
+   * The exact event body that was delivered, or attempted, for this record. One of
+   * the three webhook envelopes: a message status change, an inbound message, or a
+   * template status change. Read field and event to tell which, the same way your
+   * endpoint does.
    */
-  error?: WebhookListEventsResponse.Error | null;
+  event_data?: MessageEvent | InboundMessageEvent | TemplateEvent;
 
-  /**
-   * Request and response metadata
-   */
-  meta?: WebhookListEventsResponse.Meta;
+  event_type?: string;
 
-  /**
-   * Indicates whether the request was successful
-   */
-  success?: boolean;
-}
+  http_status_code?: number | null;
 
-export namespace WebhookListEventsResponse {
-  /**
-   * A paginated list of webhook delivery records.
-   */
-  export interface Data {
-    /**
-     * The events on this page.
-     */
-    events?: Array<Data.Event>;
+  processing_completed_at?: string | null;
 
-    /**
-     * Pagination metadata for list responses
-     */
-    pagination?: Data.Pagination;
-  }
+  processing_started_at?: string | null;
 
-  export namespace Data {
-    export interface Event {
-      id?: string;
-
-      created_at?: string;
-
-      delivery_attempts?: number;
-
-      delivery_status?: string;
-
-      error_message?: string | null;
-
-      /**
-       * The exact event body that was delivered, or attempted, for this record. One of
-       * the three webhook envelopes: a message status change, an inbound message, or a
-       * template status change. Read field and event to tell which, the same way your
-       * endpoint does.
-       */
-      event_data?: WebhooksAPI.MessageEvent | WebhooksAPI.InboundMessageEvent | WebhooksAPI.TemplateEvent;
-
-      event_type?: string;
-
-      http_status_code?: number | null;
-
-      processing_completed_at?: string | null;
-
-      processing_started_at?: string | null;
-
-      response_body?: string | null;
-    }
-
-    /**
-     * Pagination metadata for list responses
-     */
-    export interface Pagination {
-      /**
-       * @deprecated Cursor-based pagination. Never populated — see Cursors.
-       */
-      cursors?: Pagination.Cursors | null;
-
-      /**
-       * Whether there are more pages after this one
-       */
-      has_more?: boolean;
-
-      /**
-       * Current page number (1-indexed)
-       */
-      page?: number;
-
-      /**
-       * Number of items per page
-       */
-      page_size?: number;
-
-      /**
-       * Total number of items across all pages
-       */
-      total_count?: number;
-
-      /**
-       * Total number of pages
-       */
-      total_pages?: number;
-    }
-
-    export namespace Pagination {
-      /**
-       * @deprecated Cursor-based pagination. Never populated — see Cursors.
-       */
-      export interface Cursors {
-        /**
-         * Cursor to fetch the next page.
-         */
-        after?: string | null;
-
-        /**
-         * Cursor to fetch the previous page.
-         */
-        before?: string | null;
-      }
-    }
-  }
-
-  /**
-   * Error information
-   */
-  export interface Error {
-    /**
-     * Machine-readable error code (e.g., "RESOURCE_001")
-     */
-    code?: string;
-
-    /**
-     * Additional validation error details (field-level errors)
-     */
-    details?: { [key: string]: Array<string> } | null;
-
-    /**
-     * URL to documentation about this error
-     */
-    doc_url?: string | null;
-
-    /**
-     * Human-readable error message
-     */
-    message?: string;
-  }
-
-  /**
-   * Request and response metadata
-   */
-  export interface Meta {
-    /**
-     * Unique identifier for this request (for tracing and support)
-     */
-    request_id?: string;
-
-    /**
-     * Server timestamp when the response was generated
-     */
-    timestamp?: string;
-
-    /**
-     * API version used for this request
-     */
-    version?: string;
-  }
+  response_body?: string | null;
 }
 
 /**
@@ -1378,12 +811,12 @@ export interface WebhookRotateSecretResponse {
   /**
    * Error information
    */
-  error?: WebhookRotateSecretResponse.Error | null;
+  error?: ErrorDetail | null;
 
   /**
    * Request and response metadata
    */
-  meta?: WebhookRotateSecretResponse.Meta;
+  meta?: APIMeta;
 
   /**
    * Indicates whether the request was successful
@@ -1397,51 +830,6 @@ export namespace WebhookRotateSecretResponse {
    */
   export interface Data {
     signing_secret?: string;
-  }
-
-  /**
-   * Error information
-   */
-  export interface Error {
-    /**
-     * Machine-readable error code (e.g., "RESOURCE_001")
-     */
-    code?: string;
-
-    /**
-     * Additional validation error details (field-level errors)
-     */
-    details?: { [key: string]: Array<string> } | null;
-
-    /**
-     * URL to documentation about this error
-     */
-    doc_url?: string | null;
-
-    /**
-     * Human-readable error message
-     */
-    message?: string;
-  }
-
-  /**
-   * Request and response metadata
-   */
-  export interface Meta {
-    /**
-     * Unique identifier for this request (for tracing and support)
-     */
-    request_id?: string;
-
-    /**
-     * Server timestamp when the response was generated
-     */
-    timestamp?: string;
-
-    /**
-     * API version used for this request
-     */
-    version?: string;
   }
 }
 
@@ -1457,12 +845,12 @@ export interface WebhookTestResponse {
   /**
    * Error information
    */
-  error?: WebhookTestResponse.Error | null;
+  error?: ErrorDetail | null;
 
   /**
    * Request and response metadata
    */
-  meta?: WebhookTestResponse.Meta;
+  meta?: APIMeta;
 
   /**
    * Indicates whether the request was successful
@@ -1478,162 +866,6 @@ export namespace WebhookTestResponse {
     message?: string;
 
     success?: boolean;
-  }
-
-  /**
-   * Error information
-   */
-  export interface Error {
-    /**
-     * Machine-readable error code (e.g., "RESOURCE_001")
-     */
-    code?: string;
-
-    /**
-     * Additional validation error details (field-level errors)
-     */
-    details?: { [key: string]: Array<string> } | null;
-
-    /**
-     * URL to documentation about this error
-     */
-    doc_url?: string | null;
-
-    /**
-     * Human-readable error message
-     */
-    message?: string;
-  }
-
-  /**
-   * Request and response metadata
-   */
-  export interface Meta {
-    /**
-     * Unique identifier for this request (for tracing and support)
-     */
-    request_id?: string;
-
-    /**
-     * Server timestamp when the response was generated
-     */
-    timestamp?: string;
-
-    /**
-     * API version used for this request
-     */
-    version?: string;
-  }
-}
-
-/**
- * Standard API response envelope for all v3 endpoints
- */
-export interface WebhookToggleStatusResponse {
-  /**
-   * The response data (null if error)
-   */
-  data?: WebhookToggleStatusResponse.Data | null;
-
-  /**
-   * Error information
-   */
-  error?: WebhookToggleStatusResponse.Error | null;
-
-  /**
-   * Request and response metadata
-   */
-  meta?: WebhookToggleStatusResponse.Meta;
-
-  /**
-   * Indicates whether the request was successful
-   */
-  success?: boolean;
-}
-
-export namespace WebhookToggleStatusResponse {
-  /**
-   * The response data (null if error)
-   */
-  export interface Data {
-    id?: string;
-
-    consecutive_failures?: number;
-
-    created_at?: string;
-
-    /**
-     * Which customer owns this — the key's own, or the profile named in x-profile-id.
-     * Says whose resource this is, which the resource's own id does not.
-     */
-    customer_id?: string;
-
-    display_name?: string;
-
-    endpoint_url?: string;
-
-    event_filters?: { [key: string]: Array<string> } | null;
-
-    event_types?: Array<string>;
-
-    is_active?: boolean;
-
-    last_delivery_attempt_at?: string | null;
-
-    last_successful_delivery_at?: string | null;
-
-    retry_count?: number;
-
-    signing_secret?: string | null;
-
-    timeout_seconds?: number;
-
-    updated_at?: string | null;
-  }
-
-  /**
-   * Error information
-   */
-  export interface Error {
-    /**
-     * Machine-readable error code (e.g., "RESOURCE_001")
-     */
-    code?: string;
-
-    /**
-     * Additional validation error details (field-level errors)
-     */
-    details?: { [key: string]: Array<string> } | null;
-
-    /**
-     * URL to documentation about this error
-     */
-    doc_url?: string | null;
-
-    /**
-     * Human-readable error message
-     */
-    message?: string;
-  }
-
-  /**
-   * Request and response metadata
-   */
-  export interface Meta {
-    /**
-     * Unique identifier for this request (for tracing and support)
-     */
-    request_id?: string;
-
-    /**
-     * Server timestamp when the response was generated
-     */
-    timestamp?: string;
-
-    /**
-     * API version used for this request
-     */
-    version?: string;
   }
 }
 
@@ -1749,17 +981,7 @@ export interface WebhookUpdateParams {
   'x-profile-id'?: string;
 }
 
-export interface WebhookListParams {
-  /**
-   * Query param
-   */
-  page: number;
-
-  /**
-   * Query param
-   */
-  page_size: number;
-
+export interface WebhookListParams extends WebhooksPageParams {
   /**
    * Query param
    */
@@ -1794,17 +1016,7 @@ export interface WebhookListEventTypesParams {
   'x-profile-id'?: string;
 }
 
-export interface WebhookListEventsParams {
-  /**
-   * Query param
-   */
-  page: number;
-
-  /**
-   * Query param
-   */
-  page_size: number;
-
+export interface WebhookListEventsParams extends WebhookEventsPageParams {
   /**
    * Query param
    */
@@ -1896,21 +1108,25 @@ export interface WebhookToggleStatusParams {
 
 export declare namespace Webhooks {
   export {
+    type APIMeta as APIMeta,
+    type APIResponseWebhook as APIResponseWebhook,
+    type ErrorDetail as ErrorDetail,
     type InboundMessageEvent as InboundMessageEvent,
     type InboundMessageEventPayload as InboundMessageEventPayload,
     type MessageEvent as MessageEvent,
     type MessageEventPayload as MessageEventPayload,
+    type MutationRequest as MutationRequest,
+    type PaginationMeta as PaginationMeta,
     type TemplateEvent as TemplateEvent,
     type TemplateEventPayload as TemplateEventPayload,
-    type WebhookCreateResponse as WebhookCreateResponse,
-    type WebhookRetrieveResponse as WebhookRetrieveResponse,
-    type WebhookUpdateResponse as WebhookUpdateResponse,
-    type WebhookListResponse as WebhookListResponse,
+    type WebhookEventType as WebhookEventType,
+    type WebhookResponse as WebhookResponse,
     type WebhookListEventTypesResponse as WebhookListEventTypesResponse,
     type WebhookListEventsResponse as WebhookListEventsResponse,
     type WebhookRotateSecretResponse as WebhookRotateSecretResponse,
     type WebhookTestResponse as WebhookTestResponse,
-    type WebhookToggleStatusResponse as WebhookToggleStatusResponse,
+    type WebhookResponsesWebhooksPage as WebhookResponsesWebhooksPage,
+    type WebhookListEventsResponsesWebhookEventsPage as WebhookListEventsResponsesWebhookEventsPage,
     type WebhookCreateParams as WebhookCreateParams,
     type WebhookRetrieveParams as WebhookRetrieveParams,
     type WebhookUpdateParams as WebhookUpdateParams,

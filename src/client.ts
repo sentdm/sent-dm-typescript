@@ -14,31 +14,46 @@ import * as Opts from './internal/request-options';
 import { stringifyQuery } from './internal/utils/query';
 import { VERSION } from './version';
 import * as Errors from './core/error';
+import * as Pagination from './core/pagination';
+import {
+  AbstractPage,
+  type ContactsPageParams,
+  ContactsPageResponse,
+  type ConversationsPageParams,
+  ConversationsPageResponse,
+  type TemplatesPageParams,
+  TemplatesPageResponse,
+  type WebhookEventsPageParams,
+  WebhookEventsPageResponse,
+  type WebhooksPageParams,
+  WebhooksPageResponse,
+} from './core/pagination';
 import * as Uploads from './core/uploads';
 import * as API from './resources/index';
 import { APIPromise } from './core/api-promise';
 import {
+  APIResponseOfContact,
+  APIResponseOfContactMessageSummary,
   ContactCreateParams,
-  ContactCreateResponse,
   ContactDeleteParams,
   ContactListParams,
-  ContactListResponse,
+  ContactMessageSummary,
+  ContactResponse,
+  ContactResponsesContactsPage,
   ContactRetrieveMessageSummaryParams,
-  ContactRetrieveMessageSummaryResponse,
   ContactRetrieveParams,
-  ContactRetrieveResponse,
   ContactUpdateParams,
-  ContactUpdateResponse,
   Contacts,
 } from './resources/contacts';
 import {
+  APIResponseOfConversationMessagesList,
   ConversationListMessagesParams,
-  ConversationListMessagesResponse,
   ConversationListParams,
-  ConversationListResponse,
+  ConversationMessagesList,
+  ConversationMessagesListMessagesConversationsPage,
   Conversations,
 } from './resources/conversations';
-import { Me, MeRetrieveParams, MeRetrieveResponse } from './resources/me';
+import { Me, MeRetrieveParams, MeRetrieveResponse, ProfileSettings } from './resources/me';
 import {
   MessageRetrieveActivitiesParams,
   MessageRetrieveActivitiesResponse,
@@ -50,79 +65,86 @@ import {
 } from './resources/messages';
 import { NumberLookupParams, NumberLookupResponse, Numbers } from './resources/numbers';
 import {
+  APIResponseTemplate,
   AuthenticationConfig,
+  Template,
   TemplateBody,
   TemplateBodyContent,
   TemplateButton,
   TemplateButtonProps,
   TemplateCreateParams,
-  TemplateCreateResponse,
   TemplateDefinition,
   TemplateDeleteParams,
   TemplateFooter,
   TemplateHeader,
   TemplateListParams,
-  TemplateListResponse,
   TemplateRetrieveParams,
-  TemplateRetrieveResponse,
   TemplateUpdateParams,
-  TemplateUpdateResponse,
   TemplateVariable,
   Templates,
+  TemplatesTemplatesPage,
 } from './resources/templates';
 import {
+  APIResponseOfUser,
   UserInviteParams,
-  UserInviteResponse,
   UserListParams,
   UserListResponse,
   UserRemoveParams,
+  UserResponse,
   UserRetrieveParams,
-  UserRetrieveResponse,
   UserUpdateRoleParams,
-  UserUpdateRoleResponse,
   Users,
 } from './resources/users';
 import {
+  APIMeta,
+  APIResponseWebhook,
+  ErrorDetail,
   InboundMessageEvent,
   InboundMessageEventPayload,
   MessageEvent,
   MessageEventPayload,
+  MutationRequest,
+  PaginationMeta,
   TemplateEvent,
   TemplateEventPayload,
   WebhookCreateParams,
-  WebhookCreateResponse,
   WebhookDeleteParams,
+  WebhookEventType,
   WebhookListEventTypesParams,
   WebhookListEventTypesResponse,
   WebhookListEventsParams,
   WebhookListEventsResponse,
+  WebhookListEventsResponsesWebhookEventsPage,
   WebhookListParams,
-  WebhookListResponse,
+  WebhookResponse,
+  WebhookResponsesWebhooksPage,
   WebhookRetrieveParams,
-  WebhookRetrieveResponse,
   WebhookRotateSecretParams,
   WebhookRotateSecretResponse,
   WebhookTestParams,
   WebhookTestResponse,
   WebhookToggleStatusParams,
-  WebhookToggleStatusResponse,
   WebhookUpdateParams,
-  WebhookUpdateResponse,
   Webhooks,
 } from './resources/webhooks';
 import {
+  APIResponseOfProfileDetail,
+  BillingContactInfo,
+  BrandBusinessInfo,
+  BrandComplianceInfo,
+  BrandContactInfo,
+  BrandsBrandData,
   DestinationCountry,
+  PaymentDetails,
   ProfileCompleteParams,
   ProfileCompleteResponse,
   ProfileCreateParams,
-  ProfileCreateResponse,
   ProfileDeleteParams,
+  ProfileDetail,
   ProfileListParams,
   ProfileListResponse,
   ProfileRetrieveParams,
-  ProfileRetrieveResponse,
   ProfileUpdateParams,
-  ProfileUpdateResponse,
   Profiles,
   TcrBrandRelationship,
   TcrVertical,
@@ -592,6 +614,30 @@ export class Sent {
     return { response, options, controller, requestLogID, retryOfRequestLogID, startTime };
   }
 
+  getAPIList<Item, PageClass extends Pagination.AbstractPage<Item> = Pagination.AbstractPage<Item>>(
+    path: string,
+    Page: new (...args: any[]) => PageClass,
+    opts?: PromiseOrValue<RequestOptions>,
+  ): Pagination.PagePromise<PageClass, Item> {
+    return this.requestAPIList(
+      Page,
+      opts && 'then' in opts ?
+        opts.then((opts) => ({ method: 'get', path, ...opts }))
+      : { method: 'get', path, ...opts },
+    );
+  }
+
+  requestAPIList<
+    Item = unknown,
+    PageClass extends Pagination.AbstractPage<Item> = Pagination.AbstractPage<Item>,
+  >(
+    Page: new (...args: ConstructorParameters<typeof Pagination.AbstractPage>) => PageClass,
+    options: PromiseOrValue<FinalRequestOptions>,
+  ): Pagination.PagePromise<PageClass, Item> {
+    const request = this.makeRequest(options, null, undefined);
+    return new Pagination.PagePromise<PageClass, Item>(this as any as Sent, request, Page);
+  }
+
   async fetchWithTimeout(
     url: RequestInfo,
     init: RequestInit | undefined,
@@ -926,23 +972,51 @@ Sent.Me = Me;
 export declare namespace Sent {
   export type RequestOptions = Opts.RequestOptions;
 
+  export import ContactsPage = Pagination.ContactsPage;
+  export { type ContactsPageParams as ContactsPageParams, type ContactsPageResponse as ContactsPageResponse };
+
+  export import ConversationsPage = Pagination.ConversationsPage;
+  export {
+    type ConversationsPageParams as ConversationsPageParams,
+    type ConversationsPageResponse as ConversationsPageResponse,
+  };
+
+  export import TemplatesPage = Pagination.TemplatesPage;
+  export {
+    type TemplatesPageParams as TemplatesPageParams,
+    type TemplatesPageResponse as TemplatesPageResponse,
+  };
+
+  export import WebhooksPage = Pagination.WebhooksPage;
+  export { type WebhooksPageParams as WebhooksPageParams, type WebhooksPageResponse as WebhooksPageResponse };
+
+  export import WebhookEventsPage = Pagination.WebhookEventsPage;
+  export {
+    type WebhookEventsPageParams as WebhookEventsPageParams,
+    type WebhookEventsPageResponse as WebhookEventsPageResponse,
+  };
+
   export {
     Webhooks as Webhooks,
+    type APIMeta as APIMeta,
+    type APIResponseWebhook as APIResponseWebhook,
+    type ErrorDetail as ErrorDetail,
     type InboundMessageEvent as InboundMessageEvent,
     type InboundMessageEventPayload as InboundMessageEventPayload,
     type MessageEvent as MessageEvent,
     type MessageEventPayload as MessageEventPayload,
+    type MutationRequest as MutationRequest,
+    type PaginationMeta as PaginationMeta,
     type TemplateEvent as TemplateEvent,
     type TemplateEventPayload as TemplateEventPayload,
-    type WebhookCreateResponse as WebhookCreateResponse,
-    type WebhookRetrieveResponse as WebhookRetrieveResponse,
-    type WebhookUpdateResponse as WebhookUpdateResponse,
-    type WebhookListResponse as WebhookListResponse,
+    type WebhookEventType as WebhookEventType,
+    type WebhookResponse as WebhookResponse,
     type WebhookListEventTypesResponse as WebhookListEventTypesResponse,
     type WebhookListEventsResponse as WebhookListEventsResponse,
     type WebhookRotateSecretResponse as WebhookRotateSecretResponse,
     type WebhookTestResponse as WebhookTestResponse,
-    type WebhookToggleStatusResponse as WebhookToggleStatusResponse,
+    type WebhookResponsesWebhooksPage as WebhookResponsesWebhooksPage,
+    type WebhookListEventsResponsesWebhookEventsPage as WebhookListEventsResponsesWebhookEventsPage,
     type WebhookCreateParams as WebhookCreateParams,
     type WebhookRetrieveParams as WebhookRetrieveParams,
     type WebhookUpdateParams as WebhookUpdateParams,
@@ -957,10 +1031,9 @@ export declare namespace Sent {
 
   export {
     Users as Users,
-    type UserRetrieveResponse as UserRetrieveResponse,
+    type APIResponseOfUser as APIResponseOfUser,
+    type UserResponse as UserResponse,
     type UserListResponse as UserListResponse,
-    type UserInviteResponse as UserInviteResponse,
-    type UserUpdateRoleResponse as UserUpdateRoleResponse,
     type UserRetrieveParams as UserRetrieveParams,
     type UserListParams as UserListParams,
     type UserInviteParams as UserInviteParams,
@@ -970,7 +1043,9 @@ export declare namespace Sent {
 
   export {
     Templates as Templates,
+    type APIResponseTemplate as APIResponseTemplate,
     type AuthenticationConfig as AuthenticationConfig,
+    type Template as Template,
     type TemplateBody as TemplateBody,
     type TemplateBodyContent as TemplateBodyContent,
     type TemplateButton as TemplateButton,
@@ -979,10 +1054,7 @@ export declare namespace Sent {
     type TemplateFooter as TemplateFooter,
     type TemplateHeader as TemplateHeader,
     type TemplateVariable as TemplateVariable,
-    type TemplateCreateResponse as TemplateCreateResponse,
-    type TemplateRetrieveResponse as TemplateRetrieveResponse,
-    type TemplateUpdateResponse as TemplateUpdateResponse,
-    type TemplateListResponse as TemplateListResponse,
+    type TemplatesTemplatesPage as TemplatesTemplatesPage,
     type TemplateCreateParams as TemplateCreateParams,
     type TemplateRetrieveParams as TemplateRetrieveParams,
     type TemplateUpdateParams as TemplateUpdateParams,
@@ -992,12 +1064,17 @@ export declare namespace Sent {
 
   export {
     Profiles as Profiles,
+    type APIResponseOfProfileDetail as APIResponseOfProfileDetail,
+    type BillingContactInfo as BillingContactInfo,
+    type BrandBusinessInfo as BrandBusinessInfo,
+    type BrandComplianceInfo as BrandComplianceInfo,
+    type BrandContactInfo as BrandContactInfo,
+    type BrandsBrandData as BrandsBrandData,
     type DestinationCountry as DestinationCountry,
+    type PaymentDetails as PaymentDetails,
+    type ProfileDetail as ProfileDetail,
     type TcrBrandRelationship as TcrBrandRelationship,
     type TcrVertical as TcrVertical,
-    type ProfileCreateResponse as ProfileCreateResponse,
-    type ProfileRetrieveResponse as ProfileRetrieveResponse,
-    type ProfileUpdateResponse as ProfileUpdateResponse,
     type ProfileListResponse as ProfileListResponse,
     type ProfileCompleteResponse as ProfileCompleteResponse,
     type ProfileCreateParams as ProfileCreateParams,
@@ -1026,11 +1103,11 @@ export declare namespace Sent {
 
   export {
     Contacts as Contacts,
-    type ContactCreateResponse as ContactCreateResponse,
-    type ContactRetrieveResponse as ContactRetrieveResponse,
-    type ContactUpdateResponse as ContactUpdateResponse,
-    type ContactListResponse as ContactListResponse,
-    type ContactRetrieveMessageSummaryResponse as ContactRetrieveMessageSummaryResponse,
+    type APIResponseOfContact as APIResponseOfContact,
+    type APIResponseOfContactMessageSummary as APIResponseOfContactMessageSummary,
+    type ContactMessageSummary as ContactMessageSummary,
+    type ContactResponse as ContactResponse,
+    type ContactResponsesContactsPage as ContactResponsesContactsPage,
     type ContactCreateParams as ContactCreateParams,
     type ContactRetrieveParams as ContactRetrieveParams,
     type ContactUpdateParams as ContactUpdateParams,
@@ -1041,14 +1118,16 @@ export declare namespace Sent {
 
   export {
     Conversations as Conversations,
-    type ConversationListResponse as ConversationListResponse,
-    type ConversationListMessagesResponse as ConversationListMessagesResponse,
+    type APIResponseOfConversationMessagesList as APIResponseOfConversationMessagesList,
+    type ConversationMessagesList as ConversationMessagesList,
+    type ConversationMessagesListMessagesConversationsPage as ConversationMessagesListMessagesConversationsPage,
     type ConversationListParams as ConversationListParams,
     type ConversationListMessagesParams as ConversationListMessagesParams,
   };
 
   export {
     Me as Me,
+    type ProfileSettings as ProfileSettings,
     type MeRetrieveResponse as MeRetrieveResponse,
     type MeRetrieveParams as MeRetrieveParams,
   };

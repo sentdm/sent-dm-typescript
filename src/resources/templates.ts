@@ -17,7 +17,9 @@ export class Templates extends APIResource {
   /**
    * Creates a new message template with header, body, footer, and buttons. The
    * template can be submitted for review immediately or saved as draft for later
-   * submission.
+   * submission. There is no `name` field on create — the display name is derived
+   * from the template's content and can be changed afterwards with
+   * `PUT /v3/templates/{id}`.
    *
    * @example
    * ```ts
@@ -67,7 +69,10 @@ export class Templates extends APIResource {
 
   /**
    * Updates an existing template's name, category, language, definition, or submits
-   * it for review.
+   * it for review. While the template is in review (status PENDING, or any channel
+   * awaiting a verdict) its definition, category and language are frozen and a
+   * resubmission is refused — those requests answer 409 CONFLICT_006. The display
+   * name stays editable throughout.
    *
    * @example
    * ```ts
@@ -236,7 +241,8 @@ export interface Template {
   name?: string;
 
   /**
-   * Template status: APPROVED, PENDING, REJECTED
+   * Template status: DRAFT, PENDING, APPROVED, REJECTED. A template created with
+   * submit_for_review: false starts as DRAFT and stays there until it is submitted.
    */
   status?: string;
 
@@ -279,10 +285,35 @@ export interface TemplateBody {
 }
 
 export interface TemplateBodyContent {
+  /**
+   * The body copy, with variables written as {{index:variable}}.
+   *
+   * Meta requires every variable to carry surrounding context, so a body is refused
+   * unless it also satisfies all of the following (enforced by
+   * TemplateDefinitionValidator): At least one letter before the first variable and
+   * after the last — trailing punctuation such as "... {{1:variable}}." does not
+   * count. At least (2 × variable count) + 1 words once the placeholders are
+   * removed. No two variables adjacent with only whitespace between them. No leading
+   * or trailing newline, no more than two consecutive line breaks, and no more than
+   * four consecutive spaces.
+   *
+   * Example: "Hello {{0:variable}}! Welcome to {{1:variable}}. We are glad to have
+   * you on board." — two variables, so at least five words are required, and the
+   * copy after the final variable contains letters.
+   */
   template: string;
 
+  /**
+   * The type of body content — send "text". It is dropped from the stored definition
+   * when null, so a body posted without it is saved with no type key at all and the
+   * template editor has nothing to render the block from.
+   */
   type?: string | null;
 
+  /**
+   * The variables referenced by the body copy, one entry per {{index:variable}}
+   * placeholder.
+   */
   variables?: Array<TemplateVariable> | null;
 }
 

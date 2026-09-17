@@ -509,6 +509,13 @@ export interface MessageEventPayload {
   agent_id?: string | null;
 
   /**
+   * The rendered message body, as plain text. Sent as null when we aren't asserting
+   * a body for this event. The field is always present, so read it and check for
+   * null rather than checking whether the key exists. Truncated to 3072 characters.
+   */
+  body?: string | null;
+
+  /**
    * The channel the message went out on, for example sms or whatsapp. A message that
    * falls back to another channel reports the channel actually used.
    */
@@ -659,6 +666,24 @@ export interface TemplateEventPayload {
    * The account the template belongs to.
    */
   account_id?: string;
+
+  /**
+   * Which consent keyword this template answers, when it is one of Sent's
+   * auto-replies: OPT_IN, OPT_OUT, HELP, or OTHER for a customer-defined keyword.
+   *
+   * Omitted for an ordinary template, so its presence is the answer to "is this an
+   * auto-reply". Sent creates the three compliance auto-replies at signup and they
+   * go through review like any other template, so their events arrive mixed in with
+   * the customer's own with nothing else to tell them apart.
+   *
+   * Named for the reader rather than after Template.OptAction, which it is mapped
+   * from. The MCP tool result deliberately keeps OptAction, OptKeywords and IsOpt:
+   * it mirrors the internal shape on purpose and publishes the keywords too, so
+   * renaming one of the three there would leave a surface half in each vocabulary.
+   * Two names for one concept, each consistent within its own surface, chosen over a
+   * rename that breaks MCP clients silently.
+   */
+  auto_reply_action?: string | null;
 
   /**
    * The template's category, for example UTILITY, MARKETING, or AUTHENTICATION.

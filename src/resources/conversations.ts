@@ -188,6 +188,11 @@ export namespace ConversationMessagesList {
       footer?: string | null;
 
       header?: string | null;
+
+      /**
+       * The media asset that rode a message's header, recorded as sent.
+       */
+      headerMedia?: MessageBody.HeaderMedia | null;
     }
 
     export namespace MessageBody {
@@ -199,6 +204,23 @@ export namespace ConversationMessagesList {
         type?: string;
 
         value?: string;
+      }
+
+      /**
+       * The media asset that rode a message's header, recorded as sent.
+       */
+      export interface HeaderMedia {
+        /**
+         * "image", "video" or "document" — taken from the header's media variable.
+         */
+        type?: string;
+
+        /**
+         * The https URL the caller supplied for this send. Never the template's stored
+         * props.sample, which is Meta's expiring header_handle rather than what was
+         * delivered.
+         */
+        url?: string;
       }
     }
   }

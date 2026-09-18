@@ -17,7 +17,9 @@ export class Templates extends APIResource {
   /**
    * Creates a new message template with header, body, footer, and buttons. The
    * template can be submitted for review immediately or saved as draft for later
-   * submission.
+   * submission. There is no `name` field on create — the display name is derived
+   * from the template's content and can be changed afterwards with
+   * `PUT /v3/templates/{id}`.
    *
    * @example
    * ```ts
@@ -67,7 +69,31 @@ export class Templates extends APIResource {
 
   /**
    * Updates an existing template's name, category, language, definition, or submits
-   * it for review.
+   * it for review. While the template is in review (status PENDING, or any channel
+   * awaiting a verdict) its definition, category and language are frozen and a
+   * resubmission is refused — those requests answer 409 CONFLICT_006. The display
+   * name stays editable throughout.
+   *
+   * `definition`, `category` and `language` are editable only from status DRAFT,
+   * REJECTED or APPROVED. An edit to any of them on a template in another state
+   * (PAUSED, DISABLED or REVOKED) is refused with 400 VALIDATION_001 and the detail
+   * "Template (except display name) cannot be updated unless it is in draft or
+   * rejected status"; `name` stays editable in every state. `submit_for_review` on a
+   * PAUSED, DISABLED or REVOKED template is accepted and answers 200, but opens no
+   * review and does not move the status — only the reviewer can reinstate it.
+   *
+   * Editing an APPROVED template is a live edit: the new content is stored
+   * immediately, and sending `submit_for_review: true` re-opens review, which
+   * returns the affected channels to PENDING so they stop sending until they are
+   * approved again. The previously approved content is never sent during re-review.
+   * Watch the per-channel `templates` webhook events rather than assuming the
+   * template-level status.
+   *
+   * Templates provisioned by Sent (light-onboarding templates, whose names carry the
+   * reserved `sent_` prefix) are read-only: every field is refused with 400
+   * VALIDATION*001 and the detail "This template is read-only. Only 'submit for
+   * review' is allowed.", and only `submit_for_review` is accepted. A `name`
+   * starting with `sent*` is refused for the same reason — the prefix is reserved.
    *
    * @example
    * ```ts
@@ -206,12 +232,39 @@ export interface Template {
   id?: string;
 
   /**
+   * Which consent keyword this template answers, when it is one of Sent's
+   * auto-replies: OPT_IN, OPT_OUT, HELP, or OTHER for a customer-defined keyword.
+   * Null for an ordinary template, and omitted from the response, so its presence is
+   * the answer to "is this an auto-reply".
+   *
+   * Deliberately not required, unlike CustomerId, even though the same "no single
+   * mapper" argument applies: NJsonSchema publishes a C# required member in the
+   * schema's required array, so the contract would have advertised a field this
+   * response omits for every ordinary template, and a generated client could refuse
+   * the common case. A compile-time guard is not worth a wrong published contract.
+   * Every mapping site sets it explicitly, and TemplateResponseSchemaTests pins the
+   * field as optional so it cannot be reintroduced.
+   */
+  auto_reply_action?: string | null;
+
+  /**
    * Template category: MARKETING, UTILITY, AUTHENTICATION
    */
   category?: string;
 
   /**
-   * Supported channels: sms, whatsapp
+   * The channels this template's definition can render on, in canonical order: sms,
+   * whatsapp, rcs.
+   *
+   * Derived from the definition's body, mirroring each channel's send-time fallback
+   * chain, so a channel is listed only when a real body would be produced for it:
+   * SMS reads sms ?? multiChannel, WhatsApp reads whatsapp ?? multiChannel, and RCS
+   * reads rcs ?? multiChannel ?? sms. A multiChannel body therefore reports all
+   * three, and the extra SMS fallback on RCS is why an sms/whatsapp pair reports RCS
+   * too.
+   *
+   * This says what the content can render on, not what may be sent: sending also
+   * needs the template approved for that channel.
    */
   channels?: Array<string> | null;
 
@@ -236,7 +289,8 @@ export interface Template {
   name?: string;
 
   /**
-   * Template status: APPROVED, PENDING, REJECTED
+   * Template status: DRAFT, PENDING, APPROVED, REJECTED. A template created with
+   * submit_for_review: false starts as DRAFT and stays there until it is submitted.
    */
   status?: string;
 
@@ -252,37 +306,79 @@ export interface Template {
 }
 
 /**
- * Body section of a message template with channel-specific content
+ * Body section of a message template.
+ *
+ * A body picks one of two authoring strategies, and mixing them is refused
+ * (TemplateDefinitionValidator.HaveValidChannelConfiguration): a shared
+ * multiChannel body on its own, or an explicit sms + whatsapp pair, both present.
+ *
+ * multiChannel together with sms or whatsapp is rejected, and so is sms or
+ * whatsapp on its own — every template is expected to be deliverable on every
+ * channel. rcs is the one true override: it may accompany either strategy to vary
+ * the copy, but cannot stand alone.
  */
 export interface TemplateBody {
   /**
-   * Content that will be used for all channels (SMS and WhatsApp) unless
-   * channel-specific content is provided
+   * The shared body, used for every channel. One half of the choice described above.
    */
   multiChannel?: TemplateBodyContent | null;
 
   /**
-   * RCS-specific content that overrides multi-channel content for RCS messages
+   * RCS-specific copy that overrides the chosen strategy for RCS only. The one true
+   * override: optional on top of either strategy, but it cannot be the only body
+   * present. Its length cap is the higher one described on Template.
    */
   rcs?: TemplateBodyContent | null;
 
   /**
-   * SMS-specific content that overrides multi-channel content for SMS messages
+   * The SMS body. It does not override multiChannel, it replaces it.
    */
   sms?: TemplateBodyContent | null;
 
   /**
-   * WhatsApp-specific content that overrides multi-channel content for WhatsApp
-   * messages
+   * The WhatsApp body. It does not override multiChannel, it replaces it.
    */
   whatsapp?: TemplateBodyContent | null;
 }
 
 export interface TemplateBodyContent {
+  /**
+   * The body copy, with variables written as {{index:variable}}.
+   *
+   * Length cap depends on which channel this body belongs to:
+   * TemplateContentLimits.MaxBodyLength (1024) for multiChannel, sms and whatsapp —
+   * Meta's BODY limit, which a multiChannel body may be delivered under — and
+   * TemplateContentLimits.MaxRcsBodyLength (3072) for an rcs body, which never
+   * reaches Meta. The maxLength advertised on this schema is the 1024 one, because
+   * all four channel bodies share this single schema — an rcs body between the two
+   * is accepted.
+   *
+   * Meta requires every variable to carry surrounding context, so a body is refused
+   * unless it also satisfies all of the following (enforced by
+   * TemplateDefinitionValidator): At least one letter before the first variable and
+   * after the last — trailing punctuation such as "... {{1:variable}}." does not
+   * count. At least (2 × variable count) + 1 words once the placeholders are
+   * removed. No two variables adjacent with only whitespace between them. No leading
+   * or trailing newline, no more than two consecutive line breaks, and no more than
+   * four consecutive spaces.
+   *
+   * Example: "Hello {{0:variable}}! Welcome to {{1:variable}}. We are glad to have
+   * you on board." — two variables, so at least five words are required, and the
+   * copy after the final variable contains letters.
+   */
   template: string;
 
+  /**
+   * The type of body content — send "text". It is dropped from the stored definition
+   * when null, so a body posted without it is saved with no type key at all and the
+   * template editor has nothing to render the block from.
+   */
   type?: string | null;
 
+  /**
+   * The variables referenced by the body copy, one entry per {{index:variable}}
+   * placeholder.
+   */
   variables?: Array<TemplateVariable> | null;
 }
 
@@ -301,7 +397,13 @@ export interface TemplateButton {
   type: string;
 
   /**
-   * The unique identifier of the button (1-based index)
+   * The button's identifier (1-based index), unique within the template.
+   *
+   * Omitting it is only safe for a template holding a single button. The field is a
+   * non-nullable int, so every button that leaves it out defaults to 0, and two such
+   * buttons are refused by the unique-id rule ("Button IDs must be unique"). Number
+   * them from 1 in the order they should appear — order matters on RCS, where only
+   * the first four buttons render.
    */
   id?: number;
 }
@@ -317,6 +419,19 @@ export interface TemplateButtonProps {
 
   quickReplyType: string;
 
+  /**
+   * The button's label. Required for every button type, and capped at
+   * TemplateContentLimits.MaxButtonTextLength (25) characters.
+   *
+   * Meta accepts only static text here, so a label is refused when it contains a
+   * {{...}} variable placeholder, a newline, an emoji, or WhatsApp formatting markup
+   * (\*, \_, ~) — enforced by ApplyButtonLabelContentRules in
+   * TemplateButtonValidator. Meta reports all four as one error: "Buttons can't have
+   * any variables, newlines, emojis, or formatting characters."
+   *
+   * AUTHENTICATION OTP buttons are the exception: Meta auto-localizes their label
+   * from the template language, and the converter drops whatever text was sent.
+   */
   text: string;
 
   url: string;
@@ -345,7 +460,16 @@ export interface TemplateButtonProps {
  */
 export interface TemplateDefinition {
   /**
-   * Body section of a message template with channel-specific content
+   * Body section of a message template.
+   *
+   * A body picks one of two authoring strategies, and mixing them is refused
+   * (TemplateDefinitionValidator.HaveValidChannelConfiguration): a shared
+   * multiChannel body on its own, or an explicit sms + whatsapp pair, both present.
+   *
+   * multiChannel together with sms or whatsapp is rejected, and so is sms or
+   * whatsapp on its own — every template is expected to be deliverable on every
+   * channel. rcs is the one true override: it may accompany either strategy to vary
+   * the copy, but cannot stand alone.
    */
   body: TemplateBody;
 
@@ -417,12 +541,29 @@ export interface TemplateHeader {
 }
 
 export interface TemplateVariable {
+  /**
+   * The variable's name, and the key callers use for it in a send request's
+   * parameters object. Must start with a letter and hold only letters, digits and
+   * underscores.
+   */
   name: string;
 
   props: TemplateVariable.Props;
 
+  /**
+   * One of variable, link or media. Decides which Props fields are required.
+   */
   type: string;
 
+  /**
+   * The variable's index, and the number its {{index:variable}} placeholder refers
+   * to.
+   *
+   * Omitting it is only safe for a section holding a single variable. The field is a
+   * non-nullable int, so every variable that leaves it out defaults to 0, and a
+   * section with two such variables is refused by the unique-id rule ("variables
+   * must have unique IDs"). Number them from 0 in the order they appear.
+   */
   id?: number;
 }
 

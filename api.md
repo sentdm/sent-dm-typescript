@@ -4,6 +4,10 @@ Types:
 
 - <code><a href="./src/resources/webhooks.ts">APIMeta</a></code>
 - <code><a href="./src/resources/webhooks.ts">APIResponseWebhook</a></code>
+- <code><a href="./src/resources/webhooks.ts">ChannelEvent</a></code>
+- <code><a href="./src/resources/webhooks.ts">ChannelEventPayload</a></code>
+- <code><a href="./src/resources/webhooks.ts">ContactEvent</a></code>
+- <code><a href="./src/resources/webhooks.ts">ContactEventPayload</a></code>
 - <code><a href="./src/resources/webhooks.ts">ErrorDetail</a></code>
 - <code><a href="./src/resources/webhooks.ts">InboundMessageEvent</a></code>
 - <code><a href="./src/resources/webhooks.ts">InboundMessageEventPayload</a></code>

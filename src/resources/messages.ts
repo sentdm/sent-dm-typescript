@@ -282,6 +282,11 @@ export namespace MessageRetrieveStatusResponse {
       footer?: string | null;
 
       header?: string | null;
+
+      /**
+       * The media asset that rode a message's header, recorded as sent.
+       */
+      headerMedia?: MessageBody.HeaderMedia | null;
     }
 
     export namespace MessageBody {
@@ -293,6 +298,23 @@ export namespace MessageRetrieveStatusResponse {
         type?: string;
 
         value?: string;
+      }
+
+      /**
+       * The media asset that rode a message's header, recorded as sent.
+       */
+      export interface HeaderMedia {
+        /**
+         * "image", "video" or "document" — taken from the header's media variable.
+         */
+        type?: string;
+
+        /**
+         * The https URL the caller supplied for this send. Never the template's stored
+         * props.sample, which is Meta's expiring header_handle rather than what was
+         * delivered.
+         */
+        url?: string;
       }
     }
   }
@@ -467,7 +489,20 @@ export namespace MessageSendParams {
     name?: string | null;
 
     /**
-     * Template variable parameters for personalization
+     * Template variable parameters for personalization, keyed by variable name.
+     *
+     * Every variable the template declares is required; GET /v3/templates/{id} lists
+     * them. Supplying a key the template does not declare is ignored.
+     *
+     * Media headers. A template whose header is an image (designed in WhatsApp Manager
+     * and imported into Sent) declares a reserved header_image key. Its value is a
+     * publicly reachable https URL that Meta fetches at send time — Sent does not host
+     * the asset, and the sample approved with the template is not reused. The key is
+     * derived from the header's media type, so header_video and header_document follow
+     * the same shape when those formats ship.
+     *
+     * "parameters": { "header_image": "https://cdn.example.com/banner.jpg", "name":
+     * "John Doe" }
      */
     parameters?: { [key: string]: string } | null;
   }

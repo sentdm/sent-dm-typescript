@@ -426,7 +426,9 @@ export interface ChannelEventPayload {
    * The account whose market this is, named as on every other family. When an
    * organization receives an event for one of its sender profiles this is the
    * profile, so a reseller compares it with its own id and anything different is one
-   * of its profiles.
+   * of its profiles. Matches customer_id on GET /v3/channels and the sender
+   * profile's id. Together with channel, country, and number_type, it identifies the
+   * market.
    */
   account_id?: string;
 
@@ -436,6 +438,27 @@ export interface ChannelEventPayload {
    * than a channel that can be provisioned.
    */
   channel?: string;
+
+  /**
+   * What a market has been given: the identity it registers under, its programme,
+   * and any documents attached.
+   *
+   * What it does not carry is what the market asks for. That is the subject of GET
+   * /v3/compliance/requirements, and it is the same answer for every caller — a
+   * description of what a compliance regime wants, not a record of one customer's
+   * progress through it. It was reported here as well for a while, which put the
+   * same array in six response shapes and left a caller deciding which of two
+   * sources to believe.
+   *
+   * Present on a list read for markets that register (carrying brand and campaign),
+   * but with documents absent — documents are not fetched for a list, because a
+   * catalog lookup and a document read per market would multiply across a page.
+   * Absent documents is distinct from an empty list: absent says they were not
+   * fetched; empty says the market has been given none. The parent object is null
+   * only when the market registers with nobody and compliance was not computed —
+   * nothing to show at all.
+   */
+  compliance?: ChannelEventPayload.Compliance | null;
 
   /**
    * The kind of sender the market uses, for example TEN_DLC, LOCAL, or ALPHANUMERIC.
@@ -487,6 +510,95 @@ export interface ChannelEventPayload {
   updated_at?: string;
 }
 
+export namespace ChannelEventPayload {
+  /**
+   * What a market has been given: the identity it registers under, its programme,
+   * and any documents attached.
+   *
+   * What it does not carry is what the market asks for. That is the subject of GET
+   * /v3/compliance/requirements, and it is the same answer for every caller — a
+   * description of what a compliance regime wants, not a record of one customer's
+   * progress through it. It was reported here as well for a while, which put the
+   * same array in six response shapes and left a caller deciding which of two
+   * sources to believe.
+   *
+   * Present on a list read for markets that register (carrying brand and campaign),
+   * but with documents absent — documents are not fetched for a list, because a
+   * catalog lookup and a document read per market would multiply across a page.
+   * Absent documents is distinct from an empty list: absent says they were not
+   * fetched; empty says the market has been given none. The parent object is null
+   * only when the market registers with nobody and compliance was not computed —
+   * nothing to show at all.
+   */
+  export interface Compliance {
+    /**
+     * The identity this market registers under, with inherit saying whose it is.
+     *
+     * Reported here rather than on the profile because it belongs to the registration
+     * this market files, and only one market files one. It was a top-level block for a
+     * while, which put a per-registration value beside a list of markets and left a
+     * caller to work out which market it belonged to.
+     *
+     * Absent for a market that registers with nobody — such a market asks for no
+     * identity, so there is none to report. Absent and null mean different things:
+     * absent says this market does not ask, null would say it asks and nothing was
+     * supplied.
+     *
+     * Untyped, like the request side, because its members are declared by the market's
+     * own schema rather than by a C# class. A typed pair here would be a second
+     * definition of what a market wants, free to drift from the one that validates.
+     */
+    brand?: { [key: string]: unknown } | null;
+
+    /**
+     * The programme this market registers, with inherit saying whose it is.
+     *
+     * One, not a list. TcrCampaigns permits several and an account built on the admin
+     * side may hold them, but this surface offers one — which is what lets the
+     * market's PATCH be an upsert rather than a collection with an addressable create
+     * behind it. An account holding several is reported as its first and refused on
+     * write, rather than half-edited.
+     *
+     * Carries no id. Nothing addresses a campaign, and an undeclared key would be
+     * refused if the caller sent this object back — which it is meant to be able to
+     * do.
+     */
+    campaign?: { [key: string]: unknown } | null;
+
+    /**
+     * What has been supplied for this market.
+     *
+     * Files, not values — the declared halves above carry the values. A document
+     * cannot be a JSON value, so it is sent as multipart on the channel call and
+     * reported here as a reference.
+     *
+     * Absent on a list read, which fetches identity but does not compute compliance
+     * documents per market. Absent and empty mean different things: absent says the
+     * documents were not fetched; empty says the market has been given none.
+     */
+    documents?: Array<Compliance.Document> | null;
+  }
+
+  export namespace Compliance {
+    /**
+     * A document a market asked for and has been given.
+     */
+    export interface Document {
+      /**
+       * Identifier of the upload, for fetching it back through the documents endpoints.
+       */
+      document_id?: string | null;
+
+      file_name?: string | null;
+
+      /**
+       * The catalog's name for this document, matching the requirement it satisfies.
+       */
+      key?: string;
+    }
+  }
+}
+
 /**
  * The envelope Sent POSTs to a subscribed webhook endpoint. Every event shares
  * this shape and varies only in Payload.
@@ -506,17 +618,25 @@ export interface ContactEvent {
   field?: string;
 
   /**
-   * Body of a contact.opt_in, contact.opt_out or contact.help event. Delivered when
-   * a contact signals a consent change or asks for help.
+   * Body of a contact.opt_in, contact.opt_out, contact.help or
+   * contact.custom_keyword event. Delivered when a contact signals a consent change,
+   * asks for help, or sends one of your own auto-reply keywords.
    *
    * These events state the signal outright, so you do not have to recognise keywords
    * in the text of a message.received event. They also cover cases that produce no
    * inbound message at all, such as a network handling an opt-out on your behalf.
    *
-   * Fields are ordered identity → resulting state → provenance → join key. Nothing
-   * here restates the envelope: which of the three signals occurred is the
-   * envelope's event, and when it was emitted is its timestamp. Retries carry the
-   * same X-Webhook-Event-ID header, which is what to deduplicate on.
+   * Two of the four change consent and two do not: contact.help and
+   * contact.custom_keyword report the state the contact already had. Read opt_out
+   * for the state and the envelope's event for what happened, rather than inferring
+   * one from the other.
+   *
+   * Fields are ordered identity → resulting state → provenance → join keys. The two
+   * parties are from and to. Note that the message family has not moved to those
+   * names yet — message.received still calls the same two parties inbound_number and
+   * outbound_number. Nothing here restates the envelope: which signal occurred is
+   * the envelope's event, and when it was emitted is its timestamp. Retries carry
+   * the same X-Webhook-Event-ID header, which is what to deduplicate on.
    */
   payload?: ContactEventPayload | null;
 
@@ -534,23 +654,32 @@ export interface ContactEvent {
 }
 
 /**
- * Body of a contact.opt_in, contact.opt_out or contact.help event. Delivered when
- * a contact signals a consent change or asks for help.
+ * Body of a contact.opt_in, contact.opt_out, contact.help or
+ * contact.custom_keyword event. Delivered when a contact signals a consent change,
+ * asks for help, or sends one of your own auto-reply keywords.
  *
  * These events state the signal outright, so you do not have to recognise keywords
  * in the text of a message.received event. They also cover cases that produce no
  * inbound message at all, such as a network handling an opt-out on your behalf.
  *
- * Fields are ordered identity → resulting state → provenance → join key. Nothing
- * here restates the envelope: which of the three signals occurred is the
- * envelope's event, and when it was emitted is its timestamp. Retries carry the
- * same X-Webhook-Event-ID header, which is what to deduplicate on.
+ * Two of the four change consent and two do not: contact.help and
+ * contact.custom_keyword report the state the contact already had. Read opt_out
+ * for the state and the envelope's event for what happened, rather than inferring
+ * one from the other.
+ *
+ * Fields are ordered identity → resulting state → provenance → join keys. The two
+ * parties are from and to. Note that the message family has not moved to those
+ * names yet — message.received still calls the same two parties inbound_number and
+ * outbound_number. Nothing here restates the envelope: which signal occurred is
+ * the envelope's event, and when it was emitted is its timestamp. Retries carry
+ * the same X-Webhook-Event-ID header, which is what to deduplicate on.
  */
 export interface ContactEventPayload {
   /**
    * Whether the contact is opted out after this signal — the state to write to your
-   * own record. Same meaning as opt_out on the contact resource. On contact.help
-   * this reports the contact's existing state, which help does not change.
+   * own record. Same meaning as opt_out on the contact resource. On contact.help and
+   * contact.custom_keyword this reports the contact's existing state, which neither
+   * changes.
    *
    * Two signals from the same contact can arrive out of order, because each one is
    * queued on its own rather than against the contact. Compare the envelope's
@@ -575,16 +704,34 @@ export interface ContactEventPayload {
   account_id?: string;
 
   /**
+   * The RCS agent the signal reached, when it reached one.
+   *
+   * Omitted entirely on channels that have no agent, rather than sent as null — an
+   * SMS or WhatsApp payload does not carry this key at all. On RCS it is the
+   * counterpart to To: a contact reaches an agent rather than a number, so exactly
+   * one of the two is populated and never both. If you run more than one agent, this
+   * is what tells you which of them the contact acted on.
+   */
+  agent_id?: string | null;
+
+  /**
    * The channel the signal arrived on, for example sms or whatsapp.
    */
   channel?: string;
 
   /**
    * The contact who raised the signal. Always populated, including for contact.help
-   * from a number you have not messaged before — the contact is created if it does
-   * not exist yet, so this identifier is always resolvable against the contacts API.
+   * or contact.custom_keyword from a number you have not messaged before — the
+   * contact is created if it does not exist yet, so this identifier is always
+   * resolvable against the contacts API.
    */
   contact_id?: string;
+
+  /**
+   * The contact's number, in E.164 format with the leading + — who raised the
+   * signal. The same party message.received publishes as inbound_number.
+   */
+  from?: string;
 
   /**
    * The inbound message that carried the signal, matching message_id on the
@@ -599,10 +746,19 @@ export interface ContactEventPayload {
   message_id?: string | null;
 
   /**
-   * The contact's number in E.164 format. Same value as phone_number on the contact
-   * resource.
+   * The auto-reply template whose keyword the contact matched, joinable against the
+   * templates API.
+   *
+   * This is what identifies which signal arrived on contact.custom_keyword: every
+   * custom template reports the same event name, so the event alone cannot tell your
+   * booking keyword from your opening-hours one. One template holds as many keywords
+   * as you configured, so this is steadier to switch on than text.
+   *
+   * Populated on the compliance sub-types too, where it names the template that
+   * replied. Sent as null when no template was involved — a network-reported opt-out
+   * matches no keyword. The field is always present, so read it and check for null.
    */
-  phone_number?: string;
+  template_id?: string | null;
 
   /**
    * The text the contact sent, for example STOP or UNSUBSCRIBE. Sent as null when
@@ -610,6 +766,22 @@ export interface ContactEventPayload {
    * check for null rather than checking whether the key exists.
    */
   text?: string | null;
+
+  /**
+   * The number of yours that received the signal, in E.164 format with the leading
+   * +. Tells a multi-number account which of its senders the contact acted on, which
+   * nothing else on this payload answers.
+   *
+   * This is your number, not the contact's. That is the opposite of what to means on
+   * POST /v3/messages, where it is the list of recipients you are sending to. Reply
+   * to From, not to this field, or the message goes back to yourself.
+   *
+   * Sent as null when the signal did not arrive at a number of yours — an RCS signal
+   * terminates at an agent rather than a number, and a provider-reported opt-out may
+   * name no receiving number at all. The field is always present, so read it and
+   * check for null rather than checking whether the key exists.
+   */
+  to?: string | null;
 }
 
 /**
@@ -807,6 +979,19 @@ export interface MessageEventPayload {
    * The recipient's number in E.164 format.
    */
   outbound_number?: string;
+
+  /**
+   * message.scheduled only: why the message is held, either because you scheduled it
+   * or because the recipient is inside a protected quiet-hours window. Omitted on
+   * every other event.
+   */
+  schedule_reason?: string | null;
+
+  /**
+   * message.scheduled only: when the held message will be released for delivery, in
+   * UTC (yyyy-MM-ddTHH:mm:ssZ). Omitted on every other event.
+   */
+  scheduled_at?: string | null;
 
   /**
    * The template the message was sent from, when it was sent from one.
@@ -1104,11 +1289,30 @@ export interface WebhookListEventsResponse {
 
   /**
    * The exact event body that was delivered, or attempted, for this record. One of
-   * the four webhook envelopes: a message status change, an inbound message, a
-   * template status change, or a contact consent signal. Read field and event to
-   * tell which, the same way your endpoint does.
+   * the six webhook envelopes:
+   *
+   * message — an outbound message changed status. message with event:
+   * message.received — someone replied to you. templates — a template was approved,
+   * rejected, paused or similar. channel — one of your markets moved in provisioning
+   * or compliance. contact — a consent signal: opt-in, opt-out or help. link — a
+   * tracked short link was clicked or a hosted file downloaded, or one expired or
+   * was revoked.
+   *
+   * Read field and event to tell which, the same way your endpoint does. The two
+   * message envelopes are the reason that is two fields and not one: they share a
+   * field and differ by event.
+   *
+   * Treat the list as open. It has grown twice — channel and then link — and a
+   * handler that rejects an envelope it does not recognise will break on the next
+   * addition rather than ignore it.
    */
-  event_data?: MessageEvent | InboundMessageEvent | TemplateEvent | ChannelEvent | ContactEvent;
+  event_data?:
+    | MessageEvent
+    | InboundMessageEvent
+    | TemplateEvent
+    | ChannelEvent
+    | ContactEvent
+    | WebhookListEventsResponse.SentDmServicesCommonServicesWebhooksContractsWebhookEventOfLinkWebhookPayload;
 
   event_type?: string;
 
@@ -1119,6 +1323,218 @@ export interface WebhookListEventsResponse {
   processing_started_at?: string | null;
 
   response_body?: string | null;
+}
+
+export namespace WebhookListEventsResponse {
+  /**
+   * The envelope Sent POSTs to a subscribed webhook endpoint. Every event shares
+   * this shape and varies only in Payload.
+   */
+  export interface SentDmServicesCommonServicesWebhooksContractsWebhookEventOfLinkWebhookPayload {
+    /**
+     * The specific event within the family, for example message.delivered,
+     * message.received or contact.opt_out. Absent on events that have no subtype, so
+     * treat it as optional.
+     */
+    event?: string | null;
+
+    /**
+     * The event family, for example message, templates or contact. Route on this
+     * first, then on event for the specific change.
+     */
+    field?: string;
+
+    /**
+     * Body of a link event: something happened to a tracked link Sent published on the
+     * customer's behalf. A link points either at a URL the customer supplied or at a
+     * file Sent hosts for them; LinkKind says which. Delivered when an eligible
+     * request is served, or when a published link reaches the end of its life.
+     *
+     * A click is a request, not a read receipt. link.clicked means the redirect was
+     * served; link.downloaded means bytes went out. Neither proves a person saw
+     * anything — messaging providers and link scanners fetch URLs on their own, which
+     * is what TrafficClass exists to tell apart. Filter on it before reporting a
+     * click-through rate; treat likely_human as a hint, never as delivery
+     * confirmation.
+     *
+     * RecordId identifies the link; the X-Webhook-Event-ID header identifies the
+     * delivery. One link is hit many times, so those are the two keys a subscriber
+     * needs: group by the first, deduplicate on the second — exactly as on every other
+     * family. The payload carries no event identifier of its own, for the same reason
+     * none of the others do.
+     *
+     * Nothing here identifies the visitor. No IP address and no visitor token crosses
+     * this boundary. Country, Device and Browser are coarse buckets derived at the
+     * edge and are absent whenever the request did not supply enough to derive them.
+     */
+    payload?: SentDmServicesCommonServicesWebhooksContractsWebhookEventOfLinkWebhookPayload.Payload | null;
+
+    /**
+     * The event-specific body.
+     */
+    request_id?: string | null;
+
+    /**
+     * When Sent emitted the event, in UTC (yyyy-MM-ddTHH:mm:ssZ). This is the emission
+     * time, not the time the underlying change happened. Use the timestamp inside the
+     * payload for the latter.
+     */
+    timestamp?: string;
+  }
+
+  export namespace SentDmServicesCommonServicesWebhooksContractsWebhookEventOfLinkWebhookPayload {
+    /**
+     * Body of a link event: something happened to a tracked link Sent published on the
+     * customer's behalf. A link points either at a URL the customer supplied or at a
+     * file Sent hosts for them; LinkKind says which. Delivered when an eligible
+     * request is served, or when a published link reaches the end of its life.
+     *
+     * A click is a request, not a read receipt. link.clicked means the redirect was
+     * served; link.downloaded means bytes went out. Neither proves a person saw
+     * anything — messaging providers and link scanners fetch URLs on their own, which
+     * is what TrafficClass exists to tell apart. Filter on it before reporting a
+     * click-through rate; treat likely_human as a hint, never as delivery
+     * confirmation.
+     *
+     * RecordId identifies the link; the X-Webhook-Event-ID header identifies the
+     * delivery. One link is hit many times, so those are the two keys a subscriber
+     * needs: group by the first, deduplicate on the second — exactly as on every other
+     * family. The payload carries no event identifier of its own, for the same reason
+     * none of the others do.
+     *
+     * Nothing here identifies the visitor. No IP address and no visitor token crosses
+     * this boundary. Country, Device and Browser are coarse buckets derived at the
+     * edge and are absent whenever the request did not supply enough to derive them.
+     */
+    export interface Payload {
+      /**
+       * The link's public identifier — the eight-character code in the short URL, for
+       * example A78B2BU0. Unique across both kinds, and never reused, so it is the
+       * stable key to group one link's events by.
+       */
+      record_id: string;
+
+      /**
+       * Where the request appeared to come from, as an ISO 3166-1 alpha-2 code. Named
+       * separately from the country on a channel event, which is a destination market
+       * the customer registered for — this one is a property of a single visitor and is
+       * absent when the edge could not resolve it.
+       */
+      access_country?: string | null;
+
+      /**
+       * How the request was served, when the edge recorded it. Free text describing the
+       * outcome — show it to a human rather than branching on it.
+       */
+      access_outcome?: string | null;
+
+      /**
+       * The requesting browser family, for example chrome or safari, or unknown. Derived
+       * from the user agent.
+       */
+      browser?: string | null;
+
+      /**
+       * How many bytes were served, for a file access. A ranged request reports the
+       * bytes in that range, not the size of the file, so several accesses of one file
+       * can each report a part.
+       */
+      bytes_served?: number | null;
+
+      /**
+       * The channel the message carrying this link went out on: sms, whatsapp, or rcs.
+       */
+      channel?: string | null;
+
+      /**
+       * The organization the link belongs to. Always the parent account, never a sender
+       * profile — read SenderProfileId for that.
+       *
+       * This family publishes the owner as an explicit pair rather than the single
+       * account_id the other families use. The pair says which organization and which
+       * profile without the subscriber deriving either, which is the trade: one more key
+       * against not having to know that account_id silently becomes the profile when one
+       * exists.
+       */
+      customer_id?: string;
+
+      /**
+       * The requesting device class: mobile, tablet, desktop or unknown. Derived from
+       * the user agent.
+       */
+      device?: string | null;
+
+      /**
+       * What the link points at: url for a destination the customer supplied, file for
+       * media Sent hosts. Always present, and implied by the event — link.clicked is
+       * always url and link.downloaded always file — but published as its own field so a
+       * subscriber can branch on the kind without parsing the event name, the same
+       * separation the channel family keeps between its event and its status.
+       */
+      link_kind?: string;
+
+      /**
+       * The message the link was published in.
+       *
+       * The event can arrive before the message is readable through GET /v3/messages: a
+       * provider may fetch a link within milliseconds of the send, and nothing here
+       * waits for the message row. Retry the read rather than treating an unknown id as
+       * an error.
+       */
+      message_id?: string | null;
+
+      /**
+       * When the access or lifecycle change actually happened, in UTC
+       * (yyyy-MM-ddTHH:mm:ssZ). The envelope's timestamp is when Sent emitted the event;
+       * this is when the thing occurred, and the two differ by the ingest delay.
+       */
+      occurred_at?: string;
+
+      /**
+       * The caller-supplied label tying this link back to a position in the message, for
+       * example body:0 for the first link in the body. Present when the link was created
+       * with one.
+       */
+      reference_key?: string | null;
+
+      /**
+       * The host of the page that linked here, when the request supplied one. The host
+       * only — never a full referring URL.
+       */
+      referrer_host?: string | null;
+
+      /**
+       * The HTTP method of the request that was served, for an access event. Omitted on
+       * link.expired and link.revoked, which describe no request.
+       */
+      request_method?: string | null;
+
+      /**
+       * The sender profile that owns the link, or null when the organization owns it
+       * directly. Always on the wire so a handler reads one shape rather than branching
+       * on whether the key arrived.
+       *
+       * sender_profile_id, not profile_id: the API already publishes
+       * messaging_profile_id and sending_phone_number_profile_id for provider-side
+       * profiles, which are a different thing entirely. The unqualified name would read
+       * as one of those.
+       */
+      sender_profile_id?: string | null;
+
+      /**
+       * The HTTP status Sent answered the request with: 302 for a link, 200 or 206 for a
+       * file. Omitted on lifecycle events.
+       */
+      status_code?: number | null;
+
+      /**
+       * A coarse guess at what made the request: likely_human, provider (a messaging
+       * platform prefetching the link), bot, or unknown. Derived from the user agent, so
+       * it is a hint for filtering noise rather than a fact to bill or report on.
+       */
+      traffic_class?: string | null;
+    }
+  }
 }
 
 /**

@@ -1,6 +1,7 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../core/resource';
+import * as TemplatesAPI from './templates';
 import * as WebhooksAPI from './webhooks';
 import { APIPromise } from '../core/api-promise';
 import { PagePromise, TemplatesPage, type TemplatesPageParams } from '../core/pagination';
@@ -319,6 +320,17 @@ export interface Template {
  */
 export interface TemplateBody {
   /**
+   * MMS-specific content — subject, text and attachments.
+   *
+   * Like Rcs, an override that cannot stand on its own: a template still needs a
+   * MultiChannel body or the Sms + Whatsapp pair to be deliverable at all. Unlike
+   * Rcs, it has no fallback at send time — MMS with no media is a more expensive
+   * SMS, so a template without this slot is deliberately not MMS-capable and never
+   * produces an MMS route candidate.
+   */
+  mms?: TemplateBody.Mms | null;
+
+  /**
    * The shared body, used for every channel. One half of the choice described above.
    */
   multiChannel?: TemplateBodyContent | null;
@@ -339,6 +351,58 @@ export interface TemplateBody {
    * The WhatsApp body. It does not override multiChannel, it replaces it.
    */
   whatsapp?: TemplateBodyContent | null;
+}
+
+export namespace TemplateBody {
+  /**
+   * MMS-specific content — subject, text and attachments.
+   *
+   * Like Rcs, an override that cannot stand on its own: a template still needs a
+   * MultiChannel body or the Sms + Whatsapp pair to be deliverable at all. Unlike
+   * Rcs, it has no fallback at send time — MMS with no media is a more expensive
+   * SMS, so a template without this slot is deliberately not MMS-capable and never
+   * produces an MMS route candidate.
+   */
+  export interface Mms extends TemplatesAPI.TemplateBodyContent {
+    /**
+     * Attachments carried by every send on this template, in order. A per-send
+     * media_urls on the request replaces this list rather than adding to it, so a
+     * template can hold a default creative and a caller can still send something
+     * recipient-specific.
+     */
+    media?: Array<Mms.Media> | null;
+
+    /**
+     * MMS subject line. Optional — most handsets render it above the body, some ignore
+     * it entirely. Deliberately its own field rather than riding TemplateHeader: the
+     * header is authored once and shared across every channel, and carries Meta's
+     * 60-character cap plus its no-newline, no-emoji text rules, none of which
+     * describe an MMS subject.
+     */
+    subject?: string | null;
+  }
+
+  export namespace Mms {
+    /**
+     * One attachment on an MMS template body.
+     */
+    export interface Media {
+      /**
+       * One of MmsMediaTypes. Advisory: the carrier reads the Content-Type off the
+       * fetched object, not this field. It exists so an authoring UI can render the
+       * right preview and so a reviewer can see what was intended.
+       */
+      mediaType?: string | null;
+
+      /**
+       * Publicly fetchable https URL. The carrier's MMSC fetches this at send time, so
+       * it has to stay reachable and unauthenticated for the life of the send —
+       * including retries and a DLQ replay — which is why a presigned URL is not a valid
+       * value here.
+       */
+      url?: string;
+    }
+  }
 }
 
 export interface TemplateBodyContent {
@@ -571,6 +635,13 @@ export namespace TemplateVariable {
   export interface Props {
     mediaType: string;
 
+    /**
+     * Example value substituted into the template when previewing it and when
+     * submitting it to Meta for review. Free text by nature, so the converter accepts
+     * a JSON number or boolean here and normalizes it — see
+     * JsonScalarToStringConverter for why — and guarantees it is always serialized
+     * back out as a JSON string.
+     */
     sample: string;
 
     url: string;

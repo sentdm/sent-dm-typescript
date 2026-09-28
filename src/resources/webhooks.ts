@@ -1640,6 +1640,13 @@ export interface WebhookCreateParams {
   sandbox?: boolean;
 
   /**
+   * Body param: Request-only: the events an organization webhook's sender profile
+   * clones receive, one clone per existing and future profile. Responses never
+   * return it.
+   */
+  sender_profile?: WebhookCreateParams.SenderProfile | null;
+
+  /**
    * Body param
    */
   timeout_seconds?: number;
@@ -1657,6 +1664,18 @@ export interface WebhookCreateParams {
    * calling organization.
    */
   'x-profile-id'?: string;
+}
+
+export namespace WebhookCreateParams {
+  /**
+   * Request-only: the events an organization webhook's sender profile clones
+   * receive, one clone per existing and future profile. Responses never return it.
+   */
+  export interface SenderProfile {
+    event_filters?: { [key: string]: Array<string> } | null;
+
+    event_types?: Array<string>;
+  }
 }
 
 export interface WebhookRetrieveParams {
@@ -1700,6 +1719,13 @@ export interface WebhookUpdateParams {
   sandbox?: boolean;
 
   /**
+   * Body param: Request-only: the events an organization webhook's sender profile
+   * clones receive, one clone per existing and future profile. Responses never
+   * return it.
+   */
+  sender_profile?: WebhookUpdateParams.SenderProfile | null;
+
+  /**
    * Body param
    */
   timeout_seconds?: number;
@@ -1717,6 +1743,18 @@ export interface WebhookUpdateParams {
    * calling organization.
    */
   'x-profile-id'?: string;
+}
+
+export namespace WebhookUpdateParams {
+  /**
+   * Request-only: the events an organization webhook's sender profile clones
+   * receive, one clone per existing and future profile. Responses never return it.
+   */
+  export interface SenderProfile {
+    event_filters?: { [key: string]: Array<string> } | null;
+
+    event_types?: Array<string>;
+  }
 }
 
 export interface WebhookListParams extends WebhooksPageParams {

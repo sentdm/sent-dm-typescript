@@ -169,7 +169,9 @@ export class Webhooks extends APIResource {
   }
 
   /**
-   * Retrieves a paginated list of delivery events for the specified webhook.
+   * Retrieves a paginated list of delivery events for the specified webhook. If the
+   * webhook is cloned onto your sender profiles, the list includes what those clones
+   * received; read payload.account_id to tell whose event it is.
    *
    * @example
    * ```ts
@@ -467,12 +469,19 @@ export interface ChannelEventPayload {
   number_type?: string | null;
 
   /**
-   * Why the market reached this state, when a reason was given — a correction
-   * explained, or a campaign lapse. Free text, passed through from the registry or
-   * carrier that wrote it, so treat it as a message to show a human rather than a
-   * value to branch on.
+   * Why the market reached this state, as a sentence to show a person: the specific
+   * explanation when one was given (a correction explained, a campaign lapse),
+   * otherwise what reason_code means for this market. Not a value to branch on.
    */
   reason?: string | null;
+
+  /**
+   * Why the market is not ACTIVE, as a stable code: an ErrorCodes CHANNEL_xxx value
+   * such as CHANNEL_001 (something you owe) or CHANNEL_002 (a correction was
+   * requested). The same code the channels resource reports for the market. Switch
+   * on this rather than on reason. Omitted while ACTIVE.
+   */
+  reason_code?: string | null;
 
   /**
    * The sender itself — a number in E.164, or an alphanumeric sender ID.
@@ -867,9 +876,23 @@ export interface InboundMessageEventPayload {
   account_id?: string;
 
   /**
-   * The channel the message arrived on, for example sms or whatsapp.
+   * The channel the message arrived on, for example sms or mms.
    */
   channel?: string;
+
+  /**
+   * Attachments the contact sent, present only on channels that carry them (mms
+   * today) and omitted entirely otherwise.
+   *
+   * Each url points at the carrier's own copy of the file — sent.dm records where
+   * the attachment is, not the attachment itself. The link is unauthenticated and
+   * expires on the carrier's schedule, which differs between them: assume days, not
+   * months. Download what you need on receipt; re-reading the message through GET
+   * /v3/messages/{id} returns the same stored link, not a fresh one, so once it
+   * lapses the entry remains with whatever the carrier declared about the file but
+   * the file is no longer reachable.
+   */
+  media?: Array<InboundMessageEventPayload.Media> | null;
 
   /**
    * The inbound message.
@@ -893,6 +916,41 @@ export interface InboundMessageEventPayload {
    * ReceivedAt, kept for envelope consistency with outbound events.
    */
   updated_at?: string;
+}
+
+export namespace InboundMessageEventPayload {
+  /**
+   * One attachment on an inbound message.
+   */
+  export interface Media {
+    /**
+     * SHA-256 of the file as the carrier declared it, when it declares one. Verify
+     * what you download against this — sent.dm never reads the bytes, so it is the
+     * only integrity signal available.
+     */
+    hash_sha256?: string | null;
+
+    /**
+     * Content type as the carrier reported it, for example image/jpeg.
+     */
+    mime_type?: string | null;
+
+    /**
+     * Size in bytes as the carrier declared it. Absent when it declared none.
+     */
+    size_bytes?: number | null;
+
+    /**
+     * Where the carrier hosts the attachment.
+     *
+     * This link expires and is not authenticated. sent.dm relays it rather than
+     * copying the file, so how long it stays fetchable is the carrier's decision and
+     * differs between them — assume days, not months. Anyone holding the URL can fetch
+     * it until it lapses. Copy the file on receipt if you need it to outlive that
+     * window; do not store this URL as a permanent reference.
+     */
+    url?: string | null;
+  }
 }
 
 /**
@@ -979,6 +1037,22 @@ export interface MessageEventPayload {
    * The recipient's number in E.164 format.
    */
   outbound_number?: string;
+
+  /**
+   * A human-readable sentence for ReasonCode, for example "The recipient is not
+   * registered on this channel". Omitted whenever reason_code is.
+   */
+  reason?: string | null;
+
+  /**
+   * Why the message reached this status, as a stable platform code such as
+   * DELIVERY_007 or BUSINESS_003. Present on message.failed, message.filtered and
+   * message.blocked; omitted on every status that needs no explanation. Switch on
+   * this rather than on Reason: the code is stable, the wording may be improved. It
+   * is the platform's classification of the outcome and never a carrier or vendor
+   * code.
+   */
+  reason_code?: string | null;
 
   /**
    * message.scheduled only: why the message is held, either because you scheduled it
@@ -1312,7 +1386,8 @@ export interface WebhookListEventsResponse {
     | TemplateEvent
     | ChannelEvent
     | ContactEvent
-    | WebhookListEventsResponse.SentDmServicesCommonServicesWebhooksContractsWebhookEventOfLinkWebhookPayload;
+    | WebhookListEventsResponse.SentDmServicesCommonServicesWebhooksContractsWebhookEventOfLinkWebhookPayload
+    | WebhookListEventsResponse.SentDmServicesCommonServicesWebhooksContractsWebhookEventOfCallWebhookPayload;
 
   event_type?: string;
 
@@ -1535,6 +1610,124 @@ export namespace WebhookListEventsResponse {
       traffic_class?: string | null;
     }
   }
+
+  /**
+   * The envelope Sent POSTs to a subscribed webhook endpoint. Every event shares
+   * this shape and varies only in Payload.
+   */
+  export interface SentDmServicesCommonServicesWebhooksContractsWebhookEventOfCallWebhookPayload {
+    /**
+     * The specific event within the family, for example message.delivered,
+     * message.received or contact.opt_out. Absent on events that have no subtype, so
+     * treat it as optional.
+     */
+    event?: string | null;
+
+    /**
+     * The event family, for example message, templates or contact. Route on this
+     * first, then on event for the specific change.
+     */
+    field?: string;
+
+    /**
+     * Body of a call.initiated, call.answered, call.completed, call.failed or
+     * call.recording_ready event. Which of them occurred is the envelope's event.
+     *
+     * Shaped like the message, inbound, template and channel payloads: account_id
+     * names the account the event is about, channel names the channel, and updated_at
+     * is when the change happened on the call, in the same yyyy-MM-ddTHH:mm:ssZ form.
+     * duration_seconds and price are added on call.completed, reason on call.failed
+     * and recording_id on call.recording_ready; each is omitted rather than sent as
+     * null when it does not apply.
+     *
+     * Casing is snake_case because these ride the same webhook stream customers
+     * already parse message_id from; the question/answer contract is a separate
+     * surface and stays camelCase. Nothing here is provider-shaped: no provider call
+     * id, no namespaced identity.
+     */
+    payload?: SentDmServicesCommonServicesWebhooksContractsWebhookEventOfCallWebhookPayload.Payload | null;
+
+    /**
+     * The event-specific body.
+     */
+    request_id?: string | null;
+
+    /**
+     * When Sent emitted the event, in UTC (yyyy-MM-ddTHH:mm:ssZ). This is the emission
+     * time, not the time the underlying change happened. Use the timestamp inside the
+     * payload for the latter.
+     */
+    timestamp?: string;
+  }
+
+  export namespace SentDmServicesCommonServicesWebhooksContractsWebhookEventOfCallWebhookPayload {
+    /**
+     * Body of a call.initiated, call.answered, call.completed, call.failed or
+     * call.recording_ready event. Which of them occurred is the envelope's event.
+     *
+     * Shaped like the message, inbound, template and channel payloads: account_id
+     * names the account the event is about, channel names the channel, and updated_at
+     * is when the change happened on the call, in the same yyyy-MM-ddTHH:mm:ssZ form.
+     * duration_seconds and price are added on call.completed, reason on call.failed
+     * and recording_id on call.recording_ready; each is omitted rather than sent as
+     * null when it does not apply.
+     *
+     * Casing is snake_case because these ride the same webhook stream customers
+     * already parse message_id from; the question/answer contract is a separate
+     * surface and stays camelCase. Nothing here is provider-shaped: no provider call
+     * id, no namespaced identity.
+     */
+    export interface Payload {
+      /**
+       * Sent's call id, the same one the customer saw on the first question.
+       */
+      call_id: string;
+
+      /**
+       * The account the call belongs to: the key's own customer, or the sender profile
+       * it acted as.
+       */
+      account_id?: string;
+
+      /**
+       * Always voice.
+       */
+      channel?: string;
+
+      /**
+       * How long the call lasted. Only on call.completed.
+       */
+      duration_seconds?: number | null;
+
+      /**
+       * The customer number that owns the call, in E.164 format.
+       */
+      number?: string;
+
+      /**
+       * What the call was charged. Only on call.completed, and omitted there until
+       * billing has recorded the charge.
+       */
+      price?: number | null;
+
+      /**
+       * The machine-readable reason the call did not complete. Only on call.failed, and
+       * omitted when no reason was recorded.
+       */
+      reason?: string | null;
+
+      /**
+       * The recording that became available, the same id GET /v3/calls/{id}/recordings
+       * lists it under. Only on call.recording_ready, which is sent once per recording.
+       */
+      recording_id?: string | null;
+
+      /**
+       * When the change happened on the call, as opposed to when the event was emitted.
+       */
+      updated_at?: string;
+    }
+  }
 }
 
 /**
@@ -1640,6 +1833,13 @@ export interface WebhookCreateParams {
   sandbox?: boolean;
 
   /**
+   * Body param: Request-only: the events an organization webhook's sender profile
+   * clones receive, one clone per existing and future profile. Responses never
+   * return it.
+   */
+  sender_profile?: WebhookCreateParams.SenderProfile | null;
+
+  /**
    * Body param
    */
   timeout_seconds?: number;
@@ -1657,6 +1857,18 @@ export interface WebhookCreateParams {
    * calling organization.
    */
   'x-profile-id'?: string;
+}
+
+export namespace WebhookCreateParams {
+  /**
+   * Request-only: the events an organization webhook's sender profile clones
+   * receive, one clone per existing and future profile. Responses never return it.
+   */
+  export interface SenderProfile {
+    event_filters?: { [key: string]: Array<string> } | null;
+
+    event_types?: Array<string>;
+  }
 }
 
 export interface WebhookRetrieveParams {
@@ -1700,6 +1912,13 @@ export interface WebhookUpdateParams {
   sandbox?: boolean;
 
   /**
+   * Body param: Request-only: the events an organization webhook's sender profile
+   * clones receive, one clone per existing and future profile. Responses never
+   * return it.
+   */
+  sender_profile?: WebhookUpdateParams.SenderProfile | null;
+
+  /**
    * Body param
    */
   timeout_seconds?: number;
@@ -1717,6 +1936,18 @@ export interface WebhookUpdateParams {
    * calling organization.
    */
   'x-profile-id'?: string;
+}
+
+export namespace WebhookUpdateParams {
+  /**
+   * Request-only: the events an organization webhook's sender profile clones
+   * receive, one clone per existing and future profile. Responses never return it.
+   */
+  export interface SenderProfile {
+    event_filters?: { [key: string]: Array<string> } | null;
+
+    event_types?: Array<string>;
+  }
 }
 
 export interface WebhookListParams extends WebhooksPageParams {

@@ -17,6 +17,8 @@ import * as Errors from './core/error';
 import * as Pagination from './core/pagination';
 import {
   AbstractPage,
+  type CallsPageParams,
+  CallsPageResponse,
   type ContactsPageParams,
   ContactsPageResponse,
   type ConversationsPageParams,
@@ -98,6 +100,8 @@ import {
 import {
   APIMeta,
   APIResponseWebhook,
+  CallEvent,
+  CallEventPayload,
   ChannelEvent,
   ChannelEventPayload,
   ContactEvent,
@@ -131,6 +135,25 @@ import {
   WebhookUpdateParams,
   Webhooks,
 } from './resources/webhooks';
+import {
+  APIResponseOfCall,
+  APIResponseOfCallRecordings,
+  APIResponseOfCallsList,
+  Call,
+  CallHangupParams,
+  CallListParams,
+  CallListRecordingsParams,
+  CallParty,
+  CallRecordParams,
+  CallRecording,
+  CallRecordings,
+  CallRetrieveParams,
+  CallTimelineEntry,
+  Calls,
+  CallsCallsPage,
+  CallsList,
+} from './resources/calls/calls';
+import { Channels } from './resources/channels/channels';
 import {
   APIResponseOfProfileDetail,
   BillingContactInfo,
@@ -958,6 +981,15 @@ export class Sent {
    */
   conversations: API.Conversations = new API.Conversations(this);
   /**
+   * Phone calls from the numbers you hold, driven by your own callback URL.
+   *
+   * `POST /v3/channels/voice` enables a number for calls, with the callback URL Sent asks what to do with each call on it, and `POST /v3/channels/voice/tokens` mints a short-lived token that lets a user of your app place and receive calls as that number. When a call arrives or a caller presses a key, a signed question is POSTed to the callback URL and the answer decides the call; `POST /v3/channels/voice/{number}/test` checks the URL answers the way we need before a real call reaches it, and `POST /v3/channels/voice/{number}/rotate-secret` replaces the signing secret. The call events themselves (`call.completed` and the rest) arrive through your webhooks.
+   *
+   * Every call is a record under `/v3/calls`: read it, list its recordings once one is ready, hang it up, start or stop recording, and add, mute or remove conference participants while it is live. A leg to a phone number runs for at most what your balance affords at the destination's rate.
+   */
+  calls: API.Calls = new API.Calls(this);
+  channels: API.Channels = new API.Channels(this);
+  /**
    * Who the current key is.
    *
    * `GET /v3/me` answers with the account the key authenticates as, which is the quickest way to tell a live key from a test one, an organization key from a sender profile's, and to confirm `x-profile-id` resolved to the profile you meant.
@@ -973,6 +1005,8 @@ Sent.Numbers = Numbers;
 Sent.Messages = Messages;
 Sent.Contacts = Contacts;
 Sent.Conversations = Conversations;
+Sent.Calls = Calls;
+Sent.Channels = Channels;
 Sent.Me = Me;
 
 export declare namespace Sent {
@@ -1002,10 +1036,15 @@ export declare namespace Sent {
     type WebhookEventsPageResponse as WebhookEventsPageResponse,
   };
 
+  export import CallsPage = Pagination.CallsPage;
+  export { type CallsPageParams as CallsPageParams, type CallsPageResponse as CallsPageResponse };
+
   export {
     Webhooks as Webhooks,
     type APIMeta as APIMeta,
     type APIResponseWebhook as APIResponseWebhook,
+    type CallEvent as CallEvent,
+    type CallEventPayload as CallEventPayload,
     type ChannelEvent as ChannelEvent,
     type ChannelEventPayload as ChannelEventPayload,
     type ContactEvent as ContactEvent,
@@ -1134,6 +1173,27 @@ export declare namespace Sent {
     type ConversationListParams as ConversationListParams,
     type ConversationListMessagesParams as ConversationListMessagesParams,
   };
+
+  export {
+    Calls as Calls,
+    type APIResponseOfCall as APIResponseOfCall,
+    type APIResponseOfCallRecordings as APIResponseOfCallRecordings,
+    type APIResponseOfCallsList as APIResponseOfCallsList,
+    type Call as Call,
+    type CallParty as CallParty,
+    type CallRecording as CallRecording,
+    type CallRecordings as CallRecordings,
+    type CallTimelineEntry as CallTimelineEntry,
+    type CallsList as CallsList,
+    type CallsCallsPage as CallsCallsPage,
+    type CallRetrieveParams as CallRetrieveParams,
+    type CallListParams as CallListParams,
+    type CallHangupParams as CallHangupParams,
+    type CallListRecordingsParams as CallListRecordingsParams,
+    type CallRecordParams as CallRecordParams,
+  };
+
+  export { Channels as Channels };
 
   export {
     Me as Me,

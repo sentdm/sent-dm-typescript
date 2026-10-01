@@ -426,3 +426,62 @@ export class WebhookEventsPage<Item> extends AbstractPage<Item> implements Webho
     };
   }
 }
+
+export interface CallsPageResponse<Item> {
+  data: CallsPageResponse.Data<Item>;
+}
+
+export namespace CallsPageResponse {
+  export interface Data<Item> {
+    calls?: Array<Item>;
+
+    pagination?: Data.Pagination;
+  }
+
+  export namespace Data {
+    export interface Pagination {
+      has_more?: boolean;
+    }
+  }
+}
+
+export interface CallsPageParams {
+  page?: number;
+
+  page_size?: number;
+}
+
+export class CallsPage<Item> extends AbstractPage<Item> implements CallsPageResponse<Item> {
+  data: CallsPageResponse.Data<Item>;
+
+  constructor(client: Sent, response: Response, body: CallsPageResponse<Item>, options: FinalRequestOptions) {
+    super(client, response, body, options);
+
+    this.data = body.data || {};
+  }
+
+  getPaginatedItems(): Item[] {
+    return this.data?.calls ?? [];
+  }
+
+  override hasNextPage(): boolean {
+    if (this.data?.pagination?.has_more === false) {
+      return false;
+    }
+
+    return super.hasNextPage();
+  }
+
+  nextPageRequestOptions(): PageRequestOptions | null {
+    const query = this.options.query as CallsPageParams;
+    const currentPage = query?.page ?? 1;
+
+    return {
+      ...this.options,
+      query: {
+        ...maybeObj(this.options.query),
+        page: currentPage + 1,
+      },
+    };
+  }
+}

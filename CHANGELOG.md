@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.42.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.41.0...v0.42.0) (2026-10-01)
+
+
+### Features
+
+* **api:** add voice and calls endpoints to the SDKs ([fb67d25](https://github.com/sentdm/sent-dm-typescript/commit/fb67d254b947ee030ff16eed4568b030dd3633c0))
+
 ## [0.41.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.40.0...v0.41.0) (2026-09-30)
 
 

@@ -87,10 +87,11 @@ export class Calls extends APIResource {
   }
 
   /**
-   * Ends one of your live calls. The call then ends the way any other call does: its
-   * status moves to completed and call.completed is sent once the disconnect is
-   * reported. A call that has already ended answers 409, and so does a call with no
-   * phone leg, such as one between two app users.
+   * Ends one of your live calls. The call then ends the way any other call does once
+   * the disconnect is reported: an answered call as COMPLETED with call.completed, a
+   * call still ringing as NO_ANSWER, REJECTED or FAILED with call.failed. A call
+   * that has already ended answers 409, and so does a call with no phone leg, such
+   * as one between two app users.
    *
    * @example
    * ```ts
@@ -289,8 +290,9 @@ export interface Call {
 
   /**
    * Why the call did not complete: callback_timeout, invalid_answer,
-   * insufficient_balance, destination_blocked, rejected or no_answer. Null while the
-   * call is live, when it completed, and when it failed without a recorded reason
+   * insufficient_balance, destination_blocked, callback_not_configured, rejected or
+   * no_answer. Null while the call is live, when it completed, and when it failed
+   * without a recorded reason
    */
   failure_reason?: string | null;
 
@@ -321,7 +323,7 @@ export interface Call {
   started_at?: string;
 
   /**
-   * initiated, ringing, answered, completed, failed, no_answer or rejected
+   * INITIATED, RINGING, ANSWERED, COMPLETED, FAILED, NO_ANSWER or REJECTED
    */
   status?: string;
 
@@ -392,7 +394,7 @@ export interface CallRecordings {
  */
 export interface CallTimelineEntry {
   /**
-   * initiated, ringing, answered, completed, failed, no_answer or rejected
+   * INITIATED, RINGING, ANSWERED, COMPLETED, FAILED, NO_ANSWER or REJECTED
    */
   status?: string;
 

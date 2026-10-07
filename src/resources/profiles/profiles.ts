@@ -1046,6 +1046,17 @@ export interface ProfileCreateParams {
   allow_template_sharing?: boolean | null;
 
   /**
+   * Body param: API key from the x-api-key header, or empty when the caller sent it
+   * as Authorization: Bearer instead.
+   *
+   * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either
+   * header, and [FromHeader] is required by default, so a Bearer-only request would
+   * authenticate and then be refused with a 400 for a header it never needed.
+   * Endpoints read the customer from the CustomerId claim, not from this value.
+   */
+  apiKey?: string;
+
+  /**
    * Body param: Billing contact information for a profile. Required when
    * billing_model is "profile" or "profile_and_organization".
    */
@@ -1216,6 +1227,17 @@ export interface ProfileUpdateParams {
   allow_template_sharing?: boolean | null;
 
   /**
+   * Body param: API key from the x-api-key header, or empty when the caller sent it
+   * as Authorization: Bearer instead.
+   *
+   * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either
+   * header, and [FromHeader] is required by default, so a Bearer-only request would
+   * authenticate and then be refused with a 400 for a header it never needed.
+   * Endpoints read the customer from the CustomerId claim, not from this value.
+   */
+  apiKey?: string;
+
+  /**
    * Body param: Billing contact information for a profile. Required when
    * billing_model is "profile" or "profile_and_organization".
    */
@@ -1358,6 +1380,17 @@ export interface ProfileListParams {
 
 export interface ProfileDeleteParams {
   /**
+   * Body param: API key from the x-api-key header, or empty when the caller sent it
+   * as Authorization: Bearer instead.
+   *
+   * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either
+   * header, and [FromHeader] is required by default, so a Bearer-only request would
+   * authenticate and then be refused with a 400 for a header it never needed.
+   * Endpoints read the customer from the CustomerId claim, not from this value.
+   */
+  apiKey?: string;
+
+  /**
    * Body param: Sandbox flag - when true, the operation is simulated without side
    * effects Useful for testing integrations without actual execution
    */
@@ -1377,6 +1410,17 @@ export interface ProfileCompleteParams {
    * failure)
    */
   webHookUrl: string;
+
+  /**
+   * Body param: API key from the x-api-key header, or empty when the caller sent it
+   * as Authorization: Bearer instead.
+   *
+   * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either
+   * header, and [FromHeader] is required by default, so a Bearer-only request would
+   * authenticate and then be refused with a 400 for a header it never needed.
+   * Endpoints read the customer from the CustomerId claim, not from this value.
+   */
+  apiKey?: string;
 
   /**
    * Body param: Sandbox flag - when true, the operation is simulated without side

@@ -26,6 +26,7 @@ describe('resource participants', () => {
   test.skip('update: required and optional params', async () => {
     const response = await client.calls.participants.update('call_9f2ab000-0000-4000-8000-000000000002', {
       id: 'call_9f2ab000-0000-4000-8000-000000000001',
+      apiKey: 'sntdm_test_xxxxxxxxxxxx',
       muted: true,
       sandbox: false,
       'Idempotency-Key': 'req_abc123_retry1',
@@ -87,6 +88,7 @@ describe('resource participants', () => {
   test.skip('remove: required and optional params', async () => {
     const response = await client.calls.participants.remove('call_9f2ab000-0000-4000-8000-000000000002', {
       id: 'call_9f2ab000-0000-4000-8000-000000000001',
+      apiKey: 'sntdm_test_xxxxxxxxxxxx',
       sandbox: false,
       'x-profile-id': '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
     });

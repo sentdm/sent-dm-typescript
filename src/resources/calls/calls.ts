@@ -466,6 +466,17 @@ export interface CallListParams extends CallsPageParams {
 
 export interface CallHangupParams {
   /**
+   * Body param: API key from the x-api-key header, or empty when the caller sent it
+   * as Authorization: Bearer instead.
+   *
+   * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either
+   * header, and [FromHeader] is required by default, so a Bearer-only request would
+   * authenticate and then be refused with a 400 for a header it never needed.
+   * Endpoints read the customer from the CustomerId claim, not from this value.
+   */
+  apiKey?: string;
+
+  /**
    * Body param: Sandbox flag - when true, the operation is simulated without side
    * effects Useful for testing integrations without actual execution
    */
@@ -499,6 +510,17 @@ export interface CallRecordParams {
    * Body param: start to begin recording, stop to end it
    */
   action?: string;
+
+  /**
+   * Body param: API key from the x-api-key header, or empty when the caller sent it
+   * as Authorization: Bearer instead.
+   *
+   * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either
+   * header, and [FromHeader] is required by default, so a Bearer-only request would
+   * authenticate and then be refused with a 400 for a header it never needed.
+   * Endpoints read the customer from the CustomerId claim, not from this value.
+   */
+  apiKey?: string;
 
   /**
    * Body param: Sandbox flag - when true, the operation is simulated without side

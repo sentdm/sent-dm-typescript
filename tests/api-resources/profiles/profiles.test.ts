@@ -109,6 +109,7 @@ describe('resource profiles', () => {
   test.skip('complete: required and optional params', async () => {
     const response = await client.profiles.complete('660e8400-e29b-41d4-a716-446655440000', {
       webHookUrl: 'https://your-app.com/webhook/profile-complete',
+      apiKey: 'sntdm_test_xxxxxxxxxxxx',
       sandbox: false,
       'Idempotency-Key': 'req_abc123_retry1',
       'x-profile-id': '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',

@@ -131,13 +131,10 @@ export class Webhooks extends APIResource {
    * );
    * ```
    */
-  delete(
-    id: string,
-    params: WebhookDeleteParams | null | undefined = {},
-    options?: RequestOptions,
-  ): APIPromise<void> {
-    const { 'x-profile-id': xProfileID } = params ?? {};
+  delete(id: string, params: WebhookDeleteParams, options?: RequestOptions): APIPromise<void> {
+    const { 'x-profile-id': xProfileID, ...body } = params;
     return this._client.delete(path`/v3/webhooks/${id}`, {
+      body,
       ...options,
       headers: buildHeaders([
         { Accept: '*/*', ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined) },
@@ -1207,6 +1204,17 @@ export interface MessageEventPayload {
 
 export interface MutationRequest {
   /**
+   * API key from the x-api-key header, or empty when the caller sent it as
+   * Authorization: Bearer instead.
+   *
+   * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either
+   * header, and [FromHeader] is required by default, so a Bearer-only request would
+   * authenticate and then be refused with a 400 for a header it never needed.
+   * Endpoints read the customer from the CustomerId claim, not from this value.
+   */
+  apiKey?: string;
+
+  /**
    * Sandbox flag - when true, the operation is simulated without side effects Useful
    * for testing integrations without actual execution
    */
@@ -1805,6 +1813,17 @@ export namespace WebhookTestResponse {
 
 export interface WebhookCreateParams {
   /**
+   * Body param: API key from the x-api-key header, or empty when the caller sent it
+   * as Authorization: Bearer instead.
+   *
+   * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either
+   * header, and [FromHeader] is required by default, so a Bearer-only request would
+   * authenticate and then be refused with a 400 for a header it never needed.
+   * Endpoints read the customer from the CustomerId claim, not from this value.
+   */
+  apiKey?: string;
+
+  /**
    * Body param
    */
   display_name?: string;
@@ -1883,6 +1902,17 @@ export interface WebhookRetrieveParams {
 }
 
 export interface WebhookUpdateParams {
+  /**
+   * Body param: API key from the x-api-key header, or empty when the caller sent it
+   * as Authorization: Bearer instead.
+   *
+   * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either
+   * header, and [FromHeader] is required by default, so a Bearer-only request would
+   * authenticate and then be refused with a 400 for a header it never needed.
+   * Endpoints read the customer from the CustomerId claim, not from this value.
+   */
+  apiKey?: string;
+
   /**
    * Body param
    */
@@ -1974,8 +2004,20 @@ export interface WebhookListParams extends WebhooksPageParams {
 
 export interface WebhookDeleteParams {
   /**
-   * Profile UUID to scope the request to a child profile. Only organization API keys
-   * can use this header. The profile must belong to the calling organization.
+   * Body param: API key from the x-api-key header, or empty when the caller sent it
+   * as Authorization: Bearer instead.
+   *
+   * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either
+   * header, and [FromHeader] is required by default, so a Bearer-only request would
+   * authenticate and then be refused with a 400 for a header it never needed.
+   * Endpoints read the customer from the CustomerId claim, not from this value.
+   */
+  apiKey?: string;
+
+  /**
+   * Header param: Profile UUID to scope the request to a child profile. Only
+   * organization API keys can use this header. The profile must belong to the
+   * calling organization.
    */
   'x-profile-id'?: string;
 }
@@ -2004,6 +2046,17 @@ export interface WebhookListEventsParams extends WebhookEventsPageParams {
 
 export interface WebhookRotateSecretParams {
   /**
+   * Body param: API key from the x-api-key header, or empty when the caller sent it
+   * as Authorization: Bearer instead.
+   *
+   * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either
+   * header, and [FromHeader] is required by default, so a Bearer-only request would
+   * authenticate and then be refused with a 400 for a header it never needed.
+   * Endpoints read the customer from the CustomerId claim, not from this value.
+   */
+  apiKey?: string;
+
+  /**
    * Body param: Sandbox flag - when true, the operation is simulated without side
    * effects Useful for testing integrations without actual execution
    */
@@ -2025,6 +2078,17 @@ export interface WebhookRotateSecretParams {
 }
 
 export interface WebhookTestParams {
+  /**
+   * Body param: API key from the x-api-key header, or empty when the caller sent it
+   * as Authorization: Bearer instead.
+   *
+   * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either
+   * header, and [FromHeader] is required by default, so a Bearer-only request would
+   * authenticate and then be refused with a 400 for a header it never needed.
+   * Endpoints read the customer from the CustomerId claim, not from this value.
+   */
+  apiKey?: string;
+
   /**
    * Body param
    */
@@ -2052,6 +2116,17 @@ export interface WebhookTestParams {
 }
 
 export interface WebhookToggleStatusParams {
+  /**
+   * Body param: API key from the x-api-key header, or empty when the caller sent it
+   * as Authorization: Bearer instead.
+   *
+   * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either
+   * header, and [FromHeader] is required by default, so a Bearer-only request would
+   * authenticate and then be refused with a 400 for a header it never needed.
+   * Endpoints read the customer from the CustomerId claim, not from this value.
+   */
+  apiKey?: string;
+
   /**
    * Body param
    */

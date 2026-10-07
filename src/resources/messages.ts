@@ -603,6 +603,17 @@ export interface MessageRetrieveStatusParams {
 
 export interface MessageSendParams {
   /**
+   * Body param: API key from the x-api-key header, or empty when the caller sent it
+   * as Authorization: Bearer instead.
+   *
+   * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either
+   * header, and [FromHeader] is required by default, so a Bearer-only request would
+   * authenticate and then be refused with a 400 for a header it never needed.
+   * Endpoints read the customer from the CustomerId claim, not from this value.
+   */
+  apiKey?: string;
+
+  /**
    * Body param: Channels to broadcast on, e.g. ["whatsapp", "sms"]. Each channel
    * produces a separate message per recipient. "sent" = auto-detect. Defaults to
    * ["sent"] (auto-detect) if omitted.

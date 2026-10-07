@@ -721,17 +721,6 @@ export namespace TemplateVariable {
 
 export interface TemplateCreateParams {
   /**
-   * Body param: API key from the x-api-key header, or empty when the caller sent it
-   * as Authorization: Bearer instead.
-   *
-   * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either
-   * header, and [FromHeader] is required by default, so a Bearer-only request would
-   * authenticate and then be refused with a 400 for a header it never needed.
-   * Endpoints read the customer from the CustomerId claim, not from this value.
-   */
-  apiKey?: string;
-
-  /**
    * Body param: Create this template automatically on every sender profile of the
    * organization, now and in future (default: false). Accepted only from an
    * organization that has been enabled for it, and only at creation — it cannot be
@@ -798,17 +787,6 @@ export interface TemplateRetrieveParams {
 }
 
 export interface TemplateUpdateParams {
-  /**
-   * Body param: API key from the x-api-key header, or empty when the caller sent it
-   * as Authorization: Bearer instead.
-   *
-   * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either
-   * header, and [FromHeader] is required by default, so a Bearer-only request would
-   * authenticate and then be refused with a 400 for a header it never needed.
-   * Endpoints read the customer from the CustomerId claim, not from this value.
-   */
-  apiKey?: string;
-
   /**
    * Body param: Template category: MARKETING, UTILITY, AUTHENTICATION
    */
@@ -891,17 +869,6 @@ export interface TemplateListParams extends TemplatesPageParams {
 }
 
 export interface TemplateDeleteParams {
-  /**
-   * Body param: API key from the x-api-key header, or empty when the caller sent it
-   * as Authorization: Bearer instead.
-   *
-   * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either
-   * header, and [FromHeader] is required by default, so a Bearer-only request would
-   * authenticate and then be refused with a 400 for a header it never needed.
-   * Endpoints read the customer from the CustomerId claim, not from this value.
-   */
-  apiKey?: string;
-
   /**
    * Body param: Whether to also delete the template from WhatsApp/Meta (optional,
    * defaults to false)

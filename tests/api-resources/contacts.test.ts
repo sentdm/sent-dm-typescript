@@ -24,7 +24,6 @@ describe('resource contacts', () => {
   test.skip('create: required and optional params', async () => {
     const response = await client.contacts.create({
       phone_number: '+1234567890',
-      apiKey: 'sntdm_test_xxxxxxxxxxxx',
       sandbox: false,
       'Idempotency-Key': 'req_abc123_retry1',
       'x-profile-id': '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',

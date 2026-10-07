@@ -62,7 +62,6 @@ describe('resource campaigns', () => {
         termsAndConditionsLink: 'https://acmecorp.com/terms',
         volume: 'volume',
       },
-      apiKey: 'sntdm_test_xxxxxxxxxxxx',
       sandbox: false,
       'Idempotency-Key': 'req_abc123_retry1',
       'x-profile-id': '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
@@ -125,7 +124,6 @@ describe('resource campaigns', () => {
         termsAndConditionsLink: 'https://example.com',
         volume: 'volume',
       },
-      apiKey: 'sntdm_test_xxxxxxxxxxxx',
       sandbox: false,
       'Idempotency-Key': 'req_abc123_retry1',
       'x-profile-id': '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
@@ -174,7 +172,6 @@ describe('resource campaigns', () => {
   test.skip('delete: required and optional params', async () => {
     const response = await client.profiles.campaigns.delete('b2c3d4e5-f6a7-8901-bcde-f12345678901', {
       profileId: '770e8400-e29b-41d4-a716-446655440002',
-      apiKey: 'sntdm_test_xxxxxxxxxxxx',
       sandbox: false,
       'x-profile-id': '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
     });

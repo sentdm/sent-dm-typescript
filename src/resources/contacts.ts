@@ -355,17 +355,6 @@ export interface ContactCreateParams {
   phone_number: string;
 
   /**
-   * Body param: API key from the x-api-key header, or empty when the caller sent it
-   * as Authorization: Bearer instead.
-   *
-   * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either
-   * header, and [FromHeader] is required by default, so a Bearer-only request would
-   * authenticate and then be refused with a 400 for a header it never needed.
-   * Endpoints read the customer from the CustomerId claim, not from this value.
-   */
-  apiKey?: string;
-
-  /**
    * Body param: Sandbox flag - when true, the operation is simulated without side
    * effects Useful for testing integrations without actual execution
    */
@@ -395,17 +384,6 @@ export interface ContactRetrieveParams {
 }
 
 export interface ContactUpdateParams {
-  /**
-   * Body param: API key from the x-api-key header, or empty when the caller sent it
-   * as Authorization: Bearer instead.
-   *
-   * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either
-   * header, and [FromHeader] is required by default, so a Bearer-only request would
-   * authenticate and then be refused with a 400 for a header it never needed.
-   * Endpoints read the customer from the CustomerId claim, not from this value.
-   */
-  apiKey?: string;
-
   /**
    * Body param: Default messaging channel: "sms" or "whatsapp"
    */
@@ -463,17 +441,6 @@ export interface ContactListParams extends ContactsPageParams {
 }
 
 export interface ContactDeleteParams {
-  /**
-   * Body param: API key from the x-api-key header, or empty when the caller sent it
-   * as Authorization: Bearer instead.
-   *
-   * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either
-   * header, and [FromHeader] is required by default, so a Bearer-only request would
-   * authenticate and then be refused with a 400 for a header it never needed.
-   * Endpoints read the customer from the CustomerId claim, not from this value.
-   */
-  apiKey?: string;
-
   /**
    * Body param: Sandbox flag - when true, the operation is simulated without side
    * effects Useful for testing integrations without actual execution

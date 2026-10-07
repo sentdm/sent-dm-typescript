@@ -24,7 +24,6 @@ describe('resource voice', () => {
   test.skip('create: required and optional params', async () => {
     const response = await client.channels.voice.create({
       callback_url: 'https://example.com/voice',
-      apiKey: 'sntdm_test_xxxxxxxxxxxx',
       area_code: null,
       default_for_app_calls: false,
       number: '+12125550100',

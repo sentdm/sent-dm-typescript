@@ -52,7 +52,6 @@ export class Voice extends APIResource {
    * const apiResponseOfVoiceNumberCreated =
    *   await client.channels.voice.create({
    *     callback_url: 'https://example.com/voice',
-   *     apiKey: 'sntdm_live_xxxxxxxxxxxx',
    *     number: '+12125550100',
    *   });
    * ```
@@ -652,17 +651,6 @@ export interface VoiceCreateParams {
   callback_url: string;
 
   /**
-   * Body param: API key from the x-api-key header, or empty when the caller sent it
-   * as Authorization: Bearer instead.
-   *
-   * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either
-   * header, and [FromHeader] is required by default, so a Bearer-only request would
-   * authenticate and then be refused with a 400 for a header it never needed.
-   * Endpoints read the customer from the CustomerId claim, not from this value.
-   */
-  apiKey?: string;
-
-  /**
    * Body param: The US area code a new number should be in, as 212. Only for a
    * request that leaves number out — sending both says two different things about
    * which number to use, and is refused. Omit it too and the number comes from
@@ -714,17 +702,6 @@ export interface VoiceRetrieveParams {
 }
 
 export interface VoiceUpdateParams {
-  /**
-   * Body param: API key from the x-api-key header, or empty when the caller sent it
-   * as Authorization: Bearer instead.
-   *
-   * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either
-   * header, and [FromHeader] is required by default, so a Bearer-only request would
-   * authenticate and then be refused with a 400 for a header it never needed.
-   * Endpoints read the customer from the CustomerId claim, not from this value.
-   */
-  apiKey?: string;
-
   /**
    * Body param: A new callback URL for the number, active or not: an absolute HTTP
    * or HTTPS URL on a public host, where Sent asks what to do with each call. The
@@ -778,17 +755,6 @@ export interface VoiceListParams {
 
 export interface VoiceCreateTokenParams {
   /**
-   * Body param: API key from the x-api-key header, or empty when the caller sent it
-   * as Authorization: Bearer instead.
-   *
-   * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either
-   * header, and [FromHeader] is required by default, so a Bearer-only request would
-   * authenticate and then be refused with a 400 for a header it never needed.
-   * Endpoints read the customer from the CustomerId claim, not from this value.
-   */
-  apiKey?: string;
-
-  /**
    * Body param: Your identifier for the app user, such as an agent or account id.
    * Letters, digits, hyphens and underscores only, up to 200 characters.
    */
@@ -829,17 +795,6 @@ export interface VoiceCreateTokenParams {
 
 export interface VoiceRotateSecretParams {
   /**
-   * Body param: API key from the x-api-key header, or empty when the caller sent it
-   * as Authorization: Bearer instead.
-   *
-   * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either
-   * header, and [FromHeader] is required by default, so a Bearer-only request would
-   * authenticate and then be refused with a 400 for a header it never needed.
-   * Endpoints read the customer from the CustomerId claim, not from this value.
-   */
-  apiKey?: string;
-
-  /**
    * Body param: Sandbox flag - when true, the operation is simulated without side
    * effects Useful for testing integrations without actual execution
    */
@@ -861,17 +816,6 @@ export interface VoiceRotateSecretParams {
 }
 
 export interface VoiceTestParams {
-  /**
-   * Body param: API key from the x-api-key header, or empty when the caller sent it
-   * as Authorization: Bearer instead.
-   *
-   * Optional on purpose. CustomerV3AuthenticationHandler accepts the key in either
-   * header, and [FromHeader] is required by default, so a Bearer-only request would
-   * authenticate and then be refused with a 400 for a header it never needed.
-   * Endpoints read the customer from the CustomerId claim, not from this value.
-   */
-  apiKey?: string;
-
   /**
    * Body param: Sandbox flag - when true, the operation is simulated without side
    * effects Useful for testing integrations without actual execution

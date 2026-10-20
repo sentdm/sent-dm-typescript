@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.45.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.44.0...v0.45.0) (2026-10-20)
+
+
+### Features
+
+* **api:** sync generated SDKs from the committed spec ([b522228](https://github.com/sentdm/sent-dm-typescript/commit/b52222874478488ea8d7dd7cd813184dbc687a21))
+
 ## [0.44.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.43.0...v0.44.0) (2026-10-09)
 
 

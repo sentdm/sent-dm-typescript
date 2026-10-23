@@ -1,19 +1,19 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-import { APIResource } from '../../core/resource';
-import * as WebhooksAPI from '../webhooks';
+import { APIResource } from '../../../core/resource';
+import * as WebhooksAPI from '../../webhooks';
 import * as CallsAPI from './calls';
-import { APIPromise } from '../../core/api-promise';
-import { buildHeaders } from '../../internal/headers';
-import { RequestOptions } from '../../internal/request-options';
-import { path } from '../../internal/utils/path';
+import { APIPromise } from '../../../core/api-promise';
+import { buildHeaders } from '../../../internal/headers';
+import { RequestOptions } from '../../../internal/request-options';
+import { path } from '../../../internal/utils/path';
 
 /**
  * Phone calls from the numbers you hold, driven by your own callback URL.
  *
- * `POST /v3/channels/voice` enables a number for calls, with the callback URL Sent asks what to do with each call on it, and `POST /v3/channels/voice/tokens` mints a short-lived token that lets a user of your app place and receive calls as that number. When a call arrives or a caller presses a key, a signed question is POSTed to the callback URL and the answer decides the call; `POST /v3/channels/voice/{number}/test` checks the URL answers the way we need before a real call reaches it, and `POST /v3/channels/voice/{number}/rotate-secret` replaces the signing secret. The call events themselves (`call.completed` and the rest) arrive through your webhooks.
+ * `POST /v3/channels/voice` enables a number for calls, with the callback URL Sent asks what to do with each call on it, and `POST /v3/voice/tokens` mints a short-lived token that lets a user of your app place and receive calls as that number. When a call arrives or a caller presses a key, a signed question is POSTed to the callback URL and the answer decides the call; `POST /v3/channels/voice/{number}/test` checks the URL answers the way we need before a real call reaches it, and `POST /v3/channels/voice/{number}/rotate-secret` replaces the signing secret. The call events themselves (`call.completed` and the rest) arrive through your webhooks.
  *
- * Every call is a record under `/v3/calls`: read it, list its recordings once one is ready, hang it up, start or stop recording, and add, mute or remove conference participants while it is live. A leg to a phone number runs for at most what your balance affords at the destination's rate.
+ * Every call is a record under `/v3/voice/calls`: read it, list its recordings once one is ready, hang it up, start or stop recording, and add, mute or remove conference participants while it is live. A leg to a phone number runs for at most what your balance affords at the destination's rate.
  */
 export class Participants extends APIResource {
   /**
@@ -26,7 +26,7 @@ export class Participants extends APIResource {
    *
    * @example
    * ```ts
-   * await client.calls.participants.update(
+   * await client.voice.calls.participants.update(
    *   'call_9f2ab000-0000-4000-8000-000000000002',
    *   { id: 'call_9f2ab000-0000-4000-8000-000000000001' },
    * );
@@ -34,7 +34,7 @@ export class Participants extends APIResource {
    */
   update(participantID: string, params: ParticipantUpdateParams, options?: RequestOptions): APIPromise<void> {
     const { id, 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
-    return this._client.patch(path`/v3/calls/${id}/participants/${participantID}`, {
+    return this._client.patch(path`/v3/voice/calls/${id}/participants/${participantID}`, {
       body,
       ...options,
       headers: buildHeaders([
@@ -53,13 +53,13 @@ export class Participants extends APIResource {
    * participant's own call id, who they are, whether the room mutes them, and how
    * long they have been connected. The call itself is one of the participants. Use a
    * participant's id to mute or remove them; it is also a call id, so GET
-   * /v3/calls/{id} accepts it. A call that has ended answers 409, as does a call
-   * that is not in a conference.
+   * /v3/voice/calls/{id} accepts it. A call that has ended answers 409, as does a
+   * call that is not in a conference.
    *
    * @example
    * ```ts
    * const apiResponseOfListOfCallParticipant =
-   *   await client.calls.participants.list(
+   *   await client.voice.calls.participants.list(
    *     'call_9f2ab000-0000-4000-8000-000000000001',
    *   );
    * ```
@@ -70,7 +70,7 @@ export class Participants extends APIResource {
     options?: RequestOptions,
   ): APIPromise<APIResponseOfListOfCallParticipant> {
     const { 'x-profile-id': xProfileID } = params ?? {};
-    return this._client.get(path`/v3/calls/${id}/participants`, {
+    return this._client.get(path`/v3/voice/calls/${id}/participants`, {
       ...options,
       headers: buildHeaders([
         { ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined) },
@@ -93,7 +93,7 @@ export class Participants extends APIResource {
    * @example
    * ```ts
    * const apiResponseOfCall =
-   *   await client.calls.participants.add(
+   *   await client.voice.calls.participants.add(
    *     'call_9f2ab000-0000-4000-8000-000000000001',
    *   );
    * ```
@@ -104,7 +104,7 @@ export class Participants extends APIResource {
     options?: RequestOptions,
   ): APIPromise<CallsAPI.APIResponseOfCall> {
     const { 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
-    return this._client.post(path`/v3/calls/${id}/participants`, {
+    return this._client.post(path`/v3/voice/calls/${id}/participants`, {
       body,
       ...options,
       headers: buildHeaders([
@@ -126,7 +126,7 @@ export class Participants extends APIResource {
    *
    * @example
    * ```ts
-   * await client.calls.participants.remove(
+   * await client.voice.calls.participants.remove(
    *   'call_9f2ab000-0000-4000-8000-000000000002',
    *   { id: 'call_9f2ab000-0000-4000-8000-000000000001' },
    * );
@@ -134,7 +134,7 @@ export class Participants extends APIResource {
    */
   remove(participantID: string, params: ParticipantRemoveParams, options?: RequestOptions): APIPromise<void> {
     const { id, 'x-profile-id': xProfileID, ...body } = params;
-    return this._client.delete(path`/v3/calls/${id}/participants/${participantID}`, {
+    return this._client.delete(path`/v3/voice/calls/${id}/participants/${participantID}`, {
       body,
       ...options,
       headers: buildHeaders([
@@ -152,14 +152,14 @@ export class Participants extends APIResource {
    *
    * @example
    * ```ts
-   * await client.calls.participants.removeAll(
+   * await client.voice.calls.participants.removeAll(
    *   'call_9f2ab000-0000-4000-8000-000000000001',
    * );
    * ```
    */
   removeAll(id: string, params: ParticipantRemoveAllParams, options?: RequestOptions): APIPromise<void> {
     const { 'x-profile-id': xProfileID, ...body } = params;
-    return this._client.delete(path`/v3/calls/${id}/participants`, {
+    return this._client.delete(path`/v3/voice/calls/${id}/participants`, {
       body,
       ...options,
       headers: buildHeaders([
@@ -201,7 +201,7 @@ export interface APIResponseOfListOfCallParticipant {
 export interface CallParticipant {
   /**
    * The participant's own call id: what the mute and remove endpoints take, and what
-   * GET /v3/calls/{id} accepts
+   * GET /v3/voice/calls/{id} accepts
    */
   id?: string;
 

@@ -443,8 +443,9 @@ export interface CallEventPayload {
   reason?: string | null;
 
   /**
-   * The recording that became available, the same id GET /v3/calls/{id}/recordings
-   * lists it under. Only on call.recording_ready, which is sent once per recording.
+   * The recording that became available, the same id GET
+   * /v3/voice/calls/{id}/recordings lists it under. Only on call.recording_ready,
+   * which is sent once per recording.
    */
   recording_id?: string | null;
 

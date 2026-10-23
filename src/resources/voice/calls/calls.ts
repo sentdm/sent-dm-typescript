@@ -1,7 +1,7 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-import { APIResource } from '../../core/resource';
-import * as WebhooksAPI from '../webhooks';
+import { APIResource } from '../../../core/resource';
+import * as WebhooksAPI from '../../webhooks';
 import * as ParticipantsAPI from './participants';
 import {
   APIResponseOfListOfCallParticipant,
@@ -14,18 +14,18 @@ import {
   ParticipantUpdateParams,
   Participants,
 } from './participants';
-import { APIPromise } from '../../core/api-promise';
-import { CallsPage, type CallsPageParams, PagePromise } from '../../core/pagination';
-import { buildHeaders } from '../../internal/headers';
-import { RequestOptions } from '../../internal/request-options';
-import { path } from '../../internal/utils/path';
+import { APIPromise } from '../../../core/api-promise';
+import { CallsPage, type CallsPageParams, PagePromise } from '../../../core/pagination';
+import { buildHeaders } from '../../../internal/headers';
+import { RequestOptions } from '../../../internal/request-options';
+import { path } from '../../../internal/utils/path';
 
 /**
  * Phone calls from the numbers you hold, driven by your own callback URL.
  *
- * `POST /v3/channels/voice` enables a number for calls, with the callback URL Sent asks what to do with each call on it, and `POST /v3/channels/voice/tokens` mints a short-lived token that lets a user of your app place and receive calls as that number. When a call arrives or a caller presses a key, a signed question is POSTed to the callback URL and the answer decides the call; `POST /v3/channels/voice/{number}/test` checks the URL answers the way we need before a real call reaches it, and `POST /v3/channels/voice/{number}/rotate-secret` replaces the signing secret. The call events themselves (`call.completed` and the rest) arrive through your webhooks.
+ * `POST /v3/channels/voice` enables a number for calls, with the callback URL Sent asks what to do with each call on it, and `POST /v3/voice/tokens` mints a short-lived token that lets a user of your app place and receive calls as that number. When a call arrives or a caller presses a key, a signed question is POSTed to the callback URL and the answer decides the call; `POST /v3/channels/voice/{number}/test` checks the URL answers the way we need before a real call reaches it, and `POST /v3/channels/voice/{number}/rotate-secret` replaces the signing secret. The call events themselves (`call.completed` and the rest) arrive through your webhooks.
  *
- * Every call is a record under `/v3/calls`: read it, list its recordings once one is ready, hang it up, start or stop recording, and add, mute or remove conference participants while it is live. A leg to a phone number runs for at most what your balance affords at the destination's rate.
+ * Every call is a record under `/v3/voice/calls`: read it, list its recordings once one is ready, hang it up, start or stop recording, and add, mute or remove conference participants while it is live. A leg to a phone number runs for at most what your balance affords at the destination's rate.
  */
 export class Calls extends APIResource {
   participants: ParticipantsAPI.Participants = new ParticipantsAPI.Participants(this._client);
@@ -37,7 +37,7 @@ export class Calls extends APIResource {
    *
    * @example
    * ```ts
-   * const apiResponseOfCall = await client.calls.retrieve(
+   * const apiResponseOfCall = await client.voice.calls.retrieve(
    *   'call_9f2ab000-0000-4000-8000-000000000001',
    * );
    * ```
@@ -48,7 +48,7 @@ export class Calls extends APIResource {
     options?: RequestOptions,
   ): APIPromise<APIResponseOfCall> {
     const { 'x-profile-id': xProfileID } = params ?? {};
-    return this._client.get(path`/v3/calls/${id}`, {
+    return this._client.get(path`/v3/voice/calls/${id}`, {
       ...options,
       headers: buildHeaders([
         { ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined) },
@@ -66,7 +66,7 @@ export class Calls extends APIResource {
    * @example
    * ```ts
    * // Automatically fetches more pages as needed.
-   * for await (const call of client.calls.list()) {
+   * for await (const call of client.voice.calls.list()) {
    *   // ...
    * }
    * ```
@@ -76,7 +76,7 @@ export class Calls extends APIResource {
     options?: RequestOptions,
   ): PagePromise<CallsCallsPage, Call> {
     const { 'x-profile-id': xProfileID, ...query } = params ?? {};
-    return this._client.getAPIList('/v3/calls', CallsPage<Call>, {
+    return this._client.getAPIList('/v3/voice/calls', CallsPage<Call>, {
       query,
       ...options,
       headers: buildHeaders([
@@ -95,14 +95,14 @@ export class Calls extends APIResource {
    *
    * @example
    * ```ts
-   * await client.calls.hangup(
+   * await client.voice.calls.hangup(
    *   'call_9f2ab000-0000-4000-8000-000000000001',
    * );
    * ```
    */
   hangup(id: string, params: CallHangupParams, options?: RequestOptions): APIPromise<void> {
     const { 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
-    return this._client.post(path`/v3/calls/${id}/hangup`, {
+    return this._client.post(path`/v3/voice/calls/${id}/hangup`, {
       body,
       ...options,
       headers: buildHeaders([
@@ -128,7 +128,7 @@ export class Calls extends APIResource {
    * @example
    * ```ts
    * const apiResponseOfCallRecordings =
-   *   await client.calls.listRecordings(
+   *   await client.voice.calls.listRecordings(
    *     'call_9f2ab000-0000-4000-8000-000000000001',
    *   );
    * ```
@@ -139,7 +139,7 @@ export class Calls extends APIResource {
     options?: RequestOptions,
   ): APIPromise<APIResponseOfCallRecordings> {
     const { 'x-profile-id': xProfileID } = params ?? {};
-    return this._client.get(path`/v3/calls/${id}/recordings`, {
+    return this._client.get(path`/v3/voice/calls/${id}/recordings`, {
       ...options,
       headers: buildHeaders([
         { ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined) },
@@ -157,14 +157,14 @@ export class Calls extends APIResource {
    *
    * @example
    * ```ts
-   * await client.calls.record(
+   * await client.voice.calls.record(
    *   'call_9f2ab000-0000-4000-8000-000000000001',
    * );
    * ```
    */
   record(id: string, params: CallRecordParams, options?: RequestOptions): APIPromise<void> {
     const { 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
-    return this._client.post(path`/v3/calls/${id}/recordings`, {
+    return this._client.post(path`/v3/voice/calls/${id}/recordings`, {
       body,
       ...options,
       headers: buildHeaders([
@@ -300,6 +300,12 @@ export interface Call {
    * One end of a call
    */
   from?: CallParty;
+
+  /**
+   * The calling mode: inapp for a call between people in your app and phone numbers,
+   * routed by your number's callback URL
+   */
+  mode?: string;
 
   /**
    * Your number that owns the call, in E.164 format: the dialed number for an

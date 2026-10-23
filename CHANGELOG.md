@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.46.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.45.0...v0.46.0) (2026-10-23)
+
+
+### ⚠ BREAKING CHANGES
+
+* **api:** move calls and voice tokens under the voice resource
+
+### Features
+
+* **api:** move calls and voice tokens under the voice resource ([f3145a8](https://github.com/sentdm/sent-dm-typescript/commit/f3145a8fdedeac6a4e2a0432397ab75396f2803e))
+
 ## [0.45.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.44.0...v0.45.0) (2026-10-20)
 
 

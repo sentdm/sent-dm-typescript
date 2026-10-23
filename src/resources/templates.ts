@@ -255,17 +255,18 @@ export interface Template {
 
   /**
    * The channels this template's definition can render on, in canonical order: sms,
-   * whatsapp, rcs.
+   * whatsapp, rcs, mms.
    *
    * Derived from the definition's body, mirroring each channel's send-time fallback
    * chain, so a channel is listed only when a real body would be produced for it:
    * SMS reads sms ?? multiChannel, WhatsApp reads whatsapp ?? multiChannel, and RCS
-   * reads rcs ?? multiChannel ?? sms. A multiChannel body therefore reports all
-   * three, and the extra SMS fallback on RCS is why an sms/whatsapp pair reports RCS
-   * too.
+   * and MMS read rcs ?? multiChannel ?? sms and mms ?? multiChannel ?? sms. A
+   * multiChannel body therefore reports all four, and the extra SMS fallback is why
+   * an sms/whatsapp pair reports RCS and MMS too.
    *
    * This says what the content can render on, not what may be sent: sending also
-   * needs the template approved for that channel.
+   * needs the template approved for that channel, and MMS needs an attachment, from
+   * media_urls or the template's mms body.
    */
   channels?: Array<string> | null;
 
@@ -323,10 +324,10 @@ export interface TemplateBody {
    * MMS-specific content — subject, text and attachments.
    *
    * Like Rcs, an override that cannot stand on its own: a template still needs a
-   * MultiChannel body or the Sms + Whatsapp pair to be deliverable at all. Unlike
-   * Rcs, it has no fallback at send time — MMS with no media is a more expensive
-   * SMS, so a template without this slot is deliberately not MMS-capable and never
-   * produces an MMS route candidate.
+   * MultiChannel body or the Sms + Whatsapp pair to be deliverable at all. Without
+   * this slot MMS renders the shared or SMS body, so it is only needed for
+   * MMS-specific copy, a subject or attachments. When present it replaces that body
+   * on MMS rather than adding to it.
    */
   mms?: TemplateBody.Mms | null;
 
@@ -358,10 +359,10 @@ export namespace TemplateBody {
    * MMS-specific content — subject, text and attachments.
    *
    * Like Rcs, an override that cannot stand on its own: a template still needs a
-   * MultiChannel body or the Sms + Whatsapp pair to be deliverable at all. Unlike
-   * Rcs, it has no fallback at send time — MMS with no media is a more expensive
-   * SMS, so a template without this slot is deliberately not MMS-capable and never
-   * produces an MMS route candidate.
+   * MultiChannel body or the Sms + Whatsapp pair to be deliverable at all. Without
+   * this slot MMS renders the shared or SMS body, so it is only needed for
+   * MMS-specific copy, a subject or attachments. When present it replaces that body
+   * on MMS rather than adding to it.
    */
   export interface Mms extends TemplatesAPI.TemplateBodyContent {
     /**

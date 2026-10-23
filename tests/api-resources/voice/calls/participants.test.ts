@@ -7,10 +7,13 @@ const client = new Sent({
   baseURL: process.env['TEST_API_BASE_URL'] ?? 'http://127.0.0.1:4010',
 });
 
-describe('resource calls', () => {
+describe('resource participants', () => {
   // Mock server tests are disabled
-  test.skip('retrieve', async () => {
-    const responsePromise = client.calls.retrieve('call_9f2ab000-0000-4000-8000-000000000001');
+  test.skip('update: only required params', async () => {
+    const responsePromise = client.voice.calls.participants.update(
+      'call_9f2ab000-0000-4000-8000-000000000002',
+      { id: 'call_9f2ab000-0000-4000-8000-000000000001' },
+    );
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -21,20 +24,22 @@ describe('resource calls', () => {
   });
 
   // Mock server tests are disabled
-  test.skip('retrieve: request options and params are passed correctly', async () => {
-    // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
-    await expect(
-      client.calls.retrieve(
-        'call_9f2ab000-0000-4000-8000-000000000001',
-        { 'x-profile-id': '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e' },
-        { path: '/_stainless_unknown_path' },
-      ),
-    ).rejects.toThrow(Sent.NotFoundError);
+  test.skip('update: required and optional params', async () => {
+    const response = await client.voice.calls.participants.update(
+      'call_9f2ab000-0000-4000-8000-000000000002',
+      {
+        id: 'call_9f2ab000-0000-4000-8000-000000000001',
+        muted: true,
+        sandbox: false,
+        'Idempotency-Key': 'req_abc123_retry1',
+        'x-profile-id': '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
+      },
+    );
   });
 
   // Mock server tests are disabled
   test.skip('list', async () => {
-    const responsePromise = client.calls.list();
+    const responsePromise = client.voice.calls.participants.list('call_9f2ab000-0000-4000-8000-000000000001');
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -48,51 +53,7 @@ describe('resource calls', () => {
   test.skip('list: request options and params are passed correctly', async () => {
     // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
     await expect(
-      client.calls.list(
-        {
-          direction: 'direction',
-          from: '2019-12-27T18:11:19.117Z',
-          number: 'number',
-          page: 0,
-          page_size: 0,
-          status: 'status',
-          to: '2019-12-27T18:11:19.117Z',
-          'x-profile-id': '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
-        },
-        { path: '/_stainless_unknown_path' },
-      ),
-    ).rejects.toThrow(Sent.NotFoundError);
-  });
-
-  // Mock server tests are disabled
-  test.skip('hangup', async () => {
-    const responsePromise = client.calls.hangup('call_9f2ab000-0000-4000-8000-000000000001', {});
-    const rawResponse = await responsePromise.asResponse();
-    expect(rawResponse).toBeInstanceOf(Response);
-    const response = await responsePromise;
-    expect(response).not.toBeInstanceOf(Response);
-    const dataAndResponse = await responsePromise.withResponse();
-    expect(dataAndResponse.data).toBe(response);
-    expect(dataAndResponse.response).toBe(rawResponse);
-  });
-
-  // Mock server tests are disabled
-  test.skip('listRecordings', async () => {
-    const responsePromise = client.calls.listRecordings('call_9f2ab000-0000-4000-8000-000000000001');
-    const rawResponse = await responsePromise.asResponse();
-    expect(rawResponse).toBeInstanceOf(Response);
-    const response = await responsePromise;
-    expect(response).not.toBeInstanceOf(Response);
-    const dataAndResponse = await responsePromise.withResponse();
-    expect(dataAndResponse.data).toBe(response);
-    expect(dataAndResponse.response).toBe(rawResponse);
-  });
-
-  // Mock server tests are disabled
-  test.skip('listRecordings: request options and params are passed correctly', async () => {
-    // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
-    await expect(
-      client.calls.listRecordings(
+      client.voice.calls.participants.list(
         'call_9f2ab000-0000-4000-8000-000000000001',
         { 'x-profile-id': '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e' },
         { path: '/_stainless_unknown_path' },
@@ -101,8 +62,53 @@ describe('resource calls', () => {
   });
 
   // Mock server tests are disabled
-  test.skip('record', async () => {
-    const responsePromise = client.calls.record('call_9f2ab000-0000-4000-8000-000000000001', {});
+  test.skip('add', async () => {
+    const responsePromise = client.voice.calls.participants.add(
+      'call_9f2ab000-0000-4000-8000-000000000001',
+      {},
+    );
+    const rawResponse = await responsePromise.asResponse();
+    expect(rawResponse).toBeInstanceOf(Response);
+    const response = await responsePromise;
+    expect(response).not.toBeInstanceOf(Response);
+    const dataAndResponse = await responsePromise.withResponse();
+    expect(dataAndResponse.data).toBe(response);
+    expect(dataAndResponse.response).toBe(rawResponse);
+  });
+
+  // Mock server tests are disabled
+  test.skip('remove: only required params', async () => {
+    const responsePromise = client.voice.calls.participants.remove(
+      'call_9f2ab000-0000-4000-8000-000000000002',
+      { id: 'call_9f2ab000-0000-4000-8000-000000000001' },
+    );
+    const rawResponse = await responsePromise.asResponse();
+    expect(rawResponse).toBeInstanceOf(Response);
+    const response = await responsePromise;
+    expect(response).not.toBeInstanceOf(Response);
+    const dataAndResponse = await responsePromise.withResponse();
+    expect(dataAndResponse.data).toBe(response);
+    expect(dataAndResponse.response).toBe(rawResponse);
+  });
+
+  // Mock server tests are disabled
+  test.skip('remove: required and optional params', async () => {
+    const response = await client.voice.calls.participants.remove(
+      'call_9f2ab000-0000-4000-8000-000000000002',
+      {
+        id: 'call_9f2ab000-0000-4000-8000-000000000001',
+        sandbox: false,
+        'x-profile-id': '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
+      },
+    );
+  });
+
+  // Mock server tests are disabled
+  test.skip('removeAll', async () => {
+    const responsePromise = client.voice.calls.participants.removeAll(
+      'call_9f2ab000-0000-4000-8000-000000000001',
+      {},
+    );
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;

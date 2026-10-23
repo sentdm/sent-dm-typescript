@@ -5,18 +5,6 @@ export {
   type APIResponseOfCall,
   type APIResponseOfCallRecordings,
   type APIResponseOfCallsList,
-  type Call,
-  type CallParty,
-  type CallRecording,
-  type CallRecordings,
-  type CallTimelineEntry,
-  type CallsList,
-  type CallRetrieveParams,
-  type CallListParams,
-  type CallHangupParams,
-  type CallListRecordingsParams,
-  type CallRecordParams,
-  type CallsCallsPage,
 } from './calls/calls';
 export { Channels } from './channels/channels';
 export {

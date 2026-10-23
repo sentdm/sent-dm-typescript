@@ -15,7 +15,6 @@ import {
   VoiceCallbackTestRequestInfo,
   VoiceCallbackTestResponseInfo,
   VoiceCreateParams,
-  VoiceCreateTokenParams,
   VoiceListParams,
   VoiceNumber,
   VoiceNumberCreated,
@@ -23,7 +22,6 @@ import {
   VoiceRotateSecretParams,
   VoiceSecret,
   VoiceTestParams,
-  VoiceToken,
   VoiceUpdateParams,
 } from './voice';
 
@@ -49,12 +47,10 @@ export declare namespace Channels {
     type VoiceNumber as VoiceNumber,
     type VoiceNumberCreated as VoiceNumberCreated,
     type VoiceSecret as VoiceSecret,
-    type VoiceToken as VoiceToken,
     type VoiceCreateParams as VoiceCreateParams,
     type VoiceRetrieveParams as VoiceRetrieveParams,
     type VoiceUpdateParams as VoiceUpdateParams,
     type VoiceListParams as VoiceListParams,
-    type VoiceCreateTokenParams as VoiceCreateTokenParams,
     type VoiceRotateSecretParams as VoiceRotateSecretParams,
     type VoiceTestParams as VoiceTestParams,
   };

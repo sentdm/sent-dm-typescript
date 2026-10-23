@@ -16,12 +16,10 @@ export {
   type VoiceNumber,
   type VoiceNumberCreated,
   type VoiceSecret,
-  type VoiceToken,
   type VoiceCreateParams,
   type VoiceRetrieveParams,
   type VoiceUpdateParams,
   type VoiceListParams,
-  type VoiceCreateTokenParams,
   type VoiceRotateSecretParams,
   type VoiceTestParams,
 } from './voice';

@@ -230,6 +230,10 @@ Methods:
 
 - <code title="post /v3/voice/tokens">client.voice.tokens.<a href="./src/resources/voice/tokens.ts">create</a>({ ...params }) -> APIResponseOfVoiceToken</code>
 
+## Agents
+
+## Voices
+
 # Channels
 
 ## Voice

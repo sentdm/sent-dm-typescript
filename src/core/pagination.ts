@@ -485,3 +485,67 @@ export class CallsPage<Item> extends AbstractPage<Item> implements CallsPageResp
     };
   }
 }
+
+export interface VoiceAgentsPageResponse<Item> {
+  data: VoiceAgentsPageResponse.Data<Item>;
+}
+
+export namespace VoiceAgentsPageResponse {
+  export interface Data<Item> {
+    agents?: Array<Item>;
+
+    pagination?: Data.Pagination;
+  }
+
+  export namespace Data {
+    export interface Pagination {
+      has_more?: boolean;
+    }
+  }
+}
+
+export interface VoiceAgentsPageParams {
+  page?: number;
+
+  page_size?: number;
+}
+
+export class VoiceAgentsPage<Item> extends AbstractPage<Item> implements VoiceAgentsPageResponse<Item> {
+  data: VoiceAgentsPageResponse.Data<Item>;
+
+  constructor(
+    client: Sent,
+    response: Response,
+    body: VoiceAgentsPageResponse<Item>,
+    options: FinalRequestOptions,
+  ) {
+    super(client, response, body, options);
+
+    this.data = body.data || {};
+  }
+
+  getPaginatedItems(): Item[] {
+    return this.data?.agents ?? [];
+  }
+
+  override hasNextPage(): boolean {
+    if (this.data?.pagination?.has_more === false) {
+      return false;
+    }
+
+    return super.hasNextPage();
+  }
+
+  nextPageRequestOptions(): PageRequestOptions | null {
+    const query = this.options.query as VoiceAgentsPageParams;
+    const currentPage = query?.page ?? 1;
+
+    return {
+      ...this.options,
+      query: {
+        ...maybeObj(this.options.query),
+        page: currentPage + 1,
+      },
+    };
+  }
+}

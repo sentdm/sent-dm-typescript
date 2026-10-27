@@ -1,8 +1,12 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../../core/resource';
+import * as AgentsAPI from './agents';
+import { Agents } from './agents';
 import * as TokensAPI from './tokens';
 import { APIResponseOfVoiceToken, TokenCreateParams, Tokens, VoiceToken } from './tokens';
+import * as VoicesAPI from './voices';
+import { Voices } from './voices';
 import * as CallsAPI from './calls/calls';
 import {
   APIResponseOfCall,
@@ -26,10 +30,14 @@ import {
 export class Voice extends APIResource {
   calls: CallsAPI.Calls = new CallsAPI.Calls(this._client);
   tokens: TokensAPI.Tokens = new TokensAPI.Tokens(this._client);
+  agents: AgentsAPI.Agents = new AgentsAPI.Agents(this._client);
+  voices: VoicesAPI.Voices = new VoicesAPI.Voices(this._client);
 }
 
 Voice.Calls = Calls;
 Voice.Tokens = Tokens;
+Voice.Agents = Agents;
+Voice.Voices = Voices;
 
 export declare namespace Voice {
   export {
@@ -57,4 +65,8 @@ export declare namespace Voice {
     type VoiceToken as VoiceToken,
     type TokenCreateParams as TokenCreateParams,
   };
+
+  export { Agents as Agents };
+
+  export { Voices as Voices };
 }

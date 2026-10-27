@@ -1,5 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
+export { Agents } from './agents';
 export {
   Calls,
   type APIResponseOfCall,
@@ -20,3 +21,4 @@ export {
 } from './calls/index';
 export { Tokens, type APIResponseOfVoiceToken, type VoiceToken, type TokenCreateParams } from './tokens';
 export { Voice } from './voice';
+export { Voices } from './voices';

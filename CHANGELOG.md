@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.47.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.46.0...v0.47.0) (2026-10-28)
+
+
+### Features
+
+* **api:** add voice agents, the voice catalogue and agent_id ([be1fb4d](https://github.com/sentdm/sent-dm-typescript/commit/be1fb4df4f4c044c2b8e43e2dc8ebfb22084a8ae))
+* **api:** sync OpenAPI spec from production ([823a162](https://github.com/sentdm/sent-dm-typescript/commit/823a1629a43f19a656663c354d6afc25ae329e4c))
+
 ## [0.46.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.45.0...v0.46.0) (2026-10-23)
 
 

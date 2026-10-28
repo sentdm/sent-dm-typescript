@@ -1,6 +1,31 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-export { Agents } from './agents';
+export {
+  Agents,
+  type APIResponseOfVoiceAgent,
+  type APIResponseOfVoiceAgentSecret,
+  type APIResponseOfVoiceAgentsList,
+  type VoiceAgent,
+  type VoiceAgentAudio,
+  type VoiceAgentAudioSpec,
+  type VoiceAgentLimits,
+  type VoiceAgentLimitsSpec,
+  type VoiceAgentParty,
+  type VoiceAgentPartySpec,
+  type VoiceAgentSecret,
+  type VoiceAgentSpeech,
+  type VoiceAgentSpeechSpec,
+  type VoiceAgentTranscripts,
+  type VoiceAgentTranscriptsSpec,
+  type VoiceAgentsList,
+  type AgentCreateParams,
+  type AgentRetrieveParams,
+  type AgentUpdateParams,
+  type AgentListParams,
+  type AgentDeleteParams,
+  type AgentRotateSecretParams,
+  type VoiceAgentsVoiceAgentsPage,
+} from './agents';
 export {
   Calls,
   type APIResponseOfCall,
@@ -21,4 +46,10 @@ export {
 } from './calls/index';
 export { Tokens, type APIResponseOfVoiceToken, type VoiceToken, type TokenCreateParams } from './tokens';
 export { Voice } from './voice';
-export { Voices } from './voices';
+export {
+  Voices,
+  type APIResponseOfVoiceCatalogue,
+  type VoiceCatalogue,
+  type VoiceCatalogueVoice,
+  type VoiceListParams,
+} from './voices';

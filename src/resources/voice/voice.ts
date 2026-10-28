@@ -2,11 +2,42 @@
 
 import { APIResource } from '../../core/resource';
 import * as AgentsAPI from './agents';
-import { Agents } from './agents';
+import {
+  APIResponseOfVoiceAgent,
+  APIResponseOfVoiceAgentSecret,
+  APIResponseOfVoiceAgentsList,
+  AgentCreateParams,
+  AgentDeleteParams,
+  AgentListParams,
+  AgentRetrieveParams,
+  AgentRotateSecretParams,
+  AgentUpdateParams,
+  Agents,
+  VoiceAgent,
+  VoiceAgentAudio,
+  VoiceAgentAudioSpec,
+  VoiceAgentLimits,
+  VoiceAgentLimitsSpec,
+  VoiceAgentParty,
+  VoiceAgentPartySpec,
+  VoiceAgentSecret,
+  VoiceAgentSpeech,
+  VoiceAgentSpeechSpec,
+  VoiceAgentTranscripts,
+  VoiceAgentTranscriptsSpec,
+  VoiceAgentsList,
+  VoiceAgentsVoiceAgentsPage,
+} from './agents';
 import * as TokensAPI from './tokens';
 import { APIResponseOfVoiceToken, TokenCreateParams, Tokens, VoiceToken } from './tokens';
 import * as VoicesAPI from './voices';
-import { Voices } from './voices';
+import {
+  APIResponseOfVoiceCatalogue,
+  VoiceCatalogue,
+  VoiceCatalogueVoice,
+  VoiceListParams,
+  Voices,
+} from './voices';
 import * as CallsAPI from './calls/calls';
 import {
   APIResponseOfCall,
@@ -66,7 +97,38 @@ export declare namespace Voice {
     type TokenCreateParams as TokenCreateParams,
   };
 
-  export { Agents as Agents };
+  export {
+    Agents as Agents,
+    type APIResponseOfVoiceAgent as APIResponseOfVoiceAgent,
+    type APIResponseOfVoiceAgentSecret as APIResponseOfVoiceAgentSecret,
+    type APIResponseOfVoiceAgentsList as APIResponseOfVoiceAgentsList,
+    type VoiceAgent as VoiceAgent,
+    type VoiceAgentAudio as VoiceAgentAudio,
+    type VoiceAgentAudioSpec as VoiceAgentAudioSpec,
+    type VoiceAgentLimits as VoiceAgentLimits,
+    type VoiceAgentLimitsSpec as VoiceAgentLimitsSpec,
+    type VoiceAgentParty as VoiceAgentParty,
+    type VoiceAgentPartySpec as VoiceAgentPartySpec,
+    type VoiceAgentSecret as VoiceAgentSecret,
+    type VoiceAgentSpeech as VoiceAgentSpeech,
+    type VoiceAgentSpeechSpec as VoiceAgentSpeechSpec,
+    type VoiceAgentTranscripts as VoiceAgentTranscripts,
+    type VoiceAgentTranscriptsSpec as VoiceAgentTranscriptsSpec,
+    type VoiceAgentsList as VoiceAgentsList,
+    type VoiceAgentsVoiceAgentsPage as VoiceAgentsVoiceAgentsPage,
+    type AgentCreateParams as AgentCreateParams,
+    type AgentRetrieveParams as AgentRetrieveParams,
+    type AgentUpdateParams as AgentUpdateParams,
+    type AgentListParams as AgentListParams,
+    type AgentDeleteParams as AgentDeleteParams,
+    type AgentRotateSecretParams as AgentRotateSecretParams,
+  };
 
-  export { Voices as Voices };
+  export {
+    Voices as Voices,
+    type APIResponseOfVoiceCatalogue as APIResponseOfVoiceCatalogue,
+    type VoiceCatalogue as VoiceCatalogue,
+    type VoiceCatalogueVoice as VoiceCatalogueVoice,
+    type VoiceListParams as VoiceListParams,
+  };
 }

@@ -232,7 +232,45 @@ Methods:
 
 ## Agents
 
+Types:
+
+- <code><a href="./src/resources/voice/agents.ts">APIResponseOfVoiceAgent</a></code>
+- <code><a href="./src/resources/voice/agents.ts">APIResponseOfVoiceAgentSecret</a></code>
+- <code><a href="./src/resources/voice/agents.ts">APIResponseOfVoiceAgentsList</a></code>
+- <code><a href="./src/resources/voice/agents.ts">VoiceAgent</a></code>
+- <code><a href="./src/resources/voice/agents.ts">VoiceAgentAudio</a></code>
+- <code><a href="./src/resources/voice/agents.ts">VoiceAgentAudioSpec</a></code>
+- <code><a href="./src/resources/voice/agents.ts">VoiceAgentLimits</a></code>
+- <code><a href="./src/resources/voice/agents.ts">VoiceAgentLimitsSpec</a></code>
+- <code><a href="./src/resources/voice/agents.ts">VoiceAgentParty</a></code>
+- <code><a href="./src/resources/voice/agents.ts">VoiceAgentPartySpec</a></code>
+- <code><a href="./src/resources/voice/agents.ts">VoiceAgentSecret</a></code>
+- <code><a href="./src/resources/voice/agents.ts">VoiceAgentSpeech</a></code>
+- <code><a href="./src/resources/voice/agents.ts">VoiceAgentSpeechSpec</a></code>
+- <code><a href="./src/resources/voice/agents.ts">VoiceAgentTranscripts</a></code>
+- <code><a href="./src/resources/voice/agents.ts">VoiceAgentTranscriptsSpec</a></code>
+- <code><a href="./src/resources/voice/agents.ts">VoiceAgentsList</a></code>
+
+Methods:
+
+- <code title="post /v3/voice/agents">client.voice.agents.<a href="./src/resources/voice/agents.ts">create</a>({ ...params }) -> APIResponseOfVoiceAgent</code>
+- <code title="get /v3/voice/agents/{id}">client.voice.agents.<a href="./src/resources/voice/agents.ts">retrieve</a>(id, { ...params }) -> APIResponseOfVoiceAgent</code>
+- <code title="patch /v3/voice/agents/{id}">client.voice.agents.<a href="./src/resources/voice/agents.ts">update</a>(id, { ...params }) -> APIResponseOfVoiceAgent</code>
+- <code title="get /v3/voice/agents">client.voice.agents.<a href="./src/resources/voice/agents.ts">list</a>({ ...params }) -> VoiceAgentsVoiceAgentsPage</code>
+- <code title="delete /v3/voice/agents/{id}">client.voice.agents.<a href="./src/resources/voice/agents.ts">delete</a>(id, { ...params }) -> void</code>
+- <code title="post /v3/voice/agents/{id}/rotate-secret">client.voice.agents.<a href="./src/resources/voice/agents.ts">rotateSecret</a>(id, { ...params }) -> APIResponseOfVoiceAgentSecret</code>
+
 ## Voices
+
+Types:
+
+- <code><a href="./src/resources/voice/voices.ts">APIResponseOfVoiceCatalogue</a></code>
+- <code><a href="./src/resources/voice/voices.ts">VoiceCatalogue</a></code>
+- <code><a href="./src/resources/voice/voices.ts">VoiceCatalogueVoice</a></code>
+
+Methods:
+
+- <code title="get /v3/voice/voices">client.voice.voices.<a href="./src/resources/voice/voices.ts">list</a>({ ...params }) -> APIResponseOfVoiceCatalogue</code>
 
 # Channels
 

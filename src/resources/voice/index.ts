@@ -44,12 +44,12 @@ export {
   type CallRecordParams,
   type CallsCallsPage,
 } from './calls/index';
-export { Tokens, type APIResponseOfVoiceToken, type VoiceToken, type TokenCreateParams } from './tokens';
-export { Voice } from './voice';
 export {
-  Voices,
+  Catalogue,
   type APIResponseOfVoiceCatalogue,
   type VoiceCatalogue,
   type VoiceCatalogueVoice,
-  type VoiceListParams,
-} from './voices';
+  type CatalogueListParams,
+} from './catalogue';
+export { Tokens, type APIResponseOfVoiceToken, type VoiceToken, type TokenCreateParams } from './tokens';
+export { Voice } from './voice';

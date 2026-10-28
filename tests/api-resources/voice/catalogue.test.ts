@@ -7,10 +7,10 @@ const client = new Sent({
   baseURL: process.env['TEST_API_BASE_URL'] ?? 'http://127.0.0.1:4010',
 });
 
-describe('resource voices', () => {
+describe('resource catalogue', () => {
   // Mock server tests are disabled
   test.skip('list', async () => {
-    const responsePromise = client.voice.voices.list();
+    const responsePromise = client.voice.catalogue.list();
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -24,7 +24,7 @@ describe('resource voices', () => {
   test.skip('list: request options and params are passed correctly', async () => {
     // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
     await expect(
-      client.voice.voices.list(
+      client.voice.catalogue.list(
         { 'x-profile-id': '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e' },
         { path: '/_stainless_unknown_path' },
       ),

@@ -15,7 +15,7 @@ import { RequestOptions } from '../../internal/request-options';
  *
  * **Voice agents.** `POST /v3/voice/agents` creates an agent that answers calls through the Sent Voice Gateway: `session_type` says whether Sent carries the call as text (speech recognised and spoken for the agent) or as audio, `websocket_url` is where the gateway dials the agent for each call (leave it out and the agent dials in with your API key), and `tools`, `transfer_targets`, `fallback` and `limits` say what it may do on a call. The agent's `signing_secret` is shown on create and on `POST /v3/voice/agents/{id}/rotate-secret` only. Voices and languages for text sessions come from `GET /v3/voice/voices`. A number takes calls to an agent once it is bound to it on `/v3/channels/voice`.
  */
-export class Voices extends APIResource {
+export class Catalogue extends APIResource {
   /**
    * The names a voice agent's `speech.voice` and `speech.language` accept, with the
    * default marked. The list grows as voices are added; a name is never removed
@@ -24,11 +24,11 @@ export class Voices extends APIResource {
    * @example
    * ```ts
    * const apiResponseOfVoiceCatalogue =
-   *   await client.voice.voices.list();
+   *   await client.voice.catalogue.list();
    * ```
    */
   list(
-    params: VoiceListParams | null | undefined = {},
+    params: CatalogueListParams | null | undefined = {},
     options?: RequestOptions,
   ): APIPromise<APIResponseOfVoiceCatalogue> {
     const { 'x-profile-id': xProfileID } = params ?? {};
@@ -100,7 +100,7 @@ export interface VoiceCatalogueVoice {
   name?: string;
 }
 
-export interface VoiceListParams {
+export interface CatalogueListParams {
   /**
    * Profile UUID to scope the request to a child profile. Only organization API keys
    * can use this header. The profile must belong to the calling organization.
@@ -108,11 +108,11 @@ export interface VoiceListParams {
   'x-profile-id'?: string;
 }
 
-export declare namespace Voices {
+export declare namespace Catalogue {
   export {
     type APIResponseOfVoiceCatalogue as APIResponseOfVoiceCatalogue,
     type VoiceCatalogue as VoiceCatalogue,
     type VoiceCatalogueVoice as VoiceCatalogueVoice,
-    type VoiceListParams as VoiceListParams,
+    type CatalogueListParams as CatalogueListParams,
   };
 }

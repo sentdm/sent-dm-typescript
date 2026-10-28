@@ -28,16 +28,16 @@ import {
   VoiceAgentsList,
   VoiceAgentsVoiceAgentsPage,
 } from './agents';
-import * as TokensAPI from './tokens';
-import { APIResponseOfVoiceToken, TokenCreateParams, Tokens, VoiceToken } from './tokens';
-import * as VoicesAPI from './voices';
+import * as CatalogueAPI from './catalogue';
 import {
   APIResponseOfVoiceCatalogue,
+  Catalogue,
+  CatalogueListParams,
   VoiceCatalogue,
   VoiceCatalogueVoice,
-  VoiceListParams,
-  Voices,
-} from './voices';
+} from './catalogue';
+import * as TokensAPI from './tokens';
+import { APIResponseOfVoiceToken, TokenCreateParams, Tokens, VoiceToken } from './tokens';
 import * as CallsAPI from './calls/calls';
 import {
   APIResponseOfCall,
@@ -62,13 +62,13 @@ export class Voice extends APIResource {
   calls: CallsAPI.Calls = new CallsAPI.Calls(this._client);
   tokens: TokensAPI.Tokens = new TokensAPI.Tokens(this._client);
   agents: AgentsAPI.Agents = new AgentsAPI.Agents(this._client);
-  voices: VoicesAPI.Voices = new VoicesAPI.Voices(this._client);
+  catalogue: CatalogueAPI.Catalogue = new CatalogueAPI.Catalogue(this._client);
 }
 
 Voice.Calls = Calls;
 Voice.Tokens = Tokens;
 Voice.Agents = Agents;
-Voice.Voices = Voices;
+Voice.Catalogue = Catalogue;
 
 export declare namespace Voice {
   export {
@@ -125,10 +125,10 @@ export declare namespace Voice {
   };
 
   export {
-    Voices as Voices,
+    Catalogue as Catalogue,
     type APIResponseOfVoiceCatalogue as APIResponseOfVoiceCatalogue,
     type VoiceCatalogue as VoiceCatalogue,
     type VoiceCatalogueVoice as VoiceCatalogueVoice,
-    type VoiceListParams as VoiceListParams,
+    type CatalogueListParams as CatalogueListParams,
   };
 }

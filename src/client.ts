@@ -25,6 +25,8 @@ import {
   ConversationsPageResponse,
   type TemplatesPageParams,
   TemplatesPageResponse,
+  type VoiceAgentsPageParams,
+  VoiceAgentsPageResponse,
   type WebhookEventsPageParams,
   WebhookEventsPageResponse,
   type WebhooksPageParams,
@@ -1016,6 +1018,12 @@ export declare namespace Sent {
 
   export import CallsPage = Pagination.CallsPage;
   export { type CallsPageParams as CallsPageParams, type CallsPageResponse as CallsPageResponse };
+
+  export import VoiceAgentsPage = Pagination.VoiceAgentsPage;
+  export {
+    type VoiceAgentsPageParams as VoiceAgentsPageParams,
+    type VoiceAgentsPageResponse as VoiceAgentsPageResponse,
+  };
 
   export {
     Webhooks as Webhooks,

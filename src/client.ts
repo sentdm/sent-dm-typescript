@@ -135,12 +135,6 @@ import {
   WebhookUpdateParams,
   Webhooks,
 } from './resources/webhooks';
-import {
-  APIResponseOfCall,
-  APIResponseOfCallRecordings,
-  APIResponseOfCallsList,
-  Calls,
-} from './resources/calls/calls';
 import { Channels } from './resources/channels/channels';
 import {
   APIResponseOfProfileDetail,
@@ -164,6 +158,7 @@ import {
   TcrBrandRelationship,
   TcrVertical,
 } from './resources/profiles/profiles';
+import { Voice } from './resources/voice/voice';
 import { type Fetch } from './internal/builtin-types';
 import { HeadersLike, NullableHeaders, buildHeaders } from './internal/headers';
 import { FinalRequestOptions, RequestOptions } from './internal/request-options';
@@ -970,7 +965,7 @@ export class Sent {
    * Read-only. Sending is **Messages**; a reply arrives here and through your webhooks.
    */
   conversations: API.Conversations = new API.Conversations(this);
-  calls: API.Calls = new API.Calls(this);
+  voice: API.Voice = new API.Voice(this);
   channels: API.Channels = new API.Channels(this);
   /**
    * Who the current key is.
@@ -988,7 +983,7 @@ Sent.Numbers = Numbers;
 Sent.Messages = Messages;
 Sent.Contacts = Contacts;
 Sent.Conversations = Conversations;
-Sent.Calls = Calls;
+Sent.Voice = Voice;
 Sent.Channels = Channels;
 Sent.Me = Me;
 
@@ -1157,12 +1152,7 @@ export declare namespace Sent {
     type ConversationListMessagesParams as ConversationListMessagesParams,
   };
 
-  export {
-    Calls as Calls,
-    type APIResponseOfCall as APIResponseOfCall,
-    type APIResponseOfCallRecordings as APIResponseOfCallRecordings,
-    type APIResponseOfCallsList as APIResponseOfCallsList,
-  };
+  export { Voice as Voice };
 
   export { Channels as Channels };
 

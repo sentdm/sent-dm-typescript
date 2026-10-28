@@ -23,11 +23,29 @@ import { path } from '../internal/utils/path';
  */
 export class Webhooks extends APIResource {
   /**
-   * Creates a new webhook endpoint for the authenticated customer.
+   * Creates a new webhook endpoint for the authenticated customer. A webhook is
+   * version 2 unless the request sets webhook_version to 1: Svix delivers it, signed
+   * with the webhook-id, webhook-timestamp and webhook-signature headers, and
+   * retries it on its own schedule, so retry_count and timeout_seconds apply to
+   * version 1 only. sender_profile applies to version 1 only and is ignored on
+   * version 2; is_inheritable applies to version 2 only. A version 1 webhook's
+   * response returns its sender_profile selection, with an empty event_types when it
+   * is not cloned onto sender profiles; a version 2 webhook's response leaves
+   * sender_profile out.
    *
    * @example
    * ```ts
-   * const apiResponseWebhook = await client.webhooks.create();
+   * const apiResponseWebhook = await client.webhooks.create({
+   *   display_name: 'Order Notifications',
+   *   endpoint_url: 'https://example.com/webhooks/orders',
+   *   event_filters: {
+   *     message: ['delivered', 'failed'],
+   *     templates: ['approved', 'rejected'],
+   *   },
+   *   event_types: ['contact', 'message', 'templates'],
+   *   retry_count: 3,
+   *   timeout_seconds: 30,
+   * });
    * ```
    */
   create(params: WebhookCreateParams, options?: RequestOptions): APIPromise<APIResponseWebhook> {
@@ -46,7 +64,8 @@ export class Webhooks extends APIResource {
   }
 
   /**
-   * Retrieves a single webhook by ID for the authenticated customer.
+   * Retrieves a single webhook by ID for the authenticated customer. A version 1
+   * webhook includes its sender_profile selection.
    *
    * @example
    * ```ts
@@ -71,12 +90,24 @@ export class Webhooks extends APIResource {
   }
 
   /**
-   * Updates an existing webhook for the authenticated customer.
+   * Updates an existing webhook for the authenticated customer. Its version does not
+   * change. sender_profile applies to a version 1 webhook and is_inheritable to a
+   * version 2 one; retry_count and timeout_seconds apply to version 1 only. A
+   * version 1 webhook's response returns its sender_profile selection as saved; a
+   * version 2 webhook's response leaves sender_profile out.
    *
    * @example
    * ```ts
    * const apiResponseWebhook = await client.webhooks.update(
    *   'd4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8',
+   *   {
+   *     display_name: 'Updated Order Notifications',
+   *     endpoint_url: 'https://example.com/webhooks/orders-v2',
+   *     event_filters: { message: ['delivered', 'failed'] },
+   *     event_types: ['contact', 'message', 'templates'],
+   *     retry_count: 5,
+   *     timeout_seconds: 60,
+   *   },
    * );
    * ```
    */
@@ -96,7 +127,8 @@ export class Webhooks extends APIResource {
   }
 
   /**
-   * Retrieves a paginated list of webhooks for the authenticated customer.
+   * Retrieves a paginated list of webhooks for the authenticated customer. Each
+   * version 1 webhook includes its sender_profile selection.
    *
    * @example
    * ```ts
@@ -169,9 +201,11 @@ export class Webhooks extends APIResource {
   }
 
   /**
-   * Retrieves a paginated list of delivery events for the specified webhook. If the
-   * webhook is cloned onto your sender profiles, the list includes what those clones
-   * received; read payload.account_id to tell whose event it is.
+   * Retrieves a paginated list of delivery events for the specified webhook, newest
+   * first. If the webhook is cloned onto your sender profiles (version 1) or
+   * inheritable by them (version 2, is_inheritable), the list includes their events;
+   * read payload.account_id to tell whose event it is. A sender profile may read its
+   * organization's inheritable webhook too, and gets the events about itself.
    *
    * @example
    * ```ts
@@ -204,8 +238,11 @@ export class Webhooks extends APIResource {
   }
 
   /**
-   * Generates a new signing secret for the specified webhook. The old secret is
-   * immediately invalidated.
+   * Generates a new signing secret for the specified webhook. A version 1 webhook's
+   * old secret stops verifying at once. A version 2 webhook's deliveries are signed
+   * with the new secret at once, and with the old one as well for the next 24 hours,
+   * so a receiver can switch over without rejecting any; after that the old secret
+   * no longer verifies.
    *
    * @example
    * ```ts
@@ -234,7 +271,10 @@ export class Webhooks extends APIResource {
   }
 
   /**
-   * Sends a test event to the specified webhook endpoint to verify connectivity.
+   * Sends a test event to the specified webhook endpoint to verify connectivity. A
+   * version 1 webhook is tested at once and the answer says whether it was
+   * delivered; a version 2 webhook's test is queued with Svix, which delivers it
+   * right after, and the answer says it was queued.
    *
    * @example
    * ```ts
@@ -357,15 +397,17 @@ export interface CallEvent {
   field?: string;
 
   /**
-   * Body of a call.initiated, call.answered, call.completed, call.failed or
-   * call.recording_ready event. Which of them occurred is the envelope's event.
+   * Body of a call.initiated, call.answered, call.agent_connected, call.completed,
+   * call.failed or call.recording_ready event. Which of them occurred is the
+   * envelope's event.
    *
    * Shaped like the message, inbound, template and channel payloads: account_id
    * names the account the event is about, channel names the channel, and updated_at
    * is when the change happened on the call, in the same yyyy-MM-ddTHH:mm:ssZ form.
-   * duration_seconds and price are added on call.completed, reason on call.failed
-   * and recording_id on call.recording_ready; each is omitted rather than sent as
-   * null when it does not apply.
+   * Every event says how the call is handled in mode, and an agent call names its
+   * agent in agent_id. duration_seconds and price are added on call.completed,
+   * reason on call.failed and recording_id on call.recording_ready; each is omitted
+   * rather than sent as null when it does not apply.
    *
    * Casing is snake_case because these ride the same webhook stream customers
    * already parse message_id from; the question/answer contract is a separate
@@ -388,15 +430,17 @@ export interface CallEvent {
 }
 
 /**
- * Body of a call.initiated, call.answered, call.completed, call.failed or
- * call.recording_ready event. Which of them occurred is the envelope's event.
+ * Body of a call.initiated, call.answered, call.agent_connected, call.completed,
+ * call.failed or call.recording_ready event. Which of them occurred is the
+ * envelope's event.
  *
  * Shaped like the message, inbound, template and channel payloads: account_id
  * names the account the event is about, channel names the channel, and updated_at
  * is when the change happened on the call, in the same yyyy-MM-ddTHH:mm:ssZ form.
- * duration_seconds and price are added on call.completed, reason on call.failed
- * and recording_id on call.recording_ready; each is omitted rather than sent as
- * null when it does not apply.
+ * Every event says how the call is handled in mode, and an agent call names its
+ * agent in agent_id. duration_seconds and price are added on call.completed,
+ * reason on call.failed and recording_id on call.recording_ready; each is omitted
+ * rather than sent as null when it does not apply.
  *
  * Casing is snake_case because these ride the same webhook stream customers
  * already parse message_id from; the question/answer contract is a separate
@@ -416,6 +460,11 @@ export interface CallEventPayload {
   account_id?: string;
 
   /**
+   * The voice agent that answers the call, agent\_…. Only on an agent call.
+   */
+  agent_id?: string | null;
+
+  /**
    * Always voice.
    */
   channel?: string;
@@ -424,6 +473,12 @@ export interface CallEventPayload {
    * How long the call lasted. Only on call.completed.
    */
   duration_seconds?: number | null;
+
+  /**
+   * inapp, a call routed by the number's callback URL, or agent, a call one of the
+   * account's voice agents answers. The same value GET /v3/voice/calls returns.
+   */
+  mode?: string;
 
   /**
    * The customer number that owns the call, in E.164 format.
@@ -1410,6 +1465,10 @@ export interface WebhookEventType {
 export interface WebhookResponse {
   id?: string;
 
+  /**
+   * Failed attempts since the last success. Version 1 only: always 0 on a version 2
+   * webhook, whose deliveries are in its events (GET /v3/webhooks/{id}/events).
+   */
   consecutive_failures?: number;
 
   created_at?: string;
@@ -1430,17 +1489,62 @@ export interface WebhookResponse {
 
   is_active?: boolean;
 
+  /**
+   * Whether the webhook also receives its organization's sender profiles' events,
+   * and each profile sees it and reads the events about itself. Always false on a
+   * version 1 webhook.
+   */
+  is_inheritable?: boolean;
+
+  /**
+   * When the webhook was last attempted. Version 1 only: always null on a version 2
+   * webhook.
+   */
   last_delivery_attempt_at?: string | null;
 
+  /**
+   * When the webhook last received an event. Version 1 only: always null on a
+   * version 2 webhook.
+   */
   last_successful_delivery_at?: string | null;
 
   retry_count?: number;
+
+  /**
+   * The events a version 1 webhook's sender profile clones receive, as a response
+   * reports them.
+   *
+   * Its own type, field for field the same as the request's sender_profile. A
+   * response is not a request, whatever it carries.
+   */
+  sender_profile?: WebhookResponse.SenderProfile | null;
 
   signing_secret?: string | null;
 
   timeout_seconds?: number;
 
   updated_at?: string | null;
+
+  /**
+   * Who delivers the webhook: 1 the older delivery, which will be retired, or 2
+   * Svix. A webhook is created as version 2 unless the request asks for 1.
+   */
+  webhook_version?: number;
+}
+
+export namespace WebhookResponse {
+  /**
+   * The events a version 1 webhook's sender profile clones receive, as a response
+   * reports them.
+   *
+   * Its own type, field for field the same as the request's sender_profile. A
+   * response is not a request, whatever it carries.
+   */
+  export interface SenderProfile {
+    event_filters?: { [key: string]: Array<string> } | null;
+
+    event_types?: Array<string>;
+  }
 }
 
 /**
@@ -1839,7 +1943,16 @@ export interface WebhookCreateParams {
   event_types?: Array<string>;
 
   /**
-   * Body param
+   * Body param: Also delivers every sender profile's events to this webhook, at the
+   * same URL and with the same signing secret, and lets each profile see the webhook
+   * and read the events about itself. Off by default: the organization's own events
+   * only. Only an organization's version 2 webhook can set it.
+   */
+  is_inheritable?: boolean;
+
+  /**
+   * Body param: Delivery retries. Applies to version 1 only: Svix retries a version
+   * 2 webhook on its own schedule.
    */
   retry_count?: number;
 
@@ -1851,15 +1964,23 @@ export interface WebhookCreateParams {
 
   /**
    * Body param: Request-only: the events an organization webhook's sender profile
-   * clones receive, one clone per existing and future profile. Responses never
-   * return it.
+   * clones receive, one clone per existing and future profile. A version 1 webhook's
+   * responses report it as WebhookSenderProfileV3Response.
    */
   sender_profile?: WebhookCreateParams.SenderProfile | null;
 
   /**
-   * Body param
+   * Body param: Delivery timeout. Applies to version 1 only.
    */
   timeout_seconds?: number;
+
+  /**
+   * Body param: Who delivers the webhook: 2, the default, is delivered by Svix and
+   * signed with the webhook-id, webhook-timestamp and webhook-signature headers; 1
+   * is the older delivery, signed with the X-Webhook-\* headers, which will be
+   * retired.
+   */
+  webhook_version?: number | null;
 
   /**
    * Header param: Unique key to ensure idempotent request processing. Must be 1-255
@@ -1879,7 +2000,8 @@ export interface WebhookCreateParams {
 export namespace WebhookCreateParams {
   /**
    * Request-only: the events an organization webhook's sender profile clones
-   * receive, one clone per existing and future profile. Responses never return it.
+   * receive, one clone per existing and future profile. A version 1 webhook's
+   * responses report it as WebhookSenderProfileV3Response.
    */
   export interface SenderProfile {
     event_filters?: { [key: string]: Array<string> } | null;
@@ -1918,6 +2040,13 @@ export interface WebhookUpdateParams {
   event_types?: Array<string>;
 
   /**
+   * Body param: Makes this webhook inheritable by the organization's sender profiles
+   * (see create), or stops it being inheritable. Omit or pass null to keep it as it
+   * is. Only a version 2 webhook can be inheritable.
+   */
+  is_inheritable?: boolean | null;
+
+  /**
    * Body param
    */
   retry_count?: number;
@@ -1930,8 +2059,8 @@ export interface WebhookUpdateParams {
 
   /**
    * Body param: Request-only: the events an organization webhook's sender profile
-   * clones receive, one clone per existing and future profile. Responses never
-   * return it.
+   * clones receive, one clone per existing and future profile. A version 1 webhook's
+   * responses report it as WebhookSenderProfileV3Response.
    */
   sender_profile?: WebhookUpdateParams.SenderProfile | null;
 
@@ -1958,7 +2087,8 @@ export interface WebhookUpdateParams {
 export namespace WebhookUpdateParams {
   /**
    * Request-only: the events an organization webhook's sender profile clones
-   * receive, one clone per existing and future profile. Responses never return it.
+   * receive, one clone per existing and future profile. A version 1 webhook's
+   * responses report it as WebhookSenderProfileV3Response.
    */
   export interface SenderProfile {
     event_filters?: { [key: string]: Array<string> } | null;

@@ -179,19 +179,56 @@ Methods:
 - <code title="get /v3/conversations">client.conversations.<a href="./src/resources/conversations.ts">list</a>({ ...params }) -> ConversationMessagesListMessagesConversationsPage</code>
 - <code title="get /v3/conversations/{id}">client.conversations.<a href="./src/resources/conversations.ts">listMessages</a>(id, { ...params }) -> ConversationMessagesListMessagesConversationsPage</code>
 
-# Calls
+# Voice
+
+## Calls
 
 Types:
 
-- <code><a href="./src/resources/calls/calls.ts">APIResponseOfCall</a></code>
-- <code><a href="./src/resources/calls/calls.ts">APIResponseOfCallRecordings</a></code>
-- <code><a href="./src/resources/calls/calls.ts">APIResponseOfCallsList</a></code>
+- <code><a href="./src/resources/voice/calls/calls.ts">APIResponseOfCall</a></code>
+- <code><a href="./src/resources/voice/calls/calls.ts">APIResponseOfCallRecordings</a></code>
+- <code><a href="./src/resources/voice/calls/calls.ts">APIResponseOfCallsList</a></code>
+- <code><a href="./src/resources/voice/calls/calls.ts">Call</a></code>
+- <code><a href="./src/resources/voice/calls/calls.ts">CallParty</a></code>
+- <code><a href="./src/resources/voice/calls/calls.ts">CallRecording</a></code>
+- <code><a href="./src/resources/voice/calls/calls.ts">CallRecordings</a></code>
+- <code><a href="./src/resources/voice/calls/calls.ts">CallTimelineEntry</a></code>
+- <code><a href="./src/resources/voice/calls/calls.ts">CallsList</a></code>
 
-## Participants
+Methods:
+
+- <code title="get /v3/voice/calls/{id}">client.voice.calls.<a href="./src/resources/voice/calls/calls.ts">retrieve</a>(id, { ...params }) -> APIResponseOfCall</code>
+- <code title="get /v3/voice/calls">client.voice.calls.<a href="./src/resources/voice/calls/calls.ts">list</a>({ ...params }) -> CallsCallsPage</code>
+- <code title="post /v3/voice/calls/{id}/hangup">client.voice.calls.<a href="./src/resources/voice/calls/calls.ts">hangup</a>(id, { ...params }) -> void</code>
+- <code title="get /v3/voice/calls/{id}/recordings">client.voice.calls.<a href="./src/resources/voice/calls/calls.ts">listRecordings</a>(id, { ...params }) -> APIResponseOfCallRecordings</code>
+- <code title="post /v3/voice/calls/{id}/recordings">client.voice.calls.<a href="./src/resources/voice/calls/calls.ts">record</a>(id, { ...params }) -> void</code>
+
+### Participants
 
 Types:
 
-- <code><a href="./src/resources/calls/participants.ts">APIResponseOfListOfCallParticipant</a></code>
+- <code><a href="./src/resources/voice/calls/participants.ts">APIResponseOfListOfCallParticipant</a></code>
+- <code><a href="./src/resources/voice/calls/participants.ts">CallParticipant</a></code>
+- <code><a href="./src/resources/voice/calls/participants.ts">CallParticipantTarget</a></code>
+
+Methods:
+
+- <code title="patch /v3/voice/calls/{id}/participants/{participantId}">client.voice.calls.participants.<a href="./src/resources/voice/calls/participants.ts">update</a>(participantID, { ...params }) -> void</code>
+- <code title="get /v3/voice/calls/{id}/participants">client.voice.calls.participants.<a href="./src/resources/voice/calls/participants.ts">list</a>(id, { ...params }) -> APIResponseOfListOfCallParticipant</code>
+- <code title="post /v3/voice/calls/{id}/participants">client.voice.calls.participants.<a href="./src/resources/voice/calls/participants.ts">add</a>(id, { ...params }) -> APIResponseOfCall</code>
+- <code title="delete /v3/voice/calls/{id}/participants/{participantId}">client.voice.calls.participants.<a href="./src/resources/voice/calls/participants.ts">remove</a>(participantID, { ...params }) -> void</code>
+- <code title="delete /v3/voice/calls/{id}/participants">client.voice.calls.participants.<a href="./src/resources/voice/calls/participants.ts">removeAll</a>(id, { ...params }) -> void</code>
+
+## Tokens
+
+Types:
+
+- <code><a href="./src/resources/voice/tokens.ts">APIResponseOfVoiceToken</a></code>
+- <code><a href="./src/resources/voice/tokens.ts">VoiceToken</a></code>
+
+Methods:
+
+- <code title="post /v3/voice/tokens">client.voice.tokens.<a href="./src/resources/voice/tokens.ts">create</a>({ ...params }) -> APIResponseOfVoiceToken</code>
 
 # Channels
 
@@ -204,7 +241,6 @@ Types:
 - <code><a href="./src/resources/channels/voice.ts">APIResponseOfVoiceNumber</a></code>
 - <code><a href="./src/resources/channels/voice.ts">APIResponseOfVoiceNumberCreated</a></code>
 - <code><a href="./src/resources/channels/voice.ts">APIResponseOfVoiceSecret</a></code>
-- <code><a href="./src/resources/channels/voice.ts">APIResponseOfVoiceToken</a></code>
 - <code><a href="./src/resources/channels/voice.ts">VoiceCallbackTest</a></code>
 - <code><a href="./src/resources/channels/voice.ts">VoiceCallbackTestErrorInfo</a></code>
 - <code><a href="./src/resources/channels/voice.ts">VoiceCallbackTestRequestInfo</a></code>

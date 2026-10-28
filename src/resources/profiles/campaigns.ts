@@ -53,8 +53,9 @@ export class Campaigns extends APIResource {
    * which models a profile's markets, compliance, brand, campaigns and billing
    * explicitly.
    *
-   * Updates an existing campaign under the brand of the specified profile. Cannot
-   * update campaigns that have already been submitted to TCR.
+   * Updates an existing campaign under the brand of the specified profile. Once the
+   * campaign has been submitted to TCR its volume can no longer move between low
+   * volume (under 2,000 messages a day) and high volume.
    *
    * @deprecated
    */

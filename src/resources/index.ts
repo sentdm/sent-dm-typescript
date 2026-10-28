@@ -1,11 +1,5 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-export {
-  Calls,
-  type APIResponseOfCall,
-  type APIResponseOfCallRecordings,
-  type APIResponseOfCallsList,
-} from './calls/calls';
 export { Channels } from './channels/channels';
 export {
   Contacts,
@@ -93,6 +87,7 @@ export {
   type UserRemoveParams,
   type UserUpdateRoleParams,
 } from './users';
+export { Voice } from './voice/voice';
 export {
   Webhooks,
   type APIMeta,

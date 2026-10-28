@@ -8,7 +8,6 @@ export {
   type APIResponseOfVoiceNumber,
   type APIResponseOfVoiceNumberCreated,
   type APIResponseOfVoiceSecret,
-  type APIResponseOfVoiceToken,
   type VoiceCallbackTest,
   type VoiceCallbackTestErrorInfo,
   type VoiceCallbackTestRequestInfo,

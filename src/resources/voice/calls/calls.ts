@@ -26,14 +26,18 @@ import { path } from '../../../internal/utils/path';
  * `POST /v3/channels/voice` enables a number for calls, with the callback URL Sent asks what to do with each call on it, and `POST /v3/voice/tokens` mints a short-lived token that lets a user of your app place and receive calls as that number. When a call arrives or a caller presses a key, a signed question is POSTed to the callback URL and the answer decides the call; `POST /v3/channels/voice/{number}/test` checks the URL answers the way we need before a real call reaches it, and `POST /v3/channels/voice/{number}/rotate-secret` replaces the signing secret. The call events themselves (`call.completed` and the rest) arrive through your webhooks.
  *
  * Every call is a record under `/v3/voice/calls`: read it, list its recordings once one is ready, hang it up, start or stop recording, and add, mute or remove conference participants while it is live. A leg to a phone number runs for at most what your balance affords at the destination's rate.
+ *
+ * **Voice agents.** `POST /v3/voice/agents` creates an agent that answers calls through the Sent Voice Gateway: `session_type` says whether Sent carries the call as text (speech recognised and spoken for the agent) or as audio, `websocket_url` is where the gateway dials the agent for each call (leave it out and the agent dials in with your API key), and `tools`, `transfer_targets`, `fallback` and `limits` say what it may do on a call. The agent's `signing_secret` is shown on create and on `POST /v3/voice/agents/{id}/rotate-secret` only. Voices and languages for text sessions come from `GET /v3/voice/voices`. A number takes calls to an agent once it is bound to it on `/v3/channels/voice`.
  */
 export class Calls extends APIResource {
   participants: ParticipantsAPI.Participants = new ParticipantsAPI.Participants(this._client);
 
   /**
-   * Retrieves one of your calls by id: the parties, the owning number, the current
-   * status with its failure reason, duration, price, recording availability, and a
-   * timeline of when the call entered each status.
+   * Retrieves one of your calls by id: the parties, the owning number, the phone
+   * number the call was connected to and the caller id it showed, the current status
+   * with its failure reason, duration, price with the billed legs and what each
+   * cost, recording availability, and a timeline of when the call entered each
+   * status.
    *
    * @example
    * ```ts
@@ -59,9 +63,12 @@ export class Calls extends APIResource {
 
   /**
    * Retrieves a paginated list of your calls, most recent first. Filter by
-   * direction, status, the owning number, and the time the call started (from and to
-   * are inclusive). Use the call webhooks for real-time updates; this list is for
-   * looking calls up afterwards.
+   * direction, status, the owning number, the mode (inapp, or agent for calls your
+   * voice agents answered), the agent that answered, and the time the call started
+   * (from and to are inclusive). Each call carries the phone number it was connected
+   * to, the caller id it showed, and the billed legs with what each cost. Use the
+   * call webhooks for real-time updates; this list is for looking calls up
+   * afterwards.
    *
    * @example
    * ```ts
@@ -90,8 +97,8 @@ export class Calls extends APIResource {
    * Ends one of your live calls. The call then ends the way any other call does once
    * the disconnect is reported: an answered call as COMPLETED with call.completed, a
    * call still ringing as NO_ANSWER, REJECTED or FAILED with call.failed. A call
-   * that has already ended answers 409, and so does a call with no phone leg, such
-   * as one between two app users.
+   * that has already ended answers 409, as do a call with no phone leg, such as one
+   * between two app users, and a call one of your voice agents answers.
    *
    * @example
    * ```ts
@@ -151,9 +158,9 @@ export class Calls extends APIResource {
   /**
    * Starts or stops recording one of your live calls. Use start to begin recording
    * mid-call, or stop to end a recording, whether it was started here or by a
-   * connect answer with record set. A call that has already ended answers 409, and
-   * so does a call with no phone leg, such as one between two app users, which can't
-   * be recorded.
+   * connect answer with record set. A call that has already ended answers 409, as do
+   * a call with no phone leg, such as one between two app users, and a call one of
+   * your voice agents answers, neither of which can be recorded this way.
    *
    * @example
    * ```ts
@@ -267,10 +274,30 @@ export interface Call {
   id?: string;
 
   /**
+   * The voice agent that answered the call, such as
+   * agent_9f2ab000-0000-4000-8000-000000000001. Null for an inapp call
+   */
+  agent_id?: string | null;
+
+  /**
    * When the call was answered (UTC). Null until then, and always null for a call
    * between two of your app users
    */
   answered_at?: string | null;
+
+  /**
+   * The caller id shown on the phone leg, in E.164 format: the one your answer
+   * chose, or the owning number when it chose none. Null for a call with no phone
+   * leg
+   */
+  caller_id_used?: string | null;
+
+  /**
+   * The phone number the call was connected to, in E.164 format: the number your
+   * answer dialed, or the fallback number a call to one of your voice agents
+   * reached. Null when the call was not connected to a phone number
+   */
+  connected_number?: string | null;
 
   /**
    * outbound for a call placed from your app, inbound for a call to one of your
@@ -290,9 +317,9 @@ export interface Call {
 
   /**
    * Why the call did not complete: callback_timeout, invalid_answer,
-   * insufficient_balance, destination_blocked, callback_not_configured, rejected or
-   * no_answer. Null while the call is live, when it completed, and when it failed
-   * without a recorded reason
+   * insufficient_balance, destination_blocked, callback_not_configured, rejected,
+   * no_answer, or for an agent call agent_busy or agent_unreachable. Null while the
+   * call is live, when it completed, and when it failed without a recorded reason
    */
   failure_reason?: string | null;
 
@@ -302,8 +329,17 @@ export interface Call {
   from?: CallParty;
 
   /**
+   * The legs the price covers, one entry per billed leg, each with its own cost: a
+   * call your answer connected to a phone number ran the caller's leg to your number
+   * and the leg to the connected number at once, and both are billed. Null until the
+   * call has been priced
+   */
+  legs?: Array<Call.Leg> | null;
+
+  /**
    * The calling mode: inapp for a call between people in your app and phone numbers,
-   * routed by your number's callback URL
+   * routed by your number's callback URL; agent for a call one of your voice agents
+   * answered
    */
   mode?: string;
 
@@ -343,6 +379,41 @@ export interface Call {
    * One end of a call
    */
   to?: CallParty;
+}
+
+export namespace Call {
+  /**
+   * One leg of a call the price covers
+   */
+  export interface Leg {
+    /**
+     * The whole minutes the leg was billed for
+     */
+    billed_minutes?: number;
+
+    /**
+     * What the leg cost, in the same unit as the call's price
+     */
+    cost?: number;
+
+    /**
+     * The currency of the cost: USD
+     */
+    currency?: string;
+
+    /**
+     * inbound for the caller's leg to your number, outbound for a leg placed on your
+     * behalf
+     */
+    direction?: string;
+
+    /**
+     * The phone number the leg reached, in E.164 format: your number for the inbound
+     * leg, the number dialed for an outbound one. Null for a leg to one of your app
+     * users or a room
+     */
+    number?: string | null;
+  }
 }
 
 /**
@@ -435,6 +506,12 @@ export interface CallRetrieveParams {
 
 export interface CallListParams extends CallsPageParams {
   /**
+   * Query param: Optional filter on the voice agent that answered the call, such as
+   * agent_9f2ab000-0000-4000-8000-000000000001
+   */
+  agent_id?: string | null;
+
+  /**
    * Query param: Optional direction filter: outbound for calls placed from your app,
    * inbound for calls to one of your numbers
    */
@@ -444,6 +521,12 @@ export interface CallListParams extends CallsPageParams {
    * Query param: Only calls started at or after this time (ISO 8601)
    */
   from?: string | null;
+
+  /**
+   * Query param: Optional mode filter: inapp for calls routed by your number's
+   * callback URL, agent for calls one of your voice agents answered
+   */
+  mode?: string | null;
 
   /**
    * Query param: Optional filter on the number that owns the call, one of your

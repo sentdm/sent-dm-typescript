@@ -9,8 +9,8 @@ const client = new Sent({
 
 describe('resource voice', () => {
   // Mock server tests are disabled
-  test.skip('create: only required params', async () => {
-    const responsePromise = client.channels.voice.create({ callback_url: 'https://example.com/voice' });
+  test.skip('create', async () => {
+    const responsePromise = client.channels.voice.create({});
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -18,19 +18,6 @@ describe('resource voice', () => {
     const dataAndResponse = await responsePromise.withResponse();
     expect(dataAndResponse.data).toBe(response);
     expect(dataAndResponse.response).toBe(rawResponse);
-  });
-
-  // Mock server tests are disabled
-  test.skip('create: required and optional params', async () => {
-    const response = await client.channels.voice.create({
-      callback_url: 'https://example.com/voice',
-      area_code: null,
-      default_for_app_calls: false,
-      number: '+12125550100',
-      sandbox: false,
-      'Idempotency-Key': 'req_abc123_retry1',
-      'x-profile-id': '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
-    });
   });
 
   // Mock server tests are disabled
@@ -59,7 +46,7 @@ describe('resource voice', () => {
 
   // Mock server tests are disabled
   test.skip('update', async () => {
-    const responsePromise = client.channels.voice.update('+12125550100', {});
+    const responsePromise = client.channels.voice.update('number', {});
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;

@@ -50,8 +50,10 @@ describe('resource calls', () => {
     await expect(
       client.voice.calls.list(
         {
+          agent_id: 'agent_id',
           direction: 'direction',
           from: '2019-12-27T18:11:19.117Z',
+          mode: 'mode',
           number: 'number',
           page: 0,
           page_size: 0,

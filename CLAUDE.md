@@ -22,8 +22,8 @@ release-please from the commit history on `main`.
   rewrites them, and an edit conflicts.
 - **release-please-owned**: `CHANGELOG.md`, `.release-please-manifest.json`
   and the version constant. They are rewritten in each release PR.
-- **Hand-written and kept across regenerations**: this file, `REVIEW.md`,
-  `.github/CODEOWNERS` and `.github/workflows/claude-pr-review.yml`.
+- **Hand-written and kept across regenerations**: this file, `REVIEW.md`
+  and `.github/CODEOWNERS`.
 - **Custom code in this repository today**: the `@arethetypeswrong/cli` version bump and the formatted lockfile, both carried because the pinned template crashed on current Node.
 
 ### Editing generated files

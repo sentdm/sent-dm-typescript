@@ -33,7 +33,6 @@ export {
   type MessageRetrieveStatusParams,
   type MessageSendParams,
 } from './messages';
-export { Numbers, type NumberLookupResponse, type NumberLookupParams } from './numbers';
 export {
   Profiles,
   type APIResponseOfProfileDetail,

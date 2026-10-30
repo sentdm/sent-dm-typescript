@@ -67,7 +67,6 @@ import {
   MessageSendResponse,
   Messages,
 } from './resources/messages';
-import { NumberLookupParams, NumberLookupResponse, Numbers } from './resources/numbers';
 import {
   APIResponseTemplate,
   AuthenticationConfig,
@@ -934,12 +933,6 @@ export class Sent {
    */
   profiles: API.Profiles = new API.Profiles(this);
   /**
-   * What a phone number actually is, before you send to it.
-   *
-   * A lookup returns the number's country, line type and carrier, which is what decides whether it is reachable on a channel and what it costs. Worth doing on import rather than on send: a landline in a contact list is a message that can never be delivered.
-   */
-  numbers: API.Numbers = new API.Numbers(this);
-  /**
    * Send a message and follow what happened to it.
    *
    * One endpoint sends on any channel: pass `channel: "sent"` and we pick between SMS, WhatsApp and RCS per recipient using your routing rules, or name a channel to pin it. A send is accepted asynchronously — `POST /v3/messages` returns an id, and delivery is reported through `GET /v3/messages/{id}`, its activities, or a webhook.
@@ -981,7 +974,6 @@ Sent.Webhooks = Webhooks;
 Sent.Users = Users;
 Sent.Templates = Templates;
 Sent.Profiles = Profiles;
-Sent.Numbers = Numbers;
 Sent.Messages = Messages;
 Sent.Contacts = Contacts;
 Sent.Conversations = Conversations;
@@ -1118,12 +1110,6 @@ export declare namespace Sent {
     type ProfileListParams as ProfileListParams,
     type ProfileDeleteParams as ProfileDeleteParams,
     type ProfileCompleteParams as ProfileCompleteParams,
-  };
-
-  export {
-    Numbers as Numbers,
-    type NumberLookupResponse as NumberLookupResponse,
-    type NumberLookupParams as NumberLookupParams,
   };
 
   export {

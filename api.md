@@ -125,16 +125,6 @@ Methods:
 - <code title="get /v3/profiles/{profileId}/campaigns">client.profiles.campaigns.<a href="./src/resources/profiles/campaigns.ts">list</a>(profileID, { ...params }) -> APIResponseOfListOfBrandCampaign</code>
 - <code title="delete /v3/profiles/{profileId}/campaigns/{campaignId}">client.profiles.campaigns.<a href="./src/resources/profiles/campaigns.ts">delete</a>(campaignID, { ...params }) -> void</code>
 
-# Numbers
-
-Types:
-
-- <code><a href="./src/resources/numbers.ts">NumberLookupResponse</a></code>
-
-Methods:
-
-- <code title="get /v3/numbers/lookup/{phoneNumber}">client.numbers.<a href="./src/resources/numbers.ts">lookup</a>(phoneNumber, { ...params }) -> NumberLookupResponse</code>
-
 # Messages
 
 Types:

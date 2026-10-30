@@ -434,9 +434,9 @@ export interface TemplateBodyContent {
   template: string;
 
   /**
-   * The type of body content — send "text". It is dropped from the stored definition
-   * when null, so a body posted without it is saved with no type key at all and the
-   * template editor has nothing to render the block from.
+   * The type of body content. Defaults to "text" when omitted, which also fills it
+   * in when reading stored bodies saved without it; the template editor refuses to
+   * load a body with no type.
    */
   type?: string | null;
 

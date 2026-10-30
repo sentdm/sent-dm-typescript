@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.48.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.47.0...v0.48.0) (2026-10-30)
+
+
+### Features
+
+* **ci:** run every SDK on the one-repo topology ([30827b3](https://github.com/sentdm/sent-dm-typescript/commit/30827b3ed55abd10f1b785ec679fd1f039b2eea3))
+
+
+### Chores
+
+* **repo:** add the contributor contract and review rubric ([f00eba8](https://github.com/sentdm/sent-dm-typescript/commit/f00eba85d7569dac52c06e30884b2f15d688bea9))
+* **repo:** add the contributor contract and the review workflow ([8698129](https://github.com/sentdm/sent-dm-typescript/commit/8698129f6d4f71dfb4fabf70aed6937469b604e5))
+* **repo:** rely on the managed Claude Code Review, drop the workflow ([8297aa1](https://github.com/sentdm/sent-dm-typescript/commit/8297aa17387c1ee4184cc00628436eb5d6abf273))
+
 ## [0.47.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.46.0...v0.47.0) (2026-10-28)
 
 

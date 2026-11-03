@@ -20,6 +20,59 @@ import { path } from '../internal/utils/path';
  */
 export class Messages extends APIResource {
   /**
+   * Resends a message you already sent, on the same message id, without rebuilding
+   * the request. The typical use is recovering a BLOCKED message — for example one
+   * refused for insufficient balance — after the account has been topped up.
+   *
+   * **A resend bills again.** Each accepted resend is a new delivery attempt and
+   * records a new charge against the same message id; a client that resends on every
+   * failure is charged on every loop.
+   *
+   * **Every policy runs again.** The resend goes back through the full send pipeline
+   * — consent, balance, KYC and channel quota, template approval, quiet hours and
+   * channel health — so it can land on BLOCKED, FILTERED or SCHEDULED again rather
+   * than being sent, exactly as a fresh send would. Status webhooks (message.sent,
+   * message.blocked, message.filtered, message.failed) fire again for the same
+   * message id, so consumers keyed on the id will see repeated transitions.
+   *
+   * **What can be resent.** A message in a terminal state — DELIVERED, FAILED, READ
+   * or BLOCKED — or one stuck at SENT for more than 15 minutes. A FILTERED message
+   * can never be resent: the recipient opted out or a routing rule refused the send.
+   * A message still in flight (QUEUED, PROCESSED, ROUTED), held for quiet hours
+   * (SCHEDULED), or SENT less than 15 minutes ago returns 409. Two concurrent
+   * resends of one id are serialised: one is accepted, the other gets 409.
+   *
+   * The resend keeps the channel the message was originally requested on; the
+   * channel cannot be changed on a resend — send a new message instead.
+   * `Idempotency-Key` is honoured, so a retried request replays the first accepted
+   * response instead of resending twice.
+   *
+   * The response has the same shape as `POST /v3/messages`: `recipients` has a
+   * single entry whose `message_id` is the id you resent.
+   *
+   * @example
+   * ```ts
+   * const messageSendResponse = await client.messages.resend(
+   *   '8ba7b830-9dad-11d1-80b4-00c04fd430c8',
+   * );
+   * ```
+   */
+  resend(id: string, params: MessageResendParams, options?: RequestOptions): APIPromise<MessageSendResponse> {
+    const { 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
+    return this._client.post(path`/v3/messages/${id}/resend`, {
+      body,
+      ...options,
+      headers: buildHeaders([
+        {
+          ...(idempotencyKey != null ? { 'Idempotency-Key': idempotencyKey } : undefined),
+          ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined),
+        },
+        options?.headers,
+      ]),
+    });
+  }
+
+  /**
    * Retrieves the activity log for a specific message. Activities track the message
    * lifecycle including acceptance, processing, sending, delivery, and any errors. A
    * SCHEDULED entry carries scheduled_at, the release instant in UTC as it stood at
@@ -116,7 +169,7 @@ export class Messages extends APIResource {
    *
    * @example
    * ```ts
-   * const response = await client.messages.send({
+   * const messageSendResponse = await client.messages.send({
    *   channel: ['sms', 'whatsapp'],
    *   template: {
    *     id: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
@@ -140,6 +193,101 @@ export class Messages extends APIResource {
         options?.headers,
       ]),
     });
+  }
+}
+
+/**
+ * Standard API response envelope for all v3 endpoints
+ */
+export interface MessageSendResponse {
+  /**
+   * The result of a multi-recipient send.
+   *
+   * Declared here rather than in the service layer. POST /v3/messages used to
+   * publish MessageSendResult — a type in Common.Services.Messaging.Contracts — so
+   * the public contract was whatever the send service happened to return, and
+   * changing that service for an internal reason changed the API. The service keeps
+   * its result; this is what a caller sees, and the mapping between them is a
+   * decision the endpoint makes.
+   *
+   * The shape of an immediate send: it never has a scheduled_at key. A send that
+   * carried scheduled_at is a ScheduledSendMessageResponse, and the endpoint decides
+   * which of the two to answer with. From always returns this type.
+   */
+  data?: MessageSendResponse.Data | null;
+
+  /**
+   * Error information
+   */
+  error?: WebhooksAPI.ErrorDetail | null;
+
+  /**
+   * Request and response metadata
+   */
+  meta?: WebhooksAPI.APIMeta;
+
+  /**
+   * Indicates whether the request was successful
+   */
+  success?: boolean;
+}
+
+export namespace MessageSendResponse {
+  /**
+   * The result of a multi-recipient send.
+   *
+   * Declared here rather than in the service layer. POST /v3/messages used to
+   * publish MessageSendResult — a type in Common.Services.Messaging.Contracts — so
+   * the public contract was whatever the send service happened to return, and
+   * changing that service for an internal reason changed the API. The service keeps
+   * its result; this is what a caller sees, and the mapping between them is a
+   * decision the endpoint makes.
+   *
+   * The shape of an immediate send: it never has a scheduled_at key. A send that
+   * carried scheduled_at is a ScheduledSendMessageResponse, and the endpoint decides
+   * which of the two to answer with. From always returns this type.
+   */
+  export interface Data {
+    recipients?: Array<Data.Recipient>;
+
+    /**
+     * QUEUED: the batch is accepted. A request that carried scheduled_at is QUEUED
+     * here too; each message moves to SCHEDULED once it is held, as GET
+     * /v3/messages/{id} and the message.scheduled webhook report.
+     */
+    status?: string;
+
+    template_id?: string;
+
+    template_name?: string;
+  }
+
+  export namespace Data {
+    /**
+     * What one recipient of a send got, as the API reports it.
+     */
+    export interface Recipient {
+      /**
+       * Resolved template body for this recipient's channel, or null when the channel is
+       * auto-detected.
+       */
+      body?: string | null;
+
+      /**
+       * Channel this message will be sent on — sms, whatsapp — or null to auto-detect.
+       */
+      channel?: string | null;
+
+      /**
+       * Identifier for tracking this recipient's message.
+       */
+      message_id?: string;
+
+      /**
+       * Phone number in E.164 format.
+       */
+      to?: string;
+    }
   }
 }
 
@@ -512,99 +660,26 @@ export namespace MessageRetrieveStatusResponse {
   }
 }
 
-/**
- * Standard API response envelope for all v3 endpoints
- */
-export interface MessageSendResponse {
+export interface MessageResendParams {
   /**
-   * The result of a multi-recipient send.
-   *
-   * Declared here rather than in the service layer. POST /v3/messages used to
-   * publish MessageSendResult — a type in Common.Services.Messaging.Contracts — so
-   * the public contract was whatever the send service happened to return, and
-   * changing that service for an internal reason changed the API. The service keeps
-   * its result; this is what a caller sees, and the mapping between them is a
-   * decision the endpoint makes.
-   *
-   * The shape of an immediate send: it never has a scheduled_at key. A send that
-   * carried scheduled_at is a ScheduledSendMessageResponse, and the endpoint decides
-   * which of the two to answer with. From always returns this type.
+   * Body param: Sandbox flag - when true, the operation is simulated without side
+   * effects Useful for testing integrations without actual execution
    */
-  data?: MessageSendResponse.Data | null;
+  sandbox?: boolean;
 
   /**
-   * Error information
+   * Header param: Unique key to ensure idempotent request processing. Must be 1-255
+   * alphanumeric characters, hyphens, or underscores. Responses are cached for 24
+   * hours per key per customer.
    */
-  error?: WebhooksAPI.ErrorDetail | null;
+  'Idempotency-Key'?: string;
 
   /**
-   * Request and response metadata
+   * Header param: Profile UUID to scope the request to a child profile. Only
+   * organization API keys can use this header. The profile must belong to the
+   * calling organization.
    */
-  meta?: WebhooksAPI.APIMeta;
-
-  /**
-   * Indicates whether the request was successful
-   */
-  success?: boolean;
-}
-
-export namespace MessageSendResponse {
-  /**
-   * The result of a multi-recipient send.
-   *
-   * Declared here rather than in the service layer. POST /v3/messages used to
-   * publish MessageSendResult — a type in Common.Services.Messaging.Contracts — so
-   * the public contract was whatever the send service happened to return, and
-   * changing that service for an internal reason changed the API. The service keeps
-   * its result; this is what a caller sees, and the mapping between them is a
-   * decision the endpoint makes.
-   *
-   * The shape of an immediate send: it never has a scheduled_at key. A send that
-   * carried scheduled_at is a ScheduledSendMessageResponse, and the endpoint decides
-   * which of the two to answer with. From always returns this type.
-   */
-  export interface Data {
-    recipients?: Array<Data.Recipient>;
-
-    /**
-     * QUEUED: the batch is accepted. A request that carried scheduled_at is QUEUED
-     * here too; each message moves to SCHEDULED once it is held, as GET
-     * /v3/messages/{id} and the message.scheduled webhook report.
-     */
-    status?: string;
-
-    template_id?: string;
-
-    template_name?: string;
-  }
-
-  export namespace Data {
-    /**
-     * What one recipient of a send got, as the API reports it.
-     */
-    export interface Recipient {
-      /**
-       * Resolved template body for this recipient's channel, or null when the channel is
-       * auto-detected.
-       */
-      body?: string | null;
-
-      /**
-       * Channel this message will be sent on — sms, whatsapp — or null to auto-detect.
-       */
-      channel?: string | null;
-
-      /**
-       * Identifier for tracking this recipient's message.
-       */
-      message_id?: string;
-
-      /**
-       * Phone number in E.164 format.
-       */
-      to?: string;
-    }
-  }
+  'x-profile-id'?: string;
 }
 
 export interface MessageRetrieveActivitiesParams {
@@ -802,9 +877,10 @@ export namespace MessageSendParams {
 
 export declare namespace Messages {
   export {
+    type MessageSendResponse as MessageSendResponse,
     type MessageRetrieveActivitiesResponse as MessageRetrieveActivitiesResponse,
     type MessageRetrieveStatusResponse as MessageRetrieveStatusResponse,
-    type MessageSendResponse as MessageSendResponse,
+    type MessageResendParams as MessageResendParams,
     type MessageRetrieveActivitiesParams as MessageRetrieveActivitiesParams,
     type MessageRetrieveStatusParams as MessageRetrieveStatusParams,
     type MessageSendParams as MessageSendParams,

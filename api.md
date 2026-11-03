@@ -139,12 +139,13 @@ Methods:
 
 Types:
 
+- <code><a href="./src/resources/messages.ts">MessageSendResponse</a></code>
 - <code><a href="./src/resources/messages.ts">MessageRetrieveActivitiesResponse</a></code>
 - <code><a href="./src/resources/messages.ts">MessageRetrieveStatusResponse</a></code>
-- <code><a href="./src/resources/messages.ts">MessageSendResponse</a></code>
 
 Methods:
 
+- <code title="post /v3/messages/{id}/resend">client.messages.<a href="./src/resources/messages.ts">resend</a>(id, { ...params }) -> MessageSendResponse</code>
 - <code title="get /v3/messages/{id}/activities">client.messages.<a href="./src/resources/messages.ts">retrieveActivities</a>(id, { ...params }) -> MessageRetrieveActivitiesResponse</code>
 - <code title="get /v3/messages/{id}">client.messages.<a href="./src/resources/messages.ts">retrieveStatus</a>(id, { ...params }) -> MessageRetrieveStatusResponse</code>
 - <code title="post /v3/messages">client.messages.<a href="./src/resources/messages.ts">send</a>({ ...params }) -> MessageSendResponse</code>

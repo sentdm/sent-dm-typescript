@@ -1,0 +1,27 @@
+# Keeps the lockfile and the pinned GitHub Actions current. Lockfile-only, so
+# the manifest the generator writes is never edited, and grouped monthly so
+# the result is one pull request per ecosystem. The ci(deps) prefix keeps the
+# commits out of the changelog and cuts no release.
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    versioning-strategy: "lockfile-only"
+    groups:
+      lockfile:
+        patterns: ["*"]
+    commit-message:
+      prefix: "ci(deps)"
+    open-pull-requests-limit: 2
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    groups:
+      actions:
+        patterns: ["*"]
+    commit-message:
+      prefix: "ci(deps)"
+    open-pull-requests-limit: 2

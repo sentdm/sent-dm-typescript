@@ -61,7 +61,6 @@ import { Me, MeRetrieveParams, MeRetrieveResponse, ProfileSettings } from './res
 import {
   MessageResendParams,
   MessageResendResponse,
-  MessageResendResponseData,
   MessageRetrieveActivitiesParams,
   MessageRetrieveActivitiesResponse,
   MessageRetrieveStatusParams,
@@ -1131,7 +1130,6 @@ export declare namespace Sent {
 
   export {
     Messages as Messages,
-    type MessageResendResponseData as MessageResendResponseData,
     type MessageResendResponse as MessageResendResponse,
     type MessageRetrieveActivitiesResponse as MessageRetrieveActivitiesResponse,
     type MessageRetrieveStatusResponse as MessageRetrieveStatusResponse,

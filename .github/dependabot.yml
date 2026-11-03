@@ -1,7 +1,10 @@
 # Keeps the lockfile and the pinned GitHub Actions current. Lockfile-only, so
 # the manifest the generator writes is never edited, and grouped monthly so
 # the result is one pull request per ecosystem. The ci(deps) prefix keeps the
-# commits out of the changelog and cuts no release.
+# commits out of the changelog and cuts no release. Majors are left to a
+# person: a major of a dev tool has broken lint here before, and the release
+# workflows these pins live in never run on a pull request. Security updates
+# are not affected by the ignore rules.
 version: 2
 updates:
   - package-ecosystem: 'npm'
@@ -9,6 +12,9 @@ updates:
     schedule:
       interval: 'monthly'
     versioning-strategy: 'lockfile-only'
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-major']
     groups:
       lockfile:
         patterns: ['*']
@@ -19,6 +25,9 @@ updates:
     directory: '/'
     schedule:
       interval: 'monthly'
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-major']
     groups:
       actions:
         patterns: ['*']

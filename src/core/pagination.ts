@@ -121,6 +121,14 @@ export namespace ContactsPageResponse {
   export namespace Data {
     export interface Pagination {
       has_more?: boolean;
+
+      page?: number;
+
+      page_size?: number;
+
+      total_count?: number;
+
+      total_pages?: number;
     }
   }
 }
@@ -185,6 +193,14 @@ export namespace ConversationsPageResponse {
   export namespace Data {
     export interface Pagination {
       has_more?: boolean;
+
+      page?: number;
+
+      page_size?: number;
+
+      total_count?: number;
+
+      total_pages?: number;
     }
   }
 }
@@ -249,6 +265,14 @@ export namespace TemplatesPageResponse {
   export namespace Data {
     export interface Pagination {
       has_more?: boolean;
+
+      page?: number;
+
+      page_size?: number;
+
+      total_count?: number;
+
+      total_pages?: number;
     }
   }
 }
@@ -313,6 +337,14 @@ export namespace WebhooksPageResponse {
   export namespace Data {
     export interface Pagination {
       has_more?: boolean;
+
+      page?: number;
+
+      page_size?: number;
+
+      total_count?: number;
+
+      total_pages?: number;
     }
   }
 }
@@ -377,6 +409,14 @@ export namespace WebhookEventsPageResponse {
   export namespace Data {
     export interface Pagination {
       has_more?: boolean;
+
+      page?: number;
+
+      page_size?: number;
+
+      total_count?: number;
+
+      total_pages?: number;
     }
   }
 }
@@ -441,6 +481,14 @@ export namespace CallsPageResponse {
   export namespace Data {
     export interface Pagination {
       has_more?: boolean;
+
+      page?: number;
+
+      page_size?: number;
+
+      total_count?: number;
+
+      total_pages?: number;
     }
   }
 }
@@ -500,6 +548,14 @@ export namespace VoiceAgentsPageResponse {
   export namespace Data {
     export interface Pagination {
       has_more?: boolean;
+
+      page?: number;
+
+      page_size?: number;
+
+      total_count?: number;
+
+      total_pages?: number;
     }
   }
 }

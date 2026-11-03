@@ -1,3 +1,4 @@
+// nosemgrep: javascript.node.require.dynamic-require -- build script; the path is the repo's own package.json or one CI names
 const pkgJson = require(process.env['PKG_JSON_PATH'] || '../../package.json');
 
 function processExportMap(m) {

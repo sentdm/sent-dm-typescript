@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.48.1](https://github.com/sentdm/sent-dm-typescript/compare/v0.48.0...v0.48.1) (2026-10-30)
+
+
+### Documentation
+
+* **api:** describe the default body type on template bodies ([8540adc](https://github.com/sentdm/sent-dm-typescript/commit/8540adc615c43eddd59460116dc805c8d04ea2f4))
+
 ## [0.48.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.47.0...v0.48.0) (2026-10-30)
 
 

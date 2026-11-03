@@ -59,6 +59,9 @@ import {
 } from './resources/conversations';
 import { Me, MeRetrieveParams, MeRetrieveResponse, ProfileSettings } from './resources/me';
 import {
+  MessageResendParams,
+  MessageResendResponse,
+  MessageResendResponseData,
   MessageRetrieveActivitiesParams,
   MessageRetrieveActivitiesResponse,
   MessageRetrieveStatusParams,
@@ -1128,9 +1131,12 @@ export declare namespace Sent {
 
   export {
     Messages as Messages,
+    type MessageResendResponseData as MessageResendResponseData,
+    type MessageResendResponse as MessageResendResponse,
     type MessageRetrieveActivitiesResponse as MessageRetrieveActivitiesResponse,
     type MessageRetrieveStatusResponse as MessageRetrieveStatusResponse,
     type MessageSendResponse as MessageSendResponse,
+    type MessageResendParams as MessageResendParams,
     type MessageRetrieveActivitiesParams as MessageRetrieveActivitiesParams,
     type MessageRetrieveStatusParams as MessageRetrieveStatusParams,
     type MessageSendParams as MessageSendParams,

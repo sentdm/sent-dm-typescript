@@ -26,7 +26,7 @@ const client = new Sent({
   apiKey: process.env['SENT_DM_API_KEY'], // This is the default and can be omitted
 });
 
-const response = await client.messages.send({
+const messageSendResponse = await client.messages.send({
   channel: ['sms', 'whatsapp'],
   template: {
     id: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
@@ -36,7 +36,7 @@ const response = await client.messages.send({
   to: ['+14155551234', '+14155555678'],
 });
 
-console.log(response.data);
+console.log(messageSendResponse.data);
 ```
 
 ### Request & Response types
@@ -60,7 +60,7 @@ const params: Sent.MessageSendParams = {
   },
   to: ['+14155551234'],
 };
-const response: Sent.MessageSendResponse = await client.messages.send(params);
+const messageSendResponse: Sent.MessageSendResponse = await client.messages.send(params);
 ```
 
 Documentation for each method, request param, and response field are available in docstrings and will appear on hover in most modern editors.
@@ -73,7 +73,7 @@ a subclass of `APIError` will be thrown:
 
 <!-- prettier-ignore -->
 ```ts
-const response = await client.messages
+const messageSendResponse = await client.messages
   .send({
     channel: ['sms'],
     template: {
@@ -224,7 +224,7 @@ const response = await client.messages
 console.log(response.headers.get('X-My-Header'));
 console.log(response.statusText); // access the underlying Response object
 
-const { data: response, response: raw } = await client.messages
+const { data: messageSendResponse, response: raw } = await client.messages
   .send({
     channel: ['sms'],
     template: {
@@ -236,7 +236,7 @@ const { data: response, response: raw } = await client.messages
   })
   .withResponse();
 console.log(raw.headers.get('X-My-Header'));
-console.log(response.data);
+console.log(messageSendResponse.data);
 ```
 
 ### Logging

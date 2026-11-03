@@ -60,7 +60,6 @@ import {
 import { Me, MeRetrieveParams, MeRetrieveResponse, ProfileSettings } from './resources/me';
 import {
   MessageResendParams,
-  MessageResendResponse,
   MessageRetrieveActivitiesParams,
   MessageRetrieveActivitiesResponse,
   MessageRetrieveStatusParams,
@@ -1130,10 +1129,9 @@ export declare namespace Sent {
 
   export {
     Messages as Messages,
-    type MessageResendResponse as MessageResendResponse,
+    type MessageSendResponse as MessageSendResponse,
     type MessageRetrieveActivitiesResponse as MessageRetrieveActivitiesResponse,
     type MessageRetrieveStatusResponse as MessageRetrieveStatusResponse,
-    type MessageSendResponse as MessageSendResponse,
     type MessageResendParams as MessageResendParams,
     type MessageRetrieveActivitiesParams as MessageRetrieveActivitiesParams,
     type MessageRetrieveStatusParams as MessageRetrieveStatusParams,

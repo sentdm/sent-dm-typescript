@@ -52,16 +52,12 @@ export class Messages extends APIResource {
    *
    * @example
    * ```ts
-   * const response = await client.messages.resend(
+   * const messageSendResponse = await client.messages.resend(
    *   '8ba7b830-9dad-11d1-80b4-00c04fd430c8',
    * );
    * ```
    */
-  resend(
-    id: string,
-    params: MessageResendParams,
-    options?: RequestOptions,
-  ): APIPromise<MessageResendResponse> {
+  resend(id: string, params: MessageResendParams, options?: RequestOptions): APIPromise<MessageSendResponse> {
     const { 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
     return this._client.post(path`/v3/messages/${id}/resend`, {
       body,
@@ -173,7 +169,7 @@ export class Messages extends APIResource {
    *
    * @example
    * ```ts
-   * const response = await client.messages.send({
+   * const messageSendResponse = await client.messages.send({
    *   channel: ['sms', 'whatsapp'],
    *   template: {
    *     id: '7ba7b820-9dad-11d1-80b4-00c04fd430c8',
@@ -203,7 +199,7 @@ export class Messages extends APIResource {
 /**
  * Standard API response envelope for all v3 endpoints
  */
-export interface MessageResendResponse {
+export interface MessageSendResponse {
   /**
    * The result of a multi-recipient send.
    *
@@ -218,7 +214,7 @@ export interface MessageResendResponse {
    * carried scheduled_at is a ScheduledSendMessageResponse, and the endpoint decides
    * which of the two to answer with. From always returns this type.
    */
-  data?: MessageResendResponse.Data | null;
+  data?: MessageSendResponse.Data | null;
 
   /**
    * Error information
@@ -236,7 +232,7 @@ export interface MessageResendResponse {
   success?: boolean;
 }
 
-export namespace MessageResendResponse {
+export namespace MessageSendResponse {
   /**
    * The result of a multi-recipient send.
    *
@@ -664,101 +660,6 @@ export namespace MessageRetrieveStatusResponse {
   }
 }
 
-/**
- * Standard API response envelope for all v3 endpoints
- */
-export interface MessageSendResponse {
-  /**
-   * The result of a multi-recipient send.
-   *
-   * Declared here rather than in the service layer. POST /v3/messages used to
-   * publish MessageSendResult — a type in Common.Services.Messaging.Contracts — so
-   * the public contract was whatever the send service happened to return, and
-   * changing that service for an internal reason changed the API. The service keeps
-   * its result; this is what a caller sees, and the mapping between them is a
-   * decision the endpoint makes.
-   *
-   * The shape of an immediate send: it never has a scheduled_at key. A send that
-   * carried scheduled_at is a ScheduledSendMessageResponse, and the endpoint decides
-   * which of the two to answer with. From always returns this type.
-   */
-  data?: MessageSendResponse.Data | null;
-
-  /**
-   * Error information
-   */
-  error?: WebhooksAPI.ErrorDetail | null;
-
-  /**
-   * Request and response metadata
-   */
-  meta?: WebhooksAPI.APIMeta;
-
-  /**
-   * Indicates whether the request was successful
-   */
-  success?: boolean;
-}
-
-export namespace MessageSendResponse {
-  /**
-   * The result of a multi-recipient send.
-   *
-   * Declared here rather than in the service layer. POST /v3/messages used to
-   * publish MessageSendResult — a type in Common.Services.Messaging.Contracts — so
-   * the public contract was whatever the send service happened to return, and
-   * changing that service for an internal reason changed the API. The service keeps
-   * its result; this is what a caller sees, and the mapping between them is a
-   * decision the endpoint makes.
-   *
-   * The shape of an immediate send: it never has a scheduled_at key. A send that
-   * carried scheduled_at is a ScheduledSendMessageResponse, and the endpoint decides
-   * which of the two to answer with. From always returns this type.
-   */
-  export interface Data {
-    recipients?: Array<Data.Recipient>;
-
-    /**
-     * QUEUED: the batch is accepted. A request that carried scheduled_at is QUEUED
-     * here too; each message moves to SCHEDULED once it is held, as GET
-     * /v3/messages/{id} and the message.scheduled webhook report.
-     */
-    status?: string;
-
-    template_id?: string;
-
-    template_name?: string;
-  }
-
-  export namespace Data {
-    /**
-     * What one recipient of a send got, as the API reports it.
-     */
-    export interface Recipient {
-      /**
-       * Resolved template body for this recipient's channel, or null when the channel is
-       * auto-detected.
-       */
-      body?: string | null;
-
-      /**
-       * Channel this message will be sent on — sms, whatsapp — or null to auto-detect.
-       */
-      channel?: string | null;
-
-      /**
-       * Identifier for tracking this recipient's message.
-       */
-      message_id?: string;
-
-      /**
-       * Phone number in E.164 format.
-       */
-      to?: string;
-    }
-  }
-}
-
 export interface MessageResendParams {
   /**
    * Body param: Sandbox flag - when true, the operation is simulated without side
@@ -976,10 +877,9 @@ export namespace MessageSendParams {
 
 export declare namespace Messages {
   export {
-    type MessageResendResponse as MessageResendResponse,
+    type MessageSendResponse as MessageSendResponse,
     type MessageRetrieveActivitiesResponse as MessageRetrieveActivitiesResponse,
     type MessageRetrieveStatusResponse as MessageRetrieveStatusResponse,
-    type MessageSendResponse as MessageSendResponse,
     type MessageResendParams as MessageResendParams,
     type MessageRetrieveActivitiesParams as MessageRetrieveActivitiesParams,
     type MessageRetrieveStatusParams as MessageRetrieveStatusParams,

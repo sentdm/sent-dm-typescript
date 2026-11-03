@@ -26,9 +26,11 @@ export {
 export { Me, type ProfileSettings, type MeRetrieveResponse, type MeRetrieveParams } from './me';
 export {
   Messages,
+  type MessageResendResponse,
   type MessageRetrieveActivitiesResponse,
   type MessageRetrieveStatusResponse,
   type MessageSendResponse,
+  type MessageResendParams,
   type MessageRetrieveActivitiesParams,
   type MessageRetrieveStatusParams,
   type MessageSendParams,

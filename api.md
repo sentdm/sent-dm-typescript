@@ -139,6 +139,7 @@ Methods:
 
 Types:
 
+- <code><a href="./src/resources/messages.ts">MessageResendResponseData</a></code>
 - <code><a href="./src/resources/messages.ts">MessageResendResponse</a></code>
 - <code><a href="./src/resources/messages.ts">MessageRetrieveActivitiesResponse</a></code>
 - <code><a href="./src/resources/messages.ts">MessageRetrieveStatusResponse</a></code>

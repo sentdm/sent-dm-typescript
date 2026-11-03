@@ -201,6 +201,63 @@ export class Messages extends APIResource {
 }
 
 /**
+ * The result of a multi-recipient send.
+ *
+ * Declared here rather than in the service layer. POST /v3/messages used to
+ * publish MessageSendResult — a type in Common.Services.Messaging.Contracts — so
+ * the public contract was whatever the send service happened to return, and
+ * changing that service for an internal reason changed the API. The service keeps
+ * its result; this is what a caller sees, and the mapping between them is a
+ * decision the endpoint makes.
+ *
+ * The shape of an immediate send: it never has a scheduled_at key. A send that
+ * carried scheduled_at is a ScheduledSendMessageResponse, and the endpoint decides
+ * which of the two to answer with. From always returns this type.
+ */
+export interface MessageResendResponseData {
+  recipients?: Array<MessageResendResponseData.Recipient>;
+
+  /**
+   * QUEUED: the batch is accepted. A request that carried scheduled_at is QUEUED
+   * here too; each message moves to SCHEDULED once it is held, as GET
+   * /v3/messages/{id} and the message.scheduled webhook report.
+   */
+  status?: string;
+
+  template_id?: string;
+
+  template_name?: string;
+}
+
+export namespace MessageResendResponseData {
+  /**
+   * What one recipient of a send got, as the API reports it.
+   */
+  export interface Recipient {
+    /**
+     * Resolved template body for this recipient's channel, or null when the channel is
+     * auto-detected.
+     */
+    body?: string | null;
+
+    /**
+     * Channel this message will be sent on — sms, whatsapp — or null to auto-detect.
+     */
+    channel?: string | null;
+
+    /**
+     * Identifier for tracking this recipient's message.
+     */
+    message_id?: string;
+
+    /**
+     * Phone number in E.164 format.
+     */
+    to?: string;
+  }
+}
+
+/**
  * Standard API response envelope for all v3 endpoints
  */
 export interface MessageResendResponse {
@@ -218,7 +275,7 @@ export interface MessageResendResponse {
    * carried scheduled_at is a ScheduledSendMessageResponse, and the endpoint decides
    * which of the two to answer with. From always returns this type.
    */
-  data?: MessageResendResponse.Data | null;
+  data?: MessageResendResponseData | null;
 
   /**
    * Error information
@@ -234,65 +291,6 @@ export interface MessageResendResponse {
    * Indicates whether the request was successful
    */
   success?: boolean;
-}
-
-export namespace MessageResendResponse {
-  /**
-   * The result of a multi-recipient send.
-   *
-   * Declared here rather than in the service layer. POST /v3/messages used to
-   * publish MessageSendResult — a type in Common.Services.Messaging.Contracts — so
-   * the public contract was whatever the send service happened to return, and
-   * changing that service for an internal reason changed the API. The service keeps
-   * its result; this is what a caller sees, and the mapping between them is a
-   * decision the endpoint makes.
-   *
-   * The shape of an immediate send: it never has a scheduled_at key. A send that
-   * carried scheduled_at is a ScheduledSendMessageResponse, and the endpoint decides
-   * which of the two to answer with. From always returns this type.
-   */
-  export interface Data {
-    recipients?: Array<Data.Recipient>;
-
-    /**
-     * QUEUED: the batch is accepted. A request that carried scheduled_at is QUEUED
-     * here too; each message moves to SCHEDULED once it is held, as GET
-     * /v3/messages/{id} and the message.scheduled webhook report.
-     */
-    status?: string;
-
-    template_id?: string;
-
-    template_name?: string;
-  }
-
-  export namespace Data {
-    /**
-     * What one recipient of a send got, as the API reports it.
-     */
-    export interface Recipient {
-      /**
-       * Resolved template body for this recipient's channel, or null when the channel is
-       * auto-detected.
-       */
-      body?: string | null;
-
-      /**
-       * Channel this message will be sent on — sms, whatsapp — or null to auto-detect.
-       */
-      channel?: string | null;
-
-      /**
-       * Identifier for tracking this recipient's message.
-       */
-      message_id?: string;
-
-      /**
-       * Phone number in E.164 format.
-       */
-      to?: string;
-    }
-  }
 }
 
 /**
@@ -976,6 +974,7 @@ export namespace MessageSendParams {
 
 export declare namespace Messages {
   export {
+    type MessageResendResponseData as MessageResendResponseData,
     type MessageResendResponse as MessageResendResponse,
     type MessageRetrieveActivitiesResponse as MessageRetrieveActivitiesResponse,
     type MessageRetrieveStatusResponse as MessageRetrieveStatusResponse,

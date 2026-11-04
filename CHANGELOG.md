@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.50.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.49.0...v0.50.0) (2026-11-04)
+
+
+### Features
+
+* **pagination:** expose page, page_size, total_count and total_pages on every page model ([9c6f784](https://github.com/sentdm/sent-dm-typescript/commit/9c6f7843450a4244a66367441c15805686822910))
+
 ## [0.49.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.48.1...v0.49.0) (2026-11-03)
 
 

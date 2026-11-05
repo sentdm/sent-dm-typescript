@@ -18,8 +18,8 @@ export class Templates extends APIResource {
   /**
    * Creates a new message template with header, body, footer, and buttons. The
    * template can be submitted for review immediately or saved as draft for later
-   * submission. There is no `name` field on create — the display name is derived
-   * from the template's content and can be changed afterwards with
+   * submission. `name` is optional: when omitted or blank, a name is generated from
+   * the template's content. It can be changed afterwards with
    * `PUT /v3/templates/{id}`.
    *
    * @example
@@ -751,6 +751,13 @@ export interface TemplateCreateParams {
    * provided)
    */
   language?: string | null;
+
+  /**
+   * Body param: Template display name (optional). When omitted or blank, a name is
+   * generated from the template's content. It can be changed afterwards with PUT
+   * /v3/templates/{id}.
+   */
+  name?: string | null;
 
   /**
    * Body param: Sandbox flag - when true, the operation is simulated without side

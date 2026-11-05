@@ -165,7 +165,8 @@ export class Messages extends APIResource {
    * accepted: if the time falls inside a legally protected quiet-hours window for a
    * recipient, that message is moved to the next allowed time at release and a
    * second message.scheduled webhook reports the new scheduled_at. An account may
-   * hold at most 1,000,000 scheduled messages at once (429 LIMIT_001).
+   * hold at most 1,000,000 scheduled messages at once: a message scheduled past that
+   * is reported as BLOCKED (LIMIT_001) instead of being held.
    *
    * @example
    * ```ts

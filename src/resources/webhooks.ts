@@ -1269,7 +1269,7 @@ export interface MessageEventPayload {
   template_name?: string | null;
 
   /**
-   * When the message reached MessageStatus, in UTC (yyyy-MM-ddTHH:mm:ssZ).
+   * When the message reached MessageStatusEnum, in UTC (yyyy-MM-ddTHH:mm:ssZ).
    */
   updated_at?: string;
 }

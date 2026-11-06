@@ -125,6 +125,29 @@ Methods:
 - <code title="get /v3/profiles/{profileId}/campaigns">client.profiles.campaigns.<a href="./src/resources/profiles/campaigns.ts">list</a>(profileID, { ...params }) -> APIResponseOfListOfBrandCampaign</code>
 - <code title="delete /v3/profiles/{profileId}/campaigns/{campaignId}">client.profiles.campaigns.<a href="./src/resources/profiles/campaigns.ts">delete</a>(campaignID, { ...params }) -> void</code>
 
+# SenderProfiles
+
+Types:
+
+- <code><a href="./src/resources/sender-profiles.ts">APIResponseOfSenderProfile</a></code>
+- <code><a href="./src/resources/sender-profiles.ts">APIResponseOfSenderProfilesList</a></code>
+- <code><a href="./src/resources/sender-profiles.ts">SenderProfile</a></code>
+- <code><a href="./src/resources/sender-profiles.ts">SenderProfileBilling</a></code>
+- <code><a href="./src/resources/sender-profiles.ts">SenderProfileBillingRequest</a></code>
+- <code><a href="./src/resources/sender-profiles.ts">SenderProfileChannels</a></code>
+- <code><a href="./src/resources/sender-profiles.ts">SenderProfileRcs</a></code>
+- <code><a href="./src/resources/sender-profiles.ts">SenderProfileSMS</a></code>
+- <code><a href="./src/resources/sender-profiles.ts">SenderProfileWhatsapp</a></code>
+- <code><a href="./src/resources/sender-profiles.ts">SenderProfilesList</a></code>
+
+Methods:
+
+- <code title="post /v3/sender-profiles">client.senderProfiles.<a href="./src/resources/sender-profiles.ts">create</a>({ ...params }) -> APIResponseOfSenderProfile</code>
+- <code title="get /v3/sender-profiles/{id}">client.senderProfiles.<a href="./src/resources/sender-profiles.ts">retrieve</a>(id) -> APIResponseOfSenderProfile</code>
+- <code title="patch /v3/sender-profiles/{id}">client.senderProfiles.<a href="./src/resources/sender-profiles.ts">update</a>(id, { ...params }) -> APIResponseOfSenderProfile</code>
+- <code title="get /v3/sender-profiles">client.senderProfiles.<a href="./src/resources/sender-profiles.ts">list</a>({ ...params }) -> SenderProfilesSenderProfilesPage</code>
+- <code title="delete /v3/sender-profiles/{id}">client.senderProfiles.<a href="./src/resources/sender-profiles.ts">delete</a>(id) -> void</code>
+
 # Numbers
 
 Types:
@@ -140,11 +163,13 @@ Methods:
 Types:
 
 - <code><a href="./src/resources/messages.ts">MessageSendResponse</a></code>
+- <code><a href="./src/resources/messages.ts">MessageCancelResponse</a></code>
 - <code><a href="./src/resources/messages.ts">MessageRetrieveActivitiesResponse</a></code>
 - <code><a href="./src/resources/messages.ts">MessageRetrieveStatusResponse</a></code>
 
 Methods:
 
+- <code title="post /v3/messages/{id}/cancel">client.messages.<a href="./src/resources/messages.ts">cancel</a>(id, { ...params }) -> MessageCancelResponse</code>
 - <code title="post /v3/messages/{id}/resend">client.messages.<a href="./src/resources/messages.ts">resend</a>(id, { ...params }) -> MessageSendResponse</code>
 - <code title="get /v3/messages/{id}/activities">client.messages.<a href="./src/resources/messages.ts">retrieveActivities</a>(id, { ...params }) -> MessageRetrieveActivitiesResponse</code>
 - <code title="get /v3/messages/{id}">client.messages.<a href="./src/resources/messages.ts">retrieveStatus</a>(id, { ...params }) -> MessageRetrieveStatusResponse</code>
@@ -275,6 +300,57 @@ Methods:
 
 # Channels
 
+Types:
+
+- <code><a href="./src/resources/channels/channels.ts">APIResponseOfChannelsState</a></code>
+- <code><a href="./src/resources/channels/channels.ts">ChannelsState</a></code>
+- <code><a href="./src/resources/channels/channels.ts">MmsMarket</a></code>
+
+Methods:
+
+- <code title="get /v3/channels">client.channels.<a href="./src/resources/channels/channels.ts">list</a>({ ...params }) -> APIResponseOfChannelsState</code>
+
+## SMS
+
+Types:
+
+- <code><a href="./src/resources/channels/sms.ts">APIResponseOfListOfSMSMarket</a></code>
+- <code><a href="./src/resources/channels/sms.ts">APIResponseOfSMSMarket</a></code>
+- <code><a href="./src/resources/channels/sms.ts">MarketCompliance</a></code>
+- <code><a href="./src/resources/channels/sms.ts">SMSMarket</a></code>
+- <code><a href="./src/resources/channels/sms.ts">SMSNumber</a></code>
+- <code><a href="./src/resources/channels/sms.ts">SMSNumberRequest</a></code>
+
+Methods:
+
+- <code title="post /v3/channels/sms">client.channels.sms.<a href="./src/resources/channels/sms.ts">create</a>({ ...params }) -> APIResponseOfSMSMarket</code>
+- <code title="get /v3/channels/sms/{country}/{type}">client.channels.sms.<a href="./src/resources/channels/sms.ts">retrieve</a>(type, { ...params }) -> APIResponseOfSMSMarket</code>
+- <code title="patch /v3/channels/sms/{country}/{type}">client.channels.sms.<a href="./src/resources/channels/sms.ts">update</a>(type, { ...params }) -> APIResponseOfSMSMarket</code>
+- <code title="get /v3/channels/sms">client.channels.sms.<a href="./src/resources/channels/sms.ts">list</a>({ ...params }) -> APIResponseOfListOfSMSMarket</code>
+
+## Rcs
+
+Types:
+
+- <code><a href="./src/resources/channels/rcs.ts">APIResponseOfRcsAgent</a></code>
+- <code><a href="./src/resources/channels/rcs.ts">RcsAddress</a></code>
+- <code><a href="./src/resources/channels/rcs.ts">RcsAgent</a></code>
+
+Methods:
+
+- <code title="post /v3/channels/rcs">client.channels.rcs.<a href="./src/resources/channels/rcs.ts">create</a>({ ...params }) -> APIResponseOfRcsAgent</code>
+
+## Whatsapp
+
+Types:
+
+- <code><a href="./src/resources/channels/whatsapp.ts">APIResponseOfWhatsappChannel</a></code>
+- <code><a href="./src/resources/channels/whatsapp.ts">WhatsappChannel</a></code>
+
+Methods:
+
+- <code title="post /v3/channels/whatsapp">client.channels.whatsapp.<a href="./src/resources/channels/whatsapp.ts">create</a>({ ...params }) -> APIResponseOfWhatsappChannel</code>
+
 ## Voice
 
 Types:
@@ -300,6 +376,20 @@ Methods:
 - <code title="get /v3/channels/voice">client.channels.voice.<a href="./src/resources/channels/voice.ts">list</a>({ ...params }) -> APIResponseOfListOfVoiceNumber</code>
 - <code title="post /v3/channels/voice/{number}/rotate-secret">client.channels.voice.<a href="./src/resources/channels/voice.ts">rotateSecret</a>(number, { ...params }) -> APIResponseOfVoiceSecret</code>
 - <code title="post /v3/channels/voice/{number}/test">client.channels.voice.<a href="./src/resources/channels/voice.ts">test</a>(number, { ...params }) -> APIResponseOfVoiceCallbackTest</code>
+
+# Compliance
+
+Types:
+
+- <code><a href="./src/resources/compliance.ts">APIResponseOfComplianceRequirements</a></code>
+- <code><a href="./src/resources/compliance.ts">ComplianceAttachmentTemplate</a></code>
+- <code><a href="./src/resources/compliance.ts">ComplianceRequirement</a></code>
+- <code><a href="./src/resources/compliance.ts">ComplianceRequirements</a></code>
+- <code><a href="./src/resources/compliance.ts">ComplianceSetupStep</a></code>
+
+Methods:
+
+- <code title="get /v3/compliance/requirements">client.compliance.<a href="./src/resources/compliance.ts">retrieveRequirements</a>({ ...params }) -> APIResponseOfComplianceRequirements</code>
 
 # Me
 

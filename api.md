@@ -3,6 +3,11 @@
 Types:
 
 - <code><a href="./src/resources/webhooks.ts">APIMeta</a></code>
+- <code><a href="./src/resources/webhooks.ts">APIResponseOfWebhookEventTypesList</a></code>
+- <code><a href="./src/resources/webhooks.ts">APIResponseOfWebhookEventsList</a></code>
+- <code><a href="./src/resources/webhooks.ts">APIResponseOfWebhookSecret</a></code>
+- <code><a href="./src/resources/webhooks.ts">APIResponseOfWebhookTest</a></code>
+- <code><a href="./src/resources/webhooks.ts">APIResponseOfWebhooksList</a></code>
 - <code><a href="./src/resources/webhooks.ts">APIResponseWebhook</a></code>
 - <code><a href="./src/resources/webhooks.ts">CallEvent</a></code>
 - <code><a href="./src/resources/webhooks.ts">CallEventPayload</a></code>
@@ -11,20 +16,28 @@ Types:
 - <code><a href="./src/resources/webhooks.ts">ContactEvent</a></code>
 - <code><a href="./src/resources/webhooks.ts">ContactEventPayload</a></code>
 - <code><a href="./src/resources/webhooks.ts">ErrorDetail</a></code>
+- <code><a href="./src/resources/webhooks.ts">InboundMedia</a></code>
 - <code><a href="./src/resources/webhooks.ts">InboundMessageEvent</a></code>
 - <code><a href="./src/resources/webhooks.ts">InboundMessageEventPayload</a></code>
+- <code><a href="./src/resources/webhooks.ts">LinkEvent</a></code>
+- <code><a href="./src/resources/webhooks.ts">LinkEventPayload</a></code>
 - <code><a href="./src/resources/webhooks.ts">MessageEvent</a></code>
 - <code><a href="./src/resources/webhooks.ts">MessageEventPayload</a></code>
 - <code><a href="./src/resources/webhooks.ts">MutationRequest</a></code>
+- <code><a href="./src/resources/webhooks.ts">PaginationCursors</a></code>
 - <code><a href="./src/resources/webhooks.ts">PaginationMeta</a></code>
 - <code><a href="./src/resources/webhooks.ts">TemplateEvent</a></code>
 - <code><a href="./src/resources/webhooks.ts">TemplateEventPayload</a></code>
+- <code><a href="./src/resources/webhooks.ts">WebhookDelivery</a></code>
 - <code><a href="./src/resources/webhooks.ts">WebhookEventType</a></code>
+- <code><a href="./src/resources/webhooks.ts">WebhookEventTypesList</a></code>
+- <code><a href="./src/resources/webhooks.ts">WebhookEventsList</a></code>
 - <code><a href="./src/resources/webhooks.ts">WebhookResponse</a></code>
-- <code><a href="./src/resources/webhooks.ts">WebhookListEventTypesResponse</a></code>
-- <code><a href="./src/resources/webhooks.ts">WebhookListEventsResponse</a></code>
-- <code><a href="./src/resources/webhooks.ts">WebhookRotateSecretResponse</a></code>
-- <code><a href="./src/resources/webhooks.ts">WebhookTestResponse</a></code>
+- <code><a href="./src/resources/webhooks.ts">WebhookSecret</a></code>
+- <code><a href="./src/resources/webhooks.ts">WebhookSenderProfile</a></code>
+- <code><a href="./src/resources/webhooks.ts">WebhookSenderProfileConfig</a></code>
+- <code><a href="./src/resources/webhooks.ts">WebhookTest</a></code>
+- <code><a href="./src/resources/webhooks.ts">WebhooksList</a></code>
 
 Methods:
 
@@ -33,10 +46,10 @@ Methods:
 - <code title="put /v3/webhooks/{id}">client.webhooks.<a href="./src/resources/webhooks.ts">update</a>(id, { ...params }) -> APIResponseWebhook</code>
 - <code title="get /v3/webhooks">client.webhooks.<a href="./src/resources/webhooks.ts">list</a>({ ...params }) -> WebhookResponsesWebhooksPage</code>
 - <code title="delete /v3/webhooks/{id}">client.webhooks.<a href="./src/resources/webhooks.ts">delete</a>(id, { ...params }) -> void</code>
-- <code title="get /v3/webhooks/event-types">client.webhooks.<a href="./src/resources/webhooks.ts">listEventTypes</a>({ ...params }) -> WebhookListEventTypesResponse</code>
-- <code title="get /v3/webhooks/{id}/events">client.webhooks.<a href="./src/resources/webhooks.ts">listEvents</a>(id, { ...params }) -> WebhookListEventsResponsesWebhookEventsPage</code>
-- <code title="post /v3/webhooks/{id}/rotate-secret">client.webhooks.<a href="./src/resources/webhooks.ts">rotateSecret</a>(id, { ...params }) -> WebhookRotateSecretResponse</code>
-- <code title="post /v3/webhooks/{id}/test">client.webhooks.<a href="./src/resources/webhooks.ts">test</a>(id, { ...params }) -> WebhookTestResponse</code>
+- <code title="get /v3/webhooks/event-types">client.webhooks.<a href="./src/resources/webhooks.ts">listEventTypes</a>({ ...params }) -> APIResponseOfWebhookEventTypesList</code>
+- <code title="get /v3/webhooks/{id}/events">client.webhooks.<a href="./src/resources/webhooks.ts">listEvents</a>(id, { ...params }) -> WebhookDeliveriesWebhookEventsPage</code>
+- <code title="post /v3/webhooks/{id}/rotate-secret">client.webhooks.<a href="./src/resources/webhooks.ts">rotateSecret</a>(id, { ...params }) -> APIResponseOfWebhookSecret</code>
+- <code title="post /v3/webhooks/{id}/test">client.webhooks.<a href="./src/resources/webhooks.ts">test</a>(id, { ...params }) -> APIResponseOfWebhookTest</code>
 - <code title="patch /v3/webhooks/{id}/toggle-status">client.webhooks.<a href="./src/resources/webhooks.ts">toggleStatus</a>(id, { ...params }) -> APIResponseWebhook</code>
 
 # Users
@@ -44,13 +57,14 @@ Methods:
 Types:
 
 - <code><a href="./src/resources/users.ts">APIResponseOfUser</a></code>
+- <code><a href="./src/resources/users.ts">APIResponseOfUsersList</a></code>
 - <code><a href="./src/resources/users.ts">UserResponse</a></code>
-- <code><a href="./src/resources/users.ts">UserListResponse</a></code>
+- <code><a href="./src/resources/users.ts">UsersList</a></code>
 
 Methods:
 
 - <code title="get /v3/users/{userId}">client.users.<a href="./src/resources/users.ts">retrieve</a>(userID, { ...params }) -> APIResponseOfUser</code>
-- <code title="get /v3/users">client.users.<a href="./src/resources/users.ts">list</a>({ ...params }) -> UserListResponse</code>
+- <code title="get /v3/users">client.users.<a href="./src/resources/users.ts">list</a>({ ...params }) -> APIResponseOfUsersList</code>
 - <code title="post /v3/users">client.users.<a href="./src/resources/users.ts">invite</a>({ ...params }) -> APIResponseOfUser</code>
 - <code title="delete /v3/users/{userId}">client.users.<a href="./src/resources/users.ts">remove</a>(userID, { ...params }) -> void</code>
 - <code title="patch /v3/users/{userId}">client.users.<a href="./src/resources/users.ts">updateRole</a>(userID, { ...params }) -> APIResponseOfUser</code>
@@ -59,6 +73,7 @@ Methods:
 
 Types:
 
+- <code><a href="./src/resources/templates.ts">APIResponseOfTemplatesList</a></code>
 - <code><a href="./src/resources/templates.ts">APIResponseTemplate</a></code>
 - <code><a href="./src/resources/templates.ts">AuthenticationConfig</a></code>
 - <code><a href="./src/resources/templates.ts">Template</a></code>
@@ -69,7 +84,13 @@ Types:
 - <code><a href="./src/resources/templates.ts">TemplateDefinition</a></code>
 - <code><a href="./src/resources/templates.ts">TemplateFooter</a></code>
 - <code><a href="./src/resources/templates.ts">TemplateHeader</a></code>
+- <code><a href="./src/resources/templates.ts">TemplateHeaderLocation</a></code>
+- <code><a href="./src/resources/templates.ts">TemplateMediaItem</a></code>
+- <code><a href="./src/resources/templates.ts">TemplateMmsBodyContent</a></code>
+- <code><a href="./src/resources/templates.ts">TemplateRef</a></code>
 - <code><a href="./src/resources/templates.ts">TemplateVariable</a></code>
+- <code><a href="./src/resources/templates.ts">TemplateVariableProps</a></code>
+- <code><a href="./src/resources/templates.ts">TemplatesList</a></code>
 
 Methods:
 
@@ -83,28 +104,41 @@ Methods:
 
 Types:
 
+- <code><a href="./src/resources/profiles/profiles.ts">APIResponseOfProfileCompletionAccepted</a></code>
+- <code><a href="./src/resources/profiles/profiles.ts">APIResponseOfProfileCompletionResult</a></code>
 - <code><a href="./src/resources/profiles/profiles.ts">APIResponseOfProfileDetail</a></code>
+- <code><a href="./src/resources/profiles/profiles.ts">APIResponseOfProfilesList</a></code>
+- <code><a href="./src/resources/profiles/profiles.ts">BillingContact</a></code>
 - <code><a href="./src/resources/profiles/profiles.ts">BillingContactInfo</a></code>
+- <code><a href="./src/resources/profiles/profiles.ts">BrandBusiness</a></code>
 - <code><a href="./src/resources/profiles/profiles.ts">BrandBusinessInfo</a></code>
+- <code><a href="./src/resources/profiles/profiles.ts">BrandCompliance</a></code>
 - <code><a href="./src/resources/profiles/profiles.ts">BrandComplianceInfo</a></code>
+- <code><a href="./src/resources/profiles/profiles.ts">BrandContact</a></code>
 - <code><a href="./src/resources/profiles/profiles.ts">BrandContactInfo</a></code>
+- <code><a href="./src/resources/profiles/profiles.ts">BrandWithKYC</a></code>
 - <code><a href="./src/resources/profiles/profiles.ts">BrandsBrandData</a></code>
 - <code><a href="./src/resources/profiles/profiles.ts">DestinationCountry</a></code>
+- <code><a href="./src/resources/profiles/profiles.ts">EntityType</a></code>
 - <code><a href="./src/resources/profiles/profiles.ts">PaymentDetails</a></code>
+- <code><a href="./src/resources/profiles/profiles.ts">ProfileCompletionAccepted</a></code>
+- <code><a href="./src/resources/profiles/profiles.ts">ProfileCompletionResult</a></code>
 - <code><a href="./src/resources/profiles/profiles.ts">ProfileDetail</a></code>
+- <code><a href="./src/resources/profiles/profiles.ts">ProfilesList</a></code>
+- <code><a href="./src/resources/profiles/profiles.ts">TcrBrandIdentityStatus</a></code>
 - <code><a href="./src/resources/profiles/profiles.ts">TcrBrandRelationship</a></code>
+- <code><a href="./src/resources/profiles/profiles.ts">TcrBrandStatus</a></code>
+- <code><a href="./src/resources/profiles/profiles.ts">TcrCampaignStatus</a></code>
 - <code><a href="./src/resources/profiles/profiles.ts">TcrVertical</a></code>
-- <code><a href="./src/resources/profiles/profiles.ts">ProfileListResponse</a></code>
-- <code><a href="./src/resources/profiles/profiles.ts">ProfileCompleteResponse</a></code>
 
 Methods:
 
 - <code title="post /v3/profiles">client.profiles.<a href="./src/resources/profiles/profiles.ts">create</a>({ ...params }) -> APIResponseOfProfileDetail</code>
 - <code title="get /v3/profiles/{profileId}">client.profiles.<a href="./src/resources/profiles/profiles.ts">retrieve</a>(profileID, { ...params }) -> APIResponseOfProfileDetail</code>
 - <code title="patch /v3/profiles/{profileId}">client.profiles.<a href="./src/resources/profiles/profiles.ts">update</a>(profileID, { ...params }) -> APIResponseOfProfileDetail</code>
-- <code title="get /v3/profiles">client.profiles.<a href="./src/resources/profiles/profiles.ts">list</a>({ ...params }) -> ProfileListResponse</code>
+- <code title="get /v3/profiles">client.profiles.<a href="./src/resources/profiles/profiles.ts">list</a>({ ...params }) -> APIResponseOfProfilesList</code>
 - <code title="delete /v3/profiles/{profileId}">client.profiles.<a href="./src/resources/profiles/profiles.ts">delete</a>(profileID, { ...params }) -> void</code>
-- <code title="post /v3/profiles/{profileId}/complete">client.profiles.<a href="./src/resources/profiles/profiles.ts">complete</a>(profileID, { ...params }) -> ProfileCompleteResponse</code>
+- <code title="post /v3/profiles/{profileId}/complete">client.profiles.<a href="./src/resources/profiles/profiles.ts">complete</a>(profileID, { ...params }) -> APIResponseOfProfileCompletionResult</code>
 
 ## Campaigns
 
@@ -125,29 +159,67 @@ Methods:
 - <code title="get /v3/profiles/{profileId}/campaigns">client.profiles.campaigns.<a href="./src/resources/profiles/campaigns.ts">list</a>(profileID, { ...params }) -> APIResponseOfListOfBrandCampaign</code>
 - <code title="delete /v3/profiles/{profileId}/campaigns/{campaignId}">client.profiles.campaigns.<a href="./src/resources/profiles/campaigns.ts">delete</a>(campaignID, { ...params }) -> void</code>
 
+# SenderProfiles
+
+Types:
+
+- <code><a href="./src/resources/sender-profiles.ts">APIResponseOfSenderProfile</a></code>
+- <code><a href="./src/resources/sender-profiles.ts">APIResponseOfSenderProfilesList</a></code>
+- <code><a href="./src/resources/sender-profiles.ts">SenderProfile</a></code>
+- <code><a href="./src/resources/sender-profiles.ts">SenderProfileBilling</a></code>
+- <code><a href="./src/resources/sender-profiles.ts">SenderProfileBillingRequest</a></code>
+- <code><a href="./src/resources/sender-profiles.ts">SenderProfileChannels</a></code>
+- <code><a href="./src/resources/sender-profiles.ts">SenderProfileRcs</a></code>
+- <code><a href="./src/resources/sender-profiles.ts">SenderProfileSMS</a></code>
+- <code><a href="./src/resources/sender-profiles.ts">SenderProfileWhatsapp</a></code>
+- <code><a href="./src/resources/sender-profiles.ts">SenderProfilesList</a></code>
+
+Methods:
+
+- <code title="post /v3/sender-profiles">client.senderProfiles.<a href="./src/resources/sender-profiles.ts">create</a>({ ...params }) -> APIResponseOfSenderProfile</code>
+- <code title="get /v3/sender-profiles/{id}">client.senderProfiles.<a href="./src/resources/sender-profiles.ts">retrieve</a>(id) -> APIResponseOfSenderProfile</code>
+- <code title="patch /v3/sender-profiles/{id}">client.senderProfiles.<a href="./src/resources/sender-profiles.ts">update</a>(id, { ...params }) -> APIResponseOfSenderProfile</code>
+- <code title="get /v3/sender-profiles">client.senderProfiles.<a href="./src/resources/sender-profiles.ts">list</a>({ ...params }) -> SenderProfilesSenderProfilesPage</code>
+- <code title="delete /v3/sender-profiles/{id}">client.senderProfiles.<a href="./src/resources/sender-profiles.ts">delete</a>(id) -> void</code>
+
 # Numbers
 
 Types:
 
-- <code><a href="./src/resources/numbers.ts">NumberLookupResponse</a></code>
+- <code><a href="./src/resources/numbers.ts">APIResponseOfNumberLookupResult</a></code>
+- <code><a href="./src/resources/numbers.ts">NumberLookupResult</a></code>
 
 Methods:
 
-- <code title="get /v3/numbers/lookup/{phoneNumber}">client.numbers.<a href="./src/resources/numbers.ts">lookup</a>(phoneNumber, { ...params }) -> NumberLookupResponse</code>
+- <code title="get /v3/numbers/lookup/{phoneNumber}">client.numbers.<a href="./src/resources/numbers.ts">lookup</a>(phoneNumber, { ...params }) -> APIResponseOfNumberLookupResult</code>
 
 # Messages
 
 Types:
 
+- <code><a href="./src/resources/messages.ts">APIResponseOfCancelledMessage</a></code>
+- <code><a href="./src/resources/messages.ts">APIResponseOfMessage</a></code>
+- <code><a href="./src/resources/messages.ts">APIResponseOfMessageActivities</a></code>
+- <code><a href="./src/resources/messages.ts">CancelledMessage</a></code>
+- <code><a href="./src/resources/messages.ts">Message</a></code>
+- <code><a href="./src/resources/messages.ts">MessageActivities</a></code>
+- <code><a href="./src/resources/messages.ts">MessageActivity</a></code>
+- <code><a href="./src/resources/messages.ts">MessageBody</a></code>
+- <code><a href="./src/resources/messages.ts">MessageButton</a></code>
+- <code><a href="./src/resources/messages.ts">MessageChannelOptions</a></code>
+- <code><a href="./src/resources/messages.ts">MessageHeaderMedia</a></code>
+- <code><a href="./src/resources/messages.ts">MessageMedia</a></code>
+- <code><a href="./src/resources/messages.ts">MessageRecipient</a></code>
 - <code><a href="./src/resources/messages.ts">MessageSendResponse</a></code>
-- <code><a href="./src/resources/messages.ts">MessageRetrieveActivitiesResponse</a></code>
-- <code><a href="./src/resources/messages.ts">MessageRetrieveStatusResponse</a></code>
+- <code><a href="./src/resources/messages.ts">MessageSendResult</a></code>
+- <code><a href="./src/resources/messages.ts">MessageStatusEvent</a></code>
 
 Methods:
 
+- <code title="post /v3/messages/{id}/cancel">client.messages.<a href="./src/resources/messages.ts">cancel</a>(id, { ...params }) -> APIResponseOfCancelledMessage</code>
 - <code title="post /v3/messages/{id}/resend">client.messages.<a href="./src/resources/messages.ts">resend</a>(id, { ...params }) -> MessageSendResponse</code>
-- <code title="get /v3/messages/{id}/activities">client.messages.<a href="./src/resources/messages.ts">retrieveActivities</a>(id, { ...params }) -> MessageRetrieveActivitiesResponse</code>
-- <code title="get /v3/messages/{id}">client.messages.<a href="./src/resources/messages.ts">retrieveStatus</a>(id, { ...params }) -> MessageRetrieveStatusResponse</code>
+- <code title="get /v3/messages/{id}/activities">client.messages.<a href="./src/resources/messages.ts">retrieveActivities</a>(id, { ...params }) -> APIResponseOfMessageActivities</code>
+- <code title="get /v3/messages/{id}">client.messages.<a href="./src/resources/messages.ts">retrieveStatus</a>(id, { ...params }) -> APIResponseOfMessage</code>
 - <code title="post /v3/messages">client.messages.<a href="./src/resources/messages.ts">send</a>({ ...params }) -> MessageSendResponse</code>
 
 # Contacts
@@ -156,8 +228,11 @@ Types:
 
 - <code><a href="./src/resources/contacts.ts">APIResponseOfContact</a></code>
 - <code><a href="./src/resources/contacts.ts">APIResponseOfContactMessageSummary</a></code>
+- <code><a href="./src/resources/contacts.ts">APIResponseOfContactsList</a></code>
+- <code><a href="./src/resources/contacts.ts">ChannelScore</a></code>
 - <code><a href="./src/resources/contacts.ts">ContactMessageSummary</a></code>
 - <code><a href="./src/resources/contacts.ts">ContactResponse</a></code>
+- <code><a href="./src/resources/contacts.ts">ContactsList</a></code>
 
 Methods:
 
@@ -177,8 +252,8 @@ Types:
 
 Methods:
 
-- <code title="get /v3/conversations">client.conversations.<a href="./src/resources/conversations.ts">list</a>({ ...params }) -> ConversationMessagesListMessagesConversationsPage</code>
-- <code title="get /v3/conversations/{id}">client.conversations.<a href="./src/resources/conversations.ts">listMessages</a>(id, { ...params }) -> ConversationMessagesListMessagesConversationsPage</code>
+- <code title="get /v3/conversations">client.conversations.<a href="./src/resources/conversations.ts">list</a>({ ...params }) -> MessagesConversationsPage</code>
+- <code title="get /v3/conversations/{id}">client.conversations.<a href="./src/resources/conversations.ts">listMessages</a>(id, { ...params }) -> MessagesConversationsPage</code>
 
 # Voice
 
@@ -190,6 +265,7 @@ Types:
 - <code><a href="./src/resources/voice/calls/calls.ts">APIResponseOfCallRecordings</a></code>
 - <code><a href="./src/resources/voice/calls/calls.ts">APIResponseOfCallsList</a></code>
 - <code><a href="./src/resources/voice/calls/calls.ts">Call</a></code>
+- <code><a href="./src/resources/voice/calls/calls.ts">CallLeg</a></code>
 - <code><a href="./src/resources/voice/calls/calls.ts">CallParty</a></code>
 - <code><a href="./src/resources/voice/calls/calls.ts">CallRecording</a></code>
 - <code><a href="./src/resources/voice/calls/calls.ts">CallRecordings</a></code>
@@ -275,6 +351,59 @@ Methods:
 
 # Channels
 
+Types:
+
+- <code><a href="./src/resources/channels/channels.ts">APIResponseOfChannelsState</a></code>
+- <code><a href="./src/resources/channels/channels.ts">ChannelsState</a></code>
+- <code><a href="./src/resources/channels/channels.ts">MmsMarket</a></code>
+
+Methods:
+
+- <code title="get /v3/channels">client.channels.<a href="./src/resources/channels/channels.ts">list</a>({ ...params }) -> APIResponseOfChannelsState</code>
+
+## SMS
+
+Types:
+
+- <code><a href="./src/resources/channels/sms.ts">APIResponseOfListOfSMSMarket</a></code>
+- <code><a href="./src/resources/channels/sms.ts">APIResponseOfSMSMarket</a></code>
+- <code><a href="./src/resources/channels/sms.ts">MarketCompliance</a></code>
+- <code><a href="./src/resources/channels/sms.ts">SMSMarket</a></code>
+- <code><a href="./src/resources/channels/sms.ts">SMSNumber</a></code>
+- <code><a href="./src/resources/channels/sms.ts">SMSNumberRequest</a></code>
+- <code><a href="./src/resources/channels/sms.ts">SuppliedCompliance</a></code>
+- <code><a href="./src/resources/channels/sms.ts">SuppliedDocument</a></code>
+
+Methods:
+
+- <code title="post /v3/channels/sms">client.channels.sms.<a href="./src/resources/channels/sms.ts">create</a>({ ...params }) -> APIResponseOfSMSMarket</code>
+- <code title="get /v3/channels/sms/{country}/{type}">client.channels.sms.<a href="./src/resources/channels/sms.ts">retrieve</a>(type, { ...params }) -> APIResponseOfSMSMarket</code>
+- <code title="patch /v3/channels/sms/{country}/{type}">client.channels.sms.<a href="./src/resources/channels/sms.ts">update</a>(type, { ...params }) -> APIResponseOfSMSMarket</code>
+- <code title="get /v3/channels/sms">client.channels.sms.<a href="./src/resources/channels/sms.ts">list</a>({ ...params }) -> APIResponseOfListOfSMSMarket</code>
+
+## Rcs
+
+Types:
+
+- <code><a href="./src/resources/channels/rcs.ts">APIResponseOfRcsAgent</a></code>
+- <code><a href="./src/resources/channels/rcs.ts">RcsAddress</a></code>
+- <code><a href="./src/resources/channels/rcs.ts">RcsAgent</a></code>
+
+Methods:
+
+- <code title="post /v3/channels/rcs">client.channels.rcs.<a href="./src/resources/channels/rcs.ts">create</a>({ ...params }) -> APIResponseOfRcsAgent</code>
+
+## Whatsapp
+
+Types:
+
+- <code><a href="./src/resources/channels/whatsapp.ts">APIResponseOfWhatsappChannel</a></code>
+- <code><a href="./src/resources/channels/whatsapp.ts">WhatsappChannel</a></code>
+
+Methods:
+
+- <code title="post /v3/channels/whatsapp">client.channels.whatsapp.<a href="./src/resources/channels/whatsapp.ts">create</a>({ ...params }) -> APIResponseOfWhatsappChannel</code>
+
 ## Voice
 
 Types:
@@ -301,13 +430,33 @@ Methods:
 - <code title="post /v3/channels/voice/{number}/rotate-secret">client.channels.voice.<a href="./src/resources/channels/voice.ts">rotateSecret</a>(number, { ...params }) -> APIResponseOfVoiceSecret</code>
 - <code title="post /v3/channels/voice/{number}/test">client.channels.voice.<a href="./src/resources/channels/voice.ts">test</a>(number, { ...params }) -> APIResponseOfVoiceCallbackTest</code>
 
+# Compliance
+
+Types:
+
+- <code><a href="./src/resources/compliance.ts">APIResponseOfComplianceRequirements</a></code>
+- <code><a href="./src/resources/compliance.ts">ComplianceAttachmentTemplate</a></code>
+- <code><a href="./src/resources/compliance.ts">ComplianceRequirement</a></code>
+- <code><a href="./src/resources/compliance.ts">ComplianceRequirements</a></code>
+- <code><a href="./src/resources/compliance.ts">ComplianceSetupStep</a></code>
+
+Methods:
+
+- <code title="get /v3/compliance/requirements">client.compliance.<a href="./src/resources/compliance.ts">retrieveRequirements</a>({ ...params }) -> APIResponseOfComplianceRequirements</code>
+
 # Me
 
 Types:
 
+- <code><a href="./src/resources/me.ts">Account</a></code>
+- <code><a href="./src/resources/me.ts">AccountChannels</a></code>
+- <code><a href="./src/resources/me.ts">AccountProfile</a></code>
+- <code><a href="./src/resources/me.ts">AccountRcsChannel</a></code>
+- <code><a href="./src/resources/me.ts">AccountSMSChannel</a></code>
+- <code><a href="./src/resources/me.ts">AccountWhatsappChannel</a></code>
+- <code><a href="./src/resources/me.ts">APIResponseOfAccount</a></code>
 - <code><a href="./src/resources/me.ts">ProfileSettings</a></code>
-- <code><a href="./src/resources/me.ts">MeRetrieveResponse</a></code>
 
 Methods:
 
-- <code title="get /v3/me">client.me.<a href="./src/resources/me.ts">retrieve</a>({ ...params }) -> MeRetrieveResponse</code>
+- <code title="get /v3/me">client.me.<a href="./src/resources/me.ts">retrieve</a>({ ...params }) -> APIResponseOfAccount</code>

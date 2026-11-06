@@ -1,7 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../../core/resource';
-import * as ProfilesAPI from './profiles';
 import * as WebhooksAPI from '../webhooks';
 import * as CampaignsAPI from './campaigns';
 import {
@@ -192,7 +191,7 @@ export class Profiles extends APIResource {
   list(
     params: ProfileListParams | null | undefined = {},
     options?: RequestOptions,
-  ): APIPromise<ProfileListResponse> {
+  ): APIPromise<APIResponseOfProfilesList> {
     const { 'x-profile-id': xProfileID } = params ?? {};
     return this._client.get('/v3/profiles', {
       ...options,
@@ -288,7 +287,7 @@ export class Profiles extends APIResource {
     profileID: string,
     params: ProfileCompleteParams,
     options?: RequestOptions,
-  ): APIPromise<ProfileCompleteResponse> {
+  ): APIPromise<APIResponseOfProfileCompletionResult> {
     const { 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
     return this._client.post(path`/v3/profiles/${profileID}/complete`, {
       body,
@@ -302,6 +301,59 @@ export class Profiles extends APIResource {
       ]),
     });
   }
+}
+
+/**
+ * Standard API response envelope for all v3 endpoints
+ */
+export interface APIResponseOfProfileCompletionAccepted {
+  /**
+   * Response acknowledging that profile completion has been accepted and started in
+   * the background. The provided webhook URL will be called when processing
+   * finishes.
+   */
+  data?: ProfileCompletionAccepted | null;
+
+  /**
+   * Error information
+   */
+  error?: WebhooksAPI.ErrorDetail | null;
+
+  /**
+   * Request and response metadata
+   */
+  meta?: WebhooksAPI.APIMeta;
+
+  /**
+   * Indicates whether the request was successful
+   */
+  success?: boolean;
+}
+
+/**
+ * Standard API response envelope for all v3 endpoints
+ */
+export interface APIResponseOfProfileCompletionResult {
+  /**
+   * Response when a profile is already in the completed state and no further action
+   * is taken.
+   */
+  data?: ProfileCompletionResult | null;
+
+  /**
+   * Error information
+   */
+  error?: WebhooksAPI.ErrorDetail | null;
+
+  /**
+   * Request and response metadata
+   */
+  meta?: WebhooksAPI.APIMeta;
+
+  /**
+   * Indicates whether the request was successful
+   */
+  success?: boolean;
 }
 
 /**
@@ -327,6 +379,44 @@ export interface APIResponseOfProfileDetail {
    * Indicates whether the request was successful
    */
   success?: boolean;
+}
+
+/**
+ * Standard API response envelope for all v3 endpoints
+ */
+export interface APIResponseOfProfilesList {
+  /**
+   * The profiles in the organization.
+   */
+  data?: ProfilesList | null;
+
+  /**
+   * Error information
+   */
+  error?: WebhooksAPI.ErrorDetail | null;
+
+  /**
+   * Request and response metadata
+   */
+  meta?: WebhooksAPI.APIMeta;
+
+  /**
+   * Indicates whether the request was successful
+   */
+  success?: boolean;
+}
+
+/**
+ * Billing contact info returned in profile responses
+ */
+export interface BillingContact {
+  address?: string | null;
+
+  email?: string | null;
+
+  name?: string | null;
+
+  phone?: string | null;
 }
 
 /**
@@ -356,6 +446,63 @@ export interface BillingContactInfo {
   phone?: string | null;
 }
 
+export interface BrandBusiness {
+  /**
+   * City
+   */
+  city?: string | null;
+
+  /**
+   * Country code (e.g., US, CA)
+   */
+  country?: string | null;
+
+  /**
+   * Country where the business is registered
+   */
+  country_of_registration?: string | null;
+
+  /**
+   * Business entity type
+   */
+  entity_type?: string | null;
+
+  /**
+   * Legal business name
+   */
+  legal_name?: string | null;
+
+  /**
+   * Postal/ZIP code
+   */
+  postal_code?: string | null;
+
+  /**
+   * State/province code
+   */
+  state?: string | null;
+
+  /**
+   * Street address
+   */
+  street?: string | null;
+
+  /**
+   * Tax ID/EIN number
+   */
+  tax_id?: string | null;
+
+  /**
+   * Type of tax ID (e.g., us_ein, ca_bn)
+   */
+  tax_id_type?: string | null;
+
+  /**
+   * Business website URL
+   */
+  url?: string | null;
+}
+
 /**
  * Business details and address for brand KYC
  */
@@ -375,7 +522,7 @@ export interface BrandBusinessInfo {
    */
   countryOfRegistration?: string | null;
 
-  entityType?: 'PRIVATE_PROFIT' | 'PUBLIC_PROFIT' | 'NON_PROFIT' | 'SOLE_PROPRIETOR' | 'GOVERNMENT' | null;
+  entityType?: EntityType | null;
 
   /**
    * Legal business name
@@ -413,6 +560,45 @@ export interface BrandBusinessInfo {
   url?: string | null;
 }
 
+export interface BrandCompliance {
+  brand_relationship?: TcrBrandRelationship | null;
+
+  /**
+   * List of destination countries for messaging
+   */
+  destination_countries?: Array<DestinationCountry>;
+
+  /**
+   * Whether this is a TCR (Campaign Registry) application
+   */
+  is_tcr_application?: boolean;
+
+  /**
+   * Additional notes about the business or use case
+   */
+  notes?: string | null;
+
+  /**
+   * Phone number prefix for messaging (e.g., "+1")
+   */
+  phone_number_prefix?: string | null;
+
+  /**
+   * @deprecated Always null. The brand's free-text primary use case is no longer
+   * stored: it reached neither TCR nor any decision, and its column is dropped with
+   * no backfill, because the values were prose and the typed equivalent is the
+   * campaign's MessagingUseCaseUS.
+   *
+   * Retained so existing v3 clients reading primary_use_case keep deserializing.
+   * Unlike the profile sharing flags, which can answer false truthfully, there is no
+   * value to report here — the field is present and empty rather than present and
+   * wrong.
+   */
+  primary_use_case?: string | null;
+
+  vertical?: TcrVertical | null;
+}
+
 /**
  * Compliance and TCR information for brand registration
  */
@@ -440,6 +626,38 @@ export interface BrandComplianceInfo {
    * Phone number prefix for messaging (e.g., "+1")
    */
   phoneNumberPrefix?: string | null;
+}
+
+export interface BrandContact {
+  /**
+   * Business/brand name
+   */
+  business_name?: string | null;
+
+  /**
+   * Contact email address
+   */
+  email?: string | null;
+
+  /**
+   * Primary contact name
+   */
+  name?: string;
+
+  /**
+   * Contact phone number in E.164 format
+   */
+  phone?: string | null;
+
+  /**
+   * Contact phone country code (e.g., "1" for US)
+   */
+  phone_country_code?: string | null;
+
+  /**
+   * Contact's role in the business
+   */
+  role?: string | null;
 }
 
 /**
@@ -478,6 +696,79 @@ export interface BrandContactInfo {
 }
 
 /**
+ * Brand response with nested contact, business, and compliance sections — mirrors
+ * the request structure.
+ */
+export interface BrandWithKYC {
+  /**
+   * Unique identifier for the brand
+   */
+  id?: string;
+
+  /**
+   * Business details and address information
+   */
+  business?: BrandBusiness | null;
+
+  /**
+   * Compliance and TCR-related information
+   */
+  compliance?: BrandCompliance | null;
+
+  /**
+   * Contact information for the brand
+   */
+  contact?: BrandContact | null;
+
+  /**
+   * When the brand was created
+   */
+  created_at?: string;
+
+  /**
+   * @deprecated Deprecated and scheduled for removal. Identifies the Campaign
+   * Service Provider that registered the brand, which is Sent, so the value is the
+   * same for every brand and every account. Nothing on your side can act on it and
+   * there is no replacement. Stop reading it.
+   */
+  csp_id?: string | null;
+
+  identity_status?: TcrBrandIdentityStatus | null;
+
+  /**
+   * Whether this brand is inherited from the parent organization
+   */
+  is_inherited?: boolean;
+
+  status?: TcrBrandStatus | null;
+
+  /**
+   * When the brand was submitted to TCR
+   */
+  submitted_at?: string | null;
+
+  /**
+   * Whether this brand has been submitted to TCR
+   */
+  submitted_to_tcr?: boolean;
+
+  /**
+   * TCR brand ID (populated after TCR submission)
+   */
+  tcr_brand_id?: string | null;
+
+  /**
+   * Universal EIN from TCR
+   */
+  universal_ein?: string | null;
+
+  /**
+   * When the brand was last updated
+   */
+  updated_at?: string | null;
+}
+
+/**
  * Brand and KYC data grouped into contact, business, and compliance sections
  */
 export interface BrandsBrandData {
@@ -503,6 +794,8 @@ export interface DestinationCountry {
   isMain?: boolean;
 }
 
+export type EntityType = 'PRIVATE_PROFIT' | 'PUBLIC_PROFIT' | 'NON_PROFIT' | 'SOLE_PROPRIETOR' | 'GOVERNMENT';
+
 export interface PaymentDetails {
   /**
    * Card number (digits only, 13–19 characters)
@@ -523,6 +816,35 @@ export interface PaymentDetails {
    * Billing ZIP / postal code associated with the card
    */
   zip_code: string;
+}
+
+/**
+ * Response acknowledging that profile completion has been accepted and started in
+ * the background. The provided webhook URL will be called when processing
+ * finishes.
+ */
+export interface ProfileCompletionAccepted {
+  /**
+   * Human-readable message describing the accepted state.
+   */
+  message?: string;
+}
+
+/**
+ * Response when a profile is already in the completed state and no further action
+ * is taken.
+ */
+export interface ProfileCompletionResult {
+  /**
+   * Human-readable message describing the result.
+   */
+  message?: string;
+
+  /**
+   * Current process status of the profile (e.g., "completed", "submitted",
+   * "in_progress").
+   */
+  status?: string;
 }
 
 /**
@@ -556,7 +878,7 @@ export interface ProfileDetail {
   /**
    * Billing contact info returned in profile responses
    */
-  billing_contact?: ProfileDetail.BillingContact | null;
+  billing_contact?: BillingContact | null;
 
   /**
    * Billing model: profile, organization, or profile_and_organization
@@ -567,7 +889,7 @@ export interface ProfileDetail {
    * Brand response with nested contact, business, and compliance sections — mirrors
    * the request structure.
    */
-  brand?: ProfileDetail.Brand | null;
+  brand?: BrandWithKYC | null;
 
   /**
    * When the profile was created
@@ -680,232 +1002,22 @@ export interface ProfileDetail {
   whatsapp_phone_number?: string | null;
 }
 
-export namespace ProfileDetail {
+/**
+ * The profiles in the organization.
+ */
+export interface ProfilesList {
   /**
-   * Billing contact info returned in profile responses
+   * Pagination metadata for list responses
    */
-  export interface BillingContact {
-    address?: string | null;
-
-    email?: string | null;
-
-    name?: string | null;
-
-    phone?: string | null;
-  }
+  pagination?: WebhooksAPI.PaginationMeta;
 
   /**
-   * Brand response with nested contact, business, and compliance sections — mirrors
-   * the request structure.
+   * The profiles on this page.
    */
-  export interface Brand {
-    /**
-     * Unique identifier for the brand
-     */
-    id?: string;
-
-    /**
-     * Business details and address information
-     */
-    business?: Brand.Business | null;
-
-    /**
-     * Compliance and TCR-related information
-     */
-    compliance?: Brand.Compliance | null;
-
-    /**
-     * Contact information for the brand
-     */
-    contact?: Brand.Contact | null;
-
-    /**
-     * When the brand was created
-     */
-    created_at?: string;
-
-    /**
-     * @deprecated Deprecated and scheduled for removal. Identifies the Campaign
-     * Service Provider that registered the brand, which is Sent, so the value is the
-     * same for every brand and every account. Nothing on your side can act on it and
-     * there is no replacement. Stop reading it.
-     */
-    csp_id?: string | null;
-
-    identity_status?: 'SELF_DECLARED' | 'UNVERIFIED' | 'VERIFIED' | 'VETTED_VERIFIED' | null;
-
-    /**
-     * Whether this brand is inherited from the parent organization
-     */
-    is_inherited?: boolean;
-
-    status?: 'ACTIVE' | 'INACTIVE' | 'SUSPENDED' | null;
-
-    /**
-     * When the brand was submitted to TCR
-     */
-    submitted_at?: string | null;
-
-    /**
-     * Whether this brand has been submitted to TCR
-     */
-    submitted_to_tcr?: boolean;
-
-    /**
-     * TCR brand ID (populated after TCR submission)
-     */
-    tcr_brand_id?: string | null;
-
-    /**
-     * Universal EIN from TCR
-     */
-    universal_ein?: string | null;
-
-    /**
-     * When the brand was last updated
-     */
-    updated_at?: string | null;
-  }
-
-  export namespace Brand {
-    /**
-     * Business details and address information
-     */
-    export interface Business {
-      /**
-       * City
-       */
-      city?: string | null;
-
-      /**
-       * Country code (e.g., US, CA)
-       */
-      country?: string | null;
-
-      /**
-       * Country where the business is registered
-       */
-      country_of_registration?: string | null;
-
-      /**
-       * Business entity type
-       */
-      entity_type?: string | null;
-
-      /**
-       * Legal business name
-       */
-      legal_name?: string | null;
-
-      /**
-       * Postal/ZIP code
-       */
-      postal_code?: string | null;
-
-      /**
-       * State/province code
-       */
-      state?: string | null;
-
-      /**
-       * Street address
-       */
-      street?: string | null;
-
-      /**
-       * Tax ID/EIN number
-       */
-      tax_id?: string | null;
-
-      /**
-       * Type of tax ID (e.g., us_ein, ca_bn)
-       */
-      tax_id_type?: string | null;
-
-      /**
-       * Business website URL
-       */
-      url?: string | null;
-    }
-
-    /**
-     * Compliance and TCR-related information
-     */
-    export interface Compliance {
-      brand_relationship?: ProfilesAPI.TcrBrandRelationship | null;
-
-      /**
-       * List of destination countries for messaging
-       */
-      destination_countries?: Array<ProfilesAPI.DestinationCountry>;
-
-      /**
-       * Whether this is a TCR (Campaign Registry) application
-       */
-      is_tcr_application?: boolean;
-
-      /**
-       * Additional notes about the business or use case
-       */
-      notes?: string | null;
-
-      /**
-       * Phone number prefix for messaging (e.g., "+1")
-       */
-      phone_number_prefix?: string | null;
-
-      /**
-       * @deprecated Always null. The brand's free-text primary use case is no longer
-       * stored: it reached neither TCR nor any decision, and its column is dropped with
-       * no backfill, because the values were prose and the typed equivalent is the
-       * campaign's MessagingUseCaseUS.
-       *
-       * Retained so existing v3 clients reading primary_use_case keep deserializing.
-       * Unlike the profile sharing flags, which can answer false truthfully, there is no
-       * value to report here — the field is present and empty rather than present and
-       * wrong.
-       */
-      primary_use_case?: string | null;
-
-      vertical?: ProfilesAPI.TcrVertical | null;
-    }
-
-    /**
-     * Contact information for the brand
-     */
-    export interface Contact {
-      /**
-       * Business/brand name
-       */
-      business_name?: string | null;
-
-      /**
-       * Contact email address
-       */
-      email?: string | null;
-
-      /**
-       * Primary contact name
-       */
-      name?: string;
-
-      /**
-       * Contact phone number in E.164 format
-       */
-      phone?: string | null;
-
-      /**
-       * Contact phone country code (e.g., "1" for US)
-       */
-      phone_country_code?: string | null;
-
-      /**
-       * Contact's role in the business
-       */
-      role?: string | null;
-    }
-  }
+  profiles?: Array<ProfileDetail>;
 }
+
+export type TcrBrandIdentityStatus = 'SELF_DECLARED' | 'UNVERIFIED' | 'VERIFIED' | 'VETTED_VERIFIED';
 
 export type TcrBrandRelationship =
   | 'BASIC_ACCOUNT'
@@ -913,6 +1025,10 @@ export type TcrBrandRelationship =
   | 'LARGE_ACCOUNT'
   | 'SMALL_ACCOUNT'
   | 'KEY_ACCOUNT';
+
+export type TcrBrandStatus = 'ACTIVE' | 'INACTIVE' | 'SUSPENDED';
+
+export type TcrCampaignStatus = 'SENT_CREATED' | 'ACTIVE' | 'EXPIRED';
 
 export type TcrVertical =
   | 'PROFESSIONAL'
@@ -938,93 +1054,6 @@ export type TcrVertical =
   | 'GOVERNMENT'
   | 'TECHNOLOGY'
   | 'COMMUNICATION';
-
-/**
- * Standard API response envelope for all v3 endpoints
- */
-export interface ProfileListResponse {
-  /**
-   * The profiles in the organization.
-   */
-  data?: ProfileListResponse.Data | null;
-
-  /**
-   * Error information
-   */
-  error?: WebhooksAPI.ErrorDetail | null;
-
-  /**
-   * Request and response metadata
-   */
-  meta?: WebhooksAPI.APIMeta;
-
-  /**
-   * Indicates whether the request was successful
-   */
-  success?: boolean;
-}
-
-export namespace ProfileListResponse {
-  /**
-   * The profiles in the organization.
-   */
-  export interface Data {
-    /**
-     * Pagination metadata for list responses
-     */
-    pagination?: WebhooksAPI.PaginationMeta;
-
-    /**
-     * The profiles on this page.
-     */
-    profiles?: Array<ProfilesAPI.ProfileDetail>;
-  }
-}
-
-/**
- * Standard API response envelope for all v3 endpoints
- */
-export interface ProfileCompleteResponse {
-  /**
-   * Response when a profile is already in the completed state and no further action
-   * is taken.
-   */
-  data?: ProfileCompleteResponse.Data | null;
-
-  /**
-   * Error information
-   */
-  error?: WebhooksAPI.ErrorDetail | null;
-
-  /**
-   * Request and response metadata
-   */
-  meta?: WebhooksAPI.APIMeta;
-
-  /**
-   * Indicates whether the request was successful
-   */
-  success?: boolean;
-}
-
-export namespace ProfileCompleteResponse {
-  /**
-   * Response when a profile is already in the completed state and no further action
-   * is taken.
-   */
-  export interface Data {
-    /**
-     * Human-readable message describing the result.
-     */
-    message?: string;
-
-    /**
-     * Current process status of the profile (e.g., "completed", "submitted",
-     * "in_progress").
-     */
-    status?: string;
-  }
-}
 
 export interface ProfileCreateParams {
   /**
@@ -1410,19 +1439,32 @@ Profiles.Campaigns = Campaigns;
 
 export declare namespace Profiles {
   export {
+    type APIResponseOfProfileCompletionAccepted as APIResponseOfProfileCompletionAccepted,
+    type APIResponseOfProfileCompletionResult as APIResponseOfProfileCompletionResult,
     type APIResponseOfProfileDetail as APIResponseOfProfileDetail,
+    type APIResponseOfProfilesList as APIResponseOfProfilesList,
+    type BillingContact as BillingContact,
     type BillingContactInfo as BillingContactInfo,
+    type BrandBusiness as BrandBusiness,
     type BrandBusinessInfo as BrandBusinessInfo,
+    type BrandCompliance as BrandCompliance,
     type BrandComplianceInfo as BrandComplianceInfo,
+    type BrandContact as BrandContact,
     type BrandContactInfo as BrandContactInfo,
+    type BrandWithKYC as BrandWithKYC,
     type BrandsBrandData as BrandsBrandData,
     type DestinationCountry as DestinationCountry,
+    type EntityType as EntityType,
     type PaymentDetails as PaymentDetails,
+    type ProfileCompletionAccepted as ProfileCompletionAccepted,
+    type ProfileCompletionResult as ProfileCompletionResult,
     type ProfileDetail as ProfileDetail,
+    type ProfilesList as ProfilesList,
+    type TcrBrandIdentityStatus as TcrBrandIdentityStatus,
     type TcrBrandRelationship as TcrBrandRelationship,
+    type TcrBrandStatus as TcrBrandStatus,
+    type TcrCampaignStatus as TcrCampaignStatus,
     type TcrVertical as TcrVertical,
-    type ProfileListResponse as ProfileListResponse,
-    type ProfileCompleteResponse as ProfileCompleteResponse,
     type ProfileCreateParams as ProfileCreateParams,
     type ProfileRetrieveParams as ProfileRetrieveParams,
     type ProfileUpdateParams as ProfileUpdateParams,

@@ -9,6 +9,18 @@ const client = new Sent({
 
 describe('resource messages', () => {
   // Mock server tests are disabled
+  test.skip('cancel', async () => {
+    const responsePromise = client.messages.cancel('8ba7b830-9dad-11d1-80b4-00c04fd430c8', {});
+    const rawResponse = await responsePromise.asResponse();
+    expect(rawResponse).toBeInstanceOf(Response);
+    const response = await responsePromise;
+    expect(response).not.toBeInstanceOf(Response);
+    const dataAndResponse = await responsePromise.withResponse();
+    expect(dataAndResponse.data).toBe(response);
+    expect(dataAndResponse.response).toBe(rawResponse);
+  });
+
+  // Mock server tests are disabled
   test.skip('resend', async () => {
     const responsePromise = client.messages.resend('8ba7b830-9dad-11d1-80b4-00c04fd430c8', {});
     const rawResponse = await responsePromise.asResponse();

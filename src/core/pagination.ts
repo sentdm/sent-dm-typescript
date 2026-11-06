@@ -605,3 +605,75 @@ export class VoiceAgentsPage<Item> extends AbstractPage<Item> implements VoiceAg
     };
   }
 }
+
+export interface SenderProfilesPageResponse<Item> {
+  data: SenderProfilesPageResponse.Data<Item>;
+}
+
+export namespace SenderProfilesPageResponse {
+  export interface Data<Item> {
+    pagination?: Data.Pagination;
+
+    sender_profiles?: Array<Item>;
+  }
+
+  export namespace Data {
+    export interface Pagination {
+      has_more?: boolean;
+
+      page?: number;
+
+      page_size?: number;
+
+      total_count?: number;
+
+      total_pages?: number;
+    }
+  }
+}
+
+export interface SenderProfilesPageParams {
+  page?: number;
+
+  page_size?: number;
+}
+
+export class SenderProfilesPage<Item> extends AbstractPage<Item> implements SenderProfilesPageResponse<Item> {
+  data: SenderProfilesPageResponse.Data<Item>;
+
+  constructor(
+    client: Sent,
+    response: Response,
+    body: SenderProfilesPageResponse<Item>,
+    options: FinalRequestOptions,
+  ) {
+    super(client, response, body, options);
+
+    this.data = body.data || {};
+  }
+
+  getPaginatedItems(): Item[] {
+    return this.data?.sender_profiles ?? [];
+  }
+
+  override hasNextPage(): boolean {
+    if (this.data?.pagination?.has_more === false) {
+      return false;
+    }
+
+    return super.hasNextPage();
+  }
+
+  nextPageRequestOptions(): PageRequestOptions | null {
+    const query = this.options.query as SenderProfilesPageParams;
+    const currentPage = query?.page ?? 1;
+
+    return {
+      ...this.options,
+      query: {
+        ...maybeObj(this.options.query),
+        page: currentPage + 1,
+      },
+    };
+  }
+}

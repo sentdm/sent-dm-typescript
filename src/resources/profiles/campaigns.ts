@@ -2,6 +2,7 @@
 
 import { APIResource } from '../../core/resource';
 import * as WebhooksAPI from '../webhooks';
+import * as ProfilesAPI from './profiles';
 import { APIPromise } from '../../core/api-promise';
 import { buildHeaders } from '../../internal/headers';
 import { RequestOptions } from '../../internal/request-options';
@@ -229,7 +230,7 @@ export interface BrandCampaign {
 
   privacyPolicyLink?: string | null;
 
-  status?: 'SENT_CREATED' | 'ACTIVE' | 'EXPIRED' | null;
+  status?: ProfilesAPI.TcrCampaignStatus | null;
 
   submittedAt?: string | null;
 

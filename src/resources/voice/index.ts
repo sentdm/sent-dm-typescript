@@ -32,6 +32,7 @@ export {
   type APIResponseOfCallRecordings,
   type APIResponseOfCallsList,
   type Call,
+  type CallLeg,
   type CallParty,
   type CallRecording,
   type CallRecordings,

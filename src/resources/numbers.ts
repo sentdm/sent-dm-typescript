@@ -20,16 +20,15 @@ export class Numbers extends APIResource {
    *
    * @example
    * ```ts
-   * const response = await client.numbers.lookup(
-   *   '+12025551234',
-   * );
+   * const apiResponseOfNumberLookupResult =
+   *   await client.numbers.lookup('+12025551234');
    * ```
    */
   lookup(
     phoneNumber: string,
     params: NumberLookupParams | null | undefined = {},
     options?: RequestOptions,
-  ): APIPromise<NumberLookupResponse> {
+  ): APIPromise<APIResponseOfNumberLookupResult> {
     const { 'x-profile-id': xProfileID } = params ?? {};
     return this._client.get(path`/v3/numbers/lookup/${phoneNumber}`, {
       ...options,
@@ -44,11 +43,11 @@ export class Numbers extends APIResource {
 /**
  * Standard API response envelope for all v3 endpoints
  */
-export interface NumberLookupResponse {
+export interface APIResponseOfNumberLookupResult {
   /**
    * The response data (null if error)
    */
-  data?: NumberLookupResponse.Data | null;
+  data?: NumberLookupResult | null;
 
   /**
    * Error information
@@ -66,29 +65,24 @@ export interface NumberLookupResponse {
   success?: boolean;
 }
 
-export namespace NumberLookupResponse {
-  /**
-   * The response data (null if error)
-   */
-  export interface Data {
-    carrier_name?: string | null;
+export interface NumberLookupResult {
+  carrier_name?: string | null;
 
-    country_code?: string | null;
+  country_code?: string | null;
 
-    is_ported?: boolean | null;
+  is_ported?: boolean | null;
 
-    is_valid?: boolean;
+  is_valid?: boolean;
 
-    is_voip?: boolean | null;
+  is_voip?: boolean | null;
 
-    line_type?: string | null;
+  line_type?: string | null;
 
-    mobile_country_code?: string | null;
+  mobile_country_code?: string | null;
 
-    mobile_network_code?: string | null;
+  mobile_network_code?: string | null;
 
-    phone_number?: string;
-  }
+  phone_number?: string;
 }
 
 export interface NumberLookupParams {
@@ -100,5 +94,9 @@ export interface NumberLookupParams {
 }
 
 export declare namespace Numbers {
-  export { type NumberLookupResponse as NumberLookupResponse, type NumberLookupParams as NumberLookupParams };
+  export {
+    type APIResponseOfNumberLookupResult as APIResponseOfNumberLookupResult,
+    type NumberLookupResult as NumberLookupResult,
+    type NumberLookupParams as NumberLookupParams,
+  };
 }

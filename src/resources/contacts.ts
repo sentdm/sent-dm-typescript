@@ -233,8 +233,48 @@ export interface APIResponseOfContactMessageSummary {
   success?: boolean;
 }
 
+/**
+ * Standard API response envelope for all v3 endpoints
+ */
+export interface APIResponseOfContactsList {
+  /**
+   * A paginated list of contacts.
+   */
+  data?: ContactsList | null;
+
+  /**
+   * Error information
+   */
+  error?: WebhooksAPI.ErrorDetail | null;
+
+  /**
+   * Request and response metadata
+   */
+  meta?: WebhooksAPI.APIMeta;
+
+  /**
+   * Indicates whether the request was successful
+   */
+  success?: boolean;
+}
+
+export interface ChannelScore {
+  channel?: string;
+
+  /**
+   * Percentage (0-100) of messages on this channel that ended in FAILED.
+   */
+  fail_score?: number;
+
+  /**
+   * Percentage (0-100) of messages on this channel that reached a successful
+   * terminal state: SENT/DELIVERED/READ for outbound, RECEIVED for inbound.
+   */
+  success_score?: number;
+}
+
 export interface ContactMessageSummary {
-  channel_scores?: Array<ContactMessageSummary.ChannelScore>;
+  channel_scores?: Array<ChannelScore>;
 
   channels_used?: Array<string>;
 
@@ -245,23 +285,6 @@ export interface ContactMessageSummary {
   last_message_at?: string | null;
 
   message_count?: number;
-}
-
-export namespace ContactMessageSummary {
-  export interface ChannelScore {
-    channel?: string;
-
-    /**
-     * Percentage (0-100) of messages on this channel that ended in FAILED.
-     */
-    fail_score?: number;
-
-    /**
-     * Percentage (0-100) of messages on this channel that reached a successful
-     * terminal state: SENT/DELIVERED/READ for outbound, RECEIVED for inbound.
-     */
-    success_score?: number;
-  }
 }
 
 /**
@@ -346,6 +369,21 @@ export interface ContactResponse {
    * When the contact was last updated
    */
   updated_at?: string | null;
+}
+
+/**
+ * A paginated list of contacts.
+ */
+export interface ContactsList {
+  /**
+   * The contacts on this page.
+   */
+  contacts?: Array<ContactResponse>;
+
+  /**
+   * Pagination metadata for list responses
+   */
+  pagination?: WebhooksAPI.PaginationMeta;
 }
 
 export interface ContactCreateParams {
@@ -467,8 +505,11 @@ export declare namespace Contacts {
   export {
     type APIResponseOfContact as APIResponseOfContact,
     type APIResponseOfContactMessageSummary as APIResponseOfContactMessageSummary,
+    type APIResponseOfContactsList as APIResponseOfContactsList,
+    type ChannelScore as ChannelScore,
     type ContactMessageSummary as ContactMessageSummary,
     type ContactResponse as ContactResponse,
+    type ContactsList as ContactsList,
     type ContactResponsesContactsPage as ContactResponsesContactsPage,
     type ContactCreateParams as ContactCreateParams,
     type ContactRetrieveParams as ContactRetrieveParams,

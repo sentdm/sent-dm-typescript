@@ -1,7 +1,7 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../core/resource';
-import * as WebhooksAPI from './webhooks';
+import * as SMSAPI from './channels/sms';
 import { APIPromise } from '../core/api-promise';
 import {
   PagePromise,
@@ -183,13 +183,14 @@ export class Webhooks extends APIResource {
    *
    * @example
    * ```ts
-   * const response = await client.webhooks.listEventTypes();
+   * const apiResponseOfWebhookEventTypesList =
+   *   await client.webhooks.listEventTypes();
    * ```
    */
   listEventTypes(
     params: WebhookListEventTypesParams | null | undefined = {},
     options?: RequestOptions,
-  ): APIPromise<WebhookListEventTypesResponse> {
+  ): APIPromise<APIResponseOfWebhookEventTypesList> {
     const { 'x-profile-id': xProfileID } = params ?? {};
     return this._client.get('/v3/webhooks/event-types', {
       ...options,
@@ -210,7 +211,7 @@ export class Webhooks extends APIResource {
    * @example
    * ```ts
    * // Automatically fetches more pages as needed.
-   * for await (const webhookListEventsResponse of client.webhooks.listEvents(
+   * for await (const webhookDelivery of client.webhooks.listEvents(
    *   'd4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8',
    * )) {
    *   // ...
@@ -221,20 +222,16 @@ export class Webhooks extends APIResource {
     id: string,
     params: WebhookListEventsParams | null | undefined = {},
     options?: RequestOptions,
-  ): PagePromise<WebhookListEventsResponsesWebhookEventsPage, WebhookListEventsResponse> {
+  ): PagePromise<WebhookDeliveriesWebhookEventsPage, WebhookDelivery> {
     const { 'x-profile-id': xProfileID, ...query } = params ?? {};
-    return this._client.getAPIList(
-      path`/v3/webhooks/${id}/events`,
-      WebhookEventsPage<WebhookListEventsResponse>,
-      {
-        query,
-        ...options,
-        headers: buildHeaders([
-          { ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined) },
-          options?.headers,
-        ]),
-      },
-    );
+    return this._client.getAPIList(path`/v3/webhooks/${id}/events`, WebhookEventsPage<WebhookDelivery>, {
+      query,
+      ...options,
+      headers: buildHeaders([
+        { ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined) },
+        options?.headers,
+      ]),
+    });
   }
 
   /**
@@ -246,16 +243,17 @@ export class Webhooks extends APIResource {
    *
    * @example
    * ```ts
-   * const response = await client.webhooks.rotateSecret(
-   *   'd4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8',
-   * );
+   * const apiResponseOfWebhookSecret =
+   *   await client.webhooks.rotateSecret(
+   *     'd4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8',
+   *   );
    * ```
    */
   rotateSecret(
     id: string,
     params: WebhookRotateSecretParams,
     options?: RequestOptions,
-  ): APIPromise<WebhookRotateSecretResponse> {
+  ): APIPromise<APIResponseOfWebhookSecret> {
     const { 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
     return this._client.post(path`/v3/webhooks/${id}/rotate-secret`, {
       body,
@@ -278,12 +276,16 @@ export class Webhooks extends APIResource {
    *
    * @example
    * ```ts
-   * const response = await client.webhooks.test(
+   * const apiResponseOfWebhookTest = await client.webhooks.test(
    *   'd4f5a6b7-c8d9-4e0f-a1b2-c3d4e5f6a7b8',
    * );
    * ```
    */
-  test(id: string, params: WebhookTestParams, options?: RequestOptions): APIPromise<WebhookTestResponse> {
+  test(
+    id: string,
+    params: WebhookTestParams,
+    options?: RequestOptions,
+  ): APIPromise<APIResponseOfWebhookTest> {
     const { 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
     return this._client.post(path`/v3/webhooks/${id}/test`, {
       body,
@@ -331,7 +333,7 @@ export class Webhooks extends APIResource {
 
 export type WebhookResponsesWebhooksPage = WebhooksPage<WebhookResponse>;
 
-export type WebhookListEventsResponsesWebhookEventsPage = WebhookEventsPage<WebhookListEventsResponse>;
+export type WebhookDeliveriesWebhookEventsPage = WebhookEventsPage<WebhookDelivery>;
 
 /**
  * Request and response metadata
@@ -351,6 +353,131 @@ export interface APIMeta {
    * API version used for this request
    */
   version?: string;
+}
+
+/**
+ * Standard API response envelope for all v3 endpoints
+ */
+export interface APIResponseOfWebhookEventTypesList {
+  /**
+   * The webhook event types a customer can subscribe to.
+   */
+  data?: WebhookEventTypesList | null;
+
+  /**
+   * Error information
+   */
+  error?: ErrorDetail | null;
+
+  /**
+   * Request and response metadata
+   */
+  meta?: APIMeta;
+
+  /**
+   * Indicates whether the request was successful
+   */
+  success?: boolean;
+}
+
+/**
+ * Standard API response envelope for all v3 endpoints
+ */
+export interface APIResponseOfWebhookEventsList {
+  /**
+   * A paginated list of webhook delivery records.
+   */
+  data?: WebhookEventsList | null;
+
+  /**
+   * Error information
+   */
+  error?: ErrorDetail | null;
+
+  /**
+   * Request and response metadata
+   */
+  meta?: APIMeta;
+
+  /**
+   * Indicates whether the request was successful
+   */
+  success?: boolean;
+}
+
+/**
+ * Standard API response envelope for all v3 endpoints
+ */
+export interface APIResponseOfWebhookSecret {
+  /**
+   * The response data (null if error)
+   */
+  data?: WebhookSecret | null;
+
+  /**
+   * Error information
+   */
+  error?: ErrorDetail | null;
+
+  /**
+   * Request and response metadata
+   */
+  meta?: APIMeta;
+
+  /**
+   * Indicates whether the request was successful
+   */
+  success?: boolean;
+}
+
+/**
+ * Standard API response envelope for all v3 endpoints
+ */
+export interface APIResponseOfWebhookTest {
+  /**
+   * The response data (null if error)
+   */
+  data?: WebhookTest | null;
+
+  /**
+   * Error information
+   */
+  error?: ErrorDetail | null;
+
+  /**
+   * Request and response metadata
+   */
+  meta?: APIMeta;
+
+  /**
+   * Indicates whether the request was successful
+   */
+  success?: boolean;
+}
+
+/**
+ * Standard API response envelope for all v3 endpoints
+ */
+export interface APIResponseOfWebhooksList {
+  /**
+   * A paginated list of webhooks.
+   */
+  data?: WebhooksList | null;
+
+  /**
+   * Error information
+   */
+  error?: ErrorDetail | null;
+
+  /**
+   * Request and response metadata
+   */
+  meta?: APIMeta;
+
+  /**
+   * Indicates whether the request was successful
+   */
+  success?: boolean;
 }
 
 /**
@@ -632,7 +759,7 @@ export interface ChannelEventPayload {
    * only when the market registers with nobody and compliance was not computed —
    * nothing to show at all.
    */
-  compliance?: ChannelEventPayload.Compliance | null;
+  compliance?: SMSAPI.SuppliedCompliance | null;
 
   /**
    * The kind of sender the market uses, for example TEN_DLC, LOCAL, or ALPHANUMERIC.
@@ -689,95 +816,6 @@ export interface ChannelEventPayload {
    * When the transition happened, in UTC (yyyy-MM-ddTHH:mm:ssZ).
    */
   updated_at?: string;
-}
-
-export namespace ChannelEventPayload {
-  /**
-   * What a market has been given: the identity it registers under, its programme,
-   * and any documents attached.
-   *
-   * What it does not carry is what the market asks for. That is the subject of GET
-   * /v3/compliance/requirements, and it is the same answer for every caller — a
-   * description of what a compliance regime wants, not a record of one customer's
-   * progress through it. It was reported here as well for a while, which put the
-   * same array in six response shapes and left a caller deciding which of two
-   * sources to believe.
-   *
-   * Present on a list read for markets that register (carrying brand and campaign),
-   * but with documents absent — documents are not fetched for a list, because a
-   * catalog lookup and a document read per market would multiply across a page.
-   * Absent documents is distinct from an empty list: absent says they were not
-   * fetched; empty says the market has been given none. The parent object is null
-   * only when the market registers with nobody and compliance was not computed —
-   * nothing to show at all.
-   */
-  export interface Compliance {
-    /**
-     * The identity this market registers under, with inherit saying whose it is.
-     *
-     * Reported here rather than on the profile because it belongs to the registration
-     * this market files, and only one market files one. It was a top-level block for a
-     * while, which put a per-registration value beside a list of markets and left a
-     * caller to work out which market it belonged to.
-     *
-     * Absent for a market that registers with nobody — such a market asks for no
-     * identity, so there is none to report. Absent and null mean different things:
-     * absent says this market does not ask, null would say it asks and nothing was
-     * supplied.
-     *
-     * Untyped, like the request side, because its members are declared by the market's
-     * own schema rather than by a C# class. A typed pair here would be a second
-     * definition of what a market wants, free to drift from the one that validates.
-     */
-    brand?: { [key: string]: unknown } | null;
-
-    /**
-     * The programme this market registers, with inherit saying whose it is.
-     *
-     * One, not a list. TcrCampaigns permits several and an account built on the admin
-     * side may hold them, but this surface offers one — which is what lets the
-     * market's PATCH be an upsert rather than a collection with an addressable create
-     * behind it. An account holding several is reported as its first and refused on
-     * write, rather than half-edited.
-     *
-     * Carries no id. Nothing addresses a campaign, and an undeclared key would be
-     * refused if the caller sent this object back — which it is meant to be able to
-     * do.
-     */
-    campaign?: { [key: string]: unknown } | null;
-
-    /**
-     * What has been supplied for this market.
-     *
-     * Files, not values — the declared halves above carry the values. A document
-     * cannot be a JSON value, so it is sent as multipart on the channel call and
-     * reported here as a reference.
-     *
-     * Absent on a list read, which fetches identity but does not compute compliance
-     * documents per market. Absent and empty mean different things: absent says the
-     * documents were not fetched; empty says the market has been given none.
-     */
-    documents?: Array<Compliance.Document> | null;
-  }
-
-  export namespace Compliance {
-    /**
-     * A document a market asked for and has been given.
-     */
-    export interface Document {
-      /**
-       * Identifier of the upload, for fetching it back through the documents endpoints.
-       */
-      document_id?: string | null;
-
-      file_name?: string | null;
-
-      /**
-       * The catalog's name for this document, matching the requirement it satisfies.
-       */
-      key?: string;
-    }
-  }
 }
 
 /**
@@ -991,6 +1029,39 @@ export interface ErrorDetail {
 }
 
 /**
+ * One attachment on an inbound message.
+ */
+export interface InboundMedia {
+  /**
+   * SHA-256 of the file as the carrier declared it, when it declares one. Verify
+   * what you download against this — sent.dm never reads the bytes, so it is the
+   * only integrity signal available.
+   */
+  hash_sha256?: string | null;
+
+  /**
+   * Content type as the carrier reported it, for example image/jpeg.
+   */
+  mime_type?: string | null;
+
+  /**
+   * Size in bytes as the carrier declared it. Absent when it declared none.
+   */
+  size_bytes?: number | null;
+
+  /**
+   * Where the carrier hosts the attachment.
+   *
+   * This link expires and is not authenticated. sent.dm relays it rather than
+   * copying the file, so how long it stays fetchable is the carrier's decision and
+   * differs between them — assume days, not months. Anyone holding the URL can fetch
+   * it until it lapses. Copy the file on receipt if you need it to outlive that
+   * window; do not store this URL as a permanent reference.
+   */
+  url?: string | null;
+}
+
+/**
  * The envelope Sent POSTs to a subscribed webhook endpoint. Every event shares
  * this shape and varies only in Payload.
  */
@@ -1064,7 +1135,7 @@ export interface InboundMessageEventPayload {
    * lapses the entry remains with whatever the carrier declared about the file but
    * the file is no longer reachable.
    */
-  media?: Array<InboundMessageEventPayload.Media> | null;
+  media?: Array<InboundMedia> | null;
 
   /**
    * The inbound message.
@@ -1103,39 +1174,212 @@ export interface InboundMessageEventPayload {
   updated_at?: string;
 }
 
-export namespace InboundMessageEventPayload {
+/**
+ * The envelope Sent POSTs to a subscribed webhook endpoint. Every event shares
+ * this shape and varies only in Payload.
+ */
+export interface LinkEvent {
   /**
-   * One attachment on an inbound message.
+   * The specific event within the family, for example message.delivered,
+   * message.received or contact.opt_out. Absent on events that have no subtype, so
+   * treat it as optional.
    */
-  export interface Media {
-    /**
-     * SHA-256 of the file as the carrier declared it, when it declares one. Verify
-     * what you download against this — sent.dm never reads the bytes, so it is the
-     * only integrity signal available.
-     */
-    hash_sha256?: string | null;
+  event?: string | null;
 
-    /**
-     * Content type as the carrier reported it, for example image/jpeg.
-     */
-    mime_type?: string | null;
+  /**
+   * The event family, for example message, templates or contact. Route on this
+   * first, then on event for the specific change.
+   */
+  field?: string;
 
-    /**
-     * Size in bytes as the carrier declared it. Absent when it declared none.
-     */
-    size_bytes?: number | null;
+  /**
+   * Body of a link event: something happened to a tracked link Sent published on the
+   * customer's behalf. A link points either at a URL the customer supplied or at a
+   * file Sent hosts for them; LinkKind says which. Delivered when an eligible
+   * request is served, or when a published link reaches the end of its life.
+   *
+   * A click is a request, not a read receipt. link.clicked means the redirect was
+   * served; link.downloaded means bytes went out. Neither proves a person saw
+   * anything — messaging providers and link scanners fetch URLs on their own, which
+   * is what TrafficClass exists to tell apart. Filter on it before reporting a
+   * click-through rate; treat likely_human as a hint, never as delivery
+   * confirmation.
+   *
+   * RecordId identifies the link; the X-Webhook-Event-ID header identifies the
+   * delivery. One link is hit many times, so those are the two keys a subscriber
+   * needs: group by the first, deduplicate on the second — exactly as on every other
+   * family. The payload carries no event identifier of its own, for the same reason
+   * none of the others do.
+   *
+   * Nothing here identifies the visitor. No IP address and no visitor token crosses
+   * this boundary. Country, Device and Browser are coarse buckets derived at the
+   * edge and are absent whenever the request did not supply enough to derive them.
+   */
+  payload?: LinkEventPayload | null;
 
-    /**
-     * Where the carrier hosts the attachment.
-     *
-     * This link expires and is not authenticated. sent.dm relays it rather than
-     * copying the file, so how long it stays fetchable is the carrier's decision and
-     * differs between them — assume days, not months. Anyone holding the URL can fetch
-     * it until it lapses. Copy the file on receipt if you need it to outlive that
-     * window; do not store this URL as a permanent reference.
-     */
-    url?: string | null;
-  }
+  /**
+   * The event-specific body.
+   */
+  request_id?: string | null;
+
+  /**
+   * When Sent emitted the event, in UTC (yyyy-MM-ddTHH:mm:ssZ). This is the emission
+   * time, not the time the underlying change happened. Use the timestamp inside the
+   * payload for the latter.
+   */
+  timestamp?: string;
+}
+
+/**
+ * Body of a link event: something happened to a tracked link Sent published on the
+ * customer's behalf. A link points either at a URL the customer supplied or at a
+ * file Sent hosts for them; LinkKind says which. Delivered when an eligible
+ * request is served, or when a published link reaches the end of its life.
+ *
+ * A click is a request, not a read receipt. link.clicked means the redirect was
+ * served; link.downloaded means bytes went out. Neither proves a person saw
+ * anything — messaging providers and link scanners fetch URLs on their own, which
+ * is what TrafficClass exists to tell apart. Filter on it before reporting a
+ * click-through rate; treat likely_human as a hint, never as delivery
+ * confirmation.
+ *
+ * RecordId identifies the link; the X-Webhook-Event-ID header identifies the
+ * delivery. One link is hit many times, so those are the two keys a subscriber
+ * needs: group by the first, deduplicate on the second — exactly as on every other
+ * family. The payload carries no event identifier of its own, for the same reason
+ * none of the others do.
+ *
+ * Nothing here identifies the visitor. No IP address and no visitor token crosses
+ * this boundary. Country, Device and Browser are coarse buckets derived at the
+ * edge and are absent whenever the request did not supply enough to derive them.
+ */
+export interface LinkEventPayload {
+  /**
+   * The link's public identifier — the eight-character code in the short URL, for
+   * example A78B2BU0. Unique across both kinds, and never reused, so it is the
+   * stable key to group one link's events by.
+   */
+  record_id: string;
+
+  /**
+   * Where the request appeared to come from, as an ISO 3166-1 alpha-2 code. Named
+   * separately from the country on a channel event, which is a destination market
+   * the customer registered for — this one is a property of a single visitor and is
+   * absent when the edge could not resolve it.
+   */
+  access_country?: string | null;
+
+  /**
+   * How the request was served, when the edge recorded it. Free text describing the
+   * outcome — show it to a human rather than branching on it.
+   */
+  access_outcome?: string | null;
+
+  /**
+   * The requesting browser family, for example chrome or safari, or unknown. Derived
+   * from the user agent.
+   */
+  browser?: string | null;
+
+  /**
+   * How many bytes were served, for a file access. A ranged request reports the
+   * bytes in that range, not the size of the file, so several accesses of one file
+   * can each report a part.
+   */
+  bytes_served?: number | null;
+
+  /**
+   * The channel the message carrying this link went out on: sms, whatsapp, or rcs.
+   */
+  channel?: string | null;
+
+  /**
+   * The organization the link belongs to. Always the parent account, never a sender
+   * profile — read SenderProfileId for that.
+   *
+   * This family publishes the owner as an explicit pair rather than the single
+   * account_id the other families use. The pair says which organization and which
+   * profile without the subscriber deriving either, which is the trade: one more key
+   * against not having to know that account_id silently becomes the profile when one
+   * exists.
+   */
+  customer_id?: string;
+
+  /**
+   * The requesting device class: mobile, tablet, desktop or unknown. Derived from
+   * the user agent.
+   */
+  device?: string | null;
+
+  /**
+   * What the link points at: url for a destination the customer supplied, file for
+   * media Sent hosts. Always present, and implied by the event — link.clicked is
+   * always url and link.downloaded always file — but published as its own field so a
+   * subscriber can branch on the kind without parsing the event name, the same
+   * separation the channel family keeps between its event and its status.
+   */
+  link_kind?: string;
+
+  /**
+   * The message the link was published in.
+   *
+   * The event can arrive before the message is readable through GET /v3/messages: a
+   * provider may fetch a link within milliseconds of the send, and nothing here
+   * waits for the message row. Retry the read rather than treating an unknown id as
+   * an error.
+   */
+  message_id?: string | null;
+
+  /**
+   * When the access or lifecycle change actually happened, in UTC
+   * (yyyy-MM-ddTHH:mm:ssZ). The envelope's timestamp is when Sent emitted the event;
+   * this is when the thing occurred, and the two differ by the ingest delay.
+   */
+  occurred_at?: string;
+
+  /**
+   * The caller-supplied label tying this link back to a position in the message, for
+   * example body:0 for the first link in the body. Present when the link was created
+   * with one.
+   */
+  reference_key?: string | null;
+
+  /**
+   * The host of the page that linked here, when the request supplied one. The host
+   * only — never a full referring URL.
+   */
+  referrer_host?: string | null;
+
+  /**
+   * The HTTP method of the request that was served, for an access event. Omitted on
+   * link.expired and link.revoked, which describe no request.
+   */
+  request_method?: string | null;
+
+  /**
+   * The sender profile that owns the link, or null when the organization owns it
+   * directly. Always on the wire so a handler reads one shape rather than branching
+   * on whether the key arrived.
+   *
+   * sender_profile_id, not profile_id: the API already publishes
+   * messaging_profile_id and sending_phone_number_profile_id for provider-side
+   * profiles, which are a different thing entirely. The unqualified name would read
+   * as one of those.
+   */
+  sender_profile_id?: string | null;
+
+  /**
+   * The HTTP status Sent answered the request with: 302 for a link, 200 or 206 for a
+   * file. Omitted on lifecycle events.
+   */
+  status_code?: number | null;
+
+  /**
+   * A coarse guess at what made the request: likely_human, provider (a messaging
+   * platform prefetching the link), bot, or unknown. Derived from the user agent, so
+   * it is a hint for filtering noise rather than a fact to bill or report on.
+   */
+  traffic_class?: string | null;
 }
 
 /**
@@ -1284,13 +1528,28 @@ export interface MutationRequest {
 }
 
 /**
+ * @deprecated Cursor-based pagination. Never populated — see Cursors.
+ */
+export interface PaginationCursors {
+  /**
+   * Cursor to fetch the next page.
+   */
+  after?: string | null;
+
+  /**
+   * Cursor to fetch the previous page.
+   */
+  before?: string | null;
+}
+
+/**
  * Pagination metadata for list responses
  */
 export interface PaginationMeta {
   /**
    * @deprecated Cursor-based pagination. Never populated — see Cursors.
    */
-  cursors?: PaginationMeta.Cursors | null;
+  cursors?: PaginationCursors | null;
 
   /**
    * Whether there are more pages after this one
@@ -1316,23 +1575,6 @@ export interface PaginationMeta {
    * Total number of pages
    */
   total_pages?: number;
-}
-
-export namespace PaginationMeta {
-  /**
-   * @deprecated Cursor-based pagination. Never populated — see Cursors.
-   */
-  export interface Cursors {
-    /**
-     * Cursor to fetch the next page.
-     */
-    after?: string | null;
-
-    /**
-     * Cursor to fetch the previous page.
-     */
-    before?: string | null;
-  }
 }
 
 /**
@@ -1449,6 +1691,56 @@ export interface TemplateEventPayload {
   template_name?: string;
 }
 
+export interface WebhookDelivery {
+  id?: string;
+
+  created_at?: string;
+
+  delivery_attempts?: number;
+
+  delivery_status?: string;
+
+  error_message?: string | null;
+
+  /**
+   * The exact event body that was delivered, or attempted, for this record. One of
+   * the six webhook envelopes:
+   *
+   * message — an outbound message changed status. message with event:
+   * message.received — someone replied to you. templates — a template was approved,
+   * rejected, paused or similar. channel — one of your markets moved in provisioning
+   * or compliance. contact — a consent signal: opt-in, opt-out or help. link — a
+   * tracked short link was clicked or a hosted file downloaded, or one expired or
+   * was revoked.
+   *
+   * Read field and event to tell which, the same way your endpoint does. The two
+   * message envelopes are the reason that is two fields and not one: they share a
+   * field and differ by event.
+   *
+   * Treat the list as open. It has grown twice — channel and then link — and a
+   * handler that rejects an envelope it does not recognise will break on the next
+   * addition rather than ignore it.
+   */
+  event_data?:
+    | MessageEvent
+    | InboundMessageEvent
+    | TemplateEvent
+    | ChannelEvent
+    | ContactEvent
+    | LinkEvent
+    | CallEvent;
+
+  event_type?: string;
+
+  http_status_code?: number | null;
+
+  processing_completed_at?: string | null;
+
+  processing_started_at?: string | null;
+
+  response_body?: string | null;
+}
+
 export interface WebhookEventType {
   description?: string | null;
 
@@ -1461,6 +1753,36 @@ export interface WebhookEventType {
   name?: string;
 
   sub_types?: Array<WebhookEventType> | null;
+}
+
+/**
+ * The webhook event types a customer can subscribe to.
+ */
+export interface WebhookEventTypesList {
+  /**
+   * The event_types on this page.
+   */
+  event_types?: Array<WebhookEventType>;
+
+  /**
+   * Pagination metadata for list responses
+   */
+  pagination?: PaginationMeta;
+}
+
+/**
+ * A paginated list of webhook delivery records.
+ */
+export interface WebhookEventsList {
+  /**
+   * The events on this page.
+   */
+  events?: Array<WebhookDelivery>;
+
+  /**
+   * Pagination metadata for list responses
+   */
+  pagination?: PaginationMeta;
 }
 
 export interface WebhookResponse {
@@ -1518,7 +1840,7 @@ export interface WebhookResponse {
    * Its own type, field for field the same as the request's sender_profile. A
    * response is not a request, whatever it carries.
    */
-  sender_profile?: WebhookResponse.SenderProfile | null;
+  sender_profile?: WebhookSenderProfile | null;
 
   signing_secret?: string | null;
 
@@ -1533,393 +1855,53 @@ export interface WebhookResponse {
   webhook_version?: number;
 }
 
-export namespace WebhookResponse {
-  /**
-   * The events a version 1 webhook's sender profile clones receive, as a response
-   * reports them.
-   *
-   * Its own type, field for field the same as the request's sender_profile. A
-   * response is not a request, whatever it carries.
-   */
-  export interface SenderProfile {
-    event_filters?: { [key: string]: Array<string> } | null;
-
-    event_types?: Array<string>;
-  }
+export interface WebhookSecret {
+  signing_secret?: string;
 }
 
 /**
- * Standard API response envelope for all v3 endpoints
+ * The events a version 1 webhook's sender profile clones receive, as a response
+ * reports them.
+ *
+ * Its own type, field for field the same as the request's sender_profile. A
+ * response is not a request, whatever it carries.
  */
-export interface WebhookListEventTypesResponse {
-  /**
-   * The webhook event types a customer can subscribe to.
-   */
-  data?: WebhookListEventTypesResponse.Data | null;
+export interface WebhookSenderProfile {
+  event_filters?: { [key: string]: Array<string> } | null;
 
-  /**
-   * Error information
-   */
-  error?: ErrorDetail | null;
-
-  /**
-   * Request and response metadata
-   */
-  meta?: APIMeta;
-
-  /**
-   * Indicates whether the request was successful
-   */
-  success?: boolean;
-}
-
-export namespace WebhookListEventTypesResponse {
-  /**
-   * The webhook event types a customer can subscribe to.
-   */
-  export interface Data {
-    /**
-     * The event_types on this page.
-     */
-    event_types?: Array<WebhooksAPI.WebhookEventType>;
-
-    /**
-     * Pagination metadata for list responses
-     */
-    pagination?: WebhooksAPI.PaginationMeta;
-  }
-}
-
-export interface WebhookListEventsResponse {
-  id?: string;
-
-  created_at?: string;
-
-  delivery_attempts?: number;
-
-  delivery_status?: string;
-
-  error_message?: string | null;
-
-  /**
-   * The exact event body that was delivered, or attempted, for this record. One of
-   * the six webhook envelopes:
-   *
-   * message — an outbound message changed status. message with event:
-   * message.received — someone replied to you. templates — a template was approved,
-   * rejected, paused or similar. channel — one of your markets moved in provisioning
-   * or compliance. contact — a consent signal: opt-in, opt-out or help. link — a
-   * tracked short link was clicked or a hosted file downloaded, or one expired or
-   * was revoked.
-   *
-   * Read field and event to tell which, the same way your endpoint does. The two
-   * message envelopes are the reason that is two fields and not one: they share a
-   * field and differ by event.
-   *
-   * Treat the list as open. It has grown twice — channel and then link — and a
-   * handler that rejects an envelope it does not recognise will break on the next
-   * addition rather than ignore it.
-   */
-  event_data?:
-    | MessageEvent
-    | InboundMessageEvent
-    | TemplateEvent
-    | ChannelEvent
-    | ContactEvent
-    | WebhookListEventsResponse.SentDmServicesCommonServicesWebhooksContractsWebhookEventOfLinkWebhookPayload
-    | CallEvent;
-
-  event_type?: string;
-
-  http_status_code?: number | null;
-
-  processing_completed_at?: string | null;
-
-  processing_started_at?: string | null;
-
-  response_body?: string | null;
-}
-
-export namespace WebhookListEventsResponse {
-  /**
-   * The envelope Sent POSTs to a subscribed webhook endpoint. Every event shares
-   * this shape and varies only in Payload.
-   */
-  export interface SentDmServicesCommonServicesWebhooksContractsWebhookEventOfLinkWebhookPayload {
-    /**
-     * The specific event within the family, for example message.delivered,
-     * message.received or contact.opt_out. Absent on events that have no subtype, so
-     * treat it as optional.
-     */
-    event?: string | null;
-
-    /**
-     * The event family, for example message, templates or contact. Route on this
-     * first, then on event for the specific change.
-     */
-    field?: string;
-
-    /**
-     * Body of a link event: something happened to a tracked link Sent published on the
-     * customer's behalf. A link points either at a URL the customer supplied or at a
-     * file Sent hosts for them; LinkKind says which. Delivered when an eligible
-     * request is served, or when a published link reaches the end of its life.
-     *
-     * A click is a request, not a read receipt. link.clicked means the redirect was
-     * served; link.downloaded means bytes went out. Neither proves a person saw
-     * anything — messaging providers and link scanners fetch URLs on their own, which
-     * is what TrafficClass exists to tell apart. Filter on it before reporting a
-     * click-through rate; treat likely_human as a hint, never as delivery
-     * confirmation.
-     *
-     * RecordId identifies the link; the X-Webhook-Event-ID header identifies the
-     * delivery. One link is hit many times, so those are the two keys a subscriber
-     * needs: group by the first, deduplicate on the second — exactly as on every other
-     * family. The payload carries no event identifier of its own, for the same reason
-     * none of the others do.
-     *
-     * Nothing here identifies the visitor. No IP address and no visitor token crosses
-     * this boundary. Country, Device and Browser are coarse buckets derived at the
-     * edge and are absent whenever the request did not supply enough to derive them.
-     */
-    payload?: SentDmServicesCommonServicesWebhooksContractsWebhookEventOfLinkWebhookPayload.Payload | null;
-
-    /**
-     * The event-specific body.
-     */
-    request_id?: string | null;
-
-    /**
-     * When Sent emitted the event, in UTC (yyyy-MM-ddTHH:mm:ssZ). This is the emission
-     * time, not the time the underlying change happened. Use the timestamp inside the
-     * payload for the latter.
-     */
-    timestamp?: string;
-  }
-
-  export namespace SentDmServicesCommonServicesWebhooksContractsWebhookEventOfLinkWebhookPayload {
-    /**
-     * Body of a link event: something happened to a tracked link Sent published on the
-     * customer's behalf. A link points either at a URL the customer supplied or at a
-     * file Sent hosts for them; LinkKind says which. Delivered when an eligible
-     * request is served, or when a published link reaches the end of its life.
-     *
-     * A click is a request, not a read receipt. link.clicked means the redirect was
-     * served; link.downloaded means bytes went out. Neither proves a person saw
-     * anything — messaging providers and link scanners fetch URLs on their own, which
-     * is what TrafficClass exists to tell apart. Filter on it before reporting a
-     * click-through rate; treat likely_human as a hint, never as delivery
-     * confirmation.
-     *
-     * RecordId identifies the link; the X-Webhook-Event-ID header identifies the
-     * delivery. One link is hit many times, so those are the two keys a subscriber
-     * needs: group by the first, deduplicate on the second — exactly as on every other
-     * family. The payload carries no event identifier of its own, for the same reason
-     * none of the others do.
-     *
-     * Nothing here identifies the visitor. No IP address and no visitor token crosses
-     * this boundary. Country, Device and Browser are coarse buckets derived at the
-     * edge and are absent whenever the request did not supply enough to derive them.
-     */
-    export interface Payload {
-      /**
-       * The link's public identifier — the eight-character code in the short URL, for
-       * example A78B2BU0. Unique across both kinds, and never reused, so it is the
-       * stable key to group one link's events by.
-       */
-      record_id: string;
-
-      /**
-       * Where the request appeared to come from, as an ISO 3166-1 alpha-2 code. Named
-       * separately from the country on a channel event, which is a destination market
-       * the customer registered for — this one is a property of a single visitor and is
-       * absent when the edge could not resolve it.
-       */
-      access_country?: string | null;
-
-      /**
-       * How the request was served, when the edge recorded it. Free text describing the
-       * outcome — show it to a human rather than branching on it.
-       */
-      access_outcome?: string | null;
-
-      /**
-       * The requesting browser family, for example chrome or safari, or unknown. Derived
-       * from the user agent.
-       */
-      browser?: string | null;
-
-      /**
-       * How many bytes were served, for a file access. A ranged request reports the
-       * bytes in that range, not the size of the file, so several accesses of one file
-       * can each report a part.
-       */
-      bytes_served?: number | null;
-
-      /**
-       * The channel the message carrying this link went out on: sms, whatsapp, or rcs.
-       */
-      channel?: string | null;
-
-      /**
-       * The organization the link belongs to. Always the parent account, never a sender
-       * profile — read SenderProfileId for that.
-       *
-       * This family publishes the owner as an explicit pair rather than the single
-       * account_id the other families use. The pair says which organization and which
-       * profile without the subscriber deriving either, which is the trade: one more key
-       * against not having to know that account_id silently becomes the profile when one
-       * exists.
-       */
-      customer_id?: string;
-
-      /**
-       * The requesting device class: mobile, tablet, desktop or unknown. Derived from
-       * the user agent.
-       */
-      device?: string | null;
-
-      /**
-       * What the link points at: url for a destination the customer supplied, file for
-       * media Sent hosts. Always present, and implied by the event — link.clicked is
-       * always url and link.downloaded always file — but published as its own field so a
-       * subscriber can branch on the kind without parsing the event name, the same
-       * separation the channel family keeps between its event and its status.
-       */
-      link_kind?: string;
-
-      /**
-       * The message the link was published in.
-       *
-       * The event can arrive before the message is readable through GET /v3/messages: a
-       * provider may fetch a link within milliseconds of the send, and nothing here
-       * waits for the message row. Retry the read rather than treating an unknown id as
-       * an error.
-       */
-      message_id?: string | null;
-
-      /**
-       * When the access or lifecycle change actually happened, in UTC
-       * (yyyy-MM-ddTHH:mm:ssZ). The envelope's timestamp is when Sent emitted the event;
-       * this is when the thing occurred, and the two differ by the ingest delay.
-       */
-      occurred_at?: string;
-
-      /**
-       * The caller-supplied label tying this link back to a position in the message, for
-       * example body:0 for the first link in the body. Present when the link was created
-       * with one.
-       */
-      reference_key?: string | null;
-
-      /**
-       * The host of the page that linked here, when the request supplied one. The host
-       * only — never a full referring URL.
-       */
-      referrer_host?: string | null;
-
-      /**
-       * The HTTP method of the request that was served, for an access event. Omitted on
-       * link.expired and link.revoked, which describe no request.
-       */
-      request_method?: string | null;
-
-      /**
-       * The sender profile that owns the link, or null when the organization owns it
-       * directly. Always on the wire so a handler reads one shape rather than branching
-       * on whether the key arrived.
-       *
-       * sender_profile_id, not profile_id: the API already publishes
-       * messaging_profile_id and sending_phone_number_profile_id for provider-side
-       * profiles, which are a different thing entirely. The unqualified name would read
-       * as one of those.
-       */
-      sender_profile_id?: string | null;
-
-      /**
-       * The HTTP status Sent answered the request with: 302 for a link, 200 or 206 for a
-       * file. Omitted on lifecycle events.
-       */
-      status_code?: number | null;
-
-      /**
-       * A coarse guess at what made the request: likely_human, provider (a messaging
-       * platform prefetching the link), bot, or unknown. Derived from the user agent, so
-       * it is a hint for filtering noise rather than a fact to bill or report on.
-       */
-      traffic_class?: string | null;
-    }
-  }
+  event_types?: Array<string>;
 }
 
 /**
- * Standard API response envelope for all v3 endpoints
+ * Request-only: the events an organization webhook's sender profile clones
+ * receive, one clone per existing and future profile. A version 1 webhook's
+ * responses report it as WebhookSenderProfileV3Response.
  */
-export interface WebhookRotateSecretResponse {
-  /**
-   * The response data (null if error)
-   */
-  data?: WebhookRotateSecretResponse.Data | null;
+export interface WebhookSenderProfileConfig {
+  event_filters?: { [key: string]: Array<string> } | null;
 
-  /**
-   * Error information
-   */
-  error?: ErrorDetail | null;
-
-  /**
-   * Request and response metadata
-   */
-  meta?: APIMeta;
-
-  /**
-   * Indicates whether the request was successful
-   */
-  success?: boolean;
+  event_types?: Array<string>;
 }
 
-export namespace WebhookRotateSecretResponse {
-  /**
-   * The response data (null if error)
-   */
-  export interface Data {
-    signing_secret?: string;
-  }
+export interface WebhookTest {
+  message?: string;
+
+  success?: boolean;
 }
 
 /**
- * Standard API response envelope for all v3 endpoints
+ * A paginated list of webhooks.
  */
-export interface WebhookTestResponse {
+export interface WebhooksList {
   /**
-   * The response data (null if error)
+   * Pagination metadata for list responses
    */
-  data?: WebhookTestResponse.Data | null;
+  pagination?: PaginationMeta;
 
   /**
-   * Error information
+   * The webhooks on this page.
    */
-  error?: ErrorDetail | null;
-
-  /**
-   * Request and response metadata
-   */
-  meta?: APIMeta;
-
-  /**
-   * Indicates whether the request was successful
-   */
-  success?: boolean;
-}
-
-export namespace WebhookTestResponse {
-  /**
-   * The response data (null if error)
-   */
-  export interface Data {
-    message?: string;
-
-    success?: boolean;
-  }
+  webhooks?: Array<WebhookResponse>;
 }
 
 export interface WebhookCreateParams {
@@ -1968,7 +1950,7 @@ export interface WebhookCreateParams {
    * clones receive, one clone per existing and future profile. A version 1 webhook's
    * responses report it as WebhookSenderProfileV3Response.
    */
-  sender_profile?: WebhookCreateParams.SenderProfile | null;
+  sender_profile?: WebhookSenderProfileConfig | null;
 
   /**
    * Body param: Delivery timeout. Applies to version 1 only.
@@ -1996,19 +1978,6 @@ export interface WebhookCreateParams {
    * calling organization.
    */
   'x-profile-id'?: string;
-}
-
-export namespace WebhookCreateParams {
-  /**
-   * Request-only: the events an organization webhook's sender profile clones
-   * receive, one clone per existing and future profile. A version 1 webhook's
-   * responses report it as WebhookSenderProfileV3Response.
-   */
-  export interface SenderProfile {
-    event_filters?: { [key: string]: Array<string> } | null;
-
-    event_types?: Array<string>;
-  }
 }
 
 export interface WebhookRetrieveParams {
@@ -2063,7 +2032,7 @@ export interface WebhookUpdateParams {
    * clones receive, one clone per existing and future profile. A version 1 webhook's
    * responses report it as WebhookSenderProfileV3Response.
    */
-  sender_profile?: WebhookUpdateParams.SenderProfile | null;
+  sender_profile?: WebhookSenderProfileConfig | null;
 
   /**
    * Body param
@@ -2083,19 +2052,6 @@ export interface WebhookUpdateParams {
    * calling organization.
    */
   'x-profile-id'?: string;
-}
-
-export namespace WebhookUpdateParams {
-  /**
-   * Request-only: the events an organization webhook's sender profile clones
-   * receive, one clone per existing and future profile. A version 1 webhook's
-   * responses report it as WebhookSenderProfileV3Response.
-   */
-  export interface SenderProfile {
-    event_filters?: { [key: string]: Array<string> } | null;
-
-    event_types?: Array<string>;
-  }
 }
 
 export interface WebhookListParams extends WebhooksPageParams {
@@ -2226,6 +2182,11 @@ export interface WebhookToggleStatusParams {
 export declare namespace Webhooks {
   export {
     type APIMeta as APIMeta,
+    type APIResponseOfWebhookEventTypesList as APIResponseOfWebhookEventTypesList,
+    type APIResponseOfWebhookEventsList as APIResponseOfWebhookEventsList,
+    type APIResponseOfWebhookSecret as APIResponseOfWebhookSecret,
+    type APIResponseOfWebhookTest as APIResponseOfWebhookTest,
+    type APIResponseOfWebhooksList as APIResponseOfWebhooksList,
     type APIResponseWebhook as APIResponseWebhook,
     type CallEvent as CallEvent,
     type CallEventPayload as CallEventPayload,
@@ -2234,22 +2195,30 @@ export declare namespace Webhooks {
     type ContactEvent as ContactEvent,
     type ContactEventPayload as ContactEventPayload,
     type ErrorDetail as ErrorDetail,
+    type InboundMedia as InboundMedia,
     type InboundMessageEvent as InboundMessageEvent,
     type InboundMessageEventPayload as InboundMessageEventPayload,
+    type LinkEvent as LinkEvent,
+    type LinkEventPayload as LinkEventPayload,
     type MessageEvent as MessageEvent,
     type MessageEventPayload as MessageEventPayload,
     type MutationRequest as MutationRequest,
+    type PaginationCursors as PaginationCursors,
     type PaginationMeta as PaginationMeta,
     type TemplateEvent as TemplateEvent,
     type TemplateEventPayload as TemplateEventPayload,
+    type WebhookDelivery as WebhookDelivery,
     type WebhookEventType as WebhookEventType,
+    type WebhookEventTypesList as WebhookEventTypesList,
+    type WebhookEventsList as WebhookEventsList,
     type WebhookResponse as WebhookResponse,
-    type WebhookListEventTypesResponse as WebhookListEventTypesResponse,
-    type WebhookListEventsResponse as WebhookListEventsResponse,
-    type WebhookRotateSecretResponse as WebhookRotateSecretResponse,
-    type WebhookTestResponse as WebhookTestResponse,
+    type WebhookSecret as WebhookSecret,
+    type WebhookSenderProfile as WebhookSenderProfile,
+    type WebhookSenderProfileConfig as WebhookSenderProfileConfig,
+    type WebhookTest as WebhookTest,
+    type WebhooksList as WebhooksList,
     type WebhookResponsesWebhooksPage as WebhookResponsesWebhooksPage,
-    type WebhookListEventsResponsesWebhookEventsPage as WebhookListEventsResponsesWebhookEventsPage,
+    type WebhookDeliveriesWebhookEventsPage as WebhookDeliveriesWebhookEventsPage,
     type WebhookCreateParams as WebhookCreateParams,
     type WebhookRetrieveParams as WebhookRetrieveParams,
     type WebhookUpdateParams as WebhookUpdateParams,

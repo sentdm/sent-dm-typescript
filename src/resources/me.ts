@@ -1,7 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../core/resource';
-import * as MeAPI from './me';
 import * as WebhooksAPI from './webhooks';
 import { APIPromise } from '../core/api-promise';
 import { buildHeaders } from '../internal/headers';
@@ -49,7 +48,7 @@ export class Me extends APIResource {
   retrieve(
     params: MeRetrieveParams | null | undefined = {},
     options?: RequestOptions,
-  ): APIPromise<MeRetrieveResponse> {
+  ): APIPromise<APIResponseOfAccount> {
     const { 'x-profile-id': xProfileID } = params ?? {};
     return this._client.get('/v3/me', {
       ...options,
@@ -59,6 +58,274 @@ export class Me extends APIResource {
       ]),
     });
   }
+}
+
+/**
+ * Account response for GET /v3/me endpoint. Returns organization (with profiles),
+ * user (standalone), or profile (child of an organization) data depending on the
+ * API key type. Always includes messaging channel configuration.
+ */
+export interface Account {
+  /**
+   * Customer ID (organization, account, or profile)
+   */
+  id?: string;
+
+  /**
+   * Messaging channel configuration. All three channels are always present. Each
+   * channel has a "configured" flag; configured channels expose additional details.
+   */
+  channels?: AccountChannels;
+
+  /**
+   * When the account was created
+   */
+  created_at?: string;
+
+  /**
+   * Account description
+   */
+  description?: string | null;
+
+  /**
+   * Contact email address
+   */
+  email?: string | null;
+
+  /**
+   * Whether this account may mark a template for automatic creation on its sender
+   * profiles. Granted by Sent per account and off by default, so it is what a
+   * template-create form reads to decide whether to offer the option at all —
+   * marking a template without it does nothing.
+   *
+   * Top-level rather than inside settings, which is written for type: "profile" only
+   * and so would never carry it to the account type that can act on it.
+   *
+   * This is the capability, not the stored flag: a profile reports false whatever
+   * its own row holds. A sender profile owns no sender profiles, so a template it
+   * marked would have nothing to be created on and the fan-out would never read the
+   * flag. The admin GET /customers/{id} reports the stored value instead, because
+   * that is the one an operator granted.
+   */
+  enable_template_auto_creation_for_sp?: boolean;
+
+  /**
+   * Account icon URL
+   */
+  icon?: string | null;
+
+  /**
+   * Account name
+   */
+  name?: string;
+
+  /**
+   * Organization ID (only for profile type — the parent organization)
+   */
+  organization_id?: string | null;
+
+  /**
+   * List of profiles (populated for organization type, empty for user and profile
+   * types)
+   */
+  profiles?: Array<AccountProfile>;
+
+  /**
+   * The SMS sender this account sends from in the United States, in E.164 form. Null
+   * when the account has no US SMS sender.
+   *
+   * The same value as channels.sms.phone_number, published under both names on
+   * purpose: sending_phone_number is what this value is already called on GET
+   * /v3/profiles, so the same key answers the same question whichever of the two
+   * endpoints you ask. Neither name is preferred over the other and neither is
+   * deprecated.
+   *
+   * The same value, not the same presence: this key is always written, including as
+   * null, whereas channels.sms.phone_number is left out entirely when there is no
+   * sender.
+   */
+  sending_phone_number?: string | null;
+
+  /**
+   * The account that holds sending_phone_number in number inventory: normally this
+   * account itself, and a different account when the number is held elsewhere. Null
+   * when there is no US sender, or when the sender is not a number drawn from
+   * inventory — an alphanumeric sender ID or a short code.
+   */
+  sending_phone_number_profile_id?: string | null;
+
+  /**
+   * Profile configuration settings
+   */
+  settings?: ProfileSettings | null;
+
+  /**
+   * Short name / abbreviation (only for profile type)
+   */
+  short_name?: string | null;
+
+  /**
+   * Profile status (only for profile type): incomplete, pending_review, approved,
+   * etc.
+   */
+  status?: string | null;
+
+  /**
+   * Account type: "organization" (has profiles), "user" (no profiles), or "profile"
+   * (child of an organization)
+   */
+  type?: string;
+}
+
+/**
+ * Messaging channel configuration. All three channels are always present. Each
+ * channel has a "configured" flag; configured channels expose additional details.
+ */
+export interface AccountChannels {
+  /**
+   * RCS channel configuration. When configured, includes the RCS phone number.
+   */
+  rcs?: AccountRcsChannel;
+
+  /**
+   * SMS channel configuration. When configured, includes the sending phone number.
+   */
+  sms?: AccountSMSChannel;
+
+  /**
+   * WhatsApp Business channel configuration. When configured, includes the WhatsApp
+   * phone number and business name.
+   */
+  whatsapp?: AccountWhatsappChannel;
+}
+
+/**
+ * Profile (sender profile) response for v3 API
+ */
+export interface AccountProfile {
+  /**
+   * Profile unique identifier
+   */
+  id?: string;
+
+  /**
+   * When the profile was created
+   */
+  created_at?: string;
+
+  /**
+   * Profile description
+   */
+  description?: string | null;
+
+  /**
+   * Profile icon URL
+   */
+  icon?: string | null;
+
+  /**
+   * Profile name
+   */
+  name?: string;
+
+  /**
+   * User's role in this profile: admin, billing, developer (inherited from
+   * organization if not explicitly set)
+   */
+  role?: string | null;
+
+  /**
+   * Profile configuration settings
+   */
+  settings?: ProfileSettings;
+
+  /**
+   * Profile short name (abbreviation)
+   */
+  short_name?: string | null;
+
+  /**
+   * Profile setup status: incomplete, pending_review, approved, rejected
+   */
+  status?: string | null;
+}
+
+/**
+ * RCS channel configuration. When configured, includes the RCS phone number.
+ */
+export interface AccountRcsChannel {
+  /**
+   * Whether RCS is configured for this account
+   */
+  configured?: boolean;
+
+  /**
+   * RCS-enabled phone number in E.164 format
+   */
+  phone_number?: string | null;
+}
+
+/**
+ * SMS channel configuration. When configured, includes the sending phone number.
+ */
+export interface AccountSMSChannel {
+  /**
+   * Whether SMS is configured for this account
+   */
+  configured?: boolean;
+
+  /**
+   * Sending phone number in E.164 format
+   */
+  phone_number?: string | null;
+}
+
+/**
+ * WhatsApp Business channel configuration. When configured, includes the WhatsApp
+ * phone number and business name.
+ */
+export interface AccountWhatsappChannel {
+  /**
+   * WhatsApp Business display name
+   */
+  business_name?: string | null;
+
+  /**
+   * Whether WhatsApp is configured for this account
+   */
+  configured?: boolean;
+
+  /**
+   * WhatsApp phone number in E.164 format
+   */
+  phone_number?: string | null;
+}
+
+/**
+ * Standard API response envelope for all v3 endpoints
+ */
+export interface APIResponseOfAccount {
+  /**
+   * Account response for GET /v3/me endpoint. Returns organization (with profiles),
+   * user (standalone), or profile (child of an organization) data depending on the
+   * API key type. Always includes messaging channel configuration.
+   */
+  data?: Account | null;
+
+  /**
+   * Error information
+   */
+  error?: WebhooksAPI.ErrorDetail | null;
+
+  /**
+   * Request and response metadata
+   */
+  meta?: WebhooksAPI.APIMeta;
+
+  /**
+   * Indicates whether the request was successful
+   */
+  success?: boolean;
 }
 
 /**
@@ -109,280 +376,6 @@ export interface ProfileSettings {
   inherit_templates?: boolean | null;
 }
 
-/**
- * Standard API response envelope for all v3 endpoints
- */
-export interface MeRetrieveResponse {
-  /**
-   * Account response for GET /v3/me endpoint. Returns organization (with profiles),
-   * user (standalone), or profile (child of an organization) data depending on the
-   * API key type. Always includes messaging channel configuration.
-   */
-  data?: MeRetrieveResponse.Data | null;
-
-  /**
-   * Error information
-   */
-  error?: WebhooksAPI.ErrorDetail | null;
-
-  /**
-   * Request and response metadata
-   */
-  meta?: WebhooksAPI.APIMeta;
-
-  /**
-   * Indicates whether the request was successful
-   */
-  success?: boolean;
-}
-
-export namespace MeRetrieveResponse {
-  /**
-   * Account response for GET /v3/me endpoint. Returns organization (with profiles),
-   * user (standalone), or profile (child of an organization) data depending on the
-   * API key type. Always includes messaging channel configuration.
-   */
-  export interface Data {
-    /**
-     * Customer ID (organization, account, or profile)
-     */
-    id?: string;
-
-    /**
-     * Messaging channel configuration. All three channels are always present. Each
-     * channel has a "configured" flag; configured channels expose additional details.
-     */
-    channels?: Data.Channels;
-
-    /**
-     * When the account was created
-     */
-    created_at?: string;
-
-    /**
-     * Account description
-     */
-    description?: string | null;
-
-    /**
-     * Contact email address
-     */
-    email?: string | null;
-
-    /**
-     * Whether this account may mark a template for automatic creation on its sender
-     * profiles. Granted by Sent per account and off by default, so it is what a
-     * template-create form reads to decide whether to offer the option at all —
-     * marking a template without it does nothing.
-     *
-     * Top-level rather than inside settings, which is written for type: "profile" only
-     * and so would never carry it to the account type that can act on it.
-     *
-     * This is the capability, not the stored flag: a profile reports false whatever
-     * its own row holds. A sender profile owns no sender profiles, so a template it
-     * marked would have nothing to be created on and the fan-out would never read the
-     * flag. The admin GET /customers/{id} reports the stored value instead, because
-     * that is the one an operator granted.
-     */
-    enable_template_auto_creation_for_sp?: boolean;
-
-    /**
-     * Account icon URL
-     */
-    icon?: string | null;
-
-    /**
-     * Account name
-     */
-    name?: string;
-
-    /**
-     * Organization ID (only for profile type — the parent organization)
-     */
-    organization_id?: string | null;
-
-    /**
-     * List of profiles (populated for organization type, empty for user and profile
-     * types)
-     */
-    profiles?: Array<Data.Profile>;
-
-    /**
-     * The SMS sender this account sends from in the United States, in E.164 form. Null
-     * when the account has no US SMS sender.
-     *
-     * The same value as channels.sms.phone_number, published under both names on
-     * purpose: sending_phone_number is what this value is already called on GET
-     * /v3/profiles, so the same key answers the same question whichever of the two
-     * endpoints you ask. Neither name is preferred over the other and neither is
-     * deprecated.
-     *
-     * The same value, not the same presence: this key is always written, including as
-     * null, whereas channels.sms.phone_number is left out entirely when there is no
-     * sender.
-     */
-    sending_phone_number?: string | null;
-
-    /**
-     * The account that holds sending_phone_number in number inventory: normally this
-     * account itself, and a different account when the number is held elsewhere. Null
-     * when there is no US sender, or when the sender is not a number drawn from
-     * inventory — an alphanumeric sender ID or a short code.
-     */
-    sending_phone_number_profile_id?: string | null;
-
-    /**
-     * Profile configuration settings
-     */
-    settings?: MeAPI.ProfileSettings | null;
-
-    /**
-     * Short name / abbreviation (only for profile type)
-     */
-    short_name?: string | null;
-
-    /**
-     * Profile status (only for profile type): incomplete, pending_review, approved,
-     * etc.
-     */
-    status?: string | null;
-
-    /**
-     * Account type: "organization" (has profiles), "user" (no profiles), or "profile"
-     * (child of an organization)
-     */
-    type?: string;
-  }
-
-  export namespace Data {
-    /**
-     * Messaging channel configuration. All three channels are always present. Each
-     * channel has a "configured" flag; configured channels expose additional details.
-     */
-    export interface Channels {
-      /**
-       * RCS channel configuration. When configured, includes the RCS phone number.
-       */
-      rcs?: Channels.Rcs;
-
-      /**
-       * SMS channel configuration. When configured, includes the sending phone number.
-       */
-      sms?: Channels.SMS;
-
-      /**
-       * WhatsApp Business channel configuration. When configured, includes the WhatsApp
-       * phone number and business name.
-       */
-      whatsapp?: Channels.Whatsapp;
-    }
-
-    export namespace Channels {
-      /**
-       * RCS channel configuration. When configured, includes the RCS phone number.
-       */
-      export interface Rcs {
-        /**
-         * Whether RCS is configured for this account
-         */
-        configured?: boolean;
-
-        /**
-         * RCS-enabled phone number in E.164 format
-         */
-        phone_number?: string | null;
-      }
-
-      /**
-       * SMS channel configuration. When configured, includes the sending phone number.
-       */
-      export interface SMS {
-        /**
-         * Whether SMS is configured for this account
-         */
-        configured?: boolean;
-
-        /**
-         * Sending phone number in E.164 format
-         */
-        phone_number?: string | null;
-      }
-
-      /**
-       * WhatsApp Business channel configuration. When configured, includes the WhatsApp
-       * phone number and business name.
-       */
-      export interface Whatsapp {
-        /**
-         * WhatsApp Business display name
-         */
-        business_name?: string | null;
-
-        /**
-         * Whether WhatsApp is configured for this account
-         */
-        configured?: boolean;
-
-        /**
-         * WhatsApp phone number in E.164 format
-         */
-        phone_number?: string | null;
-      }
-    }
-
-    /**
-     * Profile (sender profile) response for v3 API
-     */
-    export interface Profile {
-      /**
-       * Profile unique identifier
-       */
-      id?: string;
-
-      /**
-       * When the profile was created
-       */
-      created_at?: string;
-
-      /**
-       * Profile description
-       */
-      description?: string | null;
-
-      /**
-       * Profile icon URL
-       */
-      icon?: string | null;
-
-      /**
-       * Profile name
-       */
-      name?: string;
-
-      /**
-       * User's role in this profile: admin, billing, developer (inherited from
-       * organization if not explicitly set)
-       */
-      role?: string | null;
-
-      /**
-       * Profile configuration settings
-       */
-      settings?: MeAPI.ProfileSettings;
-
-      /**
-       * Profile short name (abbreviation)
-       */
-      short_name?: string | null;
-
-      /**
-       * Profile setup status: incomplete, pending_review, approved, rejected
-       */
-      status?: string | null;
-    }
-  }
-}
-
 export interface MeRetrieveParams {
   /**
    * Profile UUID to scope the request to a child profile. Only organization API keys
@@ -393,8 +386,14 @@ export interface MeRetrieveParams {
 
 export declare namespace Me {
   export {
+    type Account as Account,
+    type AccountChannels as AccountChannels,
+    type AccountProfile as AccountProfile,
+    type AccountRcsChannel as AccountRcsChannel,
+    type AccountSMSChannel as AccountSMSChannel,
+    type AccountWhatsappChannel as AccountWhatsappChannel,
+    type APIResponseOfAccount as APIResponseOfAccount,
     type ProfileSettings as ProfileSettings,
-    type MeRetrieveResponse as MeRetrieveResponse,
     type MeRetrieveParams as MeRetrieveParams,
   };
 }

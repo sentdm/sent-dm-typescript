@@ -1,7 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../core/resource';
-import * as TemplatesAPI from './templates';
 import * as WebhooksAPI from './webhooks';
 import { APIPromise } from '../core/api-promise';
 import { PagePromise, TemplatesPage, type TemplatesPageParams } from '../core/pagination';
@@ -178,6 +177,31 @@ export type TemplatesTemplatesPage = TemplatesPage<Template>;
 /**
  * Standard API response envelope for all v3 endpoints
  */
+export interface APIResponseOfTemplatesList {
+  /**
+   * A paginated list of templates.
+   */
+  data?: TemplatesList | null;
+
+  /**
+   * Error information
+   */
+  error?: WebhooksAPI.ErrorDetail | null;
+
+  /**
+   * Request and response metadata
+   */
+  meta?: WebhooksAPI.APIMeta;
+
+  /**
+   * Indicates whether the request was successful
+   */
+  success?: boolean;
+}
+
+/**
+ * Standard API response envelope for all v3 endpoints
+ */
 export interface APIResponseTemplate {
   /**
    * Template response for v3 API
@@ -329,7 +353,7 @@ export interface TemplateBody {
    * MMS-specific copy, a subject or attachments. When present it replaces that body
    * on MMS rather than adding to it.
    */
-  mms?: TemplateBody.Mms | null;
+  mms?: TemplateMmsBodyContent | null;
 
   /**
    * The shared body, used for every channel. One half of the choice described above.
@@ -352,58 +376,6 @@ export interface TemplateBody {
    * The WhatsApp body. It does not override multiChannel, it replaces it.
    */
   whatsapp?: TemplateBodyContent | null;
-}
-
-export namespace TemplateBody {
-  /**
-   * MMS-specific content — subject, text and attachments.
-   *
-   * Like Rcs, an override that cannot stand on its own: a template still needs a
-   * MultiChannel body or the Sms + Whatsapp pair to be deliverable at all. Without
-   * this slot MMS renders the shared or SMS body, so it is only needed for
-   * MMS-specific copy, a subject or attachments. When present it replaces that body
-   * on MMS rather than adding to it.
-   */
-  export interface Mms extends TemplatesAPI.TemplateBodyContent {
-    /**
-     * Attachments carried by every send on this template, in order. A per-send
-     * media_urls on the request replaces this list rather than adding to it, so a
-     * template can hold a default creative and a caller can still send something
-     * recipient-specific.
-     */
-    media?: Array<Mms.Media> | null;
-
-    /**
-     * MMS subject line. Optional — most handsets render it above the body, some ignore
-     * it entirely. Deliberately its own field rather than riding TemplateHeader: the
-     * header is authored once and shared across every channel, and carries Meta's
-     * 60-character cap plus its no-newline, no-emoji text rules, none of which
-     * describe an MMS subject.
-     */
-    subject?: string | null;
-  }
-
-  export namespace Mms {
-    /**
-     * One attachment on an MMS template body.
-     */
-    export interface Media {
-      /**
-       * One of MmsMediaTypes. Advisory: the carrier reads the Content-Type off the
-       * fetched object, not this field. It exists so an authoring UI can render the
-       * right preview and so a reviewer can see what was intended.
-       */
-      mediaType?: string | null;
-
-      /**
-       * Publicly fetchable https URL. The carrier's MMSC fetches this at send time, so
-       * it has to stay reachable and unauthenticated for the life of the send —
-       * including retries and a DLQ replay — which is why a presigned URL is not a valid
-       * value here.
-       */
-      url?: string;
-    }
-  }
 }
 
 export interface TemplateBodyContent {
@@ -615,7 +587,7 @@ export interface TemplateHeader {
    * for Sent: a preview, and the default a StaticResource header falls back to at
    * send.
    */
-  location?: TemplateHeader.Location | null;
+  location?: TemplateHeaderLocation | null;
 
   /**
    * Whether the asset registered at creation is reused when a caller omits the
@@ -650,22 +622,109 @@ export interface TemplateHeader {
   variables?: Array<TemplateVariable> | null;
 }
 
-export namespace TemplateHeader {
+/**
+ * The map pin a location header drops. Meta wants none of this at creation — the
+ * component is just {"type":"header","format":"location"} — so these values exist
+ * for Sent: a preview, and the default a StaticResource header falls back to at
+ * send.
+ */
+export interface TemplateHeaderLocation {
+  address: string;
+
+  latitude: string;
+
+  longitude: string;
+
+  name: string;
+}
+
+/**
+ * One attachment on an MMS template body.
+ */
+export interface TemplateMediaItem {
   /**
-   * The map pin a location header drops. Meta wants none of this at creation — the
-   * component is just {"type":"header","format":"location"} — so these values exist
-   * for Sent: a preview, and the default a StaticResource header falls back to at
-   * send.
+   * One of MmsMediaTypes. Advisory: the carrier reads the Content-Type off the
+   * fetched object, not this field. It exists so an authoring UI can render the
+   * right preview and so a reviewer can see what was intended.
    */
-  export interface Location {
-    address: string;
+  mediaType?: string | null;
 
-    latitude: string;
+  /**
+   * Publicly fetchable https URL. The carrier's MMSC fetches this at send time, so
+   * it has to stay reachable and unauthenticated for the life of the send —
+   * including retries and a DLQ replay — which is why a presigned URL is not a valid
+   * value here.
+   */
+  url?: string;
+}
 
-    longitude: string;
+/**
+ * MMS-specific body content.
+ *
+ * Why MMS needs its own type when the other channels share one: it is the only
+ * channel with a subject line and the only one with attachments. Every other
+ * channel's body is text and variables, which is exactly what TemplateBodyContent
+ * already is. Putting Subject and Media on the shared type instead would give sms,
+ * whatsapp and rcs two members none of them can ever use.
+ *
+ * Derives from TemplateBodyContent so that every existing consumer of a body slot
+ * — MessageUtils.ConvertVariableToReadable,
+ * TemplateDefinition.GetRequiredVariables,
+ * TemplateDefinitionValidator.ApplyBodyContentRules — reads it with no change. The
+ * two extra members are what the MMS strategy and the provider request need on
+ * top.
+ */
+export interface TemplateMmsBodyContent extends TemplateBodyContent {
+  /**
+   * Attachments carried by every send on this template, in order. A per-send
+   * media_urls on the request replaces this list rather than adding to it, so a
+   * template can hold a default creative and a caller can still send something
+   * recipient-specific.
+   */
+  media?: Array<TemplateMediaItem> | null;
 
-    name: string;
-  }
+  /**
+   * MMS subject line. Optional — most handsets render it above the body, some ignore
+   * it entirely. Deliberately its own field rather than riding TemplateHeader: the
+   * header is authored once and shared across every channel, and carries Meta's
+   * 60-character cap plus its no-newline, no-emoji text rules, none of which
+   * describe an MMS subject.
+   */
+  subject?: string | null;
+}
+
+/**
+ * SDK-style template reference: resolve by ID or by name, with optional
+ * parameters.
+ */
+export interface TemplateRef {
+  /**
+   * Template ID (mutually exclusive with name)
+   */
+  id?: string | null;
+
+  /**
+   * Template name (mutually exclusive with id)
+   */
+  name?: string | null;
+
+  /**
+   * Template variable parameters for personalization, keyed by variable name.
+   *
+   * Every variable the template declares is required; GET /v3/templates/{id} lists
+   * them. Supplying a key the template does not declare is ignored.
+   *
+   * Media headers. A template whose header is an image (designed in WhatsApp Manager
+   * and imported into Sent) declares a reserved header_image key. Its value is a
+   * publicly reachable https URL that Meta fetches at send time — Sent does not host
+   * the asset, and the sample approved with the template is not reused. The key is
+   * derived from the header's media type, so header_video and header_document follow
+   * the same shape when those formats ship.
+   *
+   * "parameters": { "header_image": "https://cdn.example.com/banner.jpg", "name":
+   * "John Doe" }
+   */
+  parameters?: { [key: string]: string } | null;
 }
 
 export interface TemplateVariable {
@@ -676,7 +735,7 @@ export interface TemplateVariable {
    */
   name: string;
 
-  props: TemplateVariable.Props;
+  props: TemplateVariableProps;
 
   /**
    * One of variable, link or media. Decides which Props fields are required.
@@ -695,29 +754,42 @@ export interface TemplateVariable {
   id?: number;
 }
 
-export namespace TemplateVariable {
-  export interface Props {
-    mediaType: string;
+export interface TemplateVariableProps {
+  mediaType: string;
 
-    /**
-     * Example value substituted into the template when previewing it and when
-     * submitting it to Meta for review. Free text by nature, so the converter accepts
-     * a JSON number or boolean here and normalizes it — see
-     * JsonScalarToStringConverter for why — and guarantees it is always serialized
-     * back out as a JSON string.
-     */
-    sample: string;
+  /**
+   * Example value substituted into the template when previewing it and when
+   * submitting it to Meta for review. Free text by nature, so the converter accepts
+   * a JSON number or boolean here and normalizes it — see
+   * JsonScalarToStringConverter for why — and guarantees it is always serialized
+   * back out as a JSON string.
+   */
+  sample: string;
 
-    url: string;
+  url: string;
 
-    variableType: string;
+  variableType: string;
 
-    alt?: string | null;
+  alt?: string | null;
 
-    regex?: string | null;
+  regex?: string | null;
 
-    shortUrl?: string | null;
-  }
+  shortUrl?: string | null;
+}
+
+/**
+ * A paginated list of templates.
+ */
+export interface TemplatesList {
+  /**
+   * Pagination metadata for list responses
+   */
+  pagination?: WebhooksAPI.PaginationMeta;
+
+  /**
+   * The templates on this page.
+   */
+  templates?: Array<Template>;
 }
 
 export interface TemplateCreateParams {
@@ -899,6 +971,7 @@ export interface TemplateDeleteParams {
 
 export declare namespace Templates {
   export {
+    type APIResponseOfTemplatesList as APIResponseOfTemplatesList,
     type APIResponseTemplate as APIResponseTemplate,
     type AuthenticationConfig as AuthenticationConfig,
     type Template as Template,
@@ -909,7 +982,13 @@ export declare namespace Templates {
     type TemplateDefinition as TemplateDefinition,
     type TemplateFooter as TemplateFooter,
     type TemplateHeader as TemplateHeader,
+    type TemplateHeaderLocation as TemplateHeaderLocation,
+    type TemplateMediaItem as TemplateMediaItem,
+    type TemplateMmsBodyContent as TemplateMmsBodyContent,
+    type TemplateRef as TemplateRef,
     type TemplateVariable as TemplateVariable,
+    type TemplateVariableProps as TemplateVariableProps,
+    type TemplatesList as TemplatesList,
     type TemplatesTemplatesPage as TemplatesTemplatesPage,
     type TemplateCreateParams as TemplateCreateParams,
     type TemplateRetrieveParams as TemplateRetrieveParams,

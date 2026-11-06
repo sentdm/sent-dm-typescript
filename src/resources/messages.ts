@@ -1,8 +1,10 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../core/resource';
+import * as TemplatesAPI from './templates';
 import * as WebhooksAPI from './webhooks';
 import { APIPromise } from '../core/api-promise';
+import { ConversationsPage } from '../core/pagination';
 import { buildHeaders } from '../internal/headers';
 import { RequestOptions } from '../internal/request-options';
 import { path } from '../internal/utils/path';
@@ -56,16 +58,17 @@ export class Messages extends APIResource {
    *
    * @example
    * ```ts
-   * const response = await client.messages.cancel(
-   *   '8ba7b830-9dad-11d1-80b4-00c04fd430c8',
-   * );
+   * const apiResponseOfCancelledMessage =
+   *   await client.messages.cancel(
+   *     '8ba7b830-9dad-11d1-80b4-00c04fd430c8',
+   *   );
    * ```
    */
   cancel(
     id: string,
     params: MessageCancelParams,
     options?: RequestOptions,
-  ): APIPromise<MessageCancelResponse> {
+  ): APIPromise<APIResponseOfCancelledMessage> {
     const { 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
     return this._client.post(path`/v3/messages/${id}/cancel`, {
       body,
@@ -141,16 +144,17 @@ export class Messages extends APIResource {
    *
    * @example
    * ```ts
-   * const response = await client.messages.retrieveActivities(
-   *   '8ba7b830-9dad-11d1-80b4-00c04fd430c8',
-   * );
+   * const apiResponseOfMessageActivities =
+   *   await client.messages.retrieveActivities(
+   *     '8ba7b830-9dad-11d1-80b4-00c04fd430c8',
+   *   );
    * ```
    */
   retrieveActivities(
     id: string,
     params: MessageRetrieveActivitiesParams | null | undefined = {},
     options?: RequestOptions,
-  ): APIPromise<MessageRetrieveActivitiesResponse> {
+  ): APIPromise<APIResponseOfMessageActivities> {
     const { 'x-profile-id': xProfileID } = params ?? {};
     return this._client.get(path`/v3/messages/${id}/activities`, {
       ...options,
@@ -172,16 +176,17 @@ export class Messages extends APIResource {
    *
    * @example
    * ```ts
-   * const response = await client.messages.retrieveStatus(
-   *   '8ba7b830-9dad-11d1-80b4-00c04fd430c8',
-   * );
+   * const apiResponseOfMessage =
+   *   await client.messages.retrieveStatus(
+   *     '8ba7b830-9dad-11d1-80b4-00c04fd430c8',
+   *   );
    * ```
    */
   retrieveStatus(
     id: string,
     params: MessageRetrieveStatusParams | null | undefined = {},
     options?: RequestOptions,
-  ): APIPromise<MessageRetrieveStatusResponse> {
+  ): APIPromise<APIResponseOfMessage> {
     const { 'x-profile-id': xProfileID } = params ?? {};
     return this._client.get(path`/v3/messages/${id}`, {
       ...options,
@@ -258,6 +263,437 @@ export class Messages extends APIResource {
   }
 }
 
+export type MessagesConversationsPage = ConversationsPage<Message>;
+
+/**
+ * Standard API response envelope for all v3 endpoints
+ */
+export interface APIResponseOfCancelledMessage {
+  /**
+   * The response data (null if error)
+   */
+  data?: CancelledMessage | null;
+
+  /**
+   * Error information
+   */
+  error?: WebhooksAPI.ErrorDetail | null;
+
+  /**
+   * Request and response metadata
+   */
+  meta?: WebhooksAPI.APIMeta;
+
+  /**
+   * Indicates whether the request was successful
+   */
+  success?: boolean;
+}
+
+/**
+ * Standard API response envelope for all v3 endpoints
+ */
+export interface APIResponseOfMessage {
+  /**
+   * Message response for v3 API — same shape as v2 with snake_case JSON conventions.
+   *
+   * The shape of a message that was sent immediately: it never has a scheduled_at
+   * key. A message that is or was held for a later instant is a
+   * ScheduledMessageResponse, and the endpoint decides which of the two to answer
+   * with. From always returns this type.
+   */
+  data?: Message | null;
+
+  /**
+   * Error information
+   */
+  error?: WebhooksAPI.ErrorDetail | null;
+
+  /**
+   * Request and response metadata
+   */
+  meta?: WebhooksAPI.APIMeta;
+
+  /**
+   * Indicates whether the request was successful
+   */
+  success?: boolean;
+}
+
+/**
+ * Standard API response envelope for all v3 endpoints
+ */
+export interface APIResponseOfMessageActivities {
+  /**
+   * Response for GET /messages/{id}/activities
+   */
+  data?: MessageActivities | null;
+
+  /**
+   * Error information
+   */
+  error?: WebhooksAPI.ErrorDetail | null;
+
+  /**
+   * Request and response metadata
+   */
+  meta?: WebhooksAPI.APIMeta;
+
+  /**
+   * Indicates whether the request was successful
+   */
+  success?: boolean;
+}
+
+/**
+ * Message response for v3 API — same shape as v2 with snake_case JSON conventions.
+ *
+ * The shape of a message that was sent immediately: it never has a scheduled_at
+ * key. A message that is or was held for a later instant is a
+ * ScheduledMessageResponse, and the endpoint decides which of the two to answer
+ * with. From always returns this type.
+ */
+export interface CancelledMessage extends Message {
+  /**
+   * The send time that was called off, in UTC — the scheduled_at the message was
+   * being held for, whether you set it or the recipient's quiet hours moved it
+   * there. Omitted only for a held message that carried no recorded instant.
+   */
+  scheduled_at?: string | null;
+}
+
+/**
+ * Message response for v3 API — same shape as v2 with snake_case JSON conventions.
+ *
+ * The shape of a message that was sent immediately: it never has a scheduled_at
+ * key. A message that is or was held for a later instant is a
+ * ScheduledMessageResponse, and the endpoint decides which of the two to answer
+ * with. From always returns this type.
+ */
+export interface Message {
+  id?: string;
+
+  active_contact_price?: number | null;
+
+  channel?: string;
+
+  contact_id?: string;
+
+  created_at?: string;
+
+  customer_id?: string;
+
+  direction?: string;
+
+  events?: Array<MessageStatusEvent> | null;
+
+  /**
+   * Structured message body format for database storage. Preserves channel-specific
+   * components (header, header media, body, footer, buttons, MMS subject and media).
+   *
+   * Persisted as the messageBody jsonb column on Messages. Every write path goes
+   * through MessageUtils.MessageBodyJsonOptions, which writes nulls, so the envelope
+   * shape is stable regardless of channel or status. Anything that rebuilds this
+   * object field by field — the four IMessageBodyStrategy implementations and
+   * MessageUtils.BuildSegmentBody — has to carry every member, or that member is
+   * silently dropped on whichever path forgot it.
+   */
+  message_body?: MessageBody | null;
+
+  phone?: string;
+
+  phone_international?: string;
+
+  price?: number | null;
+
+  /**
+   * A human-readable sentence for reason_code, for example "Insufficient balance".
+   * Omitted whenever reason_code is.
+   */
+  reason?: string | null;
+
+  /**
+   * Why the message is at its current status, as a stable platform code such as
+   * DELIVERY_007, BUSINESS_003 or DELIVERY_003. Present when the current status is
+   * FAILED, FILTERED or BLOCKED and the lifecycle was loaded; omitted otherwise.
+   * Switch on this rather than on reason: the code is stable, the wording may be
+   * improved. It is the platform's classification of the outcome, never a carrier or
+   * vendor code.
+   */
+  reason_code?: string | null;
+
+  region_code?: string;
+
+  status?: string;
+
+  template_category?: string | null;
+
+  template_id?: string | null;
+
+  template_name?: string | null;
+}
+
+/**
+ * Response for GET /messages/{id}/activities
+ */
+export interface MessageActivities {
+  /**
+   * List of activity events ordered by most recent first
+   */
+  activities?: Array<MessageActivity>;
+
+  /**
+   * The message ID these activities belong to
+   */
+  message_id?: string;
+
+  /**
+   * Pagination metadata for list responses
+   */
+  pagination?: WebhooksAPI.PaginationMeta;
+}
+
+/**
+ * A single message activity event for v3 API.
+ *
+ * The activity list mixes statuses, so unlike a message it is one shape rather
+ * than two: a SCHEDULED entry carries scheduled_at, and every other entry has no
+ * such key.
+ */
+export interface MessageActivity {
+  /**
+   * Active contact markup applied on top of the channel cost, formatted to 4 decimal
+   * places.
+   */
+  active_contact_price?: string | null;
+
+  /**
+   * Human-readable description of the activity
+   */
+  description?: string;
+
+  /**
+   * Sender phone number for this activity (the customer's sending number for
+   * outbound, the external sender for inbound). Null when not reported by the
+   * provider.
+   */
+  from?: string | null;
+
+  /**
+   * Channel cost for this activity (e.g., SMS/WhatsApp provider cost), formatted to
+   * 4 decimal places.
+   */
+  price?: string | null;
+
+  /**
+   * A human-readable sentence for reason_code, for example "The recipient is not
+   * registered on this channel" Omitted whenever reason_code is.
+   */
+  reason?: string | null;
+
+  /**
+   * Why the message reached this status, as a stable platform code such as
+   * DELIVERY_007 or BUSINESS_003. Present on FAILED, FILTERED and BLOCKED
+   * activities; omitted on every status that needs no explanation. Switch on this
+   * rather than on reason: the code is stable, the wording may be improved. Same
+   * wire name and vocabulary as on the message and the webhook.
+   */
+  reason_code?: string | null;
+
+  /**
+   * SCHEDULED and CANCELLED activities only, in UTC: on a SCHEDULED entry, when the
+   * held message will be released for delivery; on a CANCELLED entry, the instant
+   * that was called off. Same wire name as on the send response, the message and the
+   * webhook. Omitted on every other activity. A message that quiet hours moved at
+   * release has two SCHEDULED entries, each carrying the instant as it stood at that
+   * moment.
+   */
+  scheduled_at?: string | null;
+
+  /**
+   * Activity status. Outbound: QUEUED, PROCESSED, ROUTED, SCHEDULED, SENT,
+   * DELIVERED, READ, FAILED. Inbound (from contact): RECEIVED (terminal).
+   */
+  status?: string;
+
+  /**
+   * When this activity occurred
+   */
+  timestamp?: string;
+}
+
+/**
+ * Structured message body format for database storage. Preserves channel-specific
+ * components (header, header media, body, footer, buttons, MMS subject and media).
+ *
+ * Persisted as the messageBody jsonb column on Messages. Every write path goes
+ * through MessageUtils.MessageBodyJsonOptions, which writes nulls, so the envelope
+ * shape is stable regardless of channel or status. Anything that rebuilds this
+ * object field by field — the four IMessageBodyStrategy implementations and
+ * MessageUtils.BuildSegmentBody — has to carry every member, or that member is
+ * silently dropped on whichever path forgot it.
+ */
+export interface MessageBody {
+  buttons?: Array<MessageButton> | null;
+
+  content?: string;
+
+  footer?: string | null;
+
+  header?: string | null;
+
+  /**
+   * The media asset that rode a message's header, recorded as sent.
+   */
+  headerMedia?: MessageHeaderMedia | null;
+
+  /**
+   * MMS attachments, as the publicly fetchable URLs handed to the carrier. Null on
+   * every other channel.
+   *
+   * Persisted rather than derived because a resend and a curfew release rebuild the
+   * send from the stored row — MessageReplayCommandBuilder reads templateId and
+   * templateVariables and nothing else — so media that lives only on the original
+   * request would silently turn a replayed MMS into a text message.
+   */
+  media?: Array<MessageMedia> | null;
+
+  /**
+   * MMS subject line. Null on every other channel.
+   */
+  subject?: string | null;
+}
+
+export interface MessageButton {
+  postbackData?: string | null;
+
+  text?: string | null;
+
+  type?: string;
+
+  value?: string;
+}
+
+/**
+ * One entry of a channel's list in Channels, e.g. {"country": "US", "from":
+ * ["+15559990002", "+15559990003"], "strategy": "sticky"}.
+ */
+export interface MessageChannelOptions {
+  /**
+   * Recipient country this entry is meant for (ISO 3166-1 alpha-2, e.g. US).
+   * Optional. Accepted and stored, not acted on yet.
+   */
+  country?: string | null;
+
+  /**
+   * Sender numbers in E.164. Each must be an active sender on your account for this
+   * channel. That is account state rather than request shape, so it is decided per
+   * message: the request is accepted with 202 and a message naming an unusable
+   * number is recorded BLOCKED with error code BUSINESS_029.
+   */
+  from?: Array<string> | null;
+
+  /**
+   * How to pick a number from From, e.g. sticky or geo. Optional. Accepted and
+   * stored, not acted on yet.
+   */
+  strategy?: string | null;
+}
+
+/**
+ * The media asset that rode a message's header, recorded as sent.
+ */
+export interface MessageHeaderMedia {
+  /**
+   * "image", "video" or "document" — taken from the header's media variable.
+   */
+  type?: string;
+
+  /**
+   * The https URL the caller supplied for this send. Never the template's stored
+   * props.sample, which is Meta's expiring header_handle rather than what was
+   * delivered.
+   */
+  url?: string;
+}
+
+/**
+ * One attachment on a message, in either direction — and in both, a URL somebody
+ * else hosts.
+ *
+ * Outbound: the customer supplied a public URL and we handed it to the carrier.
+ * Inbound: the carrier hosts the file and we record where. sent.dm never holds the
+ * bytes, so there is no key, no expiry bookkeeping and nothing minted per read —
+ * what is stored is what is served.
+ *
+ * An inbound link expires on the carrier's own schedule and is unauthenticated.
+ * That is the customer's to manage, and it is documented where they will see it
+ * rather than only here — a recipient who needs an attachment to outlive that
+ * window copies it on receipt.
+ *
+ * Storing a presigned URL is the specific mistake this shape still avoids:
+ * M260826130000 and M260826140000 exist because RCS assets were stored as signed
+ * URLs and went stale. Nothing here is signed.
+ */
+export interface MessageMedia {
+  /**
+   * One of MmsMediaTypes when the content type is known. Advisory — a reader should
+   * trust the fetched object's own Content-Type.
+   */
+  mediaType?: string | null;
+
+  /**
+   * Content type as the provider declared it. Null when it declared none.
+   */
+  mimeType?: string | null;
+
+  /**
+   * Size as the provider declared it. Never measured here — nothing downloads the
+   * file.
+   */
+  sizeBytes?: number | null;
+
+  /**
+   * Inbound only: the SHA-256 the provider declared alongside the attachment, when
+   * it declared one. Relayed to the customer so they can verify what they fetch
+   * matches what the carrier said it sent. It is the only integrity signal available
+   * on an attachment nobody here has read.
+   */
+  sourceHashSha256?: string | null;
+
+  /**
+   * Where the file lives. Outbound: the URL the customer gave us and the carrier
+   * fetched. Inbound: the URL the carrier hosts it at, relayed unchanged.
+   */
+  url?: string | null;
+}
+
+/**
+ * What one recipient of a send got, as the API reports it.
+ */
+export interface MessageRecipient {
+  /**
+   * Resolved template body for this recipient's channel, or null when the channel is
+   * auto-detected.
+   */
+  body?: string | null;
+
+  /**
+   * Channel this message will be sent on — sms, whatsapp — or null to auto-detect.
+   */
+  channel?: string | null;
+
+  /**
+   * Identifier for tracking this recipient's message.
+   */
+  message_id?: string;
+
+  /**
+   * Phone number in E.164 format.
+   */
+  to?: string;
+}
+
 /**
  * Standard API response envelope for all v3 endpoints
  */
@@ -276,7 +712,7 @@ export interface MessageSendResponse {
    * carried scheduled_at is a ScheduledSendMessageResponse, and the endpoint decides
    * which of the two to answer with. From always returns this type.
    */
-  data?: MessageSendResponse.Data | null;
+  data?: MessageSendResult | null;
 
   /**
    * Error information
@@ -292,682 +728,59 @@ export interface MessageSendResponse {
    * Indicates whether the request was successful
    */
   success?: boolean;
-}
-
-export namespace MessageSendResponse {
-  /**
-   * The result of a multi-recipient send.
-   *
-   * Declared here rather than in the service layer. POST /v3/messages used to
-   * publish MessageSendResult — a type in Common.Services.Messaging.Contracts — so
-   * the public contract was whatever the send service happened to return, and
-   * changing that service for an internal reason changed the API. The service keeps
-   * its result; this is what a caller sees, and the mapping between them is a
-   * decision the endpoint makes.
-   *
-   * The shape of an immediate send: it never has a scheduled_at key. A send that
-   * carried scheduled_at is a ScheduledSendMessageResponse, and the endpoint decides
-   * which of the two to answer with. From always returns this type.
-   */
-  export interface Data {
-    recipients?: Array<Data.Recipient>;
-
-    /**
-     * QUEUED: the batch is accepted. A request that carried scheduled_at is QUEUED
-     * here too; each message moves to SCHEDULED once it is held, as GET
-     * /v3/messages/{id} and the message.scheduled webhook report.
-     */
-    status?: string;
-
-    template_id?: string;
-
-    template_name?: string;
-  }
-
-  export namespace Data {
-    /**
-     * What one recipient of a send got, as the API reports it.
-     */
-    export interface Recipient {
-      /**
-       * Resolved template body for this recipient's channel, or null when the channel is
-       * auto-detected.
-       */
-      body?: string | null;
-
-      /**
-       * Channel this message will be sent on — sms, whatsapp — or null to auto-detect.
-       */
-      channel?: string | null;
-
-      /**
-       * Identifier for tracking this recipient's message.
-       */
-      message_id?: string;
-
-      /**
-       * Phone number in E.164 format.
-       */
-      to?: string;
-    }
-  }
 }
 
 /**
- * Standard API response envelope for all v3 endpoints
+ * The result of a multi-recipient send.
+ *
+ * Declared here rather than in the service layer. POST /v3/messages used to
+ * publish MessageSendResult — a type in Common.Services.Messaging.Contracts — so
+ * the public contract was whatever the send service happened to return, and
+ * changing that service for an internal reason changed the API. The service keeps
+ * its result; this is what a caller sees, and the mapping between them is a
+ * decision the endpoint makes.
+ *
+ * The shape of an immediate send: it never has a scheduled_at key. A send that
+ * carried scheduled_at is a ScheduledSendMessageResponse, and the endpoint decides
+ * which of the two to answer with. From always returns this type.
  */
-export interface MessageCancelResponse {
-  /**
-   * The response data (null if error)
-   */
-  data?: MessageCancelResponse.Data | null;
+export interface MessageSendResult {
+  recipients?: Array<MessageRecipient>;
 
   /**
-   * Error information
+   * QUEUED: the batch is accepted. A request that carried scheduled_at is QUEUED
+   * here too; each message moves to SCHEDULED once it is held, as GET
+   * /v3/messages/{id} and the message.scheduled webhook report.
    */
-  error?: WebhooksAPI.ErrorDetail | null;
+  status?: string;
 
-  /**
-   * Request and response metadata
-   */
-  meta?: WebhooksAPI.APIMeta;
+  template_id?: string;
 
-  /**
-   * Indicates whether the request was successful
-   */
-  success?: boolean;
-}
-
-export namespace MessageCancelResponse {
-  /**
-   * The response data (null if error)
-   */
-  export interface Data {
-    id?: string;
-
-    active_contact_price?: number | null;
-
-    channel?: string;
-
-    contact_id?: string;
-
-    created_at?: string;
-
-    customer_id?: string;
-
-    direction?: string;
-
-    events?: Array<Data.Event> | null;
-
-    /**
-     * Structured message body format for database storage. Preserves channel-specific
-     * components (header, header media, body, footer, buttons, MMS subject and media).
-     *
-     * Persisted as the messageBody jsonb column on Messages. Every write path goes
-     * through MessageUtils.MessageBodyJsonOptions, which writes nulls, so the envelope
-     * shape is stable regardless of channel or status. Anything that rebuilds this
-     * object field by field — the four IMessageBodyStrategy implementations and
-     * MessageUtils.BuildSegmentBody — has to carry every member, or that member is
-     * silently dropped on whichever path forgot it.
-     */
-    message_body?: Data.MessageBody | null;
-
-    phone?: string;
-
-    phone_international?: string;
-
-    price?: number | null;
-
-    /**
-     * A human-readable sentence for reason_code, for example "Insufficient balance".
-     * Omitted whenever reason_code is.
-     */
-    reason?: string | null;
-
-    /**
-     * Why the message is at its current status, as a stable platform code such as
-     * DELIVERY_007, BUSINESS_003 or DELIVERY_003. Present when the current status is
-     * FAILED, FILTERED or BLOCKED and the lifecycle was loaded; omitted otherwise.
-     * Switch on this rather than on reason: the code is stable, the wording may be
-     * improved. It is the platform's classification of the outcome, never a carrier or
-     * vendor code.
-     */
-    reason_code?: string | null;
-
-    region_code?: string;
-
-    /**
-     * The send time that was called off, in UTC — the scheduled_at the message was
-     * being held for, whether you set it or the recipient's quiet hours moved it
-     * there. Omitted only for a held message that carried no recorded instant.
-     */
-    scheduled_at?: string | null;
-
-    status?: string;
-
-    template_category?: string | null;
-
-    template_id?: string | null;
-
-    template_name?: string | null;
-  }
-
-  export namespace Data {
-    /**
-     * Represents a status change event in a message's lifecycle (v3)
-     */
-    export interface Event {
-      status: string;
-
-      timestamp: string;
-
-      description?: string | null;
-
-      /**
-       * A human-readable sentence for reason_code. Omitted whenever reason_code is.
-       */
-      reason?: string | null;
-
-      /**
-       * Why the message reached this status, as a stable platform code such as
-       * DELIVERY_007. Present on FAILED, FILTERED and BLOCKED events; omitted on every
-       * status that needs no explanation. Same wire name and vocabulary as on the
-       * activities list and the webhook.
-       */
-      reason_code?: string | null;
-    }
-
-    /**
-     * Structured message body format for database storage. Preserves channel-specific
-     * components (header, header media, body, footer, buttons, MMS subject and media).
-     *
-     * Persisted as the messageBody jsonb column on Messages. Every write path goes
-     * through MessageUtils.MessageBodyJsonOptions, which writes nulls, so the envelope
-     * shape is stable regardless of channel or status. Anything that rebuilds this
-     * object field by field — the four IMessageBodyStrategy implementations and
-     * MessageUtils.BuildSegmentBody — has to carry every member, or that member is
-     * silently dropped on whichever path forgot it.
-     */
-    export interface MessageBody {
-      buttons?: Array<MessageBody.Button> | null;
-
-      content?: string;
-
-      footer?: string | null;
-
-      header?: string | null;
-
-      /**
-       * The media asset that rode a message's header, recorded as sent.
-       */
-      headerMedia?: MessageBody.HeaderMedia | null;
-
-      /**
-       * MMS attachments, as the publicly fetchable URLs handed to the carrier. Null on
-       * every other channel.
-       *
-       * Persisted rather than derived because a resend and a curfew release rebuild the
-       * send from the stored row — MessageReplayCommandBuilder reads templateId and
-       * templateVariables and nothing else — so media that lives only on the original
-       * request would silently turn a replayed MMS into a text message.
-       */
-      media?: Array<MessageBody.Media> | null;
-
-      /**
-       * MMS subject line. Null on every other channel.
-       */
-      subject?: string | null;
-    }
-
-    export namespace MessageBody {
-      export interface Button {
-        postbackData?: string | null;
-
-        text?: string | null;
-
-        type?: string;
-
-        value?: string;
-      }
-
-      /**
-       * The media asset that rode a message's header, recorded as sent.
-       */
-      export interface HeaderMedia {
-        /**
-         * "image", "video" or "document" — taken from the header's media variable.
-         */
-        type?: string;
-
-        /**
-         * The https URL the caller supplied for this send. Never the template's stored
-         * props.sample, which is Meta's expiring header_handle rather than what was
-         * delivered.
-         */
-        url?: string;
-      }
-
-      /**
-       * One attachment on a message, in either direction — and in both, a URL somebody
-       * else hosts.
-       *
-       * Outbound: the customer supplied a public URL and we handed it to the carrier.
-       * Inbound: the carrier hosts the file and we record where. sent.dm never holds the
-       * bytes, so there is no key, no expiry bookkeeping and nothing minted per read —
-       * what is stored is what is served.
-       *
-       * An inbound link expires on the carrier's own schedule and is unauthenticated.
-       * That is the customer's to manage, and it is documented where they will see it
-       * rather than only here — a recipient who needs an attachment to outlive that
-       * window copies it on receipt.
-       *
-       * Storing a presigned URL is the specific mistake this shape still avoids:
-       * M260826130000 and M260826140000 exist because RCS assets were stored as signed
-       * URLs and went stale. Nothing here is signed.
-       */
-      export interface Media {
-        /**
-         * One of MmsMediaTypes when the content type is known. Advisory — a reader should
-         * trust the fetched object's own Content-Type.
-         */
-        mediaType?: string | null;
-
-        /**
-         * Content type as the provider declared it. Null when it declared none.
-         */
-        mimeType?: string | null;
-
-        /**
-         * Size as the provider declared it. Never measured here — nothing downloads the
-         * file.
-         */
-        sizeBytes?: number | null;
-
-        /**
-         * Inbound only: the SHA-256 the provider declared alongside the attachment, when
-         * it declared one. Relayed to the customer so they can verify what they fetch
-         * matches what the carrier said it sent. It is the only integrity signal available
-         * on an attachment nobody here has read.
-         */
-        sourceHashSha256?: string | null;
-
-        /**
-         * Where the file lives. Outbound: the URL the customer gave us and the carrier
-         * fetched. Inbound: the URL the carrier hosts it at, relayed unchanged.
-         */
-        url?: string | null;
-      }
-    }
-  }
+  template_name?: string;
 }
 
 /**
- * Standard API response envelope for all v3 endpoints
+ * Represents a status change event in a message's lifecycle (v3)
  */
-export interface MessageRetrieveActivitiesResponse {
-  /**
-   * Response for GET /messages/{id}/activities
-   */
-  data?: MessageRetrieveActivitiesResponse.Data | null;
+export interface MessageStatusEvent {
+  status: string;
+
+  timestamp: string;
+
+  description?: string | null;
 
   /**
-   * Error information
+   * A human-readable sentence for reason_code. Omitted whenever reason_code is.
    */
-  error?: WebhooksAPI.ErrorDetail | null;
+  reason?: string | null;
 
   /**
-   * Request and response metadata
+   * Why the message reached this status, as a stable platform code such as
+   * DELIVERY_007. Present on FAILED, FILTERED and BLOCKED events; omitted on every
+   * status that needs no explanation. Same wire name and vocabulary as on the
+   * activities list and the webhook.
    */
-  meta?: WebhooksAPI.APIMeta;
-
-  /**
-   * Indicates whether the request was successful
-   */
-  success?: boolean;
-}
-
-export namespace MessageRetrieveActivitiesResponse {
-  /**
-   * Response for GET /messages/{id}/activities
-   */
-  export interface Data {
-    /**
-     * List of activity events ordered by most recent first
-     */
-    activities?: Array<Data.Activity>;
-
-    /**
-     * The message ID these activities belong to
-     */
-    message_id?: string;
-
-    /**
-     * Pagination metadata for list responses
-     */
-    pagination?: WebhooksAPI.PaginationMeta;
-  }
-
-  export namespace Data {
-    /**
-     * A single message activity event for v3 API.
-     *
-     * The activity list mixes statuses, so unlike a message it is one shape rather
-     * than two: a SCHEDULED entry carries scheduled_at, and every other entry has no
-     * such key.
-     */
-    export interface Activity {
-      /**
-       * Active contact markup applied on top of the channel cost, formatted to 4 decimal
-       * places.
-       */
-      active_contact_price?: string | null;
-
-      /**
-       * Human-readable description of the activity
-       */
-      description?: string;
-
-      /**
-       * Sender phone number for this activity (the customer's sending number for
-       * outbound, the external sender for inbound). Null when not reported by the
-       * provider.
-       */
-      from?: string | null;
-
-      /**
-       * Channel cost for this activity (e.g., SMS/WhatsApp provider cost), formatted to
-       * 4 decimal places.
-       */
-      price?: string | null;
-
-      /**
-       * A human-readable sentence for reason_code, for example "The recipient is not
-       * registered on this channel" Omitted whenever reason_code is.
-       */
-      reason?: string | null;
-
-      /**
-       * Why the message reached this status, as a stable platform code such as
-       * DELIVERY_007 or BUSINESS_003. Present on FAILED, FILTERED and BLOCKED
-       * activities; omitted on every status that needs no explanation. Switch on this
-       * rather than on reason: the code is stable, the wording may be improved. Same
-       * wire name and vocabulary as on the message and the webhook.
-       */
-      reason_code?: string | null;
-
-      /**
-       * SCHEDULED and CANCELLED activities only, in UTC: on a SCHEDULED entry, when the
-       * held message will be released for delivery; on a CANCELLED entry, the instant
-       * that was called off. Same wire name as on the send response, the message and the
-       * webhook. Omitted on every other activity. A message that quiet hours moved at
-       * release has two SCHEDULED entries, each carrying the instant as it stood at that
-       * moment.
-       */
-      scheduled_at?: string | null;
-
-      /**
-       * Activity status. Outbound: QUEUED, PROCESSED, ROUTED, SCHEDULED, SENT,
-       * DELIVERED, READ, FAILED. Inbound (from contact): RECEIVED (terminal).
-       */
-      status?: string;
-
-      /**
-       * When this activity occurred
-       */
-      timestamp?: string;
-    }
-  }
-}
-
-/**
- * Standard API response envelope for all v3 endpoints
- */
-export interface MessageRetrieveStatusResponse {
-  /**
-   * Message response for v3 API — same shape as v2 with snake_case JSON conventions.
-   *
-   * The shape of a message that was sent immediately: it never has a scheduled_at
-   * key. A message that is or was held for a later instant is a
-   * ScheduledMessageResponse, and the endpoint decides which of the two to answer
-   * with. From always returns this type.
-   */
-  data?: MessageRetrieveStatusResponse.Data | null;
-
-  /**
-   * Error information
-   */
-  error?: WebhooksAPI.ErrorDetail | null;
-
-  /**
-   * Request and response metadata
-   */
-  meta?: WebhooksAPI.APIMeta;
-
-  /**
-   * Indicates whether the request was successful
-   */
-  success?: boolean;
-}
-
-export namespace MessageRetrieveStatusResponse {
-  /**
-   * Message response for v3 API — same shape as v2 with snake_case JSON conventions.
-   *
-   * The shape of a message that was sent immediately: it never has a scheduled_at
-   * key. A message that is or was held for a later instant is a
-   * ScheduledMessageResponse, and the endpoint decides which of the two to answer
-   * with. From always returns this type.
-   */
-  export interface Data {
-    id?: string;
-
-    active_contact_price?: number | null;
-
-    channel?: string;
-
-    contact_id?: string;
-
-    created_at?: string;
-
-    customer_id?: string;
-
-    direction?: string;
-
-    events?: Array<Data.Event> | null;
-
-    /**
-     * Structured message body format for database storage. Preserves channel-specific
-     * components (header, header media, body, footer, buttons, MMS subject and media).
-     *
-     * Persisted as the messageBody jsonb column on Messages. Every write path goes
-     * through MessageUtils.MessageBodyJsonOptions, which writes nulls, so the envelope
-     * shape is stable regardless of channel or status. Anything that rebuilds this
-     * object field by field — the four IMessageBodyStrategy implementations and
-     * MessageUtils.BuildSegmentBody — has to carry every member, or that member is
-     * silently dropped on whichever path forgot it.
-     */
-    message_body?: Data.MessageBody | null;
-
-    phone?: string;
-
-    phone_international?: string;
-
-    price?: number | null;
-
-    /**
-     * A human-readable sentence for reason_code, for example "Insufficient balance".
-     * Omitted whenever reason_code is.
-     */
-    reason?: string | null;
-
-    /**
-     * Why the message is at its current status, as a stable platform code such as
-     * DELIVERY_007, BUSINESS_003 or DELIVERY_003. Present when the current status is
-     * FAILED, FILTERED or BLOCKED and the lifecycle was loaded; omitted otherwise.
-     * Switch on this rather than on reason: the code is stable, the wording may be
-     * improved. It is the platform's classification of the outcome, never a carrier or
-     * vendor code.
-     */
-    reason_code?: string | null;
-
-    region_code?: string;
-
-    status?: string;
-
-    template_category?: string | null;
-
-    template_id?: string | null;
-
-    template_name?: string | null;
-  }
-
-  export namespace Data {
-    /**
-     * Represents a status change event in a message's lifecycle (v3)
-     */
-    export interface Event {
-      status: string;
-
-      timestamp: string;
-
-      description?: string | null;
-
-      /**
-       * A human-readable sentence for reason_code. Omitted whenever reason_code is.
-       */
-      reason?: string | null;
-
-      /**
-       * Why the message reached this status, as a stable platform code such as
-       * DELIVERY_007. Present on FAILED, FILTERED and BLOCKED events; omitted on every
-       * status that needs no explanation. Same wire name and vocabulary as on the
-       * activities list and the webhook.
-       */
-      reason_code?: string | null;
-    }
-
-    /**
-     * Structured message body format for database storage. Preserves channel-specific
-     * components (header, header media, body, footer, buttons, MMS subject and media).
-     *
-     * Persisted as the messageBody jsonb column on Messages. Every write path goes
-     * through MessageUtils.MessageBodyJsonOptions, which writes nulls, so the envelope
-     * shape is stable regardless of channel or status. Anything that rebuilds this
-     * object field by field — the four IMessageBodyStrategy implementations and
-     * MessageUtils.BuildSegmentBody — has to carry every member, or that member is
-     * silently dropped on whichever path forgot it.
-     */
-    export interface MessageBody {
-      buttons?: Array<MessageBody.Button> | null;
-
-      content?: string;
-
-      footer?: string | null;
-
-      header?: string | null;
-
-      /**
-       * The media asset that rode a message's header, recorded as sent.
-       */
-      headerMedia?: MessageBody.HeaderMedia | null;
-
-      /**
-       * MMS attachments, as the publicly fetchable URLs handed to the carrier. Null on
-       * every other channel.
-       *
-       * Persisted rather than derived because a resend and a curfew release rebuild the
-       * send from the stored row — MessageReplayCommandBuilder reads templateId and
-       * templateVariables and nothing else — so media that lives only on the original
-       * request would silently turn a replayed MMS into a text message.
-       */
-      media?: Array<MessageBody.Media> | null;
-
-      /**
-       * MMS subject line. Null on every other channel.
-       */
-      subject?: string | null;
-    }
-
-    export namespace MessageBody {
-      export interface Button {
-        postbackData?: string | null;
-
-        text?: string | null;
-
-        type?: string;
-
-        value?: string;
-      }
-
-      /**
-       * The media asset that rode a message's header, recorded as sent.
-       */
-      export interface HeaderMedia {
-        /**
-         * "image", "video" or "document" — taken from the header's media variable.
-         */
-        type?: string;
-
-        /**
-         * The https URL the caller supplied for this send. Never the template's stored
-         * props.sample, which is Meta's expiring header_handle rather than what was
-         * delivered.
-         */
-        url?: string;
-      }
-
-      /**
-       * One attachment on a message, in either direction — and in both, a URL somebody
-       * else hosts.
-       *
-       * Outbound: the customer supplied a public URL and we handed it to the carrier.
-       * Inbound: the carrier hosts the file and we record where. sent.dm never holds the
-       * bytes, so there is no key, no expiry bookkeeping and nothing minted per read —
-       * what is stored is what is served.
-       *
-       * An inbound link expires on the carrier's own schedule and is unauthenticated.
-       * That is the customer's to manage, and it is documented where they will see it
-       * rather than only here — a recipient who needs an attachment to outlive that
-       * window copies it on receipt.
-       *
-       * Storing a presigned URL is the specific mistake this shape still avoids:
-       * M260826130000 and M260826140000 exist because RCS assets were stored as signed
-       * URLs and went stale. Nothing here is signed.
-       */
-      export interface Media {
-        /**
-         * One of MmsMediaTypes when the content type is known. Advisory — a reader should
-         * trust the fetched object's own Content-Type.
-         */
-        mediaType?: string | null;
-
-        /**
-         * Content type as the provider declared it. Null when it declared none.
-         */
-        mimeType?: string | null;
-
-        /**
-         * Size as the provider declared it. Never measured here — nothing downloads the
-         * file.
-         */
-        sizeBytes?: number | null;
-
-        /**
-         * Inbound only: the SHA-256 the provider declared alongside the attachment, when
-         * it declared one. Relayed to the customer so they can verify what they fetch
-         * matches what the carrier said it sent. It is the only integrity signal available
-         * on an attachment nobody here has read.
-         */
-        sourceHashSha256?: string | null;
-
-        /**
-         * Where the file lives. Outbound: the URL the customer gave us and the carrier
-         * fetched. Inbound: the URL the carrier hosts it at, relayed unchanged.
-         */
-        url?: string | null;
-      }
-    }
-  }
+  reason_code?: string | null;
 }
 
 export interface MessageCancelParams {
@@ -1063,7 +876,7 @@ export interface MessageSendParams {
    * decided per message, so each affected message is recorded BLOCKED with error
    * code BUSINESS_029 and reported on GET /v3/messages and the status webhook.
    */
-  channels?: { [key: string]: Array<MessageSendParams.Channel> } | null;
+  channels?: { [key: string]: Array<MessageChannelOptions> } | null;
 
   /**
    * Body param: Attachments for this send, as publicly fetchable https URLs. Used by
@@ -1116,7 +929,7 @@ export interface MessageSendParams {
    * Body param: SDK-style template reference: resolve by ID or by name, with
    * optional parameters.
    */
-  template?: MessageSendParams.Template | null;
+  template?: TemplatesAPI.TemplateRef | null;
 
   /**
    * Body param: Plain-text (free-form) message body. Provide either Template or
@@ -1145,74 +958,24 @@ export interface MessageSendParams {
   'x-profile-id'?: string;
 }
 
-export namespace MessageSendParams {
-  /**
-   * One entry of a channel's list in Channels, e.g. {"country": "US", "from":
-   * ["+15559990002", "+15559990003"], "strategy": "sticky"}.
-   */
-  export interface Channel {
-    /**
-     * Recipient country this entry is meant for (ISO 3166-1 alpha-2, e.g. US).
-     * Optional. Accepted and stored, not acted on yet.
-     */
-    country?: string | null;
-
-    /**
-     * Sender numbers in E.164. Each must be an active sender on your account for this
-     * channel. That is account state rather than request shape, so it is decided per
-     * message: the request is accepted with 202 and a message naming an unusable
-     * number is recorded BLOCKED with error code BUSINESS_029.
-     */
-    from?: Array<string> | null;
-
-    /**
-     * How to pick a number from From, e.g. sticky or geo. Optional. Accepted and
-     * stored, not acted on yet.
-     */
-    strategy?: string | null;
-  }
-
-  /**
-   * SDK-style template reference: resolve by ID or by name, with optional
-   * parameters.
-   */
-  export interface Template {
-    /**
-     * Template ID (mutually exclusive with name)
-     */
-    id?: string | null;
-
-    /**
-     * Template name (mutually exclusive with id)
-     */
-    name?: string | null;
-
-    /**
-     * Template variable parameters for personalization, keyed by variable name.
-     *
-     * Every variable the template declares is required; GET /v3/templates/{id} lists
-     * them. Supplying a key the template does not declare is ignored.
-     *
-     * Media headers. A template whose header is an image (designed in WhatsApp Manager
-     * and imported into Sent) declares a reserved header_image key. Its value is a
-     * publicly reachable https URL that Meta fetches at send time — Sent does not host
-     * the asset, and the sample approved with the template is not reused. The key is
-     * derived from the header's media type, so header_video and header_document follow
-     * the same shape when those formats ship.
-     *
-     * "parameters": { "header_image": "https://cdn.example.com/banner.jpg", "name":
-     * "John Doe" }
-     */
-    parameters?: { [key: string]: string } | null;
-  }
-}
-
 export declare namespace Messages {
   export {
+    type APIResponseOfCancelledMessage as APIResponseOfCancelledMessage,
+    type APIResponseOfMessage as APIResponseOfMessage,
+    type APIResponseOfMessageActivities as APIResponseOfMessageActivities,
+    type CancelledMessage as CancelledMessage,
+    type Message as Message,
+    type MessageActivities as MessageActivities,
+    type MessageActivity as MessageActivity,
+    type MessageBody as MessageBody,
+    type MessageButton as MessageButton,
+    type MessageChannelOptions as MessageChannelOptions,
+    type MessageHeaderMedia as MessageHeaderMedia,
+    type MessageMedia as MessageMedia,
+    type MessageRecipient as MessageRecipient,
     type MessageSendResponse as MessageSendResponse,
-    type MessageCancelResponse as MessageCancelResponse,
-    type MessageRetrieveActivitiesResponse as MessageRetrieveActivitiesResponse,
-    type MessageRetrieveStatusResponse as MessageRetrieveStatusResponse,
+    type MessageSendResult as MessageSendResult,
+    type MessageStatusEvent as MessageStatusEvent,
     type MessageCancelParams as MessageCancelParams,
     type MessageResendParams as MessageResendParams,
     type MessageRetrieveActivitiesParams as MessageRetrieveActivitiesParams,

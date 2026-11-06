@@ -17,6 +17,8 @@ import {
   SMSNumberRequest,
   SMSRetrieveParams,
   SMSUpdateParams,
+  SuppliedCompliance,
+  SuppliedDocument,
 } from './sms';
 import * as VoiceAPI from './voice';
 import {
@@ -254,6 +256,8 @@ export declare namespace Channels {
     type SMSMarket as SMSMarket,
     type SMSNumber as SMSNumber,
     type SMSNumberRequest as SMSNumberRequest,
+    type SuppliedCompliance as SuppliedCompliance,
+    type SuppliedDocument as SuppliedDocument,
     type SMSCreateParams as SMSCreateParams,
     type SMSRetrieveParams as SMSRetrieveParams,
     type SMSUpdateParams as SMSUpdateParams,

@@ -16,6 +16,8 @@ export {
   type SMSMarket,
   type SMSNumber,
   type SMSNumberRequest,
+  type SuppliedCompliance,
+  type SuppliedDocument,
   type SMSCreateParams,
   type SMSRetrieveParams,
   type SMSUpdateParams,

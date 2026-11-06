@@ -334,7 +334,7 @@ export interface Call {
    * and the leg to the connected number at once, and both are billed. Null until the
    * call has been priced
    */
-  legs?: Array<Call.Leg> | null;
+  legs?: Array<CallLeg> | null;
 
   /**
    * The calling mode: inapp for a call between people in your app and phone numbers,
@@ -381,39 +381,37 @@ export interface Call {
   to?: CallParty;
 }
 
-export namespace Call {
+/**
+ * One leg of a call the price covers
+ */
+export interface CallLeg {
   /**
-   * One leg of a call the price covers
+   * The whole minutes the leg was billed for
    */
-  export interface Leg {
-    /**
-     * The whole minutes the leg was billed for
-     */
-    billed_minutes?: number;
+  billed_minutes?: number;
 
-    /**
-     * What the leg cost, in the same unit as the call's price
-     */
-    cost?: number;
+  /**
+   * What the leg cost, in the same unit as the call's price
+   */
+  cost?: number;
 
-    /**
-     * The currency of the cost: USD
-     */
-    currency?: string;
+  /**
+   * The currency of the cost: USD
+   */
+  currency?: string;
 
-    /**
-     * inbound for the caller's leg to your number, outbound for a leg placed on your
-     * behalf
-     */
-    direction?: string;
+  /**
+   * inbound for the caller's leg to your number, outbound for a leg placed on your
+   * behalf
+   */
+  direction?: string;
 
-    /**
-     * The phone number the leg reached, in E.164 format: your number for the inbound
-     * leg, the number dialed for an outbound one. Null for a leg to one of your app
-     * users or a room
-     */
-    number?: string | null;
-  }
+  /**
+   * The phone number the leg reached, in E.164 format: your number for the inbound
+   * leg, the number dialed for an outbound one. Null for a leg to one of your app
+   * users or a room
+   */
+  number?: string | null;
 }
 
 /**
@@ -618,6 +616,7 @@ export declare namespace Calls {
     type APIResponseOfCallRecordings as APIResponseOfCallRecordings,
     type APIResponseOfCallsList as APIResponseOfCallsList,
     type Call as Call,
+    type CallLeg as CallLeg,
     type CallParty as CallParty,
     type CallRecording as CallRecording,
     type CallRecordings as CallRecordings,

@@ -9,7 +9,6 @@ import { APIPromise } from '../core/api-promise';
 import { PagePromise, SenderProfilesPage, type SenderProfilesPageParams } from '../core/pagination';
 import { buildHeaders } from '../internal/headers';
 import { RequestOptions } from '../internal/request-options';
-import { maybeMultipartFormRequestOptions } from '../internal/uploads';
 import { path } from '../internal/utils/path';
 
 /**
@@ -240,20 +239,14 @@ export class SenderProfiles extends APIResource {
     options?: RequestOptions,
   ): APIPromise<APIResponseOfSenderProfile> {
     const { 'Idempotency-Key': idempotencyKey, ...body } = params;
-    return this._client.post(
-      '/v3/sender-profiles',
-      maybeMultipartFormRequestOptions(
-        {
-          body,
-          ...options,
-          headers: buildHeaders([
-            { ...(idempotencyKey != null ? { 'Idempotency-Key': idempotencyKey } : undefined) },
-            options?.headers,
-          ]),
-        },
-        this._client,
-      ),
-    );
+    return this._client.post('/v3/sender-profiles', {
+      body,
+      ...options,
+      headers: buildHeaders([
+        { ...(idempotencyKey != null ? { 'Idempotency-Key': idempotencyKey } : undefined) },
+        options?.headers,
+      ]),
+    });
   }
 
   /**
@@ -542,7 +535,7 @@ export interface SenderProfile {
    * only when the market registers with nobody and compliance was not computed —
    * nothing to show at all.
    */
-  compliance?: SenderProfile.Compliance | null;
+  compliance?: SMSAPI.SuppliedCompliance | null;
 
   created_at?: string;
 
@@ -561,95 +554,6 @@ export interface SenderProfile {
   organization_id?: string | null;
 
   short_name?: string | null;
-}
-
-export namespace SenderProfile {
-  /**
-   * What a market has been given: the identity it registers under, its programme,
-   * and any documents attached.
-   *
-   * What it does not carry is what the market asks for. That is the subject of GET
-   * /v3/compliance/requirements, and it is the same answer for every caller — a
-   * description of what a compliance regime wants, not a record of one customer's
-   * progress through it. It was reported here as well for a while, which put the
-   * same array in six response shapes and left a caller deciding which of two
-   * sources to believe.
-   *
-   * Present on a list read for markets that register (carrying brand and campaign),
-   * but with documents absent — documents are not fetched for a list, because a
-   * catalog lookup and a document read per market would multiply across a page.
-   * Absent documents is distinct from an empty list: absent says they were not
-   * fetched; empty says the market has been given none. The parent object is null
-   * only when the market registers with nobody and compliance was not computed —
-   * nothing to show at all.
-   */
-  export interface Compliance {
-    /**
-     * The identity this market registers under, with inherit saying whose it is.
-     *
-     * Reported here rather than on the profile because it belongs to the registration
-     * this market files, and only one market files one. It was a top-level block for a
-     * while, which put a per-registration value beside a list of markets and left a
-     * caller to work out which market it belonged to.
-     *
-     * Absent for a market that registers with nobody — such a market asks for no
-     * identity, so there is none to report. Absent and null mean different things:
-     * absent says this market does not ask, null would say it asks and nothing was
-     * supplied.
-     *
-     * Untyped, like the request side, because its members are declared by the market's
-     * own schema rather than by a C# class. A typed pair here would be a second
-     * definition of what a market wants, free to drift from the one that validates.
-     */
-    brand?: { [key: string]: unknown } | null;
-
-    /**
-     * The programme this market registers, with inherit saying whose it is.
-     *
-     * One, not a list. TcrCampaigns permits several and an account built on the admin
-     * side may hold them, but this surface offers one — which is what lets the
-     * market's PATCH be an upsert rather than a collection with an addressable create
-     * behind it. An account holding several is reported as its first and refused on
-     * write, rather than half-edited.
-     *
-     * Carries no id. Nothing addresses a campaign, and an undeclared key would be
-     * refused if the caller sent this object back — which it is meant to be able to
-     * do.
-     */
-    campaign?: { [key: string]: unknown } | null;
-
-    /**
-     * What has been supplied for this market.
-     *
-     * Files, not values — the declared halves above carry the values. A document
-     * cannot be a JSON value, so it is sent as multipart on the channel call and
-     * reported here as a reference.
-     *
-     * Absent on a list read, which fetches identity but does not compute compliance
-     * documents per market. Absent and empty mean different things: absent says the
-     * documents were not fetched; empty says the market has been given none.
-     */
-    documents?: Array<Compliance.Document> | null;
-  }
-
-  export namespace Compliance {
-    /**
-     * A document a market asked for and has been given.
-     */
-    export interface Document {
-      /**
-       * Identifier of the upload, for fetching it back through the documents endpoints.
-       */
-      document_id?: string | null;
-
-      file_name?: string | null;
-
-      /**
-       * The catalog's name for this document, matching the requirement it satisfies.
-       */
-      key?: string;
-    }
-  }
 }
 
 /**

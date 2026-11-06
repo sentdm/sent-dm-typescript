@@ -1,6 +1,21 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-export { Channels } from './channels/channels';
+export {
+  Channels,
+  type APIResponseOfChannelsState,
+  type ChannelsState,
+  type MmsMarket,
+  type ChannelListParams,
+} from './channels/channels';
+export {
+  Compliance,
+  type APIResponseOfComplianceRequirements,
+  type ComplianceAttachmentTemplate,
+  type ComplianceRequirement,
+  type ComplianceRequirements,
+  type ComplianceSetupStep,
+  type ComplianceRetrieveRequirementsParams,
+} from './compliance';
 export {
   Contacts,
   type APIResponseOfContact,
@@ -27,8 +42,10 @@ export { Me, type ProfileSettings, type MeRetrieveResponse, type MeRetrieveParam
 export {
   Messages,
   type MessageSendResponse,
+  type MessageCancelResponse,
   type MessageRetrieveActivitiesResponse,
   type MessageRetrieveStatusResponse,
+  type MessageCancelParams,
   type MessageResendParams,
   type MessageRetrieveActivitiesParams,
   type MessageRetrieveStatusParams,
@@ -57,6 +74,23 @@ export {
   type ProfileDeleteParams,
   type ProfileCompleteParams,
 } from './profiles/profiles';
+export {
+  SenderProfiles,
+  type APIResponseOfSenderProfile,
+  type APIResponseOfSenderProfilesList,
+  type SenderProfile,
+  type SenderProfileBilling,
+  type SenderProfileBillingRequest,
+  type SenderProfileChannels,
+  type SenderProfileRcs,
+  type SenderProfileSMS,
+  type SenderProfileWhatsapp,
+  type SenderProfilesList,
+  type SenderProfileCreateParams,
+  type SenderProfileUpdateParams,
+  type SenderProfileListParams,
+  type SenderProfilesSenderProfilesPage,
+} from './sender-profiles';
 export {
   Templates,
   type APIResponseTemplate,

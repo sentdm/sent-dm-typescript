@@ -754,27 +754,6 @@ export interface SMSMarket {
    * Describes whether the market can send, not each number: a market holding several
    * numbers reads ACTIVE as soon as one of them is, whatever the others are doing.
    * Each number's own status is in numbers.
-   *
-   * - `PROVISIONING` - We are working on it and there is nothing for you to do — a
-   *   number is being procured, or a registration is being assembled. Minutes to
-   *   hours.
-   * - `ACTION_NEEDED` - **Waiting on you.** Something the market asks for has not
-   *   been supplied, a regulator rejected what was, or we have asked you to correct
-   *   and resubmit your identity data. Nothing progresses until you act. For an SMS
-   *   market, `GET /v3/channels/sms/{country}/{type}` names what it wants and
-   *   `PATCH` on the same path supplies it — compliance values, documents and
-   *   numbers alike.
-   * - `PENDING_REVIEW` - With a regulator or carrier — filed, or assembled and
-   *   queued for us to file — and their answer is what moves it, to `ACTIVE` or back
-   *   to `ACTION_NEEDED`. Nothing on your side changes it. Days for SMS, weeks for
-   *   RCS.
-   * - `ACTIVE` - Can carry traffic now. A channel a sender profile runs on its
-   *   organization's reads `ACTIVE` too — it sends, which is what the field is
-   *   about.
-   * - `INACTIVE` - **It had a working sender and no longer does** — the number was
-   *   released, or the campaign it carried lapsed. Distinct from `PROVISIONING`,
-   *   which means it has never sent yet: the same absence of a sender, opposite
-   *   news. Sends will fail until it returns to `ACTIVE`.
    */
   status?: 'PROVISIONING' | 'ACTION_NEEDED' | 'PENDING_REVIEW' | 'ACTIVE' | 'INACTIVE' | null;
 }
@@ -913,23 +892,6 @@ export interface SMSCreateParams {
    * which works for country, whose wire name is its camel-cased C# name, and
    * silently does not for number_type. A client generating a request from our
    * OpenAPI therefore sent what the document called sufficient and was answered 400.
-   *
-   * - `LOCAL` - A geographic number for the country. The ordinary choice:
-   *   recognisable to recipients, and available almost everywhere.
-   * - `TOLL_FREE` - A toll-free number. High throughput and no per-country
-   *   registration, but US toll-free traffic goes through its own verification.
-   * - `SHORT_CODE` - A short code — five or six digits, leased rather than
-   *   provisioned. Highest throughput, longest lead time, and the most expensive.
-   * - `ALPHANUMERIC` - A sender name rather than a number, up to 11 characters.
-   *   Recipients cannot reply. Not available in every country, and several require
-   *   it to be pre-registered with documents.
-   * - `TEN_DLC` - A US 10-digit long code registered with The Campaign Registry. The
-   *   only sender type that registers with a compliance regime, so it is the only
-   *   one whose market declares `compliance.brand` and `compliance.campaign`.
-   * - `MOBILE` - A mobile number. Where a country distinguishes it from a landline,
-   *   some carriers treat mobile traffic differently.
-   * - `10DLC` - The industry's spelling of `TEN_DLC`, accepted so an integrator can
-   *   send the term it knows. Resolves to the same market.
    */
   number_type: 'LOCAL' | 'TOLL_FREE' | 'SHORT_CODE' | 'ALPHANUMERIC' | 'TEN_DLC' | 'MOBILE' | '10DLC';
 

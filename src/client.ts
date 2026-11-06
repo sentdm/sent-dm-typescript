@@ -23,6 +23,8 @@ import {
   ContactsPageResponse,
   type ConversationsPageParams,
   ConversationsPageResponse,
+  type SenderProfilesPageParams,
+  SenderProfilesPageResponse,
   type TemplatesPageParams,
   TemplatesPageResponse,
   type VoiceAgentsPageParams,
@@ -35,6 +37,15 @@ import {
 import * as Uploads from './core/uploads';
 import * as API from './resources/index';
 import { APIPromise } from './core/api-promise';
+import {
+  APIResponseOfComplianceRequirements,
+  Compliance,
+  ComplianceAttachmentTemplate,
+  ComplianceRequirement,
+  ComplianceRequirements,
+  ComplianceRetrieveRequirementsParams,
+  ComplianceSetupStep,
+} from './resources/compliance';
 import {
   APIResponseOfContact,
   APIResponseOfContactMessageSummary,
@@ -59,6 +70,8 @@ import {
 } from './resources/conversations';
 import { Me, MeRetrieveParams, MeRetrieveResponse, ProfileSettings } from './resources/me';
 import {
+  MessageCancelParams,
+  MessageCancelResponse,
   MessageResendParams,
   MessageRetrieveActivitiesParams,
   MessageRetrieveActivitiesResponse,
@@ -69,6 +82,23 @@ import {
   Messages,
 } from './resources/messages';
 import { NumberLookupParams, NumberLookupResponse, Numbers } from './resources/numbers';
+import {
+  APIResponseOfSenderProfile,
+  APIResponseOfSenderProfilesList,
+  SenderProfile,
+  SenderProfileBilling,
+  SenderProfileBillingRequest,
+  SenderProfileChannels,
+  SenderProfileCreateParams,
+  SenderProfileListParams,
+  SenderProfileRcs,
+  SenderProfileSMS,
+  SenderProfileUpdateParams,
+  SenderProfileWhatsapp,
+  SenderProfiles,
+  SenderProfilesList,
+  SenderProfilesSenderProfilesPage,
+} from './resources/sender-profiles';
 import {
   APIResponseTemplate,
   AuthenticationConfig,
@@ -138,7 +168,13 @@ import {
   WebhookUpdateParams,
   Webhooks,
 } from './resources/webhooks';
-import { Channels } from './resources/channels/channels';
+import {
+  APIResponseOfChannelsState,
+  ChannelListParams,
+  Channels,
+  ChannelsState,
+  MmsMarket,
+} from './resources/channels/channels';
 import {
   APIResponseOfProfileDetail,
   BillingContactInfo,
@@ -935,6 +971,18 @@ export class Sent {
    */
   profiles: API.Profiles = new API.Profiles(this);
   /**
+   * Your customers, each sending as itself.
+   *
+   * A sender profile is a tenant of yours: it has its own API key, its own balance, and can have its own identity and senders — so your customers send under their own brand and never see Sent. Depth is one; a profile cannot create profiles.
+   *
+   * **Everything is inherited unless the profile owns it.** `{ "name": "…" }` alone gives you a usable profile immediately, running on your identity, your inbox and your billing. Supply a capability's fields and the profile owns that one instead.
+   *
+   * **A sender is the exception.** A brand and a campaign can be inherited; a number cannot. A profile either has a sender of its own or terminates through your shared routes.
+   *
+   * To act for a profile on any other resource, send `x-profile-id` with your organization key rather than looking for a parallel set of endpoints.
+   */
+  senderProfiles: API.SenderProfiles = new API.SenderProfiles(this);
+  /**
    * What a phone number actually is, before you send to it.
    *
    * A lookup returns the number's country, line type and carrier, which is what decides whether it is reachable on a channel and what it costs. Worth doing on import rather than on send: a landline in a contact list is a message that can never be delivered.
@@ -969,7 +1017,30 @@ export class Sent {
    */
   conversations: API.Conversations = new API.Conversations(this);
   voice: API.Voice = new API.Voice(this);
+  /**
+   * The senders you send from, one per channel.
+   *
+   * **SMS is a list of markets**, each keyed by `(country, number_type)` — a customer can hold `us/10dlc` and `gb/alphanumeric` at once, so a market is addressed by the pair rather than by country alone. **WhatsApp and RCS are single**: a customer has one business account and one agent. **Voice is per number**: each number you hold can carry phone calls on its own (`POST /v3/channels/voice`), each with the callback URL Sent asks what to do with its calls, one of them is the default line for calls placed from your app, and voice tokens are minted with `POST /v3/voice/tokens`. Read your voice numbers with `GET /v3/channels/voice` and change one with `PATCH /v3/channels/voice/{number}`.
+   *
+   * ## Compliance lives on the market
+   *
+   * Adding a market records everything that market registers with, in its `compliance` object. Only **US `TEN_DLC`** registers with a regime — The Campaign Registry — and it is the only market whose compliance carries `brand` and `campaign`. Everywhere else compliance is documents, and many markets ask for none at all.
+   *
+   * `GET` and `PATCH` on a market return and accept the same shape, so what comes back can be sent back: an omitted key is left alone, and a key reported in `requirements` is the path into the body that clears it.
+   *
+   * Call `GET /v3/compliance/requirements` first — it answers what a market demands before you hold it, with a body you can fill in and post.
+   */
   channels: API.Channels = new API.Channels(this);
+  /**
+   * What a market demands, before you have it.
+   *
+   * Requirements vary enormously and change without notice. US `TEN_DLC` registers a brand and a campaign with The Campaign Registry and asks a substantial set of questions; an alphanumeric sender pre-registers with documents in one country and needs nothing in another.
+   *
+   * This is the authoritative answer for whichever market you ask about, and it is generated from the same declaration that validates the calls themselves — so it cannot drift from what is actually enforced. The response includes the request body to send, with every key that market wants already present and blank.
+   *
+   * What you supplied, as opposed to what is asked of you, is reported on the market under **Channels**.
+   */
+  compliance: API.Compliance = new API.Compliance(this);
   /**
    * Who the current key is.
    *
@@ -982,12 +1053,14 @@ Sent.Webhooks = Webhooks;
 Sent.Users = Users;
 Sent.Templates = Templates;
 Sent.Profiles = Profiles;
+Sent.SenderProfiles = SenderProfiles;
 Sent.Numbers = Numbers;
 Sent.Messages = Messages;
 Sent.Contacts = Contacts;
 Sent.Conversations = Conversations;
 Sent.Voice = Voice;
 Sent.Channels = Channels;
+Sent.Compliance = Compliance;
 Sent.Me = Me;
 
 export declare namespace Sent {
@@ -1024,6 +1097,12 @@ export declare namespace Sent {
   export {
     type VoiceAgentsPageParams as VoiceAgentsPageParams,
     type VoiceAgentsPageResponse as VoiceAgentsPageResponse,
+  };
+
+  export import SenderProfilesPage = Pagination.SenderProfilesPage;
+  export {
+    type SenderProfilesPageParams as SenderProfilesPageParams,
+    type SenderProfilesPageResponse as SenderProfilesPageResponse,
   };
 
   export {
@@ -1122,6 +1201,24 @@ export declare namespace Sent {
   };
 
   export {
+    SenderProfiles as SenderProfiles,
+    type APIResponseOfSenderProfile as APIResponseOfSenderProfile,
+    type APIResponseOfSenderProfilesList as APIResponseOfSenderProfilesList,
+    type SenderProfile as SenderProfile,
+    type SenderProfileBilling as SenderProfileBilling,
+    type SenderProfileBillingRequest as SenderProfileBillingRequest,
+    type SenderProfileChannels as SenderProfileChannels,
+    type SenderProfileRcs as SenderProfileRcs,
+    type SenderProfileSMS as SenderProfileSMS,
+    type SenderProfileWhatsapp as SenderProfileWhatsapp,
+    type SenderProfilesList as SenderProfilesList,
+    type SenderProfilesSenderProfilesPage as SenderProfilesSenderProfilesPage,
+    type SenderProfileCreateParams as SenderProfileCreateParams,
+    type SenderProfileUpdateParams as SenderProfileUpdateParams,
+    type SenderProfileListParams as SenderProfileListParams,
+  };
+
+  export {
     Numbers as Numbers,
     type NumberLookupResponse as NumberLookupResponse,
     type NumberLookupParams as NumberLookupParams,
@@ -1130,8 +1227,10 @@ export declare namespace Sent {
   export {
     Messages as Messages,
     type MessageSendResponse as MessageSendResponse,
+    type MessageCancelResponse as MessageCancelResponse,
     type MessageRetrieveActivitiesResponse as MessageRetrieveActivitiesResponse,
     type MessageRetrieveStatusResponse as MessageRetrieveStatusResponse,
+    type MessageCancelParams as MessageCancelParams,
     type MessageResendParams as MessageResendParams,
     type MessageRetrieveActivitiesParams as MessageRetrieveActivitiesParams,
     type MessageRetrieveStatusParams as MessageRetrieveStatusParams,
@@ -1164,7 +1263,23 @@ export declare namespace Sent {
 
   export { Voice as Voice };
 
-  export { Channels as Channels };
+  export {
+    Channels as Channels,
+    type APIResponseOfChannelsState as APIResponseOfChannelsState,
+    type ChannelsState as ChannelsState,
+    type MmsMarket as MmsMarket,
+    type ChannelListParams as ChannelListParams,
+  };
+
+  export {
+    Compliance as Compliance,
+    type APIResponseOfComplianceRequirements as APIResponseOfComplianceRequirements,
+    type ComplianceAttachmentTemplate as ComplianceAttachmentTemplate,
+    type ComplianceRequirement as ComplianceRequirement,
+    type ComplianceRequirements as ComplianceRequirements,
+    type ComplianceSetupStep as ComplianceSetupStep,
+    type ComplianceRetrieveRequirementsParams as ComplianceRetrieveRequirementsParams,
+  };
 
   export {
     Me as Me,

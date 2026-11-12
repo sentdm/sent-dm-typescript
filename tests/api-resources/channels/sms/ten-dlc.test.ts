@@ -9,8 +9,10 @@ const client = new Sent({
 
 describe('resource tenDlc', () => {
   // Mock server tests are disabled
-  test.skip('addCampaign', async () => {
-    const responsePromise = client.channels.sms.tenDlc.addCampaign({});
+  test.skip('addCampaign: only required params', async () => {
+    const responsePromise = client.channels.sms.tenDlc.addCampaign({
+      'Idempotency-Key': 'req_abc123_retry1',
+    });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -21,10 +23,32 @@ describe('resource tenDlc', () => {
   });
 
   // Mock server tests are disabled
+  test.skip('addCampaign: required and optional params', async () => {
+    const response = await client.channels.sms.tenDlc.addCampaign({
+      'Idempotency-Key': 'req_abc123_retry1',
+      description: 'description',
+      help_keywords: 'help_keywords',
+      help_message: 'help_message',
+      message_flow: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+      opt_in_keywords: 'opt_in_keywords',
+      opt_in_message: 'opt_in_message',
+      opt_out_keywords: 'opt_out_keywords',
+      opt_out_message: 'opt_out_message',
+      privacy_policy_link: 'privacy_policy_link',
+      sandbox: false,
+      terms_and_conditions_link: 'terms_and_conditions_link',
+      use_cases: [{ sample_messages: [{}], use_case: 'MARKETING' }],
+      volume: 'volume',
+      'x-profile-id': '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
+    });
+  });
+
+  // Mock server tests are disabled
   test.skip('addNumbers: only required params', async () => {
     const responsePromise = client.channels.sms.tenDlc.addNumbers({
       campaign_id: '8f14e45f-ceea-467f-a8f0-7c2a3d1b9e01',
       numbers: [{}],
+      'Idempotency-Key': 'req_abc123_retry1',
     });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
@@ -40,8 +64,8 @@ describe('resource tenDlc', () => {
     const response = await client.channels.sms.tenDlc.addNumbers({
       campaign_id: '8f14e45f-ceea-467f-a8f0-7c2a3d1b9e01',
       numbers: [{ area_code: '415', quantity: 2 }],
-      sandbox: false,
       'Idempotency-Key': 'req_abc123_retry1',
+      sandbox: false,
       'x-profile-id': '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
     });
   });

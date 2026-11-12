@@ -65,7 +65,9 @@ export class TenDlc extends APIResource {
    * @example
    * ```ts
    * const apiResponseOfSMSMarket =
-   *   await client.channels.sms.tenDlc.addCampaign();
+   *   await client.channels.sms.tenDlc.addCampaign({
+   *     'Idempotency-Key': 'req_abc123_retry1',
+   *   });
    * ```
    */
   addCampaign(
@@ -78,7 +80,7 @@ export class TenDlc extends APIResource {
       ...options,
       headers: buildHeaders([
         {
-          ...(idempotencyKey != null ? { 'Idempotency-Key': idempotencyKey } : undefined),
+          'Idempotency-Key': idempotencyKey,
           ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined),
         },
         options?.headers,
@@ -116,6 +118,7 @@ export class TenDlc extends APIResource {
    *   await client.channels.sms.tenDlc.addNumbers({
    *     campaign_id: '8f14e45f-ceea-467f-a8f0-7c2a3d1b9e01',
    *     numbers: [{}],
+   *     'Idempotency-Key': 'req_abc123_retry1',
    *   });
    * ```
    */
@@ -129,7 +132,7 @@ export class TenDlc extends APIResource {
       ...options,
       headers: buildHeaders([
         {
-          ...(idempotencyKey != null ? { 'Idempotency-Key': idempotencyKey } : undefined),
+          'Idempotency-Key': idempotencyKey,
           ...(xProfileID != null ? { 'x-profile-id': xProfileID } : undefined),
         },
         options?.headers,
@@ -268,23 +271,99 @@ export interface APIResponseOfSuppliedCompliance {
 
 export interface TenDlcAddCampaignParams {
   /**
-   * Body param: The compliance values a market registers with. `brand` and
-   * `campaign` apply to US `TEN_DLC`; other markets fill this map with the document
-   * keys their own requirements name.
-   */
-  compliance?: SMSAPI.MarketCompliance;
-
-  /**
-   * Body param
-   */
-  sandbox?: boolean;
-
-  /**
    * Header param: Unique key to ensure idempotent request processing. Must be 1-255
    * alphanumeric characters, hyphens, or underscores. Responses are cached for 24
    * hours per key per customer.
    */
-  'Idempotency-Key'?: string;
+  'Idempotency-Key': string;
+
+  /**
+   * Body param: What this programme sends. TCR description: what recipients will get
+   * and why, in a sentence. The only one of these TCR takes verbatim as a
+   * description of the programme, which is why it is asked for rather than derived
+   * from the customer's name. Required when `compliance.campaign.inherit != true`.
+   */
+  description?: string;
+
+  /**
+   * Body param: Help keywords. TCR helpKeywords, comma separated, e.g. HELP,INFO.
+   * Required when `compliance.campaign.inherit != true`.
+   */
+  help_keywords?: string;
+
+  /**
+   * Body param: Help reply. TCR helpMessage. Its presence is what sets
+   * subscriberHelp. Required when `compliance.campaign.inherit != true`.
+   */
+  help_message?: string;
+
+  /**
+   * Body param: Consent narrative. TCR messageFlow: how recipients opt in, in prose.
+   * Under 40 characters is refused, and carriers reject vague descriptions — say
+   * where opt-in happens, that the box is unchecked by default, and that consent is
+   * not a condition of purchase. Required when
+   * `compliance.campaign.inherit != true`.
+   */
+  message_flow?: string;
+
+  /**
+   * Body param: Opt-in keywords. TCR optinKeywords, comma separated, e.g. START,YES.
+   * Required when `compliance.campaign.inherit != true`.
+   */
+  opt_in_keywords?: string;
+
+  /**
+   * Body param: Opt-in confirmation. TCR optinMessage. Should state message
+   * frequency and that rates may apply. Its presence is what sets subscriberOptin.
+   * Required when `compliance.campaign.inherit != true`.
+   */
+  opt_in_message?: string;
+
+  /**
+   * Body param: Opt-out keywords. TCR optoutKeywords, comma separated. STOP, END,
+   * CANCEL, UNSUBSCRIBE and QUIT are honoured regardless of what is declared.
+   * Required when `compliance.campaign.inherit != true`.
+   */
+  opt_out_keywords?: string;
+
+  /**
+   * Body param: Opt-out confirmation. TCR optoutMessage. Its presence is what sets
+   * subscriberOptout. Required when `compliance.campaign.inherit != true`.
+   */
+  opt_out_message?: string;
+
+  /**
+   * Body param: Privacy policy URL. TCR privacyPolicyLink. Required when
+   * `compliance.campaign.inherit != true`.
+   */
+  privacy_policy_link?: string;
+
+  /**
+   * Body param: Sandbox flag - when true, the operation is simulated without side
+   * effects Useful for testing integrations without actual execution
+   */
+  sandbox?: boolean;
+
+  /**
+   * Body param: Terms and conditions URL. TCR termsAndConditionsLink. Required when
+   * `compliance.campaign.inherit != true`.
+   */
+  terms_and_conditions_link?: string;
+
+  /**
+   * Body param: Use cases. What the campaign sends, and an example of each. One to
+   * five entries; how they register is decided by volume, never declared. Required
+   * when `compliance.campaign.inherit != true`.
+   */
+  use_cases?: Array<TenDlcAddCampaignParams.UseCase>;
+
+  /**
+   * Body param: Expected monthly volume. Decides how the campaign registers and
+   * which fee tier applies: below the low-volume threshold it registers as
+   * LOW_VOLUME with sub-use-cases, above it as a single use case or MIXED. Omitting
+   * it registers the campaign at the higher-fee standard tier.
+   */
+  volume?: string;
 
   /**
    * Header param: Profile UUID to scope the request to a child profile. Only
@@ -292,8 +371,33 @@ export interface TenDlcAddCampaignParams {
    * calling organization.
    */
   'x-profile-id'?: string;
+}
 
-  [k: string]: unknown;
+export namespace TenDlcAddCampaignParams {
+  export interface UseCase {
+    /**
+     * Sample messages. TCR sample1..sample5 for this use case. One to five, each
+     * carrying the brand name and an opt-out instruction.
+     */
+    sample_messages: Array<unknown>;
+
+    /**
+     * Use case. What this entry sends. MIXED and LOW_VOLUME are refused — volume
+     * decides those.
+     */
+    use_case:
+      | 'MARKETING'
+      | 'ACCOUNT_NOTIFICATION'
+      | 'CUSTOMER_CARE'
+      | 'FRAUD_ALERT'
+      | '2FA'
+      | 'DELIVERY_NOTIFICATION'
+      | 'SECURITY_ALERT'
+      | 'M2M'
+      | 'HIGHER_EDUCATION'
+      | 'POLLING_VOTING'
+      | 'PUBLIC_SERVICE_ANNOUNCEMENT';
+  }
 }
 
 export interface TenDlcAddNumbersParams {
@@ -313,17 +417,17 @@ export interface TenDlcAddNumbersParams {
   numbers: Array<SMSAPI.SMSNumberRequest | null>;
 
   /**
-   * Body param: Sandbox flag - when true, the operation is simulated without side
-   * effects Useful for testing integrations without actual execution
-   */
-  sandbox?: boolean;
-
-  /**
    * Header param: Unique key to ensure idempotent request processing. Must be 1-255
    * alphanumeric characters, hyphens, or underscores. Responses are cached for 24
    * hours per key per customer.
    */
-  'Idempotency-Key'?: string;
+  'Idempotency-Key': string;
+
+  /**
+   * Body param: Sandbox flag - when true, the operation is simulated without side
+   * effects Useful for testing integrations without actual execution
+   */
+  sandbox?: boolean;
 
   /**
    * Header param: Profile UUID to scope the request to a child profile. Only
@@ -343,16 +447,92 @@ export interface TenDlcRetrieveComplianceParams {
 
 export interface TenDlcUpdateCampaignParams {
   /**
-   * Body param: The compliance values a market registers with. `brand` and
-   * `campaign` apply to US `TEN_DLC`; other markets fill this map with the document
-   * keys their own requirements name.
+   * Body param: What this programme sends. TCR description: what recipients will get
+   * and why, in a sentence. The only one of these TCR takes verbatim as a
+   * description of the programme, which is why it is asked for rather than derived
+   * from the customer's name. Required when `compliance.campaign.inherit != true`.
    */
-  compliance?: SMSAPI.MarketCompliance;
+  description?: string;
 
   /**
-   * Body param
+   * Body param: Help keywords. TCR helpKeywords, comma separated, e.g. HELP,INFO.
+   * Required when `compliance.campaign.inherit != true`.
+   */
+  help_keywords?: string;
+
+  /**
+   * Body param: Help reply. TCR helpMessage. Its presence is what sets
+   * subscriberHelp. Required when `compliance.campaign.inherit != true`.
+   */
+  help_message?: string;
+
+  /**
+   * Body param: Consent narrative. TCR messageFlow: how recipients opt in, in prose.
+   * Under 40 characters is refused, and carriers reject vague descriptions — say
+   * where opt-in happens, that the box is unchecked by default, and that consent is
+   * not a condition of purchase. Required when
+   * `compliance.campaign.inherit != true`.
+   */
+  message_flow?: string;
+
+  /**
+   * Body param: Opt-in keywords. TCR optinKeywords, comma separated, e.g. START,YES.
+   * Required when `compliance.campaign.inherit != true`.
+   */
+  opt_in_keywords?: string;
+
+  /**
+   * Body param: Opt-in confirmation. TCR optinMessage. Should state message
+   * frequency and that rates may apply. Its presence is what sets subscriberOptin.
+   * Required when `compliance.campaign.inherit != true`.
+   */
+  opt_in_message?: string;
+
+  /**
+   * Body param: Opt-out keywords. TCR optoutKeywords, comma separated. STOP, END,
+   * CANCEL, UNSUBSCRIBE and QUIT are honoured regardless of what is declared.
+   * Required when `compliance.campaign.inherit != true`.
+   */
+  opt_out_keywords?: string;
+
+  /**
+   * Body param: Opt-out confirmation. TCR optoutMessage. Its presence is what sets
+   * subscriberOptout. Required when `compliance.campaign.inherit != true`.
+   */
+  opt_out_message?: string;
+
+  /**
+   * Body param: Privacy policy URL. TCR privacyPolicyLink. Required when
+   * `compliance.campaign.inherit != true`.
+   */
+  privacy_policy_link?: string;
+
+  /**
+   * Body param: Sandbox flag - when true, the operation is simulated without side
+   * effects Useful for testing integrations without actual execution
    */
   sandbox?: boolean;
+
+  /**
+   * Body param: Terms and conditions URL. TCR termsAndConditionsLink. Required when
+   * `compliance.campaign.inherit != true`.
+   */
+  terms_and_conditions_link?: string;
+
+  /**
+   * Body param: Use cases. What the campaign sends, and an example of each. One to
+   * five entries; how they register is decided by volume, never declared. Required
+   * when `compliance.campaign.inherit != true`.
+   */
+  use_cases?: Array<TenDlcUpdateCampaignParams.UseCase>;
+
+  /**
+   * Body param: Expected monthly volume. Decides how the campaign registers and
+   * which fee tier applies: below the low-volume threshold it registers as
+   * LOW_VOLUME with sub-use-cases, above it as a single use case or MIXED. Omitting
+   * it registers the campaign at the higher-fee standard tier.
+   */
+  volume?: string;
 
   /**
    * Header param: Unique key to ensure idempotent request processing. Must be 1-255
@@ -367,8 +547,33 @@ export interface TenDlcUpdateCampaignParams {
    * calling organization.
    */
   'x-profile-id'?: string;
+}
 
-  [k: string]: unknown;
+export namespace TenDlcUpdateCampaignParams {
+  export interface UseCase {
+    /**
+     * Sample messages. TCR sample1..sample5 for this use case. One to five, each
+     * carrying the brand name and an opt-out instruction.
+     */
+    sample_messages: Array<unknown>;
+
+    /**
+     * Use case. What this entry sends. MIXED and LOW_VOLUME are refused — volume
+     * decides those.
+     */
+    use_case:
+      | 'MARKETING'
+      | 'ACCOUNT_NOTIFICATION'
+      | 'CUSTOMER_CARE'
+      | 'FRAUD_ALERT'
+      | '2FA'
+      | 'DELIVERY_NOTIFICATION'
+      | 'SECURITY_ALERT'
+      | 'M2M'
+      | 'HIGHER_EDUCATION'
+      | 'POLLING_VOTING'
+      | 'PUBLIC_SERVICE_ANNOUNCEMENT';
+  }
 }
 
 export declare namespace TenDlc {

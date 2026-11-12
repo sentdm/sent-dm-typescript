@@ -371,6 +371,7 @@ Types:
 - <code><a href="./src/resources/channels/sms.ts">SMSMarket</a></code>
 - <code><a href="./src/resources/channels/sms.ts">SMSNumber</a></code>
 - <code><a href="./src/resources/channels/sms.ts">SMSNumberRequest</a></code>
+- <code><a href="./src/resources/channels/sms.ts">SuppliedCampaign</a></code>
 - <code><a href="./src/resources/channels/sms.ts">SuppliedCompliance</a></code>
 - <code><a href="./src/resources/channels/sms.ts">SuppliedDocument</a></code>
 

@@ -17,6 +17,7 @@ import {
   SMSNumberRequest,
   SMSRetrieveParams,
   SMSUpdateParams,
+  SuppliedCampaign,
   SuppliedCompliance,
   SuppliedDocument,
 } from './sms';
@@ -256,6 +257,7 @@ export declare namespace Channels {
     type SMSMarket as SMSMarket,
     type SMSNumber as SMSNumber,
     type SMSNumberRequest as SMSNumberRequest,
+    type SuppliedCampaign as SuppliedCampaign,
     type SuppliedCompliance as SuppliedCompliance,
     type SuppliedDocument as SuppliedDocument,
     type SMSCreateParams as SMSCreateParams,

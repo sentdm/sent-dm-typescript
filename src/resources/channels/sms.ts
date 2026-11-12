@@ -93,7 +93,10 @@ export class SMS extends APIResource {
    * read as `PROVISIONING` in the response's `numbers`, each with the area code it
    * was asked for. A profile inheriting your organization's campaign cannot request
    * `numbers` (`400`). `numbers` on a `TEN_DLC` market you already hold is `409`:
-   * its numbers belong to its one campaign and are set when the market is created.
+   * change its campaign's numbers with `PATCH /v3/channels/sms/{country}/{type}`,
+   * add numbers to one of its campaigns with
+   * `POST /v3/channels/sms/numbers/US/TEN_DLC`, or add a new campaign with
+   * `POST /v3/channels/sms/compliances/US/TEN_DLC/campaigns`.
    *
    * **A market you already send in is `409`**: adding what is already there is a
    * mistake worth reporting rather than a silent no-op. A market is a
@@ -734,13 +737,6 @@ export interface SMSMarket {
   reason_code?: string | null;
 
   /**
-   * The sender itself. Null until a carrier-assigned number is procured. For a
-   * market holding several numbers, the first active one (the first assigned while
-   * none is active) — every number is in numbers.
-   */
-  sender_value?: string | null;
-
-  /**
    * Where this market's sender stands, in terms of who is holding it up —
    * PROVISIONING, ACTION_NEEDED, PENDING_REVIEW or ACTIVE. Read-only.
    *
@@ -754,6 +750,27 @@ export interface SMSMarket {
    * Describes whether the market can send, not each number: a market holding several
    * numbers reads ACTIVE as soon as one of them is, whatever the others are doing.
    * Each number's own status is in numbers.
+   *
+   * - `PROVISIONING` - We are working on it and there is nothing for you to do — a
+   *   number is being procured, or a registration is being assembled. Minutes to
+   *   hours.
+   * - `ACTION_NEEDED` - **Waiting on you.** Something the market asks for has not
+   *   been supplied, a regulator rejected what was, or we have asked you to correct
+   *   and resubmit your identity data. Nothing progresses until you act. For an SMS
+   *   market, `GET /v3/channels/sms/{country}/{type}` names what it wants and
+   *   `PATCH` on the same path supplies it — compliance values, documents and
+   *   numbers alike.
+   * - `PENDING_REVIEW` - With a regulator or carrier — filed, or assembled and
+   *   queued for us to file — and their answer is what moves it, to `ACTIVE` or back
+   *   to `ACTION_NEEDED`. Nothing on your side changes it. Days for SMS, weeks for
+   *   RCS.
+   * - `ACTIVE` - Can carry traffic now. A channel a sender profile runs on its
+   *   organization's reads `ACTIVE` too — it sends, which is what the field is
+   *   about.
+   * - `INACTIVE` - **It had a working sender and no longer does** — the number was
+   *   released, or the campaign it carried lapsed. Distinct from `PROVISIONING`,
+   *   which means it has never sent yet: the same absence of a sender, opposite
+   *   news. Sends will fail until it returns to `ACTIVE`.
    */
   status?: 'PROVISIONING' | 'ACTION_NEEDED' | 'PENDING_REVIEW' | 'ACTIVE' | 'INACTIVE' | null;
 }
@@ -767,6 +784,14 @@ export interface SMSNumber {
    * area code it was asked for, or null when it was asked for in any area code.
    */
   area_code?: string | null;
+
+  /**
+   * The campaign the number is on, or is owed for: the id of its entry in
+   * compliance.campaigns. Omitted for a market that registers no campaigns, and
+   * where the campaign is not known — a number recorded without one, or one owed on
+   * a campaign inherited from the organization.
+   */
+  campaign_id?: string | null;
 
   /**
    * The number, or null while it is still to be assigned.
@@ -796,6 +821,12 @@ export interface SMSNumberRequest {
    */
   quantity?: number | null;
 }
+
+/**
+ * One campaign a market registers, as the customer supplied it, with `inherit`
+ * saying whose it is.
+ */
+export type SuppliedCampaign = { [key: string]: unknown };
 
 /**
  * What a market has been given: the identity it registers under, its programme,
@@ -852,6 +883,27 @@ export interface SuppliedCompliance {
   campaign?: { [key: string]: unknown } | null;
 
   /**
+   * Every campaign this market registers, each with inherit saying whose it is —
+   * oldest first.
+   *
+   * A list, because a market can now be on more than one. POST
+   * /v3/channels/sms/compliances/US/TEN_DLC/campaigns adds a campaign of the
+   * customer's own beside the one it has, and a profile running on its
+   * organization's campaign keeps that one when it adds its own. Campaign can only
+   * show one of them, so it stays as it was, for callers that read it, and this is
+   * where the rest are.
+   *
+   * The organization's campaign reads "inherit": true and the customer's own read
+   * "inherit": false. Each entry is the shape of Campaign plus id, the campaign's
+   * own id, so several can be told apart. Campaign carries no id, because it is sent
+   * back to PATCH, which refuses a key it does not declare; this list is read-only.
+   *
+   * Absent for a market that registers with nobody; empty for one that registers and
+   * has no campaign yet.
+   */
+  campaigns?: Array<SuppliedCampaign> | null;
+
+  /**
    * What has been supplied for this market.
    *
    * Files, not values — the declared halves above carry the values. A document
@@ -892,6 +944,23 @@ export interface SMSCreateParams {
    * which works for country, whose wire name is its camel-cased C# name, and
    * silently does not for number_type. A client generating a request from our
    * OpenAPI therefore sent what the document called sufficient and was answered 400.
+   *
+   * - `LOCAL` - A geographic number for the country. The ordinary choice:
+   *   recognisable to recipients, and available almost everywhere.
+   * - `TOLL_FREE` - A toll-free number. High throughput and no per-country
+   *   registration, but US toll-free traffic goes through its own verification.
+   * - `SHORT_CODE` - A short code — five or six digits, leased rather than
+   *   provisioned. Highest throughput, longest lead time, and the most expensive.
+   * - `ALPHANUMERIC` - A sender name rather than a number, up to 11 characters.
+   *   Recipients cannot reply. Not available in every country, and several require
+   *   it to be pre-registered with documents.
+   * - `TEN_DLC` - A US 10-digit long code registered with The Campaign Registry. The
+   *   only sender type that registers with a compliance regime, so it is the only
+   *   one whose market declares `compliance.brand` and `compliance.campaign`.
+   * - `MOBILE` - A mobile number. Where a country distinguishes it from a landline,
+   *   some carriers treat mobile traffic differently.
+   * - `10DLC` - The industry's spelling of `TEN_DLC`, accepted so an integrator can
+   *   send the term it knows. Resolves to the same market.
    */
   number_type: 'LOCAL' | 'TOLL_FREE' | 'SHORT_CODE' | 'ALPHANUMERIC' | 'TEN_DLC' | 'MOBILE' | '10DLC';
 
@@ -1044,6 +1113,7 @@ export declare namespace SMS {
     type SMSMarket as SMSMarket,
     type SMSNumber as SMSNumber,
     type SMSNumberRequest as SMSNumberRequest,
+    type SuppliedCampaign as SuppliedCampaign,
     type SuppliedCompliance as SuppliedCompliance,
     type SuppliedDocument as SuppliedDocument,
     type SMSCreateParams as SMSCreateParams,

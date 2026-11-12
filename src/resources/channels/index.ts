@@ -23,7 +23,7 @@ export {
   type SMSRetrieveParams,
   type SMSUpdateParams,
   type SMSListParams,
-} from './sms';
+} from './sms/index';
 export {
   Voice,
   type APIResponseOfListOfVoiceNumber,

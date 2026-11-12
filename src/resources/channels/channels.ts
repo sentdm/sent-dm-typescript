@@ -4,23 +4,6 @@ import { APIResource } from '../../core/resource';
 import * as WebhooksAPI from '../webhooks';
 import * as RcsAPI from './rcs';
 import { APIResponseOfRcsAgent, RcCreateParams, Rcs, RcsAddress, RcsAgent } from './rcs';
-import * as SMSAPI from './sms';
-import {
-  APIResponseOfListOfSMSMarket,
-  APIResponseOfSMSMarket,
-  MarketCompliance,
-  SMS,
-  SMSCreateParams,
-  SMSListParams,
-  SMSMarket,
-  SMSNumber,
-  SMSNumberRequest,
-  SMSRetrieveParams,
-  SMSUpdateParams,
-  SuppliedCampaign,
-  SuppliedCompliance,
-  SuppliedDocument,
-} from './sms';
 import * as VoiceAPI from './voice';
 import {
   APIResponseOfListOfVoiceNumber,
@@ -45,6 +28,23 @@ import {
 } from './voice';
 import * as WhatsappAPI from './whatsapp';
 import { APIResponseOfWhatsappChannel, Whatsapp, WhatsappChannel, WhatsappCreateParams } from './whatsapp';
+import * as SMSAPI from './sms/sms';
+import {
+  APIResponseOfListOfSMSMarket,
+  APIResponseOfSMSMarket,
+  MarketCompliance,
+  SMS,
+  SMSCreateParams,
+  SMSListParams,
+  SMSMarket,
+  SMSNumber,
+  SMSNumberRequest,
+  SMSRetrieveParams,
+  SMSUpdateParams,
+  SuppliedCampaign,
+  SuppliedCompliance,
+  SuppliedDocument,
+} from './sms/sms';
 import { APIPromise } from '../../core/api-promise';
 import { buildHeaders } from '../../internal/headers';
 import { RequestOptions } from '../../internal/request-options';

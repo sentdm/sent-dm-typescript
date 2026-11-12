@@ -19,6 +19,7 @@ export {
 export {
   TenDlc,
   type APIResponseOfSuppliedCompliance,
+  type TenDlcCampaignUseCase,
   type TenDlcAddCampaignParams,
   type TenDlcAddNumbersParams,
   type TenDlcRetrieveComplianceParams,

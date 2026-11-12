@@ -387,6 +387,7 @@ Methods:
 Types:
 
 - <code><a href="./src/resources/channels/sms/ten-dlc.ts">APIResponseOfSuppliedCompliance</a></code>
+- <code><a href="./src/resources/channels/sms/ten-dlc.ts">TenDlcCampaignUseCase</a></code>
 
 Methods:
 

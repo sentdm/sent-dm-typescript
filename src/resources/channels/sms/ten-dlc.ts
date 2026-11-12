@@ -269,6 +269,31 @@ export interface APIResponseOfSuppliedCompliance {
   success?: boolean;
 }
 
+export interface TenDlcCampaignUseCase {
+  /**
+   * Sample messages. TCR sample1..sample5 for this use case. One to five, each
+   * carrying the brand name and an opt-out instruction.
+   */
+  sample_messages: Array<unknown>;
+
+  /**
+   * Use case. What this entry sends. MIXED and LOW_VOLUME are refused — volume
+   * decides those.
+   */
+  use_case:
+    | 'MARKETING'
+    | 'ACCOUNT_NOTIFICATION'
+    | 'CUSTOMER_CARE'
+    | 'FRAUD_ALERT'
+    | '2FA'
+    | 'DELIVERY_NOTIFICATION'
+    | 'SECURITY_ALERT'
+    | 'M2M'
+    | 'HIGHER_EDUCATION'
+    | 'POLLING_VOTING'
+    | 'PUBLIC_SERVICE_ANNOUNCEMENT';
+}
+
 export interface TenDlcAddCampaignParams {
   /**
    * Header param: Unique key to ensure idempotent request processing. Must be 1-255
@@ -355,7 +380,7 @@ export interface TenDlcAddCampaignParams {
    * five entries; how they register is decided by volume, never declared. Required
    * when `compliance.campaign.inherit != true`.
    */
-  use_cases?: Array<TenDlcAddCampaignParams.UseCase>;
+  use_cases?: Array<TenDlcCampaignUseCase>;
 
   /**
    * Body param: Expected monthly volume. Decides how the campaign registers and
@@ -371,33 +396,6 @@ export interface TenDlcAddCampaignParams {
    * calling organization.
    */
   'x-profile-id'?: string;
-}
-
-export namespace TenDlcAddCampaignParams {
-  export interface UseCase {
-    /**
-     * Sample messages. TCR sample1..sample5 for this use case. One to five, each
-     * carrying the brand name and an opt-out instruction.
-     */
-    sample_messages: Array<unknown>;
-
-    /**
-     * Use case. What this entry sends. MIXED and LOW_VOLUME are refused — volume
-     * decides those.
-     */
-    use_case:
-      | 'MARKETING'
-      | 'ACCOUNT_NOTIFICATION'
-      | 'CUSTOMER_CARE'
-      | 'FRAUD_ALERT'
-      | '2FA'
-      | 'DELIVERY_NOTIFICATION'
-      | 'SECURITY_ALERT'
-      | 'M2M'
-      | 'HIGHER_EDUCATION'
-      | 'POLLING_VOTING'
-      | 'PUBLIC_SERVICE_ANNOUNCEMENT';
-  }
 }
 
 export interface TenDlcAddNumbersParams {
@@ -524,7 +522,7 @@ export interface TenDlcUpdateCampaignParams {
    * five entries; how they register is decided by volume, never declared. Required
    * when `compliance.campaign.inherit != true`.
    */
-  use_cases?: Array<TenDlcUpdateCampaignParams.UseCase>;
+  use_cases?: Array<TenDlcCampaignUseCase>;
 
   /**
    * Body param: Expected monthly volume. Decides how the campaign registers and
@@ -549,36 +547,10 @@ export interface TenDlcUpdateCampaignParams {
   'x-profile-id'?: string;
 }
 
-export namespace TenDlcUpdateCampaignParams {
-  export interface UseCase {
-    /**
-     * Sample messages. TCR sample1..sample5 for this use case. One to five, each
-     * carrying the brand name and an opt-out instruction.
-     */
-    sample_messages: Array<unknown>;
-
-    /**
-     * Use case. What this entry sends. MIXED and LOW_VOLUME are refused — volume
-     * decides those.
-     */
-    use_case:
-      | 'MARKETING'
-      | 'ACCOUNT_NOTIFICATION'
-      | 'CUSTOMER_CARE'
-      | 'FRAUD_ALERT'
-      | '2FA'
-      | 'DELIVERY_NOTIFICATION'
-      | 'SECURITY_ALERT'
-      | 'M2M'
-      | 'HIGHER_EDUCATION'
-      | 'POLLING_VOTING'
-      | 'PUBLIC_SERVICE_ANNOUNCEMENT';
-  }
-}
-
 export declare namespace TenDlc {
   export {
     type APIResponseOfSuppliedCompliance as APIResponseOfSuppliedCompliance,
+    type TenDlcCampaignUseCase as TenDlcCampaignUseCase,
     type TenDlcAddCampaignParams as TenDlcAddCampaignParams,
     type TenDlcAddNumbersParams as TenDlcAddNumbersParams,
     type TenDlcRetrieveComplianceParams as TenDlcRetrieveComplianceParams,

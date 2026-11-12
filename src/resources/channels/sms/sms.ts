@@ -8,6 +8,7 @@ import {
   TenDlc,
   TenDlcAddCampaignParams,
   TenDlcAddNumbersParams,
+  TenDlcCampaignUseCase,
   TenDlcRetrieveComplianceParams,
   TenDlcUpdateCampaignParams,
 } from './ten-dlc';
@@ -1138,6 +1139,7 @@ export declare namespace SMS {
   export {
     TenDlc as TenDlc,
     type APIResponseOfSuppliedCompliance as APIResponseOfSuppliedCompliance,
+    type TenDlcCampaignUseCase as TenDlcCampaignUseCase,
     type TenDlcAddCampaignParams as TenDlcAddCampaignParams,
     type TenDlcAddNumbersParams as TenDlcAddNumbersParams,
     type TenDlcRetrieveComplianceParams as TenDlcRetrieveComplianceParams,

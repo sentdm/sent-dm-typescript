@@ -23,6 +23,8 @@ import {
   ContactsPageResponse,
   type ConversationsPageParams,
   ConversationsPageResponse,
+  type SenderProfilesPageParams,
+  SenderProfilesPageResponse,
   type TemplatesPageParams,
   TemplatesPageResponse,
   type VoiceAgentsPageParams,
@@ -36,8 +38,19 @@ import * as Uploads from './core/uploads';
 import * as API from './resources/index';
 import { APIPromise } from './core/api-promise';
 import {
+  APIResponseOfComplianceRequirements,
+  Compliance,
+  ComplianceAttachmentTemplate,
+  ComplianceRequirement,
+  ComplianceRequirements,
+  ComplianceRetrieveRequirementsParams,
+  ComplianceSetupStep,
+} from './resources/compliance';
+import {
   APIResponseOfContact,
   APIResponseOfContactMessageSummary,
+  APIResponseOfContactsList,
+  ChannelScore,
   ContactCreateParams,
   ContactDeleteParams,
   ContactListParams,
@@ -48,28 +61,76 @@ import {
   ContactRetrieveParams,
   ContactUpdateParams,
   Contacts,
+  ContactsList,
 } from './resources/contacts';
 import {
   APIResponseOfConversationMessagesList,
   ConversationListMessagesParams,
   ConversationListParams,
   ConversationMessagesList,
-  ConversationMessagesListMessagesConversationsPage,
   Conversations,
 } from './resources/conversations';
-import { Me, MeRetrieveParams, MeRetrieveResponse, ProfileSettings } from './resources/me';
 import {
+  APIResponseOfAccount,
+  Account,
+  AccountChannels,
+  AccountProfile,
+  AccountRcsChannel,
+  AccountSMSChannel,
+  AccountWhatsappChannel,
+  Me,
+  MeRetrieveParams,
+  ProfileSettings,
+} from './resources/me';
+import {
+  APIResponseOfCancelledMessage,
+  APIResponseOfMessage,
+  APIResponseOfMessageActivities,
+  CancelledMessage,
+  Message,
+  MessageActivities,
+  MessageActivity,
+  MessageBody,
+  MessageButton,
+  MessageCancelParams,
+  MessageChannelOptions,
+  MessageHeaderMedia,
+  MessageMedia,
+  MessageRecipient,
   MessageResendParams,
   MessageRetrieveActivitiesParams,
-  MessageRetrieveActivitiesResponse,
   MessageRetrieveStatusParams,
-  MessageRetrieveStatusResponse,
   MessageSendParams,
   MessageSendResponse,
+  MessageSendResult,
+  MessageStatusEvent,
   Messages,
 } from './resources/messages';
-import { NumberLookupParams, NumberLookupResponse, Numbers } from './resources/numbers';
 import {
+  APIResponseOfNumberLookupResult,
+  NumberLookupParams,
+  NumberLookupResult,
+  Numbers,
+} from './resources/numbers';
+import {
+  APIResponseOfSenderProfile,
+  APIResponseOfSenderProfilesList,
+  SenderProfile,
+  SenderProfileBilling,
+  SenderProfileBillingRequest,
+  SenderProfileChannels,
+  SenderProfileCreateParams,
+  SenderProfileListParams,
+  SenderProfileRcs,
+  SenderProfileSMS,
+  SenderProfileUpdateParams,
+  SenderProfileWhatsapp,
+  SenderProfiles,
+  SenderProfilesList,
+  SenderProfilesSenderProfilesPage,
+} from './resources/sender-profiles';
+import {
+  APIResponseOfTemplatesList,
   APIResponseTemplate,
   AuthenticationConfig,
   Template,
@@ -82,26 +143,38 @@ import {
   TemplateDeleteParams,
   TemplateFooter,
   TemplateHeader,
+  TemplateHeaderLocation,
   TemplateListParams,
+  TemplateMediaItem,
+  TemplateMmsBodyContent,
+  TemplateRef,
   TemplateRetrieveParams,
   TemplateUpdateParams,
   TemplateVariable,
+  TemplateVariableProps,
   Templates,
+  TemplatesList,
   TemplatesTemplatesPage,
 } from './resources/templates';
 import {
   APIResponseOfUser,
+  APIResponseOfUsersList,
   UserInviteParams,
   UserListParams,
-  UserListResponse,
   UserRemoveParams,
   UserResponse,
   UserRetrieveParams,
   UserUpdateRoleParams,
   Users,
+  UsersList,
 } from './resources/users';
 import {
   APIMeta,
+  APIResponseOfWebhookEventTypesList,
+  APIResponseOfWebhookEventsList,
+  APIResponseOfWebhookSecret,
+  APIResponseOfWebhookTest,
+  APIResponseOfWebhooksList,
   APIResponseWebhook,
   CallEvent,
   CallEventPayload,
@@ -110,55 +183,82 @@ import {
   ContactEvent,
   ContactEventPayload,
   ErrorDetail,
+  InboundMedia,
   InboundMessageEvent,
   InboundMessageEventPayload,
+  LinkEvent,
+  LinkEventPayload,
   MessageEvent,
   MessageEventPayload,
   MutationRequest,
+  PaginationCursors,
   PaginationMeta,
   TemplateEvent,
   TemplateEventPayload,
   WebhookCreateParams,
   WebhookDeleteParams,
+  WebhookDeliveriesWebhookEventsPage,
+  WebhookDelivery,
   WebhookEventType,
+  WebhookEventTypesList,
+  WebhookEventsList,
   WebhookListEventTypesParams,
-  WebhookListEventTypesResponse,
   WebhookListEventsParams,
-  WebhookListEventsResponse,
-  WebhookListEventsResponsesWebhookEventsPage,
   WebhookListParams,
   WebhookResponse,
   WebhookResponsesWebhooksPage,
   WebhookRetrieveParams,
   WebhookRotateSecretParams,
-  WebhookRotateSecretResponse,
+  WebhookSecret,
+  WebhookSenderProfile,
+  WebhookSenderProfileConfig,
+  WebhookTest,
   WebhookTestParams,
-  WebhookTestResponse,
   WebhookToggleStatusParams,
   WebhookUpdateParams,
   Webhooks,
+  WebhooksList,
 } from './resources/webhooks';
-import { Channels } from './resources/channels/channels';
 import {
+  APIResponseOfChannelsState,
+  ChannelListParams,
+  Channels,
+  ChannelsState,
+  MmsMarket,
+} from './resources/channels/channels';
+import {
+  APIResponseOfProfileCompletionAccepted,
+  APIResponseOfProfileCompletionResult,
   APIResponseOfProfileDetail,
+  APIResponseOfProfilesList,
+  BillingContact,
   BillingContactInfo,
+  BrandBusiness,
   BrandBusinessInfo,
+  BrandCompliance,
   BrandComplianceInfo,
+  BrandContact,
   BrandContactInfo,
+  BrandWithKYC,
   BrandsBrandData,
   DestinationCountry,
+  EntityType,
   PaymentDetails,
   ProfileCompleteParams,
-  ProfileCompleteResponse,
+  ProfileCompletionAccepted,
+  ProfileCompletionResult,
   ProfileCreateParams,
   ProfileDeleteParams,
   ProfileDetail,
   ProfileListParams,
-  ProfileListResponse,
   ProfileRetrieveParams,
   ProfileUpdateParams,
   Profiles,
+  ProfilesList,
+  TcrBrandIdentityStatus,
   TcrBrandRelationship,
+  TcrBrandStatus,
+  TcrCampaignStatus,
   TcrVertical,
 } from './resources/profiles/profiles';
 import { Voice } from './resources/voice/voice';
@@ -935,6 +1035,18 @@ export class Sent {
    */
   profiles: API.Profiles = new API.Profiles(this);
   /**
+   * Your customers, each sending as itself.
+   *
+   * A sender profile is a tenant of yours: it has its own API key, its own balance, and can have its own identity and senders — so your customers send under their own brand and never see Sent. Depth is one; a profile cannot create profiles.
+   *
+   * **Everything is inherited unless the profile owns it.** `{ "name": "…" }` alone gives you a usable profile immediately, running on your identity, your inbox and your billing. Supply a capability's fields and the profile owns that one instead.
+   *
+   * **A sender is the exception.** A brand and a campaign can be inherited; a number cannot. A profile either has a sender of its own or reaches only the countries Sent runs a shared route for, and the US is not one of them.
+   *
+   * To act for a profile on any other resource, send `x-profile-id` with your organization key rather than looking for a parallel set of endpoints.
+   */
+  senderProfiles: API.SenderProfiles = new API.SenderProfiles(this);
+  /**
    * What a phone number actually is, before you send to it.
    *
    * A lookup returns the number's country, line type and carrier, which is what decides whether it is reachable on a channel and what it costs. Worth doing on import rather than on send: a landline in a contact list is a message that can never be delivered.
@@ -969,7 +1081,30 @@ export class Sent {
    */
   conversations: API.Conversations = new API.Conversations(this);
   voice: API.Voice = new API.Voice(this);
+  /**
+   * The senders you send from, one per channel.
+   *
+   * **SMS is a list of markets**, each keyed by `(country, number_type)` — a customer can hold `us/10dlc` and `gb/alphanumeric` at once, so a market is addressed by the pair rather than by country alone. **WhatsApp and RCS are single**: a customer has one business account and one agent. **Voice is per number**: each number you hold can carry phone calls on its own (`POST /v3/channels/voice`), each with the callback URL Sent asks what to do with its calls, one of them is the default line for calls placed from your app, and voice tokens are minted with `POST /v3/voice/tokens`. Read your voice numbers with `GET /v3/channels/voice` and change one with `PATCH /v3/channels/voice/{number}`.
+   *
+   * ## Compliance lives on the market
+   *
+   * Adding a market records everything that market registers with, in its `compliance` object. Only **US `TEN_DLC`** registers with a regime — The Campaign Registry — and it is the only market whose compliance carries `brand` and `campaign`. Everywhere else compliance is documents, and many markets ask for none at all.
+   *
+   * `GET` and `PATCH` on a market return and accept the same shape, so what comes back can be sent back: an omitted key is left alone, and a key reported in `requirements` is the path into the body that clears it.
+   *
+   * Call `GET /v3/compliance/requirements` first — it answers what a market demands before you hold it, with a body you can fill in and post.
+   */
   channels: API.Channels = new API.Channels(this);
+  /**
+   * What a market demands, before you have it.
+   *
+   * Requirements vary enormously and change without notice. US `TEN_DLC` registers a brand and a campaign with The Campaign Registry and asks a substantial set of questions; an alphanumeric sender pre-registers with documents in one country and needs nothing in another.
+   *
+   * This is the authoritative answer for whichever market you ask about, and it is generated from the same declaration that validates the calls themselves — so it cannot drift from what is actually enforced. The response includes the request body to send, with every key that market wants already present and blank.
+   *
+   * What you supplied, as opposed to what is asked of you, is reported on the market under **Channels**.
+   */
+  compliance: API.Compliance = new API.Compliance(this);
   /**
    * Who the current key is.
    *
@@ -982,12 +1117,14 @@ Sent.Webhooks = Webhooks;
 Sent.Users = Users;
 Sent.Templates = Templates;
 Sent.Profiles = Profiles;
+Sent.SenderProfiles = SenderProfiles;
 Sent.Numbers = Numbers;
 Sent.Messages = Messages;
 Sent.Contacts = Contacts;
 Sent.Conversations = Conversations;
 Sent.Voice = Voice;
 Sent.Channels = Channels;
+Sent.Compliance = Compliance;
 Sent.Me = Me;
 
 export declare namespace Sent {
@@ -1026,9 +1163,20 @@ export declare namespace Sent {
     type VoiceAgentsPageResponse as VoiceAgentsPageResponse,
   };
 
+  export import SenderProfilesPage = Pagination.SenderProfilesPage;
+  export {
+    type SenderProfilesPageParams as SenderProfilesPageParams,
+    type SenderProfilesPageResponse as SenderProfilesPageResponse,
+  };
+
   export {
     Webhooks as Webhooks,
     type APIMeta as APIMeta,
+    type APIResponseOfWebhookEventTypesList as APIResponseOfWebhookEventTypesList,
+    type APIResponseOfWebhookEventsList as APIResponseOfWebhookEventsList,
+    type APIResponseOfWebhookSecret as APIResponseOfWebhookSecret,
+    type APIResponseOfWebhookTest as APIResponseOfWebhookTest,
+    type APIResponseOfWebhooksList as APIResponseOfWebhooksList,
     type APIResponseWebhook as APIResponseWebhook,
     type CallEvent as CallEvent,
     type CallEventPayload as CallEventPayload,
@@ -1037,22 +1185,30 @@ export declare namespace Sent {
     type ContactEvent as ContactEvent,
     type ContactEventPayload as ContactEventPayload,
     type ErrorDetail as ErrorDetail,
+    type InboundMedia as InboundMedia,
     type InboundMessageEvent as InboundMessageEvent,
     type InboundMessageEventPayload as InboundMessageEventPayload,
+    type LinkEvent as LinkEvent,
+    type LinkEventPayload as LinkEventPayload,
     type MessageEvent as MessageEvent,
     type MessageEventPayload as MessageEventPayload,
     type MutationRequest as MutationRequest,
+    type PaginationCursors as PaginationCursors,
     type PaginationMeta as PaginationMeta,
     type TemplateEvent as TemplateEvent,
     type TemplateEventPayload as TemplateEventPayload,
+    type WebhookDelivery as WebhookDelivery,
     type WebhookEventType as WebhookEventType,
+    type WebhookEventTypesList as WebhookEventTypesList,
+    type WebhookEventsList as WebhookEventsList,
     type WebhookResponse as WebhookResponse,
-    type WebhookListEventTypesResponse as WebhookListEventTypesResponse,
-    type WebhookListEventsResponse as WebhookListEventsResponse,
-    type WebhookRotateSecretResponse as WebhookRotateSecretResponse,
-    type WebhookTestResponse as WebhookTestResponse,
+    type WebhookSecret as WebhookSecret,
+    type WebhookSenderProfile as WebhookSenderProfile,
+    type WebhookSenderProfileConfig as WebhookSenderProfileConfig,
+    type WebhookTest as WebhookTest,
+    type WebhooksList as WebhooksList,
     type WebhookResponsesWebhooksPage as WebhookResponsesWebhooksPage,
-    type WebhookListEventsResponsesWebhookEventsPage as WebhookListEventsResponsesWebhookEventsPage,
+    type WebhookDeliveriesWebhookEventsPage as WebhookDeliveriesWebhookEventsPage,
     type WebhookCreateParams as WebhookCreateParams,
     type WebhookRetrieveParams as WebhookRetrieveParams,
     type WebhookUpdateParams as WebhookUpdateParams,
@@ -1068,8 +1224,9 @@ export declare namespace Sent {
   export {
     Users as Users,
     type APIResponseOfUser as APIResponseOfUser,
+    type APIResponseOfUsersList as APIResponseOfUsersList,
     type UserResponse as UserResponse,
-    type UserListResponse as UserListResponse,
+    type UsersList as UsersList,
     type UserRetrieveParams as UserRetrieveParams,
     type UserListParams as UserListParams,
     type UserInviteParams as UserInviteParams,
@@ -1079,6 +1236,7 @@ export declare namespace Sent {
 
   export {
     Templates as Templates,
+    type APIResponseOfTemplatesList as APIResponseOfTemplatesList,
     type APIResponseTemplate as APIResponseTemplate,
     type AuthenticationConfig as AuthenticationConfig,
     type Template as Template,
@@ -1089,7 +1247,13 @@ export declare namespace Sent {
     type TemplateDefinition as TemplateDefinition,
     type TemplateFooter as TemplateFooter,
     type TemplateHeader as TemplateHeader,
+    type TemplateHeaderLocation as TemplateHeaderLocation,
+    type TemplateMediaItem as TemplateMediaItem,
+    type TemplateMmsBodyContent as TemplateMmsBodyContent,
+    type TemplateRef as TemplateRef,
     type TemplateVariable as TemplateVariable,
+    type TemplateVariableProps as TemplateVariableProps,
+    type TemplatesList as TemplatesList,
     type TemplatesTemplatesPage as TemplatesTemplatesPage,
     type TemplateCreateParams as TemplateCreateParams,
     type TemplateRetrieveParams as TemplateRetrieveParams,
@@ -1100,19 +1264,32 @@ export declare namespace Sent {
 
   export {
     Profiles as Profiles,
+    type APIResponseOfProfileCompletionAccepted as APIResponseOfProfileCompletionAccepted,
+    type APIResponseOfProfileCompletionResult as APIResponseOfProfileCompletionResult,
     type APIResponseOfProfileDetail as APIResponseOfProfileDetail,
+    type APIResponseOfProfilesList as APIResponseOfProfilesList,
+    type BillingContact as BillingContact,
     type BillingContactInfo as BillingContactInfo,
+    type BrandBusiness as BrandBusiness,
     type BrandBusinessInfo as BrandBusinessInfo,
+    type BrandCompliance as BrandCompliance,
     type BrandComplianceInfo as BrandComplianceInfo,
+    type BrandContact as BrandContact,
     type BrandContactInfo as BrandContactInfo,
+    type BrandWithKYC as BrandWithKYC,
     type BrandsBrandData as BrandsBrandData,
     type DestinationCountry as DestinationCountry,
+    type EntityType as EntityType,
     type PaymentDetails as PaymentDetails,
+    type ProfileCompletionAccepted as ProfileCompletionAccepted,
+    type ProfileCompletionResult as ProfileCompletionResult,
     type ProfileDetail as ProfileDetail,
+    type ProfilesList as ProfilesList,
+    type TcrBrandIdentityStatus as TcrBrandIdentityStatus,
     type TcrBrandRelationship as TcrBrandRelationship,
+    type TcrBrandStatus as TcrBrandStatus,
+    type TcrCampaignStatus as TcrCampaignStatus,
     type TcrVertical as TcrVertical,
-    type ProfileListResponse as ProfileListResponse,
-    type ProfileCompleteResponse as ProfileCompleteResponse,
     type ProfileCreateParams as ProfileCreateParams,
     type ProfileRetrieveParams as ProfileRetrieveParams,
     type ProfileUpdateParams as ProfileUpdateParams,
@@ -1122,16 +1299,49 @@ export declare namespace Sent {
   };
 
   export {
+    SenderProfiles as SenderProfiles,
+    type APIResponseOfSenderProfile as APIResponseOfSenderProfile,
+    type APIResponseOfSenderProfilesList as APIResponseOfSenderProfilesList,
+    type SenderProfile as SenderProfile,
+    type SenderProfileBilling as SenderProfileBilling,
+    type SenderProfileBillingRequest as SenderProfileBillingRequest,
+    type SenderProfileChannels as SenderProfileChannels,
+    type SenderProfileRcs as SenderProfileRcs,
+    type SenderProfileSMS as SenderProfileSMS,
+    type SenderProfileWhatsapp as SenderProfileWhatsapp,
+    type SenderProfilesList as SenderProfilesList,
+    type SenderProfilesSenderProfilesPage as SenderProfilesSenderProfilesPage,
+    type SenderProfileCreateParams as SenderProfileCreateParams,
+    type SenderProfileUpdateParams as SenderProfileUpdateParams,
+    type SenderProfileListParams as SenderProfileListParams,
+  };
+
+  export {
     Numbers as Numbers,
-    type NumberLookupResponse as NumberLookupResponse,
+    type APIResponseOfNumberLookupResult as APIResponseOfNumberLookupResult,
+    type NumberLookupResult as NumberLookupResult,
     type NumberLookupParams as NumberLookupParams,
   };
 
   export {
     Messages as Messages,
+    type APIResponseOfCancelledMessage as APIResponseOfCancelledMessage,
+    type APIResponseOfMessage as APIResponseOfMessage,
+    type APIResponseOfMessageActivities as APIResponseOfMessageActivities,
+    type CancelledMessage as CancelledMessage,
+    type Message as Message,
+    type MessageActivities as MessageActivities,
+    type MessageActivity as MessageActivity,
+    type MessageBody as MessageBody,
+    type MessageButton as MessageButton,
+    type MessageChannelOptions as MessageChannelOptions,
+    type MessageHeaderMedia as MessageHeaderMedia,
+    type MessageMedia as MessageMedia,
+    type MessageRecipient as MessageRecipient,
     type MessageSendResponse as MessageSendResponse,
-    type MessageRetrieveActivitiesResponse as MessageRetrieveActivitiesResponse,
-    type MessageRetrieveStatusResponse as MessageRetrieveStatusResponse,
+    type MessageSendResult as MessageSendResult,
+    type MessageStatusEvent as MessageStatusEvent,
+    type MessageCancelParams as MessageCancelParams,
     type MessageResendParams as MessageResendParams,
     type MessageRetrieveActivitiesParams as MessageRetrieveActivitiesParams,
     type MessageRetrieveStatusParams as MessageRetrieveStatusParams,
@@ -1142,8 +1352,11 @@ export declare namespace Sent {
     Contacts as Contacts,
     type APIResponseOfContact as APIResponseOfContact,
     type APIResponseOfContactMessageSummary as APIResponseOfContactMessageSummary,
+    type APIResponseOfContactsList as APIResponseOfContactsList,
+    type ChannelScore as ChannelScore,
     type ContactMessageSummary as ContactMessageSummary,
     type ContactResponse as ContactResponse,
+    type ContactsList as ContactsList,
     type ContactResponsesContactsPage as ContactResponsesContactsPage,
     type ContactCreateParams as ContactCreateParams,
     type ContactRetrieveParams as ContactRetrieveParams,
@@ -1157,19 +1370,40 @@ export declare namespace Sent {
     Conversations as Conversations,
     type APIResponseOfConversationMessagesList as APIResponseOfConversationMessagesList,
     type ConversationMessagesList as ConversationMessagesList,
-    type ConversationMessagesListMessagesConversationsPage as ConversationMessagesListMessagesConversationsPage,
     type ConversationListParams as ConversationListParams,
     type ConversationListMessagesParams as ConversationListMessagesParams,
   };
 
   export { Voice as Voice };
 
-  export { Channels as Channels };
+  export {
+    Channels as Channels,
+    type APIResponseOfChannelsState as APIResponseOfChannelsState,
+    type ChannelsState as ChannelsState,
+    type MmsMarket as MmsMarket,
+    type ChannelListParams as ChannelListParams,
+  };
+
+  export {
+    Compliance as Compliance,
+    type APIResponseOfComplianceRequirements as APIResponseOfComplianceRequirements,
+    type ComplianceAttachmentTemplate as ComplianceAttachmentTemplate,
+    type ComplianceRequirement as ComplianceRequirement,
+    type ComplianceRequirements as ComplianceRequirements,
+    type ComplianceSetupStep as ComplianceSetupStep,
+    type ComplianceRetrieveRequirementsParams as ComplianceRetrieveRequirementsParams,
+  };
 
   export {
     Me as Me,
+    type Account as Account,
+    type AccountChannels as AccountChannels,
+    type AccountProfile as AccountProfile,
+    type AccountRcsChannel as AccountRcsChannel,
+    type AccountSMSChannel as AccountSMSChannel,
+    type AccountWhatsappChannel as AccountWhatsappChannel,
+    type APIResponseOfAccount as APIResponseOfAccount,
     type ProfileSettings as ProfileSettings,
-    type MeRetrieveResponse as MeRetrieveResponse,
     type MeRetrieveParams as MeRetrieveParams,
   };
 }

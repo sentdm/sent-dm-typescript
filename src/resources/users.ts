@@ -1,7 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../core/resource';
-import * as UsersAPI from './users';
 import * as WebhooksAPI from './webhooks';
 import { APIPromise } from '../core/api-promise';
 import { buildHeaders } from '../internal/headers';
@@ -47,13 +46,13 @@ export class Users extends APIResource {
    *
    * @example
    * ```ts
-   * const users = await client.users.list();
+   * const apiResponseOfUsersList = await client.users.list();
    * ```
    */
   list(
     params: UserListParams | null | undefined = {},
     options?: RequestOptions,
-  ): APIPromise<UserListResponse> {
+  ): APIPromise<APIResponseOfUsersList> {
     const { 'x-profile-id': xProfileID } = params ?? {};
     return this._client.get('/v3/users', {
       ...options,
@@ -169,6 +168,31 @@ export interface APIResponseOfUser {
 }
 
 /**
+ * Standard API response envelope for all v3 endpoints
+ */
+export interface APIResponseOfUsersList {
+  /**
+   * The users in the organization.
+   */
+  data?: UsersList | null;
+
+  /**
+   * Error information
+   */
+  error?: WebhooksAPI.ErrorDetail | null;
+
+  /**
+   * Request and response metadata
+   */
+  meta?: WebhooksAPI.APIMeta;
+
+  /**
+   * Indicates whether the request was successful
+   */
+  success?: boolean;
+}
+
+/**
  * User response for v3 API
  */
 export interface UserResponse {
@@ -225,45 +249,18 @@ export interface UserResponse {
 }
 
 /**
- * Standard API response envelope for all v3 endpoints
+ * The users in the organization.
  */
-export interface UserListResponse {
+export interface UsersList {
   /**
-   * The users in the organization.
+   * Pagination metadata for list responses
    */
-  data?: UserListResponse.Data | null;
+  pagination?: WebhooksAPI.PaginationMeta;
 
   /**
-   * Error information
+   * The users on this page.
    */
-  error?: WebhooksAPI.ErrorDetail | null;
-
-  /**
-   * Request and response metadata
-   */
-  meta?: WebhooksAPI.APIMeta;
-
-  /**
-   * Indicates whether the request was successful
-   */
-  success?: boolean;
-}
-
-export namespace UserListResponse {
-  /**
-   * The users in the organization.
-   */
-  export interface Data {
-    /**
-     * Pagination metadata for list responses
-     */
-    pagination?: WebhooksAPI.PaginationMeta;
-
-    /**
-     * The users on this page.
-     */
-    users?: Array<UsersAPI.UserResponse>;
-  }
+  users?: Array<UserResponse>;
 }
 
 export interface UserRetrieveParams {
@@ -364,8 +361,9 @@ export interface UserUpdateRoleParams {
 export declare namespace Users {
   export {
     type APIResponseOfUser as APIResponseOfUser,
+    type APIResponseOfUsersList as APIResponseOfUsersList,
     type UserResponse as UserResponse,
-    type UserListResponse as UserListResponse,
+    type UsersList as UsersList,
     type UserRetrieveParams as UserRetrieveParams,
     type UserListParams as UserListParams,
     type UserInviteParams as UserInviteParams,

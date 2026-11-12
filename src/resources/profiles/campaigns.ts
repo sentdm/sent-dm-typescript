@@ -2,6 +2,7 @@
 
 import { APIResource } from '../../core/resource';
 import * as WebhooksAPI from '../webhooks';
+import * as ProfilesAPI from './profiles';
 import { APIPromise } from '../../core/api-promise';
 import { buildHeaders } from '../../internal/headers';
 import { RequestOptions } from '../../internal/request-options';
@@ -86,7 +87,10 @@ export class Campaigns extends APIResource {
    * explicitly.
    *
    * Retrieves all campaigns linked to the profile's brand, including use cases and
-   * sample messages. Returns inherited campaigns if inherit_tcr_campaign=true.
+   * sample messages. A profile with inherit_tcr_campaign=true gets its
+   * organization's campaigns and, beside them, any campaign of its own (added with
+   * POST /v3/channels/sms/compliances/US/TEN_DLC/campaigns); `isInherited` says
+   * which is which.
    *
    * @deprecated
    */
@@ -215,6 +219,13 @@ export interface BrandCampaign {
 
   helpMessage?: string | null;
 
+  /**
+   * Whether the campaign is the organization's, which the profile runs on, rather
+   * than one of the profile's own. A profile running on its organization's campaign
+   * can hold campaigns of its own beside it, and the list returns both.
+   */
+  isInherited?: boolean;
+
   messageFlow?: string | null;
 
   name?: string;
@@ -229,7 +240,7 @@ export interface BrandCampaign {
 
   privacyPolicyLink?: string | null;
 
-  status?: 'SENT_CREATED' | 'ACTIVE' | 'EXPIRED' | null;
+  status?: ProfilesAPI.TcrCampaignStatus | null;
 
   submittedAt?: string | null;
 

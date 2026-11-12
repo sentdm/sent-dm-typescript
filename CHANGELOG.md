@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.52.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.51.0...v0.52.0) (2026-11-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* **api:** stable names for shared models; typed methods for sender profiles, channels, compliance requirements and message cancel
+
+### Features
+
+* **api:** stable names for shared models; typed methods for sender profiles, channels, compliance requirements and message cancel ([c551597](https://github.com/sentdm/sent-dm-typescript/commit/c5515970c70beb245f3f48518b0e1167ba0785ea))
+
 ## [0.51.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.50.0...v0.51.0) (2026-11-05)
 
 

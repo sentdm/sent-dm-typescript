@@ -1,6 +1,28 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-export { Channels } from './channels';
+export {
+  Channels,
+  type APIResponseOfChannelsState,
+  type ChannelsState,
+  type MmsMarket,
+  type ChannelListParams,
+} from './channels';
+export { Rcs, type APIResponseOfRcsAgent, type RcsAddress, type RcsAgent, type RcCreateParams } from './rcs';
+export {
+  SMS,
+  type APIResponseOfListOfSMSMarket,
+  type APIResponseOfSMSMarket,
+  type MarketCompliance,
+  type SMSMarket,
+  type SMSNumber,
+  type SMSNumberRequest,
+  type SuppliedCompliance,
+  type SuppliedDocument,
+  type SMSCreateParams,
+  type SMSRetrieveParams,
+  type SMSUpdateParams,
+  type SMSListParams,
+} from './sms';
 export {
   Voice,
   type APIResponseOfListOfVoiceNumber,
@@ -22,3 +44,9 @@ export {
   type VoiceRotateSecretParams,
   type VoiceTestParams,
 } from './voice';
+export {
+  Whatsapp,
+  type APIResponseOfWhatsappChannel,
+  type WhatsappChannel,
+  type WhatsappCreateParams,
+} from './whatsapp';

@@ -87,7 +87,10 @@ export class Campaigns extends APIResource {
    * explicitly.
    *
    * Retrieves all campaigns linked to the profile's brand, including use cases and
-   * sample messages. Returns inherited campaigns if inherit_tcr_campaign=true.
+   * sample messages. A profile with inherit_tcr_campaign=true gets its
+   * organization's campaigns and, beside them, any campaign of its own (added with
+   * POST /v3/channels/sms/compliances/US/TEN_DLC/campaigns); `isInherited` says
+   * which is which.
    *
    * @deprecated
    */
@@ -215,6 +218,13 @@ export interface BrandCampaign {
   helpKeywords?: string | null;
 
   helpMessage?: string | null;
+
+  /**
+   * Whether the campaign is the organization's, which the profile runs on, rather
+   * than one of the profile's own. A profile running on its organization's campaign
+   * can hold campaigns of its own beside it, and the list returns both.
+   */
+  isInherited?: boolean;
 
   messageFlow?: string | null;
 

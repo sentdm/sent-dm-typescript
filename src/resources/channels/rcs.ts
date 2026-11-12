@@ -250,6 +250,27 @@ export interface RcsAgent {
    * whose resubmission we have asked for reads ACTION_NEEDED however its carrier
    * status still reads, and an agent not yet handed over reads PROVISIONING rather
    * than pending a review nobody has started.
+   *
+   * - `PROVISIONING` - We are working on it and there is nothing for you to do — a
+   *   number is being procured, or a registration is being assembled. Minutes to
+   *   hours.
+   * - `ACTION_NEEDED` - **Waiting on you.** Something the market asks for has not
+   *   been supplied, a regulator rejected what was, or we have asked you to correct
+   *   and resubmit your identity data. Nothing progresses until you act. For an SMS
+   *   market, `GET /v3/channels/sms/{country}/{type}` names what it wants and
+   *   `PATCH` on the same path supplies it — compliance values, documents and
+   *   numbers alike.
+   * - `PENDING_REVIEW` - With a regulator or carrier — filed, or assembled and
+   *   queued for us to file — and their answer is what moves it, to `ACTIVE` or back
+   *   to `ACTION_NEEDED`. Nothing on your side changes it. Days for SMS, weeks for
+   *   RCS.
+   * - `ACTIVE` - Can carry traffic now. A channel a sender profile runs on its
+   *   organization's reads `ACTIVE` too — it sends, which is what the field is
+   *   about.
+   * - `INACTIVE` - **It had a working sender and no longer does** — the number was
+   *   released, or the campaign it carried lapsed. Distinct from `PROVISIONING`,
+   *   which means it has never sent yet: the same absence of a sender, opposite
+   *   news. Sends will fail until it returns to `ACTIVE`.
    */
   status?: 'PROVISIONING' | 'ACTION_NEEDED' | 'PENDING_REVIEW' | 'ACTIVE' | 'INACTIVE' | null;
 
@@ -264,6 +285,16 @@ export interface RcCreateParams {
   /**
    * Body param: Which kind of traffic the agent carries. One of the accepted use
    * cases; the error names the set.
+   *
+   * - `VERIFICATION` - One-time passcodes and identity checks. Expects no reply, and
+   *   is held to the strictest delivery review.
+   * - `NOTIFICATIONS` - Transactional updates the recipient asked for — orders,
+   *   deliveries, appointments, account activity.
+   * - `MARKETING` - Promotional content. Requires the clearest opt-in evidence of
+   *   the four, because the carriers review consent hardest here.
+   * - `MULTI_USE` - More than one of the above from a single agent. Vetted against
+   *   the strictest use case it covers, so declare it only if you genuinely need one
+   *   agent to do several jobs.
    */
   agent_use_case?: 'VERIFICATION' | 'NOTIFICATIONS' | 'MARKETING' | 'MULTI_USE';
 

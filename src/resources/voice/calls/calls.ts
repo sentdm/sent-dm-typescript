@@ -317,9 +317,10 @@ export interface Call {
 
   /**
    * Why the call did not complete: callback_timeout, invalid_answer,
-   * insufficient_balance, destination_blocked, callback_not_configured, rejected,
-   * no_answer, or for an agent call agent_busy or agent_unreachable. Null while the
-   * call is live, when it completed, and when it failed without a recorded reason
+   * insufficient_balance, payment_method_missing, destination_blocked,
+   * callback_not_configured, rejected, no_answer, or for an agent call agent_busy or
+   * agent_unreachable. Null while the call is live, when it completed, and when it
+   * failed without a recorded reason
    */
   failure_reason?: string | null;
 

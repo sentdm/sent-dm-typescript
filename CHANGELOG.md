@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.54.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.53.0...v0.54.0) (2026-11-12)
+
+
+### Features
+
+* **api:** methods for the US 10DLC campaigns, numbers and market compliance ([175bae6](https://github.com/sentdm/sent-dm-typescript/commit/175bae62096df4b0eda3a1181bf4cea9b22c417a))
+
 ## [0.53.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.52.0...v0.53.0) (2026-11-12)
 
 

@@ -4,7 +4,7 @@ import { APIResource } from '../core/resource';
 import * as WebhooksAPI from './webhooks';
 import * as ChannelsAPI from './channels/channels';
 import * as RcsAPI from './channels/rcs';
-import * as SMSAPI from './channels/sms';
+import * as SMSAPI from './channels/sms/sms';
 import { APIPromise } from '../core/api-promise';
 import { PagePromise, SenderProfilesPage, type SenderProfilesPageParams } from '../core/pagination';
 import { buildHeaders } from '../internal/headers';

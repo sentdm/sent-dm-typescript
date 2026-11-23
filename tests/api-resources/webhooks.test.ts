@@ -74,6 +74,7 @@ describe('resource webhooks', () => {
     await expect(
       client.webhooks.list(
         {
+          agent_id: '182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e',
           is_active: true,
           page: 0,
           page_size: 0,

@@ -4,7 +4,7 @@ import { APIResource } from '../core/resource';
 import * as WebhooksAPI from './webhooks';
 import * as ChannelsAPI from './channels/channels';
 import * as RcsAPI from './channels/rcs';
-import * as SMSAPI from './channels/sms';
+import * as SMSAPI from './channels/sms/sms';
 import { APIPromise } from '../core/api-promise';
 import { PagePromise, SenderProfilesPage, type SenderProfilesPageParams } from '../core/pagination';
 import { buildHeaders } from '../internal/headers';
@@ -265,6 +265,14 @@ export class SenderProfiles extends APIResource {
    * a request `{ "inherit": true }` carries no data because there is nothing to
    * send; here it carries the data, because the point of a read is to say what the
    * profile actually sends under.
+   *
+   * `compliance.brand.vetting` is the brand's external vetting at The Campaign
+   * Registry, read-only: `score` (0-100, the figure US carriers set 10DLC throughput
+   * by), `status` (`PENDING`, `UNSCORE`, `ACTIVE`, `FAILED` or `EXPIRED`; carriers
+   * read the score of an `ACTIVE` vet only), `vetted_at` and `expires_at`. It is
+   * `null` while no vetting record is held for the brand, and `score` is `null` for
+   * a vet that has none yet. A profile on your organization's brand reads your
+   * organization's vetting.
    *
    * **There is no `campaigns` array.** Brand, campaign, and compliance documents are
    * reported at the profile root in `compliance`. A profile running on your

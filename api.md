@@ -365,21 +365,23 @@ Methods:
 
 Types:
 
-- <code><a href="./src/resources/channels/sms.ts">APIResponseOfListOfSMSMarket</a></code>
-- <code><a href="./src/resources/channels/sms.ts">APIResponseOfSMSMarket</a></code>
-- <code><a href="./src/resources/channels/sms.ts">MarketCompliance</a></code>
-- <code><a href="./src/resources/channels/sms.ts">SMSMarket</a></code>
-- <code><a href="./src/resources/channels/sms.ts">SMSNumber</a></code>
-- <code><a href="./src/resources/channels/sms.ts">SMSNumberRequest</a></code>
-- <code><a href="./src/resources/channels/sms.ts">SuppliedCompliance</a></code>
-- <code><a href="./src/resources/channels/sms.ts">SuppliedDocument</a></code>
+- <code><a href="./src/resources/channels/sms/sms.ts">MarketCompliance</a></code>
+- <code><a href="./src/resources/channels/sms/sms.ts">SMSNumber</a></code>
+- <code><a href="./src/resources/channels/sms/sms.ts">SMSNumberRequest</a></code>
+- <code><a href="./src/resources/channels/sms/sms.ts">SuppliedCampaign</a></code>
+- <code><a href="./src/resources/channels/sms/sms.ts">SuppliedCompliance</a></code>
+- <code><a href="./src/resources/channels/sms/sms.ts">SuppliedDocument</a></code>
+- <code><a href="./src/resources/channels/sms/sms.ts">SMSCreateResponse</a></code>
 
 Methods:
 
-- <code title="post /v3/channels/sms">client.channels.sms.<a href="./src/resources/channels/sms.ts">create</a>({ ...params }) -> APIResponseOfSMSMarket</code>
-- <code title="get /v3/channels/sms/{country}/{type}">client.channels.sms.<a href="./src/resources/channels/sms.ts">retrieve</a>(type, { ...params }) -> APIResponseOfSMSMarket</code>
-- <code title="patch /v3/channels/sms/{country}/{type}">client.channels.sms.<a href="./src/resources/channels/sms.ts">update</a>(type, { ...params }) -> APIResponseOfSMSMarket</code>
-- <code title="get /v3/channels/sms">client.channels.sms.<a href="./src/resources/channels/sms.ts">list</a>({ ...params }) -> APIResponseOfListOfSMSMarket</code>
+- <code title="post /v3/channels/sms">client.channels.sms.<a href="./src/resources/channels/sms/sms.ts">create</a>({ ...params }) -> SMSCreateResponse</code>
+
+### TenDlc
+
+Types:
+
+- <code><a href="./src/resources/channels/sms/ten-dlc.ts">TenDlcCampaignUseCase</a></code>
 
 ## Rcs
 

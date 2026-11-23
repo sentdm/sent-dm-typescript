@@ -10,19 +10,15 @@ export {
 export { Rcs, type APIResponseOfRcsAgent, type RcsAddress, type RcsAgent, type RcCreateParams } from './rcs';
 export {
   SMS,
-  type APIResponseOfListOfSMSMarket,
-  type APIResponseOfSMSMarket,
   type MarketCompliance,
-  type SMSMarket,
   type SMSNumber,
   type SMSNumberRequest,
+  type SuppliedCampaign,
   type SuppliedCompliance,
   type SuppliedDocument,
+  type SMSCreateResponse,
   type SMSCreateParams,
-  type SMSRetrieveParams,
-  type SMSUpdateParams,
-  type SMSListParams,
-} from './sms';
+} from './sms/index';
 export {
   Voice,
   type APIResponseOfListOfVoiceNumber,

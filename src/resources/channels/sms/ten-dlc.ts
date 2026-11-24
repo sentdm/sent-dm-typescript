@@ -321,7 +321,7 @@ export interface TenDlcAddCampaignParams {
    * five entries; how they register is decided by volume, never declared. Required
    * when `compliance.campaign.inherit != true`.
    */
-  use_cases: Array<TenDlcAddCampaignParams.UseCase>;
+  use_cases: Array<TenDlcCampaignUseCase>;
 
   /**
    * Body param: Expected monthly volume. Required whenever the campaign's fields are
@@ -353,35 +353,6 @@ export interface TenDlcAddCampaignParams {
    * calling organization.
    */
   'x-profile-id'?: string;
-}
-
-export namespace TenDlcAddCampaignParams {
-  export interface UseCase {
-    /**
-     * Sample messages. TCR sample1..sample5 for this use case. One to five, each 20 to
-     * 1024 characters and carrying the brand name and an opt-out instruction. At most
-     * five across the campaign, and at least two when a high-volume campaign has a
-     * single use case.
-     */
-    sample_messages: Array<unknown>;
-
-    /**
-     * Use case. What this entry sends. MIXED and LOW_VOLUME are refused — volume
-     * decides those.
-     */
-    use_case:
-      | 'MARKETING'
-      | 'ACCOUNT_NOTIFICATION'
-      | 'CUSTOMER_CARE'
-      | 'FRAUD_ALERT'
-      | '2FA'
-      | 'DELIVERY_NOTIFICATION'
-      | 'SECURITY_ALERT'
-      | 'M2M'
-      | 'HIGHER_EDUCATION'
-      | 'POLLING_VOTING'
-      | 'PUBLIC_SERVICE_ANNOUNCEMENT';
-  }
 }
 
 export interface TenDlcListCampaignsParams {
@@ -471,7 +442,7 @@ export interface TenDlcUpdateCampaignParams {
    * five entries; how they register is decided by volume, never declared. Required
    * when `compliance.campaign.inherit != true`.
    */
-  use_cases?: Array<TenDlcUpdateCampaignParams.UseCase>;
+  use_cases?: Array<TenDlcCampaignUseCase>;
 
   /**
    * Body param: Expected monthly volume. Required whenever the campaign's fields are
@@ -497,35 +468,6 @@ export interface TenDlcUpdateCampaignParams {
    * calling organization.
    */
   'x-profile-id'?: string;
-}
-
-export namespace TenDlcUpdateCampaignParams {
-  export interface UseCase {
-    /**
-     * Sample messages. TCR sample1..sample5 for this use case. One to five, each 20 to
-     * 1024 characters and carrying the brand name and an opt-out instruction. At most
-     * five across the campaign, and at least two when a high-volume campaign has a
-     * single use case.
-     */
-    sample_messages: Array<unknown>;
-
-    /**
-     * Use case. What this entry sends. MIXED and LOW_VOLUME are refused — volume
-     * decides those.
-     */
-    use_case:
-      | 'MARKETING'
-      | 'ACCOUNT_NOTIFICATION'
-      | 'CUSTOMER_CARE'
-      | 'FRAUD_ALERT'
-      | '2FA'
-      | 'DELIVERY_NOTIFICATION'
-      | 'SECURITY_ALERT'
-      | 'M2M'
-      | 'HIGHER_EDUCATION'
-      | 'POLLING_VOTING'
-      | 'PUBLIC_SERVICE_ANNOUNCEMENT';
-  }
 }
 
 export declare namespace TenDlc {

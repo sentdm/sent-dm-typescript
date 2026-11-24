@@ -300,6 +300,12 @@ export interface Template {
   created_at?: string;
 
   /**
+   * Complete definition of a message template including header, body, footer, and
+   * buttons
+   */
+  definition?: TemplateDefinition | null;
+
+  /**
    * Whether the template is published and active
    */
   is_published?: boolean;
@@ -313,6 +319,13 @@ export interface Template {
    * Template display name
    */
   name?: string;
+
+  /**
+   * The template's slug: a stable, URL-safe name a send can use in place of the id
+   * (template.slug on POST /v3/messages). Given at creation from the name and never
+   * changed.
+   */
+  slug?: string | null;
 
   /**
    * Template status: DRAFT, PENDING, APPROVED, REJECTED. A template created with
@@ -694,17 +707,17 @@ export interface TemplateMmsBodyContent extends TemplateBodyContent {
 }
 
 /**
- * SDK-style template reference: resolve by ID or by name, with optional
- * parameters.
+ * SDK-style template reference: resolve by id, by slug or by name (exactly one),
+ * with optional parameters.
  */
 export interface TemplateRef {
   /**
-   * Template ID (mutually exclusive with name)
+   * Template ID (mutually exclusive with slug and name)
    */
   id?: string | null;
 
   /**
-   * Template name (mutually exclusive with id)
+   * Template name (mutually exclusive with id and slug)
    */
   name?: string | null;
 
@@ -725,6 +738,13 @@ export interface TemplateRef {
    * "John Doe" }
    */
   parameters?: { [key: string]: string } | null;
+
+  /**
+   * Template slug (mutually exclusive with id and name): the stable name every
+   * template on this account carries (GET /v3/templates lists them). Compared
+   * case-insensitively.
+   */
+  slug?: string | null;
 }
 
 export interface TemplateVariable {

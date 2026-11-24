@@ -2,26 +2,19 @@
 
 export {
   SMS,
-  type APIResponseOfListOfSMSMarket,
-  type APIResponseOfSMSMarket,
   type MarketCompliance,
-  type SMSMarket,
   type SMSNumber,
   type SMSNumberRequest,
   type SuppliedCampaign,
   type SuppliedCompliance,
   type SuppliedDocument,
   type SMSCreateParams,
-  type SMSRetrieveParams,
-  type SMSUpdateParams,
-  type SMSListParams,
 } from './sms';
 export {
   TenDlc,
-  type APIResponseOfSuppliedCompliance,
   type TenDlcCampaignUseCase,
+  type TenDlcListCampaignsResponse,
   type TenDlcAddCampaignParams,
-  type TenDlcAddNumbersParams,
-  type TenDlcRetrieveComplianceParams,
+  type TenDlcListCampaignsParams,
   type TenDlcUpdateCampaignParams,
 } from './ten-dlc';

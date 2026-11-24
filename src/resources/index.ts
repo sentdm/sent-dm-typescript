@@ -177,6 +177,8 @@ export {
 export { Voice } from './voice/voice';
 export {
   Webhooks,
+  type AgentEvent,
+  type AgentEventPayload,
   type APIMeta,
   type APIResponseOfWebhookEventTypesList,
   type APIResponseOfWebhookEventsList,

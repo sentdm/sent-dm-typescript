@@ -336,6 +336,120 @@ export type WebhookResponsesWebhooksPage = WebhooksPage<WebhookResponse>;
 export type WebhookDeliveriesWebhookEventsPage = WebhookEventsPage<WebhookDelivery>;
 
 /**
+ * The envelope Sent POSTs to a subscribed webhook endpoint. Every event shares
+ * this shape and varies only in Payload.
+ */
+export interface AgentEvent {
+  /**
+   * The specific event within the family, for example message.delivered,
+   * message.received or contact.opt_out. Absent on events that have no subtype, so
+   * treat it as optional.
+   */
+  event?: string | null;
+
+  /**
+   * The event family, for example message, templates or contact. Route on this
+   * first, then on event for the specific change.
+   */
+  field?: string;
+
+  /**
+   * Body of an agent.\* webhook (Sent Agents). The event is the agent service's own
+   * record, forwarded without renaming: EventId is its id, so a subscriber can
+   * dedupe a redelivery.
+   */
+  payload?: AgentEventPayload | null;
+
+  /**
+   * The event-specific body.
+   */
+  request_id?: string | null;
+
+  /**
+   * When Sent emitted the event, in UTC (yyyy-MM-ddTHH:mm:ssZ). This is the emission
+   * time, not the time the underlying change happened. Use the timestamp inside the
+   * payload for the latter.
+   */
+  timestamp?: string;
+}
+
+/**
+ * Body of an agent.\* webhook (Sent Agents). The event is the agent service's own
+ * record, forwarded without renaming: EventId is its id, so a subscriber can
+ * dedupe a redelivery.
+ */
+export interface AgentEventPayload {
+  /**
+   * The agent service's event id. The same event is never delivered under two ids.
+   */
+  event_id: string;
+
+  /**
+   * When the agent service recorded it, UTC, to the millisecond.
+   */
+  occurred_at: string;
+
+  /**
+   * The sender profile the agent runs on.
+   */
+  account_id?: string;
+
+  /**
+   * Who caused it: system, the agent service's customer, or an approver.
+   */
+  actor?: string | null;
+
+  /**
+   * The agent.
+   */
+  agent_id?: string;
+
+  /**
+   * The agent's name, as it is listed. Absent for an agent services no longer holds.
+   */
+  agent_name?: string | null;
+
+  /**
+   * The version of the agent the event is of: the one its conversation runs, or the
+   * active one for an event of the agent itself. Absent when the agent service does
+   * not say it.
+   */
+  agent_version?: number | null;
+
+  /**
+   * The contact of that conversation; absent on agent-level events.
+   */
+  contact_id?: string | null;
+
+  /**
+   * The contact's phone number, in E.164, so a receiver knows who the event is about
+   * without asking for the contact. Read from the account's contacts as the webhook
+   * is built: the agent service's own record names a contact by id only. Absent on
+   * agent-level events, and for a contact the account no longer holds.
+   */
+  contact_phone_number?: string | null;
+
+  /**
+   * The event's own fields (outcome, reason, ...), exactly as the agent service
+   * recorded them.
+   */
+  data?: unknown;
+
+  /**
+   * The conversation (agent × contact) the event belongs to; absent on agent-level
+   * events.
+   */
+  instance_id?: string | null;
+
+  /**
+   * Where the event stands among the agent's events: a number that grows with each,
+   * so two events of the same second are put in order by it. Not a count: there are
+   * gaps between an agent's own. Absent from an agent service that does not say it.
+   */
+  sequence?: number | null;
+}
+
+/**
  * Request and response metadata
  */
 export interface APIMeta {
@@ -1161,6 +1275,17 @@ export interface InboundMessageEventPayload {
   referral?: unknown | null;
 
   /**
+   * The Sent agent whose conversation this reply arrived in, when the contact is in
+   * one, as on the messages it sent. Absent otherwise.
+   */
+  sent_agent_id?: string | null;
+
+  /**
+   * The conversation (agent × contact) the reply belongs to, when it belongs to one.
+   */
+  sent_instance_id?: string | null;
+
+  /**
    * The message body. Sent as null when the inbound message carried no text, for
    * example a media-only message. The field is always present, so read it and check
    * for null rather than checking whether the key exists.
@@ -1468,6 +1593,14 @@ export interface MessageEventPayload {
   outbound_number?: string;
 
   /**
+   * When this message is another send of a message you sent earlier, the id of that
+   * original message; omitted for every other message. The new send has its own
+   * message_id, so this ties its events back to the message you sent. Always the
+   * first message, however many sends lie between them.
+   */
+  parent_message_id?: string | null;
+
+  /**
    * A human-readable sentence for ReasonCode, for example "The recipient is not
    * registered on this channel". Omitted whenever reason_code is.
    */
@@ -1500,6 +1633,19 @@ export interface MessageEventPayload {
    * has what it needs to un-record it from the second. Omitted on every other event.
    */
   scheduled_at?: string | null;
+
+  /**
+   * The Sent agent (Sent Agents) that sent this message, when one did. Not the RCS
+   * agent_id above: that names the RCS sender agent, this names the autonomous agent
+   * running on the account.
+   */
+  sent_agent_id?: string | null;
+
+  /**
+   * The conversation (agent × contact) the message belongs to, when a Sent agent
+   * sent it.
+   */
+  sent_instance_id?: string | null;
 
   /**
    * The template the message was sent from, when it was sent from one.
@@ -1728,7 +1874,8 @@ export interface WebhookDelivery {
     | ChannelEvent
     | ContactEvent
     | LinkEvent
-    | CallEvent;
+    | CallEvent
+    | AgentEvent;
 
   event_type?: string;
 
@@ -1787,6 +1934,12 @@ export interface WebhookEventsList {
 
 export interface WebhookResponse {
   id?: string;
+
+  /**
+   * The Sent agent whose events alone this webhook receives; absent on a webhook of
+   * the whole account.
+   */
+  agent_id?: string | null;
 
   /**
    * Failed attempts since the last success. Version 1 only: always 0 on a version 2
@@ -1906,6 +2059,14 @@ export interface WebhooksList {
 
 export interface WebhookCreateParams {
   /**
+   * Body param: One of your Sent agents: the webhook then receives only that agent's
+   * events, its agent events and the messages it sent or received, and is never
+   * inheritable: is_inheritable set with it is refused. Only the account the agent
+   * runs on can set it, and only on a version 2 webhook.
+   */
+  agent_id?: string | null;
+
+  /**
    * Body param
    */
   display_name?: string;
@@ -2012,7 +2173,7 @@ export interface WebhookUpdateParams {
   /**
    * Body param: Makes this webhook inheritable by the organization's sender profiles
    * (see create), or stops it being inheritable. Omit or pass null to keep it as it
-   * is. Only a version 2 webhook can be inheritable.
+   * is. Only a version 2 webhook can be inheritable, and never an agent's.
    */
   is_inheritable?: boolean | null;
 
@@ -2055,6 +2216,11 @@ export interface WebhookUpdateParams {
 }
 
 export interface WebhookListParams extends WebhooksPageParams {
+  /**
+   * Query param: Only the webhooks of this Sent agent.
+   */
+  agent_id?: string | null;
+
   /**
    * Query param
    */
@@ -2181,6 +2347,8 @@ export interface WebhookToggleStatusParams {
 
 export declare namespace Webhooks {
   export {
+    type AgentEvent as AgentEvent,
+    type AgentEventPayload as AgentEventPayload,
     type APIMeta as APIMeta,
     type APIResponseOfWebhookEventTypesList as APIResponseOfWebhookEventTypesList,
     type APIResponseOfWebhookEventsList as APIResponseOfWebhookEventsList,

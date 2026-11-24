@@ -2,6 +2,22 @@
 
 import { APIResource } from '../../core/resource';
 import * as WebhooksAPI from '../webhooks';
+import * as MarketsAPI from './markets';
+import {
+  APIResponseOfChannelMarket,
+  APIResponseOfListOfChannelMarket,
+  APIResponseOfMarketNumbers,
+  ChannelMarket,
+  MarketAddNumbersParams,
+  MarketListNumbersParams,
+  MarketListParams,
+  MarketNumber,
+  MarketNumbers,
+  MarketReplaceNumbersParams,
+  MarketRetrieveParams,
+  MarketUpdateParams,
+  Markets,
+} from './markets';
 import * as RcsAPI from './rcs';
 import { APIResponseOfRcsAgent, RcCreateParams, Rcs, RcsAddress, RcsAgent } from './rcs';
 import * as VoiceAPI from './voice';
@@ -30,17 +46,11 @@ import * as WhatsappAPI from './whatsapp';
 import { APIResponseOfWhatsappChannel, Whatsapp, WhatsappChannel, WhatsappCreateParams } from './whatsapp';
 import * as SMSAPI from './sms/sms';
 import {
-  APIResponseOfListOfSMSMarket,
-  APIResponseOfSMSMarket,
   MarketCompliance,
   SMS,
   SMSCreateParams,
-  SMSListParams,
-  SMSMarket,
   SMSNumber,
   SMSNumberRequest,
-  SMSRetrieveParams,
-  SMSUpdateParams,
   SuppliedCampaign,
   SuppliedCompliance,
   SuppliedDocument,
@@ -63,6 +73,7 @@ import { RequestOptions } from '../../internal/request-options';
  * Call `GET /v3/compliance/requirements` first — it answers what a market demands before you hold it, with a body you can fill in and post.
  */
 export class Channels extends APIResource {
+  markets: MarketsAPI.Markets = new MarketsAPI.Markets(this._client);
   sms: SMSAPI.SMS = new SMSAPI.SMS(this._client);
   rcs: RcsAPI.Rcs = new RcsAPI.Rcs(this._client);
   whatsapp: WhatsappAPI.Whatsapp = new WhatsappAPI.Whatsapp(this._client);
@@ -181,7 +192,7 @@ export interface ChannelsState {
    */
   rcs?: RcsAPI.RcsAgent | null;
 
-  sms?: Array<SMSAPI.SMSMarket>;
+  sms?: Array<MarketsAPI.ChannelMarket>;
 
   /**
    * The numbers this profile carries phone calls on, one entry per number, or empty
@@ -200,11 +211,11 @@ export interface ChannelsState {
 /**
  * One market the profile can send MMS in.
  *
- * Deliberately not SmsMarketState: an MMS market carries no compliance of its own.
- * It is the same number, carrier and registration as the SMS market on it in that
- * country — MMS files nothing separately — so a compliance block here would always
- * be null and would invite the question of what an MMS market owes. It owes what
- * the SMS market owes, reported there.
+ * Deliberately not ChannelMarketState: an MMS market carries no compliance of its
+ * own. It is the same number, carrier and registration as the SMS market on it in
+ * that country — MMS files nothing separately — so a compliance block here would
+ * always be null and would invite the question of what an MMS market owes. It owes
+ * what the SMS market owes, reported there.
  */
 export interface MmsMarket {
   /**
@@ -236,6 +247,7 @@ export interface ChannelListParams {
   'x-profile-id'?: string;
 }
 
+Channels.Markets = Markets;
 Channels.SMS = SMS;
 Channels.Rcs = Rcs;
 Channels.Whatsapp = Whatsapp;
@@ -250,20 +262,30 @@ export declare namespace Channels {
   };
 
   export {
+    Markets as Markets,
+    type APIResponseOfChannelMarket as APIResponseOfChannelMarket,
+    type APIResponseOfListOfChannelMarket as APIResponseOfListOfChannelMarket,
+    type APIResponseOfMarketNumbers as APIResponseOfMarketNumbers,
+    type ChannelMarket as ChannelMarket,
+    type MarketNumber as MarketNumber,
+    type MarketNumbers as MarketNumbers,
+    type MarketRetrieveParams as MarketRetrieveParams,
+    type MarketUpdateParams as MarketUpdateParams,
+    type MarketListParams as MarketListParams,
+    type MarketAddNumbersParams as MarketAddNumbersParams,
+    type MarketListNumbersParams as MarketListNumbersParams,
+    type MarketReplaceNumbersParams as MarketReplaceNumbersParams,
+  };
+
+  export {
     SMS as SMS,
-    type APIResponseOfListOfSMSMarket as APIResponseOfListOfSMSMarket,
-    type APIResponseOfSMSMarket as APIResponseOfSMSMarket,
     type MarketCompliance as MarketCompliance,
-    type SMSMarket as SMSMarket,
     type SMSNumber as SMSNumber,
     type SMSNumberRequest as SMSNumberRequest,
     type SuppliedCampaign as SuppliedCampaign,
     type SuppliedCompliance as SuppliedCompliance,
     type SuppliedDocument as SuppliedDocument,
     type SMSCreateParams as SMSCreateParams,
-    type SMSRetrieveParams as SMSRetrieveParams,
-    type SMSUpdateParams as SMSUpdateParams,
-    type SMSListParams as SMSListParams,
   };
 
   export {

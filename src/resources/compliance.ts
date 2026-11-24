@@ -17,6 +17,10 @@ import { RequestOptions } from '../internal/request-options';
  */
 export class Compliance extends APIResource {
   /**
+   * **Deprecated.** Use `GET /v3/channels/{channel}/{country}/compliance` instead,
+   * and expect this to be removed in a future release. It answers exactly as before,
+   * so nothing needs to change today.
+   *
    * **Call this first.** It returns what a channel, country and sender type demand
    * before you can send there — and `setup[]`, the calls that satisfy those demands,
    * in order, each with a body you can copy and send as it stands. You never have to
@@ -83,6 +87,8 @@ export class Compliance extends APIResource {
    * `required` is `false` and `requirements` is empty, and the single `setup` step
    * carries no `compliance` array at all. A `sender_id_pattern` may still be present
    * — many markets constrain the sender string without registering anything.
+   *
+   * @deprecated
    */
   retrieveRequirements(
     params: ComplianceRetrieveRequirementsParams | null | undefined = {},
@@ -179,6 +185,17 @@ export interface ComplianceRequirement {
    * Most entries this value accepts, where the market caps it.
    */
   max_items?: number | null;
+
+  /**
+   * Longest acceptable value, where the market caps it. On a list of strings, each
+   * item's.
+   */
+  max_length?: number | null;
+
+  /**
+   * Fewest entries this value accepts, where the market sets a minimum.
+   */
+  min_items?: number | null;
 
   /**
    * Shortest acceptable value, where the market sets one. TCR refuses a consent

@@ -176,6 +176,8 @@ import {
   APIResponseOfWebhookTest,
   APIResponseOfWebhooksList,
   APIResponseWebhook,
+  AgentEvent,
+  AgentEventPayload,
   CallEvent,
   CallEventPayload,
   ChannelEvent,
@@ -1171,6 +1173,8 @@ export declare namespace Sent {
 
   export {
     Webhooks as Webhooks,
+    type AgentEvent as AgentEvent,
+    type AgentEventPayload as AgentEventPayload,
     type APIMeta as APIMeta,
     type APIResponseOfWebhookEventTypesList as APIResponseOfWebhookEventTypesList,
     type APIResponseOfWebhookEventsList as APIResponseOfWebhookEventsList,

@@ -2,6 +2,8 @@
 
 Types:
 
+- <code><a href="./src/resources/webhooks.ts">AgentEvent</a></code>
+- <code><a href="./src/resources/webhooks.ts">AgentEventPayload</a></code>
 - <code><a href="./src/resources/webhooks.ts">APIMeta</a></code>
 - <code><a href="./src/resources/webhooks.ts">APIResponseOfWebhookEventTypesList</a></code>
 - <code><a href="./src/resources/webhooks.ts">APIResponseOfWebhookEventsList</a></code>

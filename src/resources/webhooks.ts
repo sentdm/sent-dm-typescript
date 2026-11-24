@@ -336,6 +336,120 @@ export type WebhookResponsesWebhooksPage = WebhooksPage<WebhookResponse>;
 export type WebhookDeliveriesWebhookEventsPage = WebhookEventsPage<WebhookDelivery>;
 
 /**
+ * The envelope Sent POSTs to a subscribed webhook endpoint. Every event shares
+ * this shape and varies only in Payload.
+ */
+export interface AgentEvent {
+  /**
+   * The specific event within the family, for example message.delivered,
+   * message.received or contact.opt_out. Absent on events that have no subtype, so
+   * treat it as optional.
+   */
+  event?: string | null;
+
+  /**
+   * The event family, for example message, templates or contact. Route on this
+   * first, then on event for the specific change.
+   */
+  field?: string;
+
+  /**
+   * Body of an agent.\* webhook (Sent Agents). The event is the agent service's own
+   * record, forwarded without renaming: EventId is its id, so a subscriber can
+   * dedupe a redelivery.
+   */
+  payload?: AgentEventPayload | null;
+
+  /**
+   * The event-specific body.
+   */
+  request_id?: string | null;
+
+  /**
+   * When Sent emitted the event, in UTC (yyyy-MM-ddTHH:mm:ssZ). This is the emission
+   * time, not the time the underlying change happened. Use the timestamp inside the
+   * payload for the latter.
+   */
+  timestamp?: string;
+}
+
+/**
+ * Body of an agent.\* webhook (Sent Agents). The event is the agent service's own
+ * record, forwarded without renaming: EventId is its id, so a subscriber can
+ * dedupe a redelivery.
+ */
+export interface AgentEventPayload {
+  /**
+   * The agent service's event id. The same event is never delivered under two ids.
+   */
+  event_id: string;
+
+  /**
+   * When the agent service recorded it, UTC, to the millisecond.
+   */
+  occurred_at: string;
+
+  /**
+   * The sender profile the agent runs on.
+   */
+  account_id?: string;
+
+  /**
+   * Who caused it: system, the agent service's customer, or an approver.
+   */
+  actor?: string | null;
+
+  /**
+   * The agent.
+   */
+  agent_id?: string;
+
+  /**
+   * The agent's name, as it is listed. Absent for an agent services no longer holds.
+   */
+  agent_name?: string | null;
+
+  /**
+   * The version of the agent the event is of: the one its conversation runs, or the
+   * active one for an event of the agent itself. Absent when the agent service does
+   * not say it.
+   */
+  agent_version?: number | null;
+
+  /**
+   * The contact of that conversation; absent on agent-level events.
+   */
+  contact_id?: string | null;
+
+  /**
+   * The contact's phone number, in E.164, so a receiver knows who the event is about
+   * without asking for the contact. Read from the account's contacts as the webhook
+   * is built: the agent service's own record names a contact by id only. Absent on
+   * agent-level events, and for a contact the account no longer holds.
+   */
+  contact_phone_number?: string | null;
+
+  /**
+   * The event's own fields (outcome, reason, ...), exactly as the agent service
+   * recorded them.
+   */
+  data?: unknown;
+
+  /**
+   * The conversation (agent × contact) the event belongs to; absent on agent-level
+   * events.
+   */
+  instance_id?: string | null;
+
+  /**
+   * Where the event stands among the agent's events: a number that grows with each,
+   * so two events of the same second are put in order by it. Not a count: there are
+   * gaps between an agent's own. Absent from an agent service that does not say it.
+   */
+  sequence?: number | null;
+}
+
+/**
  * Request and response metadata
  */
 export interface APIMeta {
@@ -1761,7 +1875,7 @@ export interface WebhookDelivery {
     | ContactEvent
     | LinkEvent
     | CallEvent
-    | WebhookDelivery.SentDmServicesCommonServicesWebhooksContractsWebhookEventOfAgentWebhookPayload;
+    | AgentEvent;
 
   event_type?: string;
 
@@ -1772,124 +1886,6 @@ export interface WebhookDelivery {
   processing_started_at?: string | null;
 
   response_body?: string | null;
-}
-
-export namespace WebhookDelivery {
-  /**
-   * The envelope Sent POSTs to a subscribed webhook endpoint. Every event shares
-   * this shape and varies only in Payload.
-   */
-  export interface SentDmServicesCommonServicesWebhooksContractsWebhookEventOfAgentWebhookPayload {
-    /**
-     * The specific event within the family, for example message.delivered,
-     * message.received or contact.opt_out. Absent on events that have no subtype, so
-     * treat it as optional.
-     */
-    event?: string | null;
-
-    /**
-     * The event family, for example message, templates or contact. Route on this
-     * first, then on event for the specific change.
-     */
-    field?: string;
-
-    /**
-     * Body of an agent.\* webhook (Sent Agents). The event is the agent service's own
-     * record, forwarded without renaming: EventId is its id, so a subscriber can
-     * dedupe a redelivery.
-     */
-    payload?: SentDmServicesCommonServicesWebhooksContractsWebhookEventOfAgentWebhookPayload.Payload | null;
-
-    /**
-     * The event-specific body.
-     */
-    request_id?: string | null;
-
-    /**
-     * When Sent emitted the event, in UTC (yyyy-MM-ddTHH:mm:ssZ). This is the emission
-     * time, not the time the underlying change happened. Use the timestamp inside the
-     * payload for the latter.
-     */
-    timestamp?: string;
-  }
-
-  export namespace SentDmServicesCommonServicesWebhooksContractsWebhookEventOfAgentWebhookPayload {
-    /**
-     * Body of an agent.\* webhook (Sent Agents). The event is the agent service's own
-     * record, forwarded without renaming: EventId is its id, so a subscriber can
-     * dedupe a redelivery.
-     */
-    export interface Payload {
-      /**
-       * The agent service's event id. The same event is never delivered under two ids.
-       */
-      event_id: string;
-
-      /**
-       * When the agent service recorded it, UTC, to the millisecond.
-       */
-      occurred_at: string;
-
-      /**
-       * The sender profile the agent runs on.
-       */
-      account_id?: string;
-
-      /**
-       * Who caused it: system, the agent service's customer, or an approver.
-       */
-      actor?: string | null;
-
-      /**
-       * The agent.
-       */
-      agent_id?: string;
-
-      /**
-       * The agent's name, as it is listed. Absent for an agent services no longer holds.
-       */
-      agent_name?: string | null;
-
-      /**
-       * The version of the agent the event is of: the one its conversation runs, or the
-       * active one for an event of the agent itself. Absent when the agent service does
-       * not say it.
-       */
-      agent_version?: number | null;
-
-      /**
-       * The contact of that conversation; absent on agent-level events.
-       */
-      contact_id?: string | null;
-
-      /**
-       * The contact's phone number, in E.164, so a receiver knows who the event is about
-       * without asking for the contact. Read from the account's contacts as the webhook
-       * is built: the agent service's own record names a contact by id only. Absent on
-       * agent-level events, and for a contact the account no longer holds.
-       */
-      contact_phone_number?: string | null;
-
-      /**
-       * The event's own fields (outcome, reason, ...), exactly as the agent service
-       * recorded them.
-       */
-      data?: unknown;
-
-      /**
-       * The conversation (agent × contact) the event belongs to; absent on agent-level
-       * events.
-       */
-      instance_id?: string | null;
-
-      /**
-       * Where the event stands among the agent's events: a number that grows with each,
-       * so two events of the same second are put in order by it. Not a count: there are
-       * gaps between an agent's own. Absent from an agent service that does not say it.
-       */
-      sequence?: number | null;
-    }
-  }
 }
 
 export interface WebhookEventType {
@@ -2351,6 +2347,8 @@ export interface WebhookToggleStatusParams {
 
 export declare namespace Webhooks {
   export {
+    type AgentEvent as AgentEvent,
+    type AgentEventPayload as AgentEventPayload,
     type APIMeta as APIMeta,
     type APIResponseOfWebhookEventTypesList as APIResponseOfWebhookEventTypesList,
     type APIResponseOfWebhookEventsList as APIResponseOfWebhookEventsList,

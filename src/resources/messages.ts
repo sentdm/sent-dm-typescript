@@ -16,7 +16,7 @@ import { path } from '../internal/utils/path';
  *
  * **A message needs a sender.** What you can send, where, and at what cost is decided by the markets under **Channels** — so a recipient in a country you hold no sender for is refused here rather than queued.
  *
- * **A message can be resent on its id.** `POST /v3/messages/{id}/resend` puts a finished message — typically one BLOCKED for insufficient balance — back through the send pipeline. It is a new attempt, not a free retry: every policy runs again, the message is billed again, and its status webhooks fire again. A FILTERED message is never resendable.
+ * **A message can be resent.** `POST /v3/messages/{id}/resend` sends a finished message — typically one BLOCKED for insufficient balance — again, as a new message with its own id. It is a new send, not a free retry: every policy runs again, the new message is billed, and its status webhooks fire for its own id. A FILTERED message is never resendable.
  *
  * **A scheduled message can be called off.** `POST /v3/messages/{id}/cancel` cancels a send you scheduled with `scheduled_at`, as long as it has not been released yet. Cancelling is free, fires `message.cancelled`, and is final — a cancelled message cannot be resent.
  */
@@ -84,27 +84,31 @@ export class Messages extends APIResource {
   }
 
   /**
-   * Resends a message you already sent, on the same message id, without rebuilding
-   * the request. The typical use is recovering a BLOCKED message — for example one
+   * Resends a message you already sent, as a new message, without rebuilding the
+   * request. The typical use is recovering a BLOCKED message — for example one
    * refused for insufficient balance — after the account has been topped up.
    *
-   * **A resend bills again.** Each accepted resend is a new delivery attempt and
-   * records a new charge against the same message id; a client that resends on every
-   * failure is charged on every loop.
+   * **A resend is a new message.** It gets its own message id, returned in
+   * `recipients[0].message_id`, with its own status, delivery attempts and charge.
+   * The message you resent is left exactly as it was. Each accepted resend is
+   * billed; a client that resends on every failure is charged on every loop.
    *
    * **Every policy runs again.** The resend goes back through the full send pipeline
    * — consent, balance, KYC and channel quota, template approval, quiet hours and
    * channel health — so it can land on BLOCKED, FILTERED or SCHEDULED again rather
-   * than being sent, exactly as a fresh send would. Status webhooks (message.sent,
-   * message.blocked, message.filtered, message.failed) fire again for the same
-   * message id, so consumers keyed on the id will see repeated transitions.
+   * than being sent, exactly as a fresh send would. Status webhooks (message.queued,
+   * message.sent, message.delivered, message.blocked, message.filtered,
+   * message.failed) fire for the new message id.
    *
    * **What can be resent.** A message in a terminal state — DELIVERED, FAILED, READ
    * or BLOCKED — or one stuck at SENT for more than 15 minutes. A FILTERED message
    * can never be resent: the recipient opted out or a routing rule refused the send.
    * A message still in flight (QUEUED, PROCESSED, ROUTED), held for quiet hours
-   * (SCHEDULED), or SENT less than 15 minutes ago returns 409. Two concurrent
-   * resends of one id are serialised: one is accepted, the other gets 409.
+   * (SCHEDULED), or SENT less than 15 minutes ago returns 409. A message can be
+   * resent more than once, one resend at a time: while an earlier resend of it is
+   * still in flight, a new resend returns 409, so a double click or a retried
+   * request does not send it twice. Each accepted resend is another new message. A
+   * resend can itself be resent; the new message's parent is still the original.
    *
    * The resend keeps the channel the message was originally requested on; the
    * channel cannot be changed on a resend — send a new message instead.
@@ -112,7 +116,7 @@ export class Messages extends APIResource {
    * response instead of resending twice.
    *
    * The response has the same shape as `POST /v3/messages`: `recipients` has a
-   * single entry whose `message_id` is the id you resent.
+   * single entry whose `message_id` is the new message's id.
    *
    * @example
    * ```ts
@@ -399,6 +403,13 @@ export interface Message {
    * silently dropped on whichever path forgot it.
    */
   message_body?: MessageBody | null;
+
+  /**
+   * When this message is another send of a message you sent earlier, the id of that
+   * original message; null for every other message. Always the first message,
+   * however many sends lie between them.
+   */
+  parent_message_id?: string | null;
 
   phone?: string;
 
@@ -926,8 +937,8 @@ export interface MessageSendParams {
   subject?: string | null;
 
   /**
-   * Body param: SDK-style template reference: resolve by ID or by name, with
-   * optional parameters.
+   * Body param: SDK-style template reference: resolve by id, by slug or by name
+   * (exactly one), with optional parameters.
    */
   template?: TemplatesAPI.TemplateRef | null;
 

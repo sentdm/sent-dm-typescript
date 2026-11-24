@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.55.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.54.0...v0.55.0) (2026-11-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* **api:** markets move to channels.markets and 10DLC numbers to markets.add_numbers
+
+### Features
+
+* **api:** markets move to channels.markets and 10DLC numbers to markets.add_numbers ([e2df9ea](https://github.com/sentdm/sent-dm-typescript/commit/e2df9ea87f0244f7be4e1d215395501e4b86f9e2))
+
 ## [0.54.0](https://github.com/sentdm/sent-dm-typescript/compare/v0.53.0...v0.54.0) (2026-11-12)
 
 

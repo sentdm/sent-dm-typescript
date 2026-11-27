@@ -217,6 +217,17 @@ export class SenderProfiles extends APIResource {
    * needs. A carrier approval no API call can trigger is arranged offline, so the
    * status reports `PROVISIONING` until it is.
    *
+   * ## An agent
+   *
+   * `agent_template_id` (optional) names one of your organization's agent templates
+   * (`GET /v3/agents/templates`). As soon as the profile exists, a draft agent is
+   * made from it on the profile, and the answer's `agent_id` is that agent: give it
+   * the profile's numbers and activate it through `/v3/agents` with the profile's
+   * `x-profile-id`. The template is checked before the profile is made: one that is
+   * not your organization's is a `404`, agents not enabled a `403`, and no profile
+   * is made. Should the agent fail once the profile exists, the profile stands and
+   * `agent_error` says why; make the agent with `POST /v3/agents` and `template_id`.
+   *
    * ## Responses
    *
    * `201` when the profile is complete on return — the fully-inherited case, where
@@ -495,6 +506,19 @@ export interface APIResponseOfSenderProfilesList {
  */
 export interface SenderProfile {
   id?: string;
+
+  /**
+   * Why no agent was made from agent_template_id, when the profile was created and
+   * the agent could not be: the profile stands, and the agent can be made with POST
+   * /v3/agents and template_id.
+   */
+  agent_error?: string | null;
+
+  /**
+   * The draft agent made from agent_template_id when the profile was created. Only
+   * on that answer, and left out when none was asked for.
+   */
+  agent_id?: string | null;
 
   /**
    * The API key for this profile.
@@ -892,6 +916,16 @@ export interface SenderProfilesList {
 }
 
 export interface SenderProfileCreateParams {
+  /**
+   * Body param: One of the organization's agent templates (GET /v3/agents/templates
+   * with the organization's key) to make an agent from on the new profile as soon as
+   * it exists. The agent is a draft with the template's definition; give it the
+   * profile's numbers and activate it through /v3/agents with the profile's
+   * x-profile-id. Agents must be enabled for the organization. A sender profile's
+   * own template cannot be used: it is that profile's alone.
+   */
+  agent_template_id?: string | null;
+
   /**
    * Body param: Who pays for what a sender profile sends.
    *

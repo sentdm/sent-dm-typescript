@@ -7,6 +7,21 @@ export {
   type MmsMarket,
   type ChannelListParams,
 } from './channels';
+export {
+  Markets,
+  type APIResponseOfChannelMarket,
+  type APIResponseOfListOfChannelMarket,
+  type APIResponseOfMarketNumbers,
+  type ChannelMarket,
+  type MarketNumber,
+  type MarketNumbers,
+  type MarketRetrieveParams,
+  type MarketUpdateParams,
+  type MarketListParams,
+  type MarketAddNumbersParams,
+  type MarketListNumbersParams,
+  type MarketReplaceNumbersParams,
+} from './markets';
 export { Rcs, type APIResponseOfRcsAgent, type RcsAddress, type RcsAgent, type RcCreateParams } from './rcs';
 export {
   SMS,
@@ -16,7 +31,6 @@ export {
   type SuppliedCampaign,
   type SuppliedCompliance,
   type SuppliedDocument,
-  type SMSCreateResponse,
   type SMSCreateParams,
 } from './sms/index';
 export {

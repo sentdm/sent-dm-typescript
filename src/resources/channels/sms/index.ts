@@ -8,7 +8,13 @@ export {
   type SuppliedCampaign,
   type SuppliedCompliance,
   type SuppliedDocument,
-  type SMSCreateResponse,
   type SMSCreateParams,
 } from './sms';
-export { TenDlc, type TenDlcCampaignUseCase } from './ten-dlc';
+export {
+  TenDlc,
+  type TenDlcCampaignUseCase,
+  type TenDlcListCampaignsResponse,
+  type TenDlcAddCampaignParams,
+  type TenDlcListCampaignsParams,
+  type TenDlcUpdateCampaignParams,
+} from './ten-dlc';

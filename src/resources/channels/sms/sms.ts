@@ -1,10 +1,16 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../../../core/resource';
-import * as SMSAPI from './sms';
-import * as WebhooksAPI from '../../webhooks';
+import * as MarketsAPI from '../markets';
 import * as TenDlcAPI from './ten-dlc';
-import { TenDlc, TenDlcCampaignUseCase } from './ten-dlc';
+import {
+  TenDlc,
+  TenDlcAddCampaignParams,
+  TenDlcCampaignUseCase,
+  TenDlcListCampaignsParams,
+  TenDlcListCampaignsResponse,
+  TenDlcUpdateCampaignParams,
+} from './ten-dlc';
 import { APIPromise } from '../../../core/api-promise';
 import { buildHeaders } from '../../../internal/headers';
 import { RequestOptions } from '../../../internal/request-options';
@@ -130,12 +136,16 @@ export class SMS extends APIResource {
    *
    * @example
    * ```ts
-   * const sms = await client.channels.sms.create({
-   *   number_type: 'TEN_DLC',
-   * });
+   * const apiResponseOfChannelMarket =
+   *   await client.channels.sms.create({
+   *     number_type: 'TEN_DLC',
+   *   });
    * ```
    */
-  create(params: SMSCreateParams, options?: RequestOptions): APIPromise<SMSCreateResponse> {
+  create(
+    params: SMSCreateParams,
+    options?: RequestOptions,
+  ): APIPromise<MarketsAPI.APIResponseOfChannelMarket> {
     const { 'Idempotency-Key': idempotencyKey, 'x-profile-id': xProfileID, ...body } = params;
     return this._client.post('/v3/channels/sms', {
       body,
@@ -581,140 +591,6 @@ export interface SuppliedDocument {
   key?: string;
 }
 
-/**
- * Standard API response envelope for all v3 endpoints
- */
-export interface SMSCreateResponse {
-  /**
-   * One market the profile sends in on a channel — its sender, where that sender
-   * stands, and what the market wants. Named for no one channel, as the routes it
-   * answers are not (/v3/channels/{channel}/{country}/{type}); SMS is the channel
-   * with markets today.
-   *
-   * A profile may send in several: it is a tenant, not a market. Each carries its
-   * own status, because a profile can be live in one country and mid-registration in
-   * another — and each carries what it still owes, rather than that being reported
-   * in a separate array a caller has to join on.
-   */
-  data?: SMSCreateResponse.Data | null;
-
-  /**
-   * Error information
-   */
-  error?: WebhooksAPI.ErrorDetail | null;
-
-  /**
-   * Request and response metadata
-   */
-  meta?: WebhooksAPI.APIMeta;
-
-  /**
-   * Indicates whether the request was successful
-   */
-  success?: boolean;
-}
-
-export namespace SMSCreateResponse {
-  /**
-   * One market the profile sends in on a channel — its sender, where that sender
-   * stands, and what the market wants. Named for no one channel, as the routes it
-   * answers are not (/v3/channels/{channel}/{country}/{type}); SMS is the channel
-   * with markets today.
-   *
-   * A profile may send in several: it is a tenant, not a market. Each carries its
-   * own status, because a profile can be live in one country and mid-registration in
-   * another — and each carries what it still owes, rather than that being reported
-   * in a separate array a caller has to join on.
-   */
-  export interface Data {
-    /**
-     * What a market has been given: the identity it registers under, its programme,
-     * and any documents attached.
-     *
-     * What it does not carry is what the market asks for. That is the subject of GET
-     * /v3/compliance/requirements, and it is the same answer for every caller — a
-     * description of what a compliance regime wants, not a record of one customer's
-     * progress through it. It was reported here as well for a while, which put the
-     * same array in six response shapes and left a caller deciding which of two
-     * sources to believe.
-     *
-     * Present on a list read for markets that register (carrying brand and campaign),
-     * but with documents absent — documents are not fetched for a list, because a
-     * catalog lookup and a document read per market would multiply across a page.
-     * Absent documents is distinct from an empty list: absent says they were not
-     * fetched; empty says the market has been given none. The parent object is null
-     * only when the market registers with nobody and compliance was not computed —
-     * nothing to show at all.
-     */
-    compliance?: SMSAPI.SuppliedCompliance | null;
-
-    country?: string | null;
-
-    number_type?: string | null;
-
-    /**
-     * Every number this market holds or is still owed, each with its area code and its
-     * own status (ACTIVE once it can send, PROVISIONING while it is still to be
-     * assigned, INACTIVE once it could send and no longer can). One entry for a market
-     * holding one number. US 10DLC numbers are assigned when the campaign is approved,
-     * so they read as owed until then. Read-only.
-     */
-    numbers?: Array<SMSAPI.SMSNumber>;
-
-    /**
-     * A sentence for reason_code: this market's own explanation, naming what is
-     * outstanding where that is you. Omitted while ACTIVE.
-     */
-    reason?: string | null;
-
-    /**
-     * Why the market is not ACTIVE, as a stable code: an ErrorCodes CHANNEL_xxx value
-     * such as CHANNEL_001 (something you owe) or CHANNEL_009 (under review). Switch on
-     * this rather than on reason. Omitted while ACTIVE. Read-only; when nothing more
-     * specific is known it is the generic reason for the status.
-     */
-    reason_code?: string | null;
-
-    /**
-     * Where this market's sender stands, in terms of who is holding it up —
-     * PROVISIONING, ACTION_NEEDED, PENDING_REVIEW or ACTIVE. Read-only.
-     *
-     * Resolved rather than reported raw: a live sender reads ACTIVE whatever it still
-     * owes, a market with outstanding requirements or an open resubmission request
-     * reads ACTION_NEEDED, and a market that registers with a regime reads
-     * PENDING_REVIEW once its brand exists — filing to The Campaign Registry is ours
-     * to do and need not have happened yet, so a dedicated brand created through this
-     * API reads PENDING_REVIEW from the moment it is stored.
-     *
-     * Describes whether the market can send, not each number: a market holding several
-     * numbers reads ACTIVE as soon as one of them is, whatever the others are doing.
-     * Each number's own status is in numbers.
-     *
-     * - `PROVISIONING` - We are working on it and there is nothing for you to do — a
-     *   number is being procured, or a registration is being assembled. Minutes to
-     *   hours.
-     * - `ACTION_NEEDED` - **Waiting on you.** Something the market asks for has not
-     *   been supplied, a regulator rejected what was, or we have asked you to correct
-     *   and resubmit your identity data. Nothing progresses until you act. For an SMS
-     *   market, `GET /v3/channels/sms/{country}/{type}` names what it wants and
-     *   `PATCH` on the same path supplies it — compliance values, documents and
-     *   numbers alike.
-     * - `PENDING_REVIEW` - With a regulator or carrier — filed, or assembled and
-     *   queued for us to file — and their answer is what moves it, to `ACTIVE` or back
-     *   to `ACTION_NEEDED`. Nothing on your side changes it. Days for SMS, weeks for
-     *   RCS.
-     * - `ACTIVE` - Can carry traffic now. A channel a sender profile runs on its
-     *   organization's reads `ACTIVE` too — it sends, which is what the field is
-     *   about.
-     * - `INACTIVE` - **It had a working sender and no longer does** — the number was
-     *   released, or the campaign it carried lapsed. Distinct from `PROVISIONING`,
-     *   which means it has never sent yet: the same absence of a sender, opposite
-     *   news. Sends will fail until it returns to `ACTIVE`.
-     */
-    status?: 'PROVISIONING' | 'ACTION_NEEDED' | 'PENDING_REVIEW' | 'ACTIVE' | 'INACTIVE' | null;
-  }
-}
-
 export interface SMSCreateParams {
   /**
    * Body param: Sender type. Decides the provisioning flow and what compliance is
@@ -834,9 +710,15 @@ export declare namespace SMS {
     type SuppliedCampaign as SuppliedCampaign,
     type SuppliedCompliance as SuppliedCompliance,
     type SuppliedDocument as SuppliedDocument,
-    type SMSCreateResponse as SMSCreateResponse,
     type SMSCreateParams as SMSCreateParams,
   };
 
-  export { TenDlc as TenDlc, type TenDlcCampaignUseCase as TenDlcCampaignUseCase };
+  export {
+    TenDlc as TenDlc,
+    type TenDlcCampaignUseCase as TenDlcCampaignUseCase,
+    type TenDlcListCampaignsResponse as TenDlcListCampaignsResponse,
+    type TenDlcAddCampaignParams as TenDlcAddCampaignParams,
+    type TenDlcListCampaignsParams as TenDlcListCampaignsParams,
+    type TenDlcUpdateCampaignParams as TenDlcUpdateCampaignParams,
+  };
 }

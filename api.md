@@ -2,6 +2,8 @@
 
 Types:
 
+- <code><a href="./src/resources/webhooks.ts">AgentEvent</a></code>
+- <code><a href="./src/resources/webhooks.ts">AgentEventPayload</a></code>
 - <code><a href="./src/resources/webhooks.ts">APIMeta</a></code>
 - <code><a href="./src/resources/webhooks.ts">APIResponseOfWebhookEventTypesList</a></code>
 - <code><a href="./src/resources/webhooks.ts">APIResponseOfWebhookEventsList</a></code>
@@ -361,6 +363,26 @@ Methods:
 
 - <code title="get /v3/channels">client.channels.<a href="./src/resources/channels/channels.ts">list</a>({ ...params }) -> APIResponseOfChannelsState</code>
 
+## Markets
+
+Types:
+
+- <code><a href="./src/resources/channels/markets.ts">APIResponseOfChannelMarket</a></code>
+- <code><a href="./src/resources/channels/markets.ts">APIResponseOfListOfChannelMarket</a></code>
+- <code><a href="./src/resources/channels/markets.ts">APIResponseOfMarketNumbers</a></code>
+- <code><a href="./src/resources/channels/markets.ts">ChannelMarket</a></code>
+- <code><a href="./src/resources/channels/markets.ts">MarketNumber</a></code>
+- <code><a href="./src/resources/channels/markets.ts">MarketNumbers</a></code>
+
+Methods:
+
+- <code title="get /v3/channels/{channel}/{country}/{type}">client.channels.markets.<a href="./src/resources/channels/markets.ts">retrieve</a>(type, { ...params }) -> APIResponseOfChannelMarket</code>
+- <code title="patch /v3/channels/{channel}/{country}/{type}">client.channels.markets.<a href="./src/resources/channels/markets.ts">update</a>(type, { ...params }) -> APIResponseOfChannelMarket</code>
+- <code title="get /v3/channels/{channel}">client.channels.markets.<a href="./src/resources/channels/markets.ts">list</a>(channel, { ...params }) -> APIResponseOfListOfChannelMarket</code>
+- <code title="post /v3/channels/{channel}/{country}/{type}/numbers">client.channels.markets.<a href="./src/resources/channels/markets.ts">addNumbers</a>(type, { ...params }) -> APIResponseOfChannelMarket</code>
+- <code title="get /v3/channels/{channel}/{country}/{type}/numbers">client.channels.markets.<a href="./src/resources/channels/markets.ts">listNumbers</a>(type, { ...params }) -> APIResponseOfMarketNumbers</code>
+- <code title="patch /v3/channels/{channel}/{country}/{type}/numbers">client.channels.markets.<a href="./src/resources/channels/markets.ts">replaceNumbers</a>(type, { ...params }) -> APIResponseOfChannelMarket</code>
+
 ## SMS
 
 Types:
@@ -371,17 +393,23 @@ Types:
 - <code><a href="./src/resources/channels/sms/sms.ts">SuppliedCampaign</a></code>
 - <code><a href="./src/resources/channels/sms/sms.ts">SuppliedCompliance</a></code>
 - <code><a href="./src/resources/channels/sms/sms.ts">SuppliedDocument</a></code>
-- <code><a href="./src/resources/channels/sms/sms.ts">SMSCreateResponse</a></code>
 
 Methods:
 
-- <code title="post /v3/channels/sms">client.channels.sms.<a href="./src/resources/channels/sms/sms.ts">create</a>({ ...params }) -> SMSCreateResponse</code>
+- <code title="post /v3/channels/sms">client.channels.sms.<a href="./src/resources/channels/sms/sms.ts">create</a>({ ...params }) -> APIResponseOfChannelMarket</code>
 
 ### TenDlc
 
 Types:
 
 - <code><a href="./src/resources/channels/sms/ten-dlc.ts">TenDlcCampaignUseCase</a></code>
+- <code><a href="./src/resources/channels/sms/ten-dlc.ts">TenDlcListCampaignsResponse</a></code>
+
+Methods:
+
+- <code title="post /v3/channels/sms/US/TEN_DLC/campaigns">client.channels.sms.tenDlc.<a href="./src/resources/channels/sms/ten-dlc.ts">addCampaign</a>({ ...params }) -> APIResponseOfChannelMarket</code>
+- <code title="get /v3/channels/sms/US/TEN_DLC/campaigns">client.channels.sms.tenDlc.<a href="./src/resources/channels/sms/ten-dlc.ts">listCampaigns</a>({ ...params }) -> TenDlcListCampaignsResponse</code>
+- <code title="patch /v3/channels/sms/US/TEN_DLC/campaigns/{campaignId}">client.channels.sms.tenDlc.<a href="./src/resources/channels/sms/ten-dlc.ts">updateCampaign</a>(campaignID, { ...params }) -> APIResponseOfChannelMarket</code>
 
 ## Rcs
 

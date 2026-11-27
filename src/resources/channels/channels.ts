@@ -2,6 +2,22 @@
 
 import { APIResource } from '../../core/resource';
 import * as WebhooksAPI from '../webhooks';
+import * as MarketsAPI from './markets';
+import {
+  APIResponseOfChannelMarket,
+  APIResponseOfListOfChannelMarket,
+  APIResponseOfMarketNumbers,
+  ChannelMarket,
+  MarketAddNumbersParams,
+  MarketListNumbersParams,
+  MarketListParams,
+  MarketNumber,
+  MarketNumbers,
+  MarketReplaceNumbersParams,
+  MarketRetrieveParams,
+  MarketUpdateParams,
+  Markets,
+} from './markets';
 import * as RcsAPI from './rcs';
 import { APIResponseOfRcsAgent, RcCreateParams, Rcs, RcsAddress, RcsAgent } from './rcs';
 import * as VoiceAPI from './voice';
@@ -31,9 +47,8 @@ import { APIResponseOfWhatsappChannel, Whatsapp, WhatsappChannel, WhatsappCreate
 import * as SMSAPI from './sms/sms';
 import {
   MarketCompliance,
-  SMS as SmsapiSMS,
+  SMS,
   SMSCreateParams,
-  SMSCreateResponse,
   SMSNumber,
   SMSNumberRequest,
   SuppliedCampaign,
@@ -58,6 +73,7 @@ import { RequestOptions } from '../../internal/request-options';
  * Call `GET /v3/compliance/requirements` first — it answers what a market demands before you hold it, with a body you can fill in and post.
  */
 export class Channels extends APIResource {
+  markets: MarketsAPI.Markets = new MarketsAPI.Markets(this._client);
   sms: SMSAPI.SMS = new SMSAPI.SMS(this._client);
   rcs: RcsAPI.Rcs = new RcsAPI.Rcs(this._client);
   whatsapp: WhatsappAPI.Whatsapp = new WhatsappAPI.Whatsapp(this._client);
@@ -176,7 +192,7 @@ export interface ChannelsState {
    */
   rcs?: RcsAPI.RcsAgent | null;
 
-  sms?: Array<ChannelsState.SMS>;
+  sms?: Array<MarketsAPI.ChannelMarket>;
 
   /**
    * The numbers this profile carries phone calls on, one entry per number, or empty
@@ -190,107 +206,6 @@ export interface ChannelsState {
    * The profile's WhatsApp account. Its status is Meta's verification state.
    */
   whatsapp?: WhatsappAPI.WhatsappChannel | null;
-}
-
-export namespace ChannelsState {
-  /**
-   * One market the profile sends in on a channel — its sender, where that sender
-   * stands, and what the market wants. Named for no one channel, as the routes it
-   * answers are not (/v3/channels/{channel}/{country}/{type}); SMS is the channel
-   * with markets today.
-   *
-   * A profile may send in several: it is a tenant, not a market. Each carries its
-   * own status, because a profile can be live in one country and mid-registration in
-   * another — and each carries what it still owes, rather than that being reported
-   * in a separate array a caller has to join on.
-   */
-  export interface SMS {
-    /**
-     * What a market has been given: the identity it registers under, its programme,
-     * and any documents attached.
-     *
-     * What it does not carry is what the market asks for. That is the subject of GET
-     * /v3/compliance/requirements, and it is the same answer for every caller — a
-     * description of what a compliance regime wants, not a record of one customer's
-     * progress through it. It was reported here as well for a while, which put the
-     * same array in six response shapes and left a caller deciding which of two
-     * sources to believe.
-     *
-     * Present on a list read for markets that register (carrying brand and campaign),
-     * but with documents absent — documents are not fetched for a list, because a
-     * catalog lookup and a document read per market would multiply across a page.
-     * Absent documents is distinct from an empty list: absent says they were not
-     * fetched; empty says the market has been given none. The parent object is null
-     * only when the market registers with nobody and compliance was not computed —
-     * nothing to show at all.
-     */
-    compliance?: SMSAPI.SuppliedCompliance | null;
-
-    country?: string | null;
-
-    number_type?: string | null;
-
-    /**
-     * Every number this market holds or is still owed, each with its area code and its
-     * own status (ACTIVE once it can send, PROVISIONING while it is still to be
-     * assigned, INACTIVE once it could send and no longer can). One entry for a market
-     * holding one number. US 10DLC numbers are assigned when the campaign is approved,
-     * so they read as owed until then. Read-only.
-     */
-    numbers?: Array<SMSAPI.SMSNumber>;
-
-    /**
-     * A sentence for reason_code: this market's own explanation, naming what is
-     * outstanding where that is you. Omitted while ACTIVE.
-     */
-    reason?: string | null;
-
-    /**
-     * Why the market is not ACTIVE, as a stable code: an ErrorCodes CHANNEL_xxx value
-     * such as CHANNEL_001 (something you owe) or CHANNEL_009 (under review). Switch on
-     * this rather than on reason. Omitted while ACTIVE. Read-only; when nothing more
-     * specific is known it is the generic reason for the status.
-     */
-    reason_code?: string | null;
-
-    /**
-     * Where this market's sender stands, in terms of who is holding it up —
-     * PROVISIONING, ACTION_NEEDED, PENDING_REVIEW or ACTIVE. Read-only.
-     *
-     * Resolved rather than reported raw: a live sender reads ACTIVE whatever it still
-     * owes, a market with outstanding requirements or an open resubmission request
-     * reads ACTION_NEEDED, and a market that registers with a regime reads
-     * PENDING_REVIEW once its brand exists — filing to The Campaign Registry is ours
-     * to do and need not have happened yet, so a dedicated brand created through this
-     * API reads PENDING_REVIEW from the moment it is stored.
-     *
-     * Describes whether the market can send, not each number: a market holding several
-     * numbers reads ACTIVE as soon as one of them is, whatever the others are doing.
-     * Each number's own status is in numbers.
-     *
-     * - `PROVISIONING` - We are working on it and there is nothing for you to do — a
-     *   number is being procured, or a registration is being assembled. Minutes to
-     *   hours.
-     * - `ACTION_NEEDED` - **Waiting on you.** Something the market asks for has not
-     *   been supplied, a regulator rejected what was, or we have asked you to correct
-     *   and resubmit your identity data. Nothing progresses until you act. For an SMS
-     *   market, `GET /v3/channels/sms/{country}/{type}` names what it wants and
-     *   `PATCH` on the same path supplies it — compliance values, documents and
-     *   numbers alike.
-     * - `PENDING_REVIEW` - With a regulator or carrier — filed, or assembled and
-     *   queued for us to file — and their answer is what moves it, to `ACTIVE` or back
-     *   to `ACTION_NEEDED`. Nothing on your side changes it. Days for SMS, weeks for
-     *   RCS.
-     * - `ACTIVE` - Can carry traffic now. A channel a sender profile runs on its
-     *   organization's reads `ACTIVE` too — it sends, which is what the field is
-     *   about.
-     * - `INACTIVE` - **It had a working sender and no longer does** — the number was
-     *   released, or the campaign it carried lapsed. Distinct from `PROVISIONING`,
-     *   which means it has never sent yet: the same absence of a sender, opposite
-     *   news. Sends will fail until it returns to `ACTIVE`.
-     */
-    status?: 'PROVISIONING' | 'ACTION_NEEDED' | 'PENDING_REVIEW' | 'ACTIVE' | 'INACTIVE' | null;
-  }
 }
 
 /**
@@ -332,7 +247,8 @@ export interface ChannelListParams {
   'x-profile-id'?: string;
 }
 
-Channels.SMS = SmsapiSMS;
+Channels.Markets = Markets;
+Channels.SMS = SMS;
 Channels.Rcs = Rcs;
 Channels.Whatsapp = Whatsapp;
 Channels.Voice = Voice;
@@ -346,14 +262,29 @@ export declare namespace Channels {
   };
 
   export {
-    SmsapiSMS as SMS,
+    Markets as Markets,
+    type APIResponseOfChannelMarket as APIResponseOfChannelMarket,
+    type APIResponseOfListOfChannelMarket as APIResponseOfListOfChannelMarket,
+    type APIResponseOfMarketNumbers as APIResponseOfMarketNumbers,
+    type ChannelMarket as ChannelMarket,
+    type MarketNumber as MarketNumber,
+    type MarketNumbers as MarketNumbers,
+    type MarketRetrieveParams as MarketRetrieveParams,
+    type MarketUpdateParams as MarketUpdateParams,
+    type MarketListParams as MarketListParams,
+    type MarketAddNumbersParams as MarketAddNumbersParams,
+    type MarketListNumbersParams as MarketListNumbersParams,
+    type MarketReplaceNumbersParams as MarketReplaceNumbersParams,
+  };
+
+  export {
+    SMS as SMS,
     type MarketCompliance as MarketCompliance,
     type SMSNumber as SMSNumber,
     type SMSNumberRequest as SMSNumberRequest,
     type SuppliedCampaign as SuppliedCampaign,
     type SuppliedCompliance as SuppliedCompliance,
     type SuppliedDocument as SuppliedDocument,
-    type SMSCreateResponse as SMSCreateResponse,
     type SMSCreateParams as SMSCreateParams,
   };
 

@@ -601,6 +601,23 @@ export interface SMSCreateParams {
    * which works for country, whose wire name is its camel-cased C# name, and
    * silently does not for number_type. A client generating a request from our
    * OpenAPI therefore sent what the document called sufficient and was answered 400.
+   *
+   * - `LOCAL` - A geographic number for the country. The ordinary choice:
+   *   recognisable to recipients, and available almost everywhere.
+   * - `TOLL_FREE` - A toll-free number. High throughput and no per-country
+   *   registration, but US toll-free traffic goes through its own verification.
+   * - `SHORT_CODE` - A short code — five or six digits, leased rather than
+   *   provisioned. Highest throughput, longest lead time, and the most expensive.
+   * - `ALPHANUMERIC` - A sender name rather than a number, up to 11 characters.
+   *   Recipients cannot reply. Not available in every country, and several require
+   *   it to be pre-registered with documents.
+   * - `TEN_DLC` - A US 10-digit long code registered with The Campaign Registry. The
+   *   only sender type that registers with a compliance regime, so it is the only
+   *   one whose market declares `compliance.brand` and `compliance.campaign`.
+   * - `MOBILE` - A mobile number. Where a country distinguishes it from a landline,
+   *   some carriers treat mobile traffic differently.
+   * - `10DLC` - The industry's spelling of `TEN_DLC`, accepted so an integrator can
+   *   send the term it knows. Resolves to the same market.
    */
   number_type: 'LOCAL' | 'TOLL_FREE' | 'SHORT_CODE' | 'ALPHANUMERIC' | 'TEN_DLC' | 'MOBILE' | '10DLC';
 
